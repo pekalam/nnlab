@@ -15,14 +15,18 @@ namespace Data.Application.Controllers
         private readonly FileController _fileController;
         private readonly SingleFileSourceController _singleFileSourceController;
         private readonly MultiFileSourceController _multiFileSourceController;
+        private readonly CustomDataSetController _customDataSetController;
+        private readonly VariablesSelectionController _variablesSelectionController;
 
-        public ModuleController(IRegionManager rm, FileController fileController, AppState appState, SingleFileSourceController singleFileSourceController, MultiFileSourceController multiFileSourceController)
+        public ModuleController(IRegionManager rm, FileController fileController, AppState appState, SingleFileSourceController singleFileSourceController, MultiFileSourceController multiFileSourceController, CustomDataSetController customDataSetController, VariablesSelectionController variablesSelectionController)
         {
             _rm = rm;
             _fileController = fileController;
             _appState = appState;
             _singleFileSourceController = singleFileSourceController;
             _multiFileSourceController = multiFileSourceController;
+            _customDataSetController = customDataSetController;
+            _variablesSelectionController = variablesSelectionController;
         }
 
 

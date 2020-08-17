@@ -29,7 +29,9 @@ namespace Data
                 .RegisterSingleton<FileService>().RegisterSingleton<IFileService, FileService>()
                 .RegisterSingleton<SingleFileService>().RegisterSingleton<ISingleFileService, SingleFileService>()
                 .RegisterSingleton<MultiFileService>().RegisterSingleton<IMultiFileService, MultiFileService>()
-                .RegisterSingleton<FileDialogService>().RegisterSingleton<IFileDialogService, FileDialogService>();
+                .RegisterSingleton<FileDialogService>().RegisterSingleton<IFileDialogService, FileDialogService>()
+                .RegisterSingleton<CustomDataSetService>().RegisterSingleton<ICustomDataSetService, CustomDataSetService>()
+                .RegisterSingleton<DataSetDivisionService>().RegisterSingleton<IDataSetDivisionService, DataSetDivisionService>();
 
 
             containerRegistry.RegisterSingleton<ModuleController>();
@@ -38,6 +40,8 @@ namespace Data
             containerRegistry.RegisterForNavigation<SelectDataSourceView>();
             containerRegistry.RegisterForNavigation<SingleFileSourceView>();
             containerRegistry.RegisterForNavigation<MultiFileSourceView>();
+            containerRegistry.RegisterForNavigation<CustomDataSetView>();
+            containerRegistry.RegisterForNavigation<DataSetDivisionView>();
         }
     }
 }

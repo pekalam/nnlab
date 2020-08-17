@@ -1,0 +1,17 @@
+﻿<UserControl x:Class="Data.Presentation.Views.CustomDataSetView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:prism="http://prismlibrary.com/"
+             xmlns:oxy="http://oxyplot.org/wpf"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:dd="clr-namespace:Data.Presentation.__DesignData"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance dd:DesignCustomDataSetVm, IsDesignTimeCreatable=True}"
+             prism:ViewModelLocator.AutoWireViewModel="True">
+    <Grid Margin="40">
+        <ContentControl Style="{StaticResource ContentPanel}">
+            <oxy:PlotView Model="{Binding PlotModel}" Controller="{Binding PlotController}" />
+        </ContentControl>
+    </Grid>
+</UserControl>

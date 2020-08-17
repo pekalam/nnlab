@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using Infrastructure.Domain;
 using Prism;
 using Prism.Ioc;

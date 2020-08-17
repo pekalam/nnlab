@@ -8,6 +8,7 @@ using Prism.Mvvm;
 
 namespace Data.Application.Services
 {
+    //TODO move state to view
     public interface IMultiFileService : INotifyPropertyChanged
     {
         DelegateCommand SelectTrainingFileCommand { get; set; }

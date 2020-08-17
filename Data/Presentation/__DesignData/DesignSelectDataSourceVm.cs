@@ -28,4 +28,18 @@ namespace Data.Presentation.__DesignData
             
         }
     }
+
+    class DesignCustomDataSetVm : CustomDataSetViewModel
+    {
+        public DesignCustomDataSetVm(ICustomDataSetService customDataSetService) : base(null)
+        {
+        }
+    }
+
+    class DesignDataSetDivisionVm : DataSetDivisionViewModel
+    {
+        public DesignDataSetDivisionVm() : base(null)
+        {
+        }
+    }
 }

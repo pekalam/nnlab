@@ -77,7 +77,7 @@ namespace Data.Application.Controllers
 
         private void CreateDataSet()
         {
-            
+            _rm.Regions[AppRegions.ContentRegion].RequestNavigate(nameof(CustomDataSetView));
         }
     }
 }
