@@ -107,6 +107,10 @@ namespace Data.Tests.Application.DataSourceSelection
             var validationPath = "C:\\Dir\\validation.csv";
             var testPath = "C:\\Dir\\test.csv";
 
+            //disable validation cmd
+            _multiFileService.Object.ValidateTrainingFile = _multiFileService.Object.ValidateValidationFile =
+                _multiFileService.Object.ValidateTestFile = new DelegateCommand<string>(s => { });
+
             //act & assert
             //training file
             _dialogService.Setup(f => f.OpenCsv(It.IsAny<Window>())).Returns((true, trainingPath));

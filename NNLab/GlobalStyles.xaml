@@ -1,5 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:infrastructure="clr-namespace:Infrastructure;assembly=Infrastructure">
 
     <SolidColorBrush x:Key="ContentColorBackground" Color="#F8F9FA"/>
     <SolidColorBrush x:Key="MenuColorHighlighted" Color="#0078D7"/>
@@ -127,5 +128,22 @@
             </Trigger>
         </Style.Triggers>
     </Style>
+
+
+    <Style TargetType="ToolTip" x:Key="AutoTextBlockTooltip">
+        <Setter Property="Visibility">
+            <Setter.Value>
+                <Binding Path="PlacementTarget">
+                    <Binding.Converter>
+                        <infrastructure:TextBlockTrimToVisConverter/>
+                    </Binding.Converter>
+                    <Binding.RelativeSource>
+                        <RelativeSource Mode="Self"/>
+                    </Binding.RelativeSource>
+                </Binding>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
 
 </ResourceDictionary>

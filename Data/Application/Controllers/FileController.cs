@@ -43,9 +43,19 @@ namespace Data.Application.Controllers
             var dialog = _fileDialogService.OpenCsv(null);
             if (dialog.result == true)
             {
-                if(file == 0) MultiFileSourceViewModel.Instance.TrainingSetFilePath = dialog.filePath;
-                else if(file == 1) MultiFileSourceViewModel.Instance.ValidationSetFilePath = dialog.filePath;
-                else if (file == 2) MultiFileSourceViewModel.Instance.TestSetFilePath = dialog.filePath;
+                _multiFileService.ResetResult(file);
+                if (file == 0)
+                {
+                    MultiFileSourceViewModel.Instance.TrainingSetFilePath = dialog.filePath;
+                }
+                else if (file == 1)
+                {
+                    MultiFileSourceViewModel.Instance.ValidationSetFilePath = dialog.filePath;
+                }
+                else if (file == 2)
+                {
+                    MultiFileSourceViewModel.Instance.TestSetFilePath = dialog.filePath;
+                }
             }
         }
 

@@ -50,7 +50,7 @@ namespace Infrastructure.Domain
 
         public IReadOnlyList<Session> Sessions => _sessions;
 
-        public void Create()
+        public Session Create()
         {
             var newSession = new Session("Unnamed" + (_sessions.Count > 0 ? " " + _sessions.Count : String.Empty));
             _sessions.Add(newSession);
@@ -59,6 +59,8 @@ namespace Infrastructure.Domain
             {
                 SetActive(newSession);
             }
+
+            return newSession;
         }
 
         public void DuplicateActive(DuplicateOptions duplicateOptions = DuplicateOptions.All)

@@ -59,6 +59,7 @@ namespace Data.Application.Services
         public void SetLoaded(TrainingData trainingData)
         {
             FileValidationResult.IsValidatingFile = FileValidationResult.IsLoadingFile = false;
+            FileValidationResult.IsLoaded = true;
             Variables = trainingData.Variables.InputVariableNames.Union(trainingData.Variables.TargetVariableNames)
                 .Select((s, i) => new VariablesTableModel()
                 {

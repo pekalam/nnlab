@@ -10,11 +10,20 @@ namespace Data.Application.Services
         private int _cols;
         private bool? _isFileValid;
         private string _fileValidationError;
+        private bool _isLoaded;
+
+        public bool HasContentError { get; set; }
 
         public bool IsLoadingFile
         {
             get => _isLoadingFile;
             set => SetProperty(ref _isLoadingFile, value);
+        }
+
+        public bool IsLoaded
+        {
+            get => _isLoaded;
+            set => SetProperty(ref _isLoaded, value);
         }
 
         public bool IsValidatingFile

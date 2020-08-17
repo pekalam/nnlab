@@ -19,13 +19,15 @@ namespace Data.Application.Controllers
         private readonly ISupervisedDataSetService _dataSetService;
         private readonly ICsvValidationService _csvValidationService;
         private readonly IRegionManager _rm;
+        private AppState _appState;
 
-        public SingleFileSourceController(SingleFileService singleFileService, ISupervisedDataSetService dataSetService, ICsvValidationService csvValidationService, IRegionManager rm)
+        public SingleFileSourceController(SingleFileService singleFileService, ISupervisedDataSetService dataSetService, ICsvValidationService csvValidationService, IRegionManager rm, AppState appState)
         {
             _singleFileService = singleFileService;
             _dataSetService = dataSetService;
             _csvValidationService = csvValidationService;
             _rm = rm;
+            _appState = appState;
 
 
             _singleFileService.ContinueCommand = new DelegateCommand(SingleFileContinue, () => _loadedTrainingData != null);
@@ -90,7 +92,10 @@ namespace Data.Application.Controllers
 
         private void SingleFileContinue()
         {
+            var session = _appState.SessionManager.Create();
 
+            session.TrainingData = _loadedTrainingData;
+            _loadedTrainingData = null;
         }
     }
 }

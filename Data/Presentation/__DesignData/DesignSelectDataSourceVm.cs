@@ -20,4 +20,12 @@ namespace Data.Presentation.__DesignData
             SelectedFilePath = "C:\\Users\\Example.csv";
         }
     }
+
+    class DesignMultiFileSourceVm : MultiFileSourceViewModel
+    {
+        public DesignMultiFileSourceVm() : base(null)
+        {
+            
+        }
+    }
 }
