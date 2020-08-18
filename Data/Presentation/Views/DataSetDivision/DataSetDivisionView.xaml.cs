@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 
-namespace Data.Presentation.Views
+namespace Data.Presentation.Views.DataSetDivision
 {
     /// <summary>
     /// Interaction logic for DataSetDivisionView

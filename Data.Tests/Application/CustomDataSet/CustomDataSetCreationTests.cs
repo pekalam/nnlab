@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Data.Common;
 using System.Text;
 using System.Windows;
+using Data.Application.ViewModels.CustomDataSet;
 using MahApps.Metro.Controls;
 using TestUtils;
 using Xunit;
@@ -28,6 +29,7 @@ namespace Data.Tests.Application.CustomDataSet
 
         public CustomDataSetCreationTests()
         {
+            _mocker.UseTestRm();
             _dsService = _mocker.UseInMocker<ICustomDataSetService, CustomDataSetService>();
             _appState = _mocker.UseInMocker<AppState>().Object;
             _ctrl = _mocker.CreateInstance<CustomDataSetController>();

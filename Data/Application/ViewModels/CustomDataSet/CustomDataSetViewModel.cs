@@ -4,7 +4,7 @@ using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Series;
 
-namespace Data.Application.ViewModels
+namespace Data.Application.ViewModels.CustomDataSet
 {
     public class CustomDataSetViewModel : ViewModelBase<CustomDataSetViewModel>
     {

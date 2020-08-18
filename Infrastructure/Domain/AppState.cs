@@ -97,16 +97,23 @@ namespace Infrastructure.Domain
         }
     }
 
-    public class Session
+    public class Session : BindableBase
     {
-        
+        private TrainingData? _trainingData;
+
         public Session(string name)
         {
             Name = name;
         }
 
         public string Name { get; }
-        public TrainingData? TrainingData { get; set; }
+
+        public TrainingData? TrainingData
+        {
+            get => _trainingData;
+            set => SetProperty(ref _trainingData, value);
+        }
+
         public MLPNetwork? Network { get; set; }
         public TrainingSessionReport? TrainingReport { get; set; }
         public TrainingParameters? TrainingParameters { get; set; }

@@ -1,18 +1,16 @@
-﻿using Infrastructure;
-using NNLib.Common;
-using Prism.Mvvm;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
-using System.Security.Permissions;
-using System.Text;
 using System.Windows.Data;
+using System.Windows.Input;
 using Data.Application.Services;
 using Data.Domain;
+using Infrastructure;
+using Infrastructure.Domain;
 using Prism.Regions;
 
-namespace Data.Application.ViewModels
+namespace Data.Application.ViewModels.DataSetDivision
 {
     public class FileDataSetDivisionNavParams : NavigationParameters
     {
@@ -40,11 +38,33 @@ namespace Data.Application.ViewModels
         private int _testSetPercent;
         private bool _modifiesFileData;
         private DivisionMethod _divisionMethod;
+        private ICommand _divideCommand;
+        private object _divideCommandParam;
+        private string _ratio;
+        private string _insufficientSizeMsg;
 
-        public DataSetDivisionViewModel(IDataSetDivisionService service)
+
+        public DataSetDivisionViewModel(IDataSetDivisionService service, AppState appState)
         {
             Service = service;
             KeepAlive = false;
+
+            if (appState.SessionManager.ActiveSession?.TrainingData != null)
+            {
+                var data = appState.SessionManager.ActiveSession.TrainingData;
+                var total = data.Sets.TrainingSet.Input.Count + (data.Sets.ValidationSet?.Input.Count ?? 0) + (data.Sets.TestSet?.Input.Count ?? 0);
+
+                _trainingSetPercent = (int)Math.Round(data.Sets.TrainingSet.Input.Count * 100.0 / total);
+                _testSetPercent = (int)Math.Round(data.Sets.TestSet?.Input.Count * 100.0 / total ?? 0);
+                _validationSetPercent = (int)Math.Round(data.Sets.ValidationSet?.Input.Count * 100.0 / total ?? 0);
+
+                UpdateRatio();
+            }
+        }
+
+        public void UpdateRatio()
+        {
+            Ratio = $"{_trainingSetPercent}:{_validationSetPercent}:{_testSetPercent}";
         }
 
         private void RaiseCmdCanExecChanged()
@@ -55,10 +75,22 @@ namespace Data.Application.ViewModels
 
         public IDataSetDivisionService Service { get; set; }
 
+        public string Ratio
+        {
+            get => _ratio;
+            set => SetProperty(ref _ratio, value);
+        }
+
         public DivisionMethod DivisionMethod
         {
             get => _divisionMethod;
             set => SetProperty(ref _divisionMethod, value);
+        }
+
+        public string InsufficientSizeMsg
+        {
+            get => _insufficientSizeMsg;
+            set => SetProperty(ref _insufficientSizeMsg, value);
         }
 
         public int TrainingSetPercent
@@ -67,6 +99,8 @@ namespace Data.Application.ViewModels
             set
             {
                 SetProperty(ref _trainingSetPercent, value);
+                RaisePropertyChanged(nameof(ValidationSetPercent));
+                RaisePropertyChanged(nameof(TestSetPercent));
                 RaiseCmdCanExecChanged();
             }
         }
@@ -77,6 +111,8 @@ namespace Data.Application.ViewModels
             set
             {
                 SetProperty(ref _validationSetPercent, value);
+                RaisePropertyChanged(nameof(TrainingSetPercent));
+                RaisePropertyChanged(nameof(TestSetPercent));
                 RaiseCmdCanExecChanged();
             }
         }
@@ -87,6 +123,8 @@ namespace Data.Application.ViewModels
             set
             {
                 SetProperty(ref _testSetPercent, value);
+                RaisePropertyChanged(nameof(TrainingSetPercent));
+                RaisePropertyChanged(nameof(ValidationSetPercent));
                 RaiseCmdCanExecChanged();
             }
         }
@@ -97,10 +135,17 @@ namespace Data.Application.ViewModels
             set => SetProperty(ref _modifiesFileData, value);
         }
 
+        public ICommand DivideCommand
+        {
+            get => _divideCommand;
+            set => SetProperty(ref _divideCommand, value);
+        }
 
-        public (List<double[]> input, List<double[]> target)? MemCmdParam { get; set; }
-
-        public string FileCmdParam { get; set; }
+        public object DivideCommandParam
+        {
+            get => _divideCommandParam;
+            set => SetProperty(ref _divideCommandParam, value);
+        }
 
         public override void OnNavigatedTo(NavigationContext navigationContext)
         {
@@ -109,11 +154,13 @@ namespace Data.Application.ViewModels
 
             if (ModifiesFileData)
             {
-                FileCmdParam = navigationContext.Parameters["filePath"] as string;
+                DivideCommandParam = navigationContext.Parameters["filePath"] as string;
+                DivideCommand = Service.DivideFileDataCommand;
             }
             else
             {
-                MemCmdParam = (navigationContext.Parameters["input"] as List<double[]>, navigationContext.Parameters["target"] as List<double[]>);
+                DivideCommandParam = (navigationContext.Parameters["input"] as List<double[]>, navigationContext.Parameters["target"] as List<double[]>);
+                DivideCommand = Service.DivideMemoryDataCommand;
             }
         }
 
@@ -131,9 +178,6 @@ namespace Data.Application.ViewModels
                             ? null
                             : "Invalid percent value";
                     case nameof(ValidationSetPercent):
-                        return (TrainingSetPercent + ValidationSetPercent + TestSetPercent == 100)
-                            ? null
-                            : "Invalid percent value";
                     case nameof(TestSetPercent):
                         return (TrainingSetPercent + ValidationSetPercent + TestSetPercent == 100)
                             ? null
@@ -142,48 +186,6 @@ namespace Data.Application.ViewModels
 
                 return null;
             }
-        }
-    }
-
-
-
-    public class DivisionCmdConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            var vm = value as DataSetDivisionViewModel;
-
-            if (vm.ModifiesFileData)
-            {
-                return vm.Service.DivideFileDataCommand;
-            }
-
-            return vm.Service.DivideMemoryDataCommand;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    public class DivisionCmdParamConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            var vm = value as DataSetDivisionViewModel;
-
-            if (vm.ModifiesFileData)
-            {
-                return vm.FileCmdParam;
-            }
-
-            return vm.MemCmdParam;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
         }
     }
 }

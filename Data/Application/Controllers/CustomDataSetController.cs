@@ -4,12 +4,20 @@ using System.Linq;
 using System.Text;
 using Data.Application.Services;
 using Data.Application.ViewModels;
+using Data.Application.ViewModels.CustomDataSet;
+using Data.Application.ViewModels.DataSetDivision;
+using Data.Presentation.Views.CustomDataSet;
+using Data.Presentation.Views.DataSetDivision;
+using Infrastructure;
 using Infrastructure.Domain;
+using Infrastructure.Messaging;
 using NNLib.Common;
 using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Series;
 using Prism.Commands;
+using Prism.Events;
+using Prism.Regions;
 
 namespace Data.Application.Controllers
 {
@@ -19,18 +27,36 @@ namespace Data.Application.Controllers
         private readonly AppState _appState;
         private readonly List<double[]> _input = new List<double[]>();
         private readonly List<double[]> _target = new List<double[]>();
+        private readonly IRegionManager _rm;
+        private readonly IEventAggregator _ea;
+        private readonly IActionMenuNavigationService _actionMenuNavService;
 
-        public CustomDataSetController(CustomDataSetService dsService, AppState appState)
+        public CustomDataSetController(CustomDataSetService dsService, AppState appState, IRegionManager rm, IEventAggregator ea, IActionMenuNavigationService actionMenuNavService)
         {
             _dsService = dsService;
             _appState = appState;
+            _rm = rm;
+            _ea = ea;
+            _actionMenuNavService = actionMenuNavService;
             _dsService.PlotMouseDownCommand = new DelegateCommand<OxyMouseDownEventArgs>(PlotMouseDown);
+            _dsService.OpenDivisionViewCommand = new DelegateCommand(OpenDivisionView);
 
             CustomDataSetViewModel.Created += () =>
             {
                 //create session when navigated
                 _appState.SessionManager.Create();
+
+                _actionMenuNavService.SetLeftMenu<ActionMenuLeftView>();
             };
+        }
+
+        private void OpenDivisionView()
+        {
+            _ea.GetEvent<ShowFlyout>().Publish(new FlyoutArgs()
+            {
+                Title = "Divide data set"
+            });
+            _rm.Regions[AppRegions.FlyoutRegion].RequestNavigate(nameof(DataSetDivisionView), new InMemoryDataSetDivisionNavParams(_input, _target));
         }
 
         private void PlotMouseDown(OxyMouseDownEventArgs args)

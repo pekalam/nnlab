@@ -3,11 +3,11 @@
 namespace Data.Presentation.Views.CustomDataSet
 {
     /// <summary>
-    /// Interaction logic for CreateDatasetView
+    /// Interaction logic for ActionMenuLeft
     /// </summary>
-    public partial class CustomDataSetView : UserControl
+    public partial class ActionMenuLeftView : UserControl
     {
-        public CustomDataSetView()
+        public ActionMenuLeftView()
         {
             InitializeComponent();
         }

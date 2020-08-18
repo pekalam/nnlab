@@ -18,10 +18,12 @@ namespace Data.Application.Services
     public interface ICustomDataSetService : INotifyPropertyChanged
     {
         DelegateCommand<OxyMouseDownEventArgs> PlotMouseDownCommand { get; set; }
+        DelegateCommand OpenDivisionViewCommand { get; set; }
     }
 
     public class CustomDataSetService : BindableBase, ICustomDataSetService
     {
         public DelegateCommand<OxyMouseDownEventArgs> PlotMouseDownCommand { get; set; }
+        public DelegateCommand OpenDivisionViewCommand { get; set; }
     }
 }

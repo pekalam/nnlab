@@ -6,6 +6,8 @@ using Data.Application.Services;
 using Data.Domain.Services;
 using Data.Presentation.Services;
 using Data.Presentation.Views;
+using Data.Presentation.Views.CustomDataSet;
+using Data.Presentation.Views.DataSetDivision;
 using Prism.Ioc;
 using Prism.Modularity;
 using Prism.Regions;

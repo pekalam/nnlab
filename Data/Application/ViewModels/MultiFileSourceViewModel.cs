@@ -43,6 +43,11 @@ namespace Data.Application.ViewModels
 
         private void AttachValidationResultChangeHanlder(FileValidationResult result)
         {
+            int calcPrerc(FileValidationResult result)
+            {
+                return (int) Math.Round(result.Rows * 100.0 / (TotalRows.GetValueOrDefault() == 0 ? 1 : TotalRows.GetValueOrDefault()));
+            }
+
             result.PropertyChanged += (sender, args) =>
             {
                 switch (args.PropertyName)
@@ -60,7 +65,7 @@ namespace Data.Application.ViewModels
                         {
                             TotalRows = MultiFileService.MultiFileValidationResult.Sum(r => r.Rows);
                             Ratio =
-                                $"{MultiFileService.MultiFileValidationResult[0].Rows * 100 / (TotalRows == 0 ? 1 : TotalRows):D}:{MultiFileService.MultiFileValidationResult[1].Rows * 100 / (TotalRows == 0 ? 1 : TotalRows):D}:{MultiFileService.MultiFileValidationResult[2].Rows * 100 / (TotalRows == 0 ? 1 : TotalRows):D}";
+                                $"{calcPrerc(MultiFileService.MultiFileValidationResult[0])}:{calcPrerc(MultiFileService.MultiFileValidationResult[1])}:{calcPrerc(MultiFileService.MultiFileValidationResult[2])}";
                         }
                         break;
                 }

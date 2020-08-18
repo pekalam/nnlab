@@ -4,10 +4,12 @@ using System.Text;
 using Data.Application.Controllers;
 using Data.Application.Services;
 using Data.Application.ViewModels;
+using Data.Application.ViewModels.DataSetDivision;
 using FluentAssertions;
 using Infrastructure.Domain;
 using Moq;
 using Moq.AutoMock;
+using Prism.Events;
 using Prism.Regions;
 using TestUtils;
 using Xunit;
@@ -25,6 +27,8 @@ namespace Data.Tests.Application
 
         public DataSetDivisionTests()
         {
+            _mocker.UseInMocker<IEventAggregator, EventAggregator>();
+            _mocker.UseTestRm();
             _appState = _mocker.UseInMocker<AppState>().Object;
             _service = _mocker.UseInMocker<IDataSetDivisionService, DataSetDivisionService>().Object;
             _ctrl = _mocker.CreateInstance<DataSetDivisionController>();
@@ -66,9 +70,10 @@ namespace Data.Tests.Application
             _vm.OnNavigatedTo(ctx);
 
             //assert
-            _vm.MemCmdParam.Value.input.Should().BeEquivalentTo(input);
-            _vm.MemCmdParam.Value.target.Should().BeEquivalentTo(target);
-
+            var memCmdParam = (((List<double[]> input, List<double[]> target)?) _vm.DivideCommandParam).Value;
+            memCmdParam.input.Should().BeEquivalentTo(input);
+            memCmdParam.target.Should().BeEquivalentTo(target);
+            _vm.DivideCommand.Should().Be(_service.DivideMemoryDataCommand);
 
             //arrange
             string filePath = "path";
@@ -78,7 +83,8 @@ namespace Data.Tests.Application
             _vm.OnNavigatedTo(ctx);
 
             //assert
-            _vm.FileCmdParam.Should().BeEquivalentTo(filePath);
+            _vm.DivideCommandParam.Should().BeEquivalentTo(filePath);
+            _vm.DivideCommand.Should().Be(_service.DivideFileDataCommand);
         }
 
         [Fact]
@@ -87,18 +93,38 @@ namespace Data.Tests.Application
             _service.DivideMemoryDataCommand.CanExecute(null).Should().BeFalse();
             _service.DivideFileDataCommand.CanExecute(null).Should().BeFalse();
 
+            _vm[nameof(DataSetDivisionViewModel.TrainingSetPercent)].Should().NotBeNullOrEmpty();
 
             _vm.TrainingSetPercent = 50;
             _vm.TestSetPercent = _vm.ValidationSetPercent = 25;
+            _vm[nameof(DataSetDivisionViewModel.TrainingSetPercent)].Should().BeNullOrEmpty();
 
             _service.DivideMemoryDataCommand.CanExecute(null).Should().BeTrue();
             _service.DivideFileDataCommand.CanExecute(null).Should().BeTrue();
+        }
 
 
-            _vm.TrainingSetPercent = 0;
+        [Fact]
+        public void DataSetDivisionVm_sets_data_set_percents_based_on_app_state()
+        {
+            var appState = new AppState();
+            var session = appState.SessionManager.Create();
+            session.TrainingData = TrainingDataMocks.ValidData1;
 
-            _service.DivideMemoryDataCommand.CanExecute(null).Should().BeFalse();
-            _service.DivideFileDataCommand.CanExecute(null).Should().BeFalse();
+            var vm = new DataSetDivisionViewModel(_service, appState);
+
+            vm.TrainingSetPercent.Should().Be(100);
+            vm.ValidationSetPercent.Should().Be(0);
+            vm.TestSetPercent.Should().Be(0);
+
+            vm.Ratio.Should().Be("100:0:0");
+
+            session.TrainingData = TrainingDataMocks.ValidData3;
+
+            vm = new DataSetDivisionViewModel(_service, appState);
+            vm.TrainingSetPercent.Should().Be(50);
+            vm.ValidationSetPercent.Should().Be(25);
+            vm.TestSetPercent.Should().Be(25);
         }
     }
 }

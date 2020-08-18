@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Text;
 using Data.Presentation.Views;
 using Infrastructure;
@@ -17,8 +18,9 @@ namespace Data.Application.Controllers
         private readonly MultiFileSourceController _multiFileSourceController;
         private readonly CustomDataSetController _customDataSetController;
         private readonly VariablesSelectionController _variablesSelectionController;
+        private readonly DataSetDivisionController _dataSetDivisionController;
 
-        public ModuleController(IRegionManager rm, FileController fileController, AppState appState, SingleFileSourceController singleFileSourceController, MultiFileSourceController multiFileSourceController, CustomDataSetController customDataSetController, VariablesSelectionController variablesSelectionController)
+        public ModuleController(IRegionManager rm, FileController fileController, AppState appState, SingleFileSourceController singleFileSourceController, MultiFileSourceController multiFileSourceController, CustomDataSetController customDataSetController, VariablesSelectionController variablesSelectionController, DataSetDivisionController dataSetDivisionController)
         {
             _rm = rm;
             _fileController = fileController;
@@ -27,6 +29,7 @@ namespace Data.Application.Controllers
             _multiFileSourceController = multiFileSourceController;
             _customDataSetController = customDataSetController;
             _variablesSelectionController = variablesSelectionController;
+            _dataSetDivisionController = dataSetDivisionController;
         }
 
 

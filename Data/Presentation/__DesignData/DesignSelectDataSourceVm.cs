@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 using Data.Application.Services;
 using Data.Application.ViewModels;
+using Data.Application.ViewModels.CustomDataSet;
+using Data.Application.ViewModels.DataSetDivision;
 
 namespace Data.Presentation.__DesignData
 {
@@ -38,7 +40,14 @@ namespace Data.Presentation.__DesignData
 
     class DesignDataSetDivisionVm : DataSetDivisionViewModel
     {
-        public DesignDataSetDivisionVm() : base(null)
+        public DesignDataSetDivisionVm() : base(null, null)
+        {
+        }
+    }
+
+    class DesignDataSetDivisionActionLeftVm : ActionMenuLeftViewModel
+    {
+        public DesignDataSetDivisionActionLeftVm() : base(null)
         {
         }
     }

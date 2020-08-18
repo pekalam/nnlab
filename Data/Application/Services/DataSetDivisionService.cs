@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Data.Application.ViewModels.DataSetDivision;
 using NNLib.Common;
 
 namespace Data.Application.Services

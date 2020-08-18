@@ -8,7 +8,7 @@ namespace NNLab.__DesignData
 {
     class DesignMainWindowVm : MainWindowViewModel
     {
-        public DesignMainWindowVm() : base(null)
+        public DesignMainWindowVm() : base(null, null)
         {
         }
     }

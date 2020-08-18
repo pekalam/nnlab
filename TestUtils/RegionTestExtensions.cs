@@ -27,5 +27,15 @@ namespace TestUtils
             new SupervisedTrainingSets(SupervisedSet.FromArrays(new[] { new[] { 0d }, new[] { 1d }, new[] { 2d }, new[] { 3d } }, new[] { new[] { 0d }, new[] { 1d }, new[] { 2d }, new[] { 3d } })),
             new SupervisedSetVariables(new SupervisedSetVariableIndexes(new[] { 0 }, new[] { 1 }),
                 new[] { new VariableName("x"), new VariableName("y") }), TrainingDataSource.Memory);
+
+
+        public static TrainingData ValidData3 = new TrainingData(
+            new SupervisedTrainingSets(SupervisedSet.FromArrays(new[] { new[] { 0d }, new[] { 0d } }, new[] { new[] { 0d }, new[] { 0d } }))
+            {
+                TestSet = SupervisedSet.FromArrays(new[] { new[] { 0d } }, new[] { new[] { 0d } }),
+                ValidationSet = SupervisedSet.FromArrays(new[] { new[] { 0d } }, new[] { new[] { 0d } }),
+            },
+            new SupervisedSetVariables(new SupervisedSetVariableIndexes(new[] { 0 }, new[] { 1 }),
+                new[] { new VariableName("x"), new VariableName("y") }), TrainingDataSource.Memory);
     }
 }
