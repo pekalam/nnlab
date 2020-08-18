@@ -8,6 +8,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:dd="clr-namespace:Data.Presentation.__DesignData"
              xmlns:preview="clr-namespace:Data.Presentation.Views.DataSource.Preview"
+             xmlns:normalization="clr-namespace:Data.Presentation.Views.DataSource.Normalization"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance dd:DesignFileDataSourceVm, IsDesignTimeCreatable=True}"
              prism:ViewModelLocator.AutoWireViewModel="True">
@@ -36,8 +37,7 @@
                 </ContentControl>
 
                 <ContentControl Grid.Row="1" Margin="0,30,0,0" Style="{StaticResource ContentPanel}">
-                    <ContentControl
-                        prism:RegionManager.RegionName="{x:Static data:FileDataSourceRegions.FileDataSourceCenterPanel}" />
+                    <normalization:NormalizationView DataContext="{Binding NormalizationVm}"/>
                 </ContentControl>
 
                 <ContentControl Grid.Row="2" Margin="0,30,0,0" Style="{StaticResource ContentPanel}">

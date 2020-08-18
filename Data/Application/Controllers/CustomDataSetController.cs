@@ -21,9 +21,9 @@ using Prism.Regions;
 
 namespace Data.Application.Controllers
 {
-    internal class CustomDataSetController
+    internal class CustomDataSetController : ITransientControllerBase<CustomDataSetService>
     {
-        private readonly CustomDataSetService _dsService;
+        private CustomDataSetService _dsService;
         private readonly AppState _appState;
         private readonly List<double[]> _input = new List<double[]>();
         private readonly List<double[]> _target = new List<double[]>();
@@ -31,15 +31,13 @@ namespace Data.Application.Controllers
         private readonly IEventAggregator _ea;
         private readonly IActionMenuNavigationService _actionMenuNavService;
 
-        public CustomDataSetController(CustomDataSetService dsService, AppState appState, IRegionManager rm, IEventAggregator ea, IActionMenuNavigationService actionMenuNavService)
+        public CustomDataSetController(AppState appState, IRegionManager rm, IEventAggregator ea, IActionMenuNavigationService actionMenuNavService)
         {
-            _dsService = dsService;
             _appState = appState;
             _rm = rm;
             _ea = ea;
             _actionMenuNavService = actionMenuNavService;
-            _dsService.PlotMouseDownCommand = new DelegateCommand<OxyMouseDownEventArgs>(PlotMouseDown);
-            _dsService.OpenDivisionViewCommand = new DelegateCommand(OpenDivisionView);
+
 
             CustomDataSetViewModel.Created += () =>
             {
@@ -116,6 +114,13 @@ namespace Data.Application.Controllers
 
                 _appState.SessionManager.ActiveSession.TrainingData = trainingData;
             }
+        }
+
+        public void Initialize(CustomDataSetService service)
+        {
+            _dsService = service;
+            _dsService.PlotMouseDownCommand = new DelegateCommand<OxyMouseDownEventArgs>(PlotMouseDown);
+            _dsService.OpenDivisionViewCommand = new DelegateCommand(OpenDivisionView);
         }
     }
 }

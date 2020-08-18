@@ -11,25 +11,28 @@ using Prism.Regions;
 
 namespace Data.Application.Controllers
 {
-    internal class SingleFileSourceController
+    internal class SingleFileSourceController : ITransientControllerBase<SingleFileService>
     {
-        private readonly SingleFileService _singleFileService;
+        private SingleFileService _singleFileService;
         private bool _canLoad;
         private bool _canReturn = true;
         private TrainingData _loadedTrainingData;
         private readonly ISupervisedDataSetService _dataSetService;
         private readonly ICsvValidationService _csvValidationService;
         private readonly IRegionManager _rm;
-        private AppState _appState;
+        private readonly AppState _appState;
 
-        public SingleFileSourceController(SingleFileService singleFileService, ISupervisedDataSetService dataSetService, ICsvValidationService csvValidationService, IRegionManager rm, AppState appState)
+        public SingleFileSourceController(ISupervisedDataSetService dataSetService, ICsvValidationService csvValidationService, IRegionManager rm, AppState appState)
         {
-            _singleFileService = singleFileService;
             _dataSetService = dataSetService;
             _csvValidationService = csvValidationService;
             _rm = rm;
             _appState = appState;
+        }
 
+        public void Initialize(SingleFileService service)
+        {
+            _singleFileService = service;
 
             _singleFileService.ContinueCommand = new DelegateCommand(Continue, () => _loadedTrainingData != null);
             _singleFileService.ValidateCommand = new DelegateCommand<string>(ValidateSingleFile);
@@ -39,15 +42,6 @@ namespace Data.Application.Controllers
                 _loadedTrainingData = null;
                 _rm.Regions[AppRegions.ContentRegion].RequestNavigate(nameof(SelectDataSourceView));
             }, () => _canReturn);
-
-            //reset state when new vm is created
-            SingleFileSourceViewModel.Created += () =>
-            {
-                _loadedTrainingData = null;
-                _canLoad = false;
-                _canReturn = true;
-                _singleFileService.Reset();
-            };
         }
 
 

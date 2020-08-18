@@ -40,20 +40,28 @@ namespace TestUtils
 
     public static class AutoMockerExtensions
     {
-        public static Mock<T> UseInMocker<T>(this AutoMocker mocker) where T : class
+        public static Mock<T> UseMock<T>(this AutoMocker mocker) where T : class
         {
             var mock = mocker.GetMock<T>();
             mocker.Use(mock.Object);
             return mock;
         }
 
-        public static Mock<TImlp> UseInMocker<TI, TImlp>(this AutoMocker mocker) where TI : class where TImlp : class, TI
+        public static Mock<TImlp> UseMock<TI, TImlp>(this AutoMocker mocker) where TI : class where TImlp : class, TI
         {
             var mock = mocker.GetMock<TImlp>();
             mocker.Use(mock.Object);
             mocker.Use<TI>(mock.Object);
 
             return mock;
+        }
+
+        public static TImlp UseImpl<TI, TImlp>(this AutoMocker mocker) where TI : class where TImlp : class, TI
+        {
+            var impl = mocker.CreateInstance<TImlp>();
+            mocker.Use<TI>(impl);
+
+            return impl;
         }
 
         public static (Mock<IRegionManager> rm, Dictionary<string, Mock<IRegion>> regions) UseTestRm(

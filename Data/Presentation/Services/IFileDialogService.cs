@@ -11,7 +11,7 @@ namespace Data.Presentation.Services
         (bool? result, string filePath) OpenCsv(Window owner);
     }
 
-    public class FileDialogService : IFileDialogService {
+    internal class FileDialogService : IFileDialogService {
 
         public (bool? result, string filePath) OpenCsv(Window owner)
         {

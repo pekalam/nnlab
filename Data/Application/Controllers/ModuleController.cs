@@ -14,31 +14,29 @@ namespace Data.Application.Controllers
     {
         private IRegionManager _rm;
         private AppState _appState;
+
+        //Instantiate singleton controllers
         private readonly FileController _fileController;
-        private readonly SingleFileSourceController _singleFileSourceController;
-        private readonly MultiFileSourceController _multiFileSourceController;
-        private readonly CustomDataSetController _customDataSetController;
-        private readonly VariablesSelectionController _variablesSelectionController;
         private readonly DataSetDivisionController _dataSetDivisionController;
+        private readonly VariablesSelectionController _variablesSelectionController;
+        private readonly NormalizationController _normalizationController;
         private readonly FileDataSourceController _fileDataSourceController;
 
-        public ModuleController(IRegionManager rm, FileController fileController, AppState appState, SingleFileSourceController singleFileSourceController, MultiFileSourceController multiFileSourceController, CustomDataSetController customDataSetController, VariablesSelectionController variablesSelectionController, DataSetDivisionController dataSetDivisionController, FileDataSourceController fileDataSourceController)
+        public ModuleController(IRegionManager rm, AppState appState, FileController fileController, DataSetDivisionController dataSetDivisionController, VariablesSelectionController variablesSelectionController, NormalizationController normalizationController, FileDataSourceController fileDataSourceController)
         {
             _rm = rm;
-            _fileController = fileController;
             _appState = appState;
-            _singleFileSourceController = singleFileSourceController;
-            _multiFileSourceController = multiFileSourceController;
-            _customDataSetController = customDataSetController;
-            _variablesSelectionController = variablesSelectionController;
+            _fileController = fileController;
             _dataSetDivisionController = dataSetDivisionController;
+            _variablesSelectionController = variablesSelectionController;
+            _normalizationController = normalizationController;
             _fileDataSourceController = fileDataSourceController;
         }
 
 
-
         public void Run()
         {
+            //Initialize singleton controllers
             _fileController.Initialize();
 
 

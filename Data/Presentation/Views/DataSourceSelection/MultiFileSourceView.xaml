@@ -23,13 +23,13 @@
 
         <Style TargetType="TextBlock" x:Key="TextBoxActiveOnLoaded">
             <Style.Triggers>
-                <DataTrigger Binding="{Binding Path=MultiFileService.MultiFileValidationResult[0].IsLoaded,Converter={StaticResource BooleanNeg}}" Value="True">
+                <DataTrigger Binding="{Binding Path=MultiFileValidationResult[0].IsLoaded,Converter={StaticResource BooleanNeg}}" Value="True">
                     <Setter Property="IsEnabled" Value="False"/>
                 </DataTrigger>
-                <DataTrigger Binding="{Binding Path=MultiFileService.MultiFileValidationResult[1].IsLoaded,Converter={StaticResource BooleanNeg}}" Value="True">
+                <DataTrigger Binding="{Binding Path=MultiFileValidationResult[1].IsLoaded,Converter={StaticResource BooleanNeg}}" Value="True">
                     <Setter Property="IsEnabled" Value="False"/>
                 </DataTrigger>
-                <DataTrigger Binding="{Binding Path=MultiFileService.MultiFileValidationResult[2].IsLoaded,Converter={StaticResource BooleanNeg}}" Value="True">
+                <DataTrigger Binding="{Binding Path=MultiFileValidationResult[2].IsLoaded,Converter={StaticResource BooleanNeg}}" Value="True">
                     <Setter Property="IsEnabled" Value="False"/>
                 </DataTrigger>
 
@@ -103,7 +103,7 @@
                                         </ToolTip>
                                     </TextBlock.ToolTip>
                                 </TextBlock>
-                                <ContentControl Content="{Binding Path=MultiFileService.MultiFileValidationResult[0]}" Style="{StaticResource FileValidationControl}"/>
+                                <ContentControl Content="{Binding Path=MultiFileValidationResult[0]}" Style="{StaticResource FileValidationControl}"/>
                             </StackPanel>
 
                         </Grid>
@@ -141,7 +141,7 @@
                                         </ToolTip>
                                     </TextBlock.ToolTip>
                                 </TextBlock>
-                                <ContentControl Content="{Binding Path=MultiFileService.MultiFileValidationResult[1]}" Style="{StaticResource FileValidationControl}"/>
+                                <ContentControl Content="{Binding Path=MultiFileValidationResult[1]}" Style="{StaticResource FileValidationControl}"/>
                             </StackPanel>
 
                         </Grid>
@@ -179,7 +179,7 @@
                                         </ToolTip>
                                     </TextBlock.ToolTip>
                                 </TextBlock>
-                                <ContentControl Content="{Binding Path=MultiFileService.MultiFileValidationResult[2]}" Style="{StaticResource FileValidationControl}"/>
+                                <ContentControl Content="{Binding Path=MultiFileValidationResult[2]}" Style="{StaticResource FileValidationControl}"/>
                             </StackPanel>
 
                         </Grid>
@@ -217,16 +217,16 @@
                 <Rectangle x:Name="RefRect" Grid.Row="1" />
                 <DataGrid Grid.Row="1" IsReadOnly="True" AutoGenerateColumns="False" Margin="0,0,0,22"
                           Height="{Binding ElementName=RefRect,Path=ActualHeight}"
-                          ItemsSource="{Binding MultiFileService.Variables}">
+                          ItemsSource="{Binding Variables}">
                     <DataGrid.Style>
                         <Style TargetType="DataGrid" BasedOn="{StaticResource MahApps.Styles.DataGrid}">
                             <Setter Property="IsEnabled" Value="False"/>
                             <Style.Triggers>
                                 <MultiDataTrigger>
                                     <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding Path=MultiFileService.MultiFileValidationResult[0].IsLoaded}" Value="True"/>
-                                        <Condition Binding="{Binding Path=MultiFileService.MultiFileValidationResult[1].IsLoaded}" Value="True"/>
-                                        <Condition Binding="{Binding Path=MultiFileService.MultiFileValidationResult[2].IsLoaded}" Value="True"/>
+                                        <Condition Binding="{Binding Path=MultiFileValidationResult[0].IsLoaded}" Value="True"/>
+                                        <Condition Binding="{Binding Path=MultiFileValidationResult[1].IsLoaded}" Value="True"/>
+                                        <Condition Binding="{Binding Path=MultiFileValidationResult[2].IsLoaded}" Value="True"/>
                                     </MultiDataTrigger.Conditions>
                                     <Setter Property="IsEnabled" Value="True"/>
                                 </MultiDataTrigger>

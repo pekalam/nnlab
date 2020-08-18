@@ -12,6 +12,7 @@ using Data.Presentation.Services;
 using Data.Presentation.Views;
 using FluentAssertions;
 using Infrastructure;
+using Infrastructure.Domain;
 using Moq;
 using Moq.AutoMock;
 using Prism.Commands;
@@ -25,8 +26,8 @@ namespace Data.Tests.Application.DataSourceSelection
     public class FileSelectTest
     {
         private readonly AutoMocker _mocker = new AutoMocker();
-        private Mock<SingleFileService> _singleFileService;
-        private Mock<MultiFileService> _multiFileService;
+        private SingleFileService _singleFileService;
+        private MultiFileService _multiFileService;
         private Mock<FileService> _fileService;
         private Mock<IFileDialogService> _dialogService;
         private Mock<IRegionManager> _rm;
@@ -37,10 +38,13 @@ namespace Data.Tests.Application.DataSourceSelection
         public FileSelectTest()
         {
             (_rm, _regions) = _mocker.UseTestRm();
-            _fileService = _mocker.UseInMocker<IFileService, FileService>();
-            _singleFileService = _mocker.UseInMocker<ISingleFileService, SingleFileService>();
-            _multiFileService = _mocker.UseInMocker<IMultiFileService, MultiFileService>();
-            _dialogService = _mocker.UseInMocker<IFileDialogService>();
+            _dialogService = _mocker.UseMock<IFileDialogService>();
+            _fileService = _mocker.UseMock<IFileService, FileService>();
+            _mocker.UseImpl<ITransientControllerBase<SingleFileService>, SingleFileSourceController>();
+            _singleFileService = _mocker.UseImpl<ISingleFileService, SingleFileService>();
+            _mocker.UseImpl<ITransientControllerBase<MultiFileService>,MultiFileSourceController>();
+            _multiFileService = _mocker.UseImpl<IMultiFileService, MultiFileService>();
+
 
             _ctrl= _mocker.CreateInstance<FileController>();
         }
@@ -55,7 +59,7 @@ namespace Data.Tests.Application.DataSourceSelection
             var successfulPath = "C:\\Dir\\test.csv";
 
             //stop validation execution
-            _singleFileService.Object.ValidateCommand = new DelegateCommand<string>(s => { }, _ => false);
+            _singleFileService.ValidateCommand = new DelegateCommand<string>(s => { }, _ => false);
             //setup dialog success
             _dialogService.Setup(f => f.OpenCsv(It.IsAny<Window>())).Returns((true, successfulPath));
 
@@ -108,23 +112,23 @@ namespace Data.Tests.Application.DataSourceSelection
             var testPath = "C:\\Dir\\test.csv";
 
             //disable validation cmd
-            _multiFileService.Object.ValidateTrainingFile = _multiFileService.Object.ValidateValidationFile =
-                _multiFileService.Object.ValidateTestFile = new DelegateCommand<string>(s => { });
+            _multiFileService.ValidateTrainingFile = _multiFileService.ValidateValidationFile =
+                _multiFileService.ValidateTestFile = new DelegateCommand<string>(s => { });
 
             //act & assert
             //training file
             _dialogService.Setup(f => f.OpenCsv(It.IsAny<Window>())).Returns((true, trainingPath));
-            _multiFileService.Object.SelectTrainingFileCommand.Execute();
+            _multiFileService.SelectTrainingFileCommand.Execute();
             mulVm.TrainingSetFilePath.Should().Be(trainingPath);
 
             //validation file
             _dialogService.Setup(f => f.OpenCsv(It.IsAny<Window>())).Returns((true, validationPath));
-            _multiFileService.Object.SelectValidationFileCommand.Execute();
+            _multiFileService.SelectValidationFileCommand.Execute();
             mulVm.ValidationSetFilePath.Should().Be(validationPath);
 
             //training file
             _dialogService.Setup(f => f.OpenCsv(It.IsAny<Window>())).Returns((true, testPath));
-            _multiFileService.Object.SelectTestFileCommand.Execute();
+            _multiFileService.SelectTestFileCommand.Execute();
             mulVm.TestSetFilePath.Should().Be(testPath);
         }
     }

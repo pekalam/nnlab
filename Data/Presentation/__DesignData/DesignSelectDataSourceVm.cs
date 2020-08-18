@@ -6,6 +6,7 @@ using Data.Application.ViewModels;
 using Data.Application.ViewModels.CustomDataSet;
 using Data.Application.ViewModels.DataSetDivision;
 using Data.Application.ViewModels.DataSource.FileDataSource;
+using Data.Application.ViewModels.DataSource.Normalization;
 using Data.Application.ViewModels.DataSource.Preview;
 
 namespace Data.Presentation.__DesignData
@@ -56,7 +57,14 @@ namespace Data.Presentation.__DesignData
 
     class DesignFileDataSourceVm : FileDataSourceViewModel
     {
-        public DesignFileDataSourceVm() : base(null)
+        public DesignFileDataSourceVm() : base(null,null,null)
+        {
+        }
+    }
+
+    class DesignNormalizationViewModel : NormalizationViewModel
+    {
+        public DesignNormalizationViewModel() : base(null)
         {
         }
     }

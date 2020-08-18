@@ -9,6 +9,7 @@ using Data.Application.ViewModels;
 using Data.Domain.Services;
 using Data.Presentation.Services;
 using FluentAssertions;
+using Infrastructure;
 using Infrastructure.Domain;
 using Moq;
 using Moq.AutoMock;
@@ -22,7 +23,7 @@ namespace Data.Tests.Application.DataSourceSelection
     {
         private AutoMocker _mocker = new AutoMocker();
         private Mock<ICsvValidationService> _csvValidation;
-        private Mock<SingleFileService> _singleFileService;
+        private SingleFileService _singleFileService;
         private Mock<ISupervisedDataSetService> _dataSetService;
 
         private SingleFileSourceController _ctrl;
@@ -31,13 +32,13 @@ namespace Data.Tests.Application.DataSourceSelection
 
         public SingleFileSourceTests()
         {
-            _csvValidation=_mocker.UseInMocker<ICsvValidationService>();
-            _singleFileService = _mocker.UseInMocker<ISingleFileService, SingleFileService>();
-            _dataSetService = _mocker.UseInMocker<ISupervisedDataSetService>();
-            _appState = _mocker.UseInMocker<AppState>().Object;
             _mocker.UseTestRm();
+            _csvValidation = _mocker.UseMock<ICsvValidationService>();
+            _dataSetService = _mocker.UseMock<ISupervisedDataSetService>();
+            _appState = _mocker.UseMock<AppState>().Object;
+            _ctrl = _mocker.UseImpl<ITransientControllerBase<SingleFileService>, SingleFileSourceController>();
+            _singleFileService = _mocker.UseImpl<ISingleFileService, SingleFileService>();
 
-            _ctrl = _mocker.CreateInstance<SingleFileSourceController>();
             _vm = _mocker.CreateInstance<SingleFileSourceViewModel>();
         }
 
@@ -45,7 +46,7 @@ namespace Data.Tests.Application.DataSourceSelection
         public async void Validation_success_scenario()
         {
             //arrange
-            var singleFileService = _singleFileService.Object;
+            var singleFileService = _singleFileService;
 
             _csvValidation.Setup(f => f.Validate(It.IsAny<string>())).Returns((true, null, 2, 2));
 
@@ -74,26 +75,13 @@ namespace Data.Tests.Application.DataSourceSelection
             singleFileService.ReturnCommand.CanExecute().Should().BeTrue();
             //cannot continue
             singleFileService.ContinueCommand.CanExecute().Should().BeFalse();
-
-            //new vm resets controller state
-            _vm = _mocker.CreateInstance<SingleFileSourceViewModel>();
-
-            //cannot continue and load
-            singleFileService.ValidateCommand.CanExecute("file.csv").Should().BeTrue();
-            singleFileService.LoadCommand.CanExecute("file.csv").Should().BeFalse();
-            singleFileService.ReturnCommand.CanExecute().Should().BeTrue();
-            singleFileService.ContinueCommand.CanExecute().Should().BeFalse();
-
-            //file validation result and variables are set to default value
-            singleFileService.FileValidationResult.IsFileValid.Should().BeNull();
-            singleFileService.Variables.Should().BeNull();
         }
 
         [Fact]
         public async void Validation_fail_scenario()
         {
             //arrange
-            var singleFileService = _singleFileService.Object;
+            var singleFileService = _singleFileService;
             _csvValidation.Setup(f => f.Validate(It.IsAny<string>())).Returns((false, "error", 2, 2));
 
             //act & assert
@@ -120,7 +108,7 @@ namespace Data.Tests.Application.DataSourceSelection
             var trainingData = TrainingDataMocks.ValidData1;
             _csvValidation.Setup(f => f.Validate(It.IsAny<string>())).Returns((true, null, 2, 2));
             _dataSetService.Setup(f => f.LoadDefaultSet(It.IsAny<string>())).Returns(trainingData);
-            var singleFileService = _singleFileService.Object;
+            var singleFileService = _singleFileService;
 
 
             //act & assert
@@ -132,7 +120,7 @@ namespace Data.Tests.Application.DataSourceSelection
             await Task.Delay(2_000);
 
             //variables are set
-            singleFileService.Variables.Length.Should().BeGreaterThan(0);
+            _vm.Variables.Length.Should().BeGreaterThan(0);
             singleFileService.ContinueCommand.CanExecute().Should().BeTrue();
 
             singleFileService.ContinueCommand.Execute();

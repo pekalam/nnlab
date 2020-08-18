@@ -27,10 +27,10 @@ namespace Data.Tests.Application
 
         public DataSetDivisionTests()
         {
-            _mocker.UseInMocker<IEventAggregator, EventAggregator>();
+            _mocker.UseMock<IEventAggregator, EventAggregator>();
             _mocker.UseTestRm();
-            _appState = _mocker.UseInMocker<AppState>().Object;
-            _service = _mocker.UseInMocker<IDataSetDivisionService, DataSetDivisionService>().Object;
+            _appState = _mocker.UseMock<AppState>().Object;
+            _service = _mocker.UseMock<IDataSetDivisionService, DataSetDivisionService>().Object;
             _ctrl = _mocker.CreateInstance<DataSetDivisionController>();
             _vm = _mocker.CreateInstance<DataSetDivisionViewModel>();
         }

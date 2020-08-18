@@ -11,6 +11,7 @@ using System.Data.Common;
 using System.Text;
 using System.Windows;
 using Data.Application.ViewModels.CustomDataSet;
+using Infrastructure;
 using MahApps.Metro.Controls;
 using TestUtils;
 using Xunit;
@@ -22,7 +23,7 @@ namespace Data.Tests.Application.CustomDataSet
     {
         private AutoMocker _mocker = new AutoMocker();
 
-        private Mock<CustomDataSetService> _dsService;
+        private CustomDataSetService _dsService;
         private CustomDataSetController _ctrl;
         private CustomDataSetViewModel _vm;
         private AppState _appState;
@@ -30,9 +31,9 @@ namespace Data.Tests.Application.CustomDataSet
         public CustomDataSetCreationTests()
         {
             _mocker.UseTestRm();
-            _dsService = _mocker.UseInMocker<ICustomDataSetService, CustomDataSetService>();
-            _appState = _mocker.UseInMocker<AppState>().Object;
-            _ctrl = _mocker.CreateInstance<CustomDataSetController>();
+            _ctrl = _mocker.UseImpl<ITransientControllerBase<CustomDataSetService>,CustomDataSetController>();
+            _dsService = _mocker.UseImpl<ICustomDataSetService, CustomDataSetService>();
+            _appState = _mocker.UseMock<AppState>().Object;
             _vm = _mocker.CreateInstance<CustomDataSetViewModel>();
         }
 
@@ -48,7 +49,7 @@ namespace Data.Tests.Application.CustomDataSet
         public void MouseDownCommand_updates_session_training_data_when_3_points_are_created()
         {
             //act
-            _dsService.Object.PlotMouseDownCommand.Execute(new OxyMouseDownEventArgs()
+            _dsService.PlotMouseDownCommand.Execute(new OxyMouseDownEventArgs()
             {
                 ClickCount = 2, Position = new ScreenPoint(0,0), ChangedButton = OxyMouseButton.Left,
             });
@@ -56,7 +57,7 @@ namespace Data.Tests.Application.CustomDataSet
             _appState.SessionManager.ActiveSession.TrainingData.Should().BeNull();
 
             //act
-            _dsService.Object.PlotMouseDownCommand.Execute(new OxyMouseDownEventArgs()
+            _dsService.PlotMouseDownCommand.Execute(new OxyMouseDownEventArgs()
             {
                 ClickCount = 2, Position = new ScreenPoint(1, 0), ChangedButton = OxyMouseButton.Left,
             });
@@ -65,7 +66,7 @@ namespace Data.Tests.Application.CustomDataSet
 
 
             //act
-            _dsService.Object.PlotMouseDownCommand.Execute(new OxyMouseDownEventArgs()
+            _dsService.PlotMouseDownCommand.Execute(new OxyMouseDownEventArgs()
             {
                 ClickCount = 2, Position = new ScreenPoint(2, 0), ChangedButton = OxyMouseButton.Left,
             });

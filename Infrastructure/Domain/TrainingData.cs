@@ -72,6 +72,12 @@ namespace Infrastructure.Domain
             }
         }
 
+        private SupervisedSet CloneMemorySet(SupervisedSet set)
+        {
+            return new SupervisedSet((set.Input as DefaultVectorSet).Clone(),
+                (set.Target as DefaultVectorSet).Clone());
+        }
+
         public TrainingData Clone()
         {
             SupervisedTrainingSets setsCpy = null;
@@ -82,7 +88,13 @@ namespace Infrastructure.Domain
             }
             else if (Source == TrainingDataSource.Memory)
             {
-                throw new NotImplementedException();
+                var training = CloneMemorySet(Sets.TrainingSet);
+
+                setsCpy = new SupervisedTrainingSets(training)
+                {
+                    TestSet = Sets.TestSet != null ? CloneMemorySet(Sets.TestSet) : null,
+                    ValidationSet = Sets.ValidationSet != null ? CloneMemorySet(Sets.ValidationSet) : null,
+                };
             }
 
 

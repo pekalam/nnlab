@@ -9,7 +9,9 @@ using Data.Presentation.Views;
 using Data.Presentation.Views.CustomDataSet;
 using Data.Presentation.Views.DataSetDivision;
 using Data.Presentation.Views.DataSource.FileDataSource;
+using Data.Presentation.Views.DataSource.Normalization;
 using Data.Presentation.Views.DataSource.Preview;
+using Infrastructure;
 using Prism.Ioc;
 using Prism.Modularity;
 using Prism.Regions;
@@ -30,12 +32,24 @@ namespace Data
             containerRegistry
                 .Register<ISupervisedDataSetService, SupervisedDataSetService>()
                 .Register<ICsvValidationService, CsvValidationService>()
+                .Register<INormalizationDomainService,NormalizationDomainService>()
+                .RegisterSingleton<IFileDialogService, FileDialogService>()
                 .RegisterSingleton<FileService>().RegisterSingleton<IFileService, FileService>()
-                .RegisterSingleton<SingleFileService>().RegisterSingleton<ISingleFileService, SingleFileService>()
-                .RegisterSingleton<MultiFileService>().RegisterSingleton<IMultiFileService, MultiFileService>()
-                .RegisterSingleton<FileDialogService>().RegisterSingleton<IFileDialogService, FileDialogService>()
-                .RegisterSingleton<CustomDataSetService>().RegisterSingleton<ICustomDataSetService, CustomDataSetService>()
-                .RegisterSingleton<DataSetDivisionService>().RegisterSingleton<IDataSetDivisionService, DataSetDivisionService>();
+
+                .RegisterSingleton<DataSetDivisionService>().RegisterSingleton<IDataSetDivisionService, DataSetDivisionService>()
+                .RegisterSingleton<NormalizationService>().RegisterSingleton<INormalizationService, NormalizationService>()
+                .RegisterSingleton<FileDataSourceService>().RegisterSingleton<IFileDataSourceService, FileDataSourceService>()
+                
+                
+                .Register<ITransientControllerBase<SingleFileService>, SingleFileSourceController>()
+                .Register<ISingleFileService, SingleFileService>()
+
+                .Register<ITransientControllerBase<MultiFileService>, MultiFileSourceController>()
+                .Register<IMultiFileService, MultiFileService>()
+                
+                
+                .RegisterSingleton<ITransientControllerBase<CustomDataSetService>, CustomDataSetController>()
+                .Register<ICustomDataSetService, CustomDataSetService>();
 
 
             containerRegistry.RegisterSingleton<ModuleController>();
@@ -48,6 +62,7 @@ namespace Data
             containerRegistry.RegisterForNavigation<DataSetDivisionView>();
             containerRegistry.RegisterForNavigation<DataSourcePreviewView>();
             containerRegistry.RegisterForNavigation<FileDataSourceView>();
+            containerRegistry.RegisterForNavigation<NormalizationView>();
         }
     }
 }

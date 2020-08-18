@@ -15,7 +15,7 @@ using Prism.Mvvm;
 
 namespace Data.Application.Services
 {
-    public interface ICustomDataSetService : INotifyPropertyChanged
+    public interface ICustomDataSetService : INotifyPropertyChanged, IService
     {
         DelegateCommand<OxyMouseDownEventArgs> PlotMouseDownCommand { get; set; }
         DelegateCommand OpenDivisionViewCommand { get; set; }
@@ -23,6 +23,11 @@ namespace Data.Application.Services
 
     public class CustomDataSetService : BindableBase, ICustomDataSetService
     {
+        public CustomDataSetService(ITransientControllerBase<CustomDataSetService> ctrl)
+        {
+            ctrl.Initialize(this);
+        }
+
         public DelegateCommand<OxyMouseDownEventArgs> PlotMouseDownCommand { get; set; }
         public DelegateCommand OpenDivisionViewCommand { get; set; }
     }

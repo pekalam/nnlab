@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -63,19 +64,22 @@ namespace Infrastructure.Domain
             return newSession;
         }
 
-        public void DuplicateActive(DuplicateOptions duplicateOptions = DuplicateOptions.All)
+        public Session DuplicateActive(DuplicateOptions duplicateOptions = DuplicateOptions.All)
         {
+            if(ActiveSession == null) throw new InvalidOperationException("Cannot duplicate - null active session");
+
             var cpy = new Session("Unnamed" + (_sessions.Count > 0 ? " " + _sessions.Count : String.Empty));
 
-            cpy.Network = duplicateOptions != DuplicateOptions.NoNetwork ? ActiveSession.Network : null;
-            cpy.TrainingData = duplicateOptions != DuplicateOptions.NoData ? ActiveSession.TrainingData : null;
+            cpy.Network = duplicateOptions != DuplicateOptions.NoNetwork ? ActiveSession.Network?.Clone() : null;
+            cpy.TrainingData = duplicateOptions != DuplicateOptions.NoData ? ActiveSession.TrainingData?.Clone() : null;
             cpy.TrainingParameters = duplicateOptions != DuplicateOptions.NoTrainingParams
-                ? ActiveSession.TrainingParameters
+                ? ActiveSession.TrainingParameters.Clone()
                 : null;
 
 
             _sessions.Add(cpy);
             SetActive(cpy);
+            return cpy;
         }
 
         public void SetActive(Session session)
@@ -100,6 +104,9 @@ namespace Infrastructure.Domain
     public class Session : BindableBase
     {
         private TrainingData? _trainingData;
+        private MLPNetwork? _network;
+        private TrainingSessionReport? _trainingReport;
+        private TrainingParameters? _trainingParameters;
 
         public Session(string name)
         {
@@ -114,8 +121,22 @@ namespace Infrastructure.Domain
             set => SetProperty(ref _trainingData, value);
         }
 
-        public MLPNetwork? Network { get; set; }
-        public TrainingSessionReport? TrainingReport { get; set; }
-        public TrainingParameters? TrainingParameters { get; set; }
+        public MLPNetwork? Network
+        {
+            get => _network;
+            set => SetProperty(ref _network, value);
+        }
+
+        public TrainingSessionReport? TrainingReport
+        {
+            get => _trainingReport;
+            set => SetProperty(ref _trainingReport, value);
+        }
+
+        public TrainingParameters? TrainingParameters
+        {
+            get => _trainingParameters;
+            set => SetProperty(ref _trainingParameters, value);
+        }
     }
 }

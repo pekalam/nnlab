@@ -55,15 +55,15 @@
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <TextBlock FontSize="18" HorizontalAlignment="Center"
-                           Visibility="{Binding SingleFileService.FileValidationResult.IsLoaded,Converter={StaticResource Bool2Vis}}">
+                           Visibility="{Binding FileValidationResult.IsLoaded,Converter={StaticResource Bool2Vis}}">
                     Variables
                 </TextBlock>
 
                 <Rectangle x:Name="RefRect" Grid.Row="1" />
                 <DataGrid Grid.Row="1" IsReadOnly="True" AutoGenerateColumns="False" Margin="0,0,0,22"
                           Height="{Binding ElementName=RefRect,Path=ActualHeight}"
-                          Visibility="{Binding SingleFileService.FileValidationResult.IsLoaded,Converter={StaticResource Bool2Vis}}"
-                          ItemsSource="{Binding SingleFileService.Variables}">
+                          Visibility="{Binding FileValidationResult.IsLoaded,Converter={StaticResource Bool2Vis}}"
+                          ItemsSource="{Binding Variables}">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Column" Binding="{Binding Column}" />
                         <DataGridTextColumn Header="Name" Binding="{Binding Name}" />

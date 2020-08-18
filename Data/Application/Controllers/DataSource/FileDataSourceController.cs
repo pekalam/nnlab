@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Windows;
+using Data.Application.Services;
 using Data.Application.ViewModels.DataSource.FileDataSource;
 using Data.Presentation.Views.DataSource.FileDataSource;
 using Data.Presentation.Views.DataSource.Preview;
@@ -11,9 +12,9 @@ namespace Data.Application.Controllers.DataSource
 {
     public class FileDataSourceController
     {
-        public FileDataSourceController()
+        public FileDataSourceController(IFileDataSourceService service)
         {
-            FileDataSourceViewModel.Created += () =>
+            service.Initialized += () =>
             {
                 var vm = FileDataSourceViewModel.Instance;
 

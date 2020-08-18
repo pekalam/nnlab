@@ -20,18 +20,31 @@ namespace Infrastructure.Domain
         public TimeSpan MaxLearningTime { get; set; } = TimeSpan.MaxValue;
         public int MaxEpochs { get; set; } = int.MaxValue;
 
-        public override bool Equals(object? obj)
-        {
-            if (obj == null)
-                return false;
-            if (obj is TrainingParameters o)
-            {
-                return GDParams.Equals(o.GDParams) && LMParams.Equals(o.LMParams) && Algorithm.Equals(o.Algorithm) &&
-                       TargetError.Equals(o.TargetError) && MaxLearningTime.Equals(o.MaxLearningTime) &&
-                       MaxEpochs.Equals(o.MaxEpochs);
-            }
+        // public override bool Equals(object? obj)
+        // {
+        //     if (obj == null)
+        //         return false;
+        //     if (obj is TrainingParameters o)
+        //     {
+        //         return GDParams.Equals(o.GDParams) && LMParams.Equals(o.LMParams) && Algorithm.Equals(o.Algorithm) &&
+        //                TargetError.Equals(o.TargetError) && MaxLearningTime.Equals(o.MaxLearningTime) &&
+        //                MaxEpochs.Equals(o.MaxEpochs);
+        //     }
+        //
+        //     return false;
+        // }
 
-            return false;
+        public TrainingParameters Clone()
+        {
+            return new TrainingParameters()
+            {
+                Algorithm = Algorithm, 
+                GDParams = (GradientDescentParams) GDParams.Clone(),
+                LMParams = (LevenbergMarquardtParams) LMParams.Clone(),
+                MaxEpochs = MaxEpochs,
+                MaxLearningTime = MaxLearningTime,
+                TargetError = TargetError,
+            };
         }
     }
 }

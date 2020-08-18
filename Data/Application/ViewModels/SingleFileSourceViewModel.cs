@@ -13,12 +13,13 @@ namespace Data.Application.ViewModels
     {
         private string _selectedFilePath;
         private string _selectedFileName;
+        private VariablesTableModel[] _variables;
 
         public SingleFileSourceViewModel(ISingleFileService singleFileService)
         {
             SingleFileService = singleFileService;
             KeepAlive = false;
-            SingleFileService.FileValidationResult.PropertyChanged += FileValidationResultOnPropertyChanged;
+            FileValidationResult.PropertyChanged += FileValidationResultOnPropertyChanged;
         }
 
         private void FileValidationResultOnPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -26,7 +27,7 @@ namespace Data.Application.ViewModels
             switch (e.PropertyName)
             {
                 case nameof(FileValidationResult.IsFileValid):
-                    if (SingleFileService.FileValidationResult.IsFileValid == true)
+                    if (FileValidationResult.IsFileValid == true)
                     {
                         SingleFileService.LoadCommand.Execute(_selectedFilePath);
                     }
@@ -35,6 +36,17 @@ namespace Data.Application.ViewModels
         }
 
         public ISingleFileService SingleFileService { get; }
+
+        public FileValidationResult FileValidationResult { get; set; } = new FileValidationResult();
+        public VariablesTableModel[] Variables
+        {
+            get => _variables;
+            set
+            {
+                _variables = value;
+                RaisePropertyChanged();
+            }
+        }
 
         public string SelectedFilePath
         {

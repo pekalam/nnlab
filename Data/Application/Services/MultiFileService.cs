@@ -2,6 +2,8 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using Data.Application.ViewModels;
+using Infrastructure;
 using Infrastructure.Domain;
 using Prism.Commands;
 using Prism.Mvvm;
@@ -9,7 +11,7 @@ using Prism.Mvvm;
 namespace Data.Application.Services
 {
     //TODO move state to view
-    public interface IMultiFileService : INotifyPropertyChanged
+    public interface IMultiFileService : INotifyPropertyChanged, IService
     {
         DelegateCommand SelectTrainingFileCommand { get; set; }
         DelegateCommand SelectValidationFileCommand { get; set; }
@@ -23,22 +25,15 @@ namespace Data.Application.Services
         DelegateCommand<string> ValidateValidationFile { get; set; }
 
         DelegateCommand<(string trainingFile, string validationFile, string testFile)?> LoadFiles { get; set; }
-        
-        ObservableCollection<FileValidationResult> MultiFileValidationResult { get; set; }
-
-        VariablesTableModel[] Variables { get; set; }
     }
 
     public class MultiFileService : BindableBase, IMultiFileService
     {
-        private FileValidationResult _trainingValidationResult;
-        private FileValidationResult _validationValidationResult;
-        private FileValidationResult _testValidationResult;
         private VariablesTableModel[] _variables;
 
-        public MultiFileService()
+        public MultiFileService(ITransientControllerBase<MultiFileService> controller)
         {
-            MultiFileValidationResult = new ObservableCollection<FileValidationResult>(Enumerable.Repeat(new FileValidationResult(), 3));
+            controller.Initialize(this);
         }
 
         public DelegateCommand SelectTrainingFileCommand { get; set; }
@@ -50,29 +45,12 @@ namespace Data.Application.Services
         public DelegateCommand<string> ValidateTestFile { get; set; }
         public DelegateCommand<string> ValidateValidationFile { get; set; }
         public DelegateCommand<(string trainingFile, string validationFile, string testFile)?> LoadFiles { get; set; }
-        public ObservableCollection<FileValidationResult> MultiFileValidationResult { get; set; }
-
-        public VariablesTableModel[] Variables
-        {
-            get => _variables;
-            set => SetProperty(ref _variables, value);
-        }
 
 
-        public FileValidationResult TrainingValidationResult => MultiFileValidationResult[0];
-        public FileValidationResult ValidationValidationResult => MultiFileValidationResult[1];
-        public FileValidationResult TestValidationResult => MultiFileValidationResult[2];
+        public FileValidationResult TrainingValidationResult => MultiFileSourceViewModel.Instance.MultiFileValidationResult[0];
+        public FileValidationResult ValidationValidationResult => MultiFileSourceViewModel.Instance.MultiFileValidationResult[1];
+        public FileValidationResult TestValidationResult => MultiFileSourceViewModel.Instance.MultiFileValidationResult[2];
 
-        public void Reset()
-        {
-            MultiFileValidationResult = new ObservableCollection<FileValidationResult>(Enumerable.Repeat(new FileValidationResult(), 3));
-        }
-
-        public void ResetResult(int num)
-        {
-            MultiFileValidationResult[num] = new FileValidationResult();
-            Variables = null;
-        }
 
         public void SetTrainingValidationResult(bool isValid, string error = null, bool hasContentError = false,
             int r = 0, int c = 0)
@@ -127,7 +105,7 @@ namespace Data.Application.Services
                 ValidationValidationResult.IsLoadingFile = TestValidationResult.IsLoadingFile = false;
             TrainingValidationResult.IsLoaded =
                 ValidationValidationResult.IsLoaded = TestValidationResult.IsLoaded = true;
-            Variables = trainingData.Variables.InputVariableNames.Union(trainingData.Variables.TargetVariableNames)
+            MultiFileSourceViewModel.Instance.Variables = trainingData.Variables.InputVariableNames.Union(trainingData.Variables.TargetVariableNames)
                 .Select((s, i) => new VariablesTableModel()
                 {
                     Column = i + 1,

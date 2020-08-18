@@ -1,6 +1,9 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Linq;
+using Data.Application.Controllers;
+using Data.Application.ViewModels;
+using Infrastructure;
 using Infrastructure.Domain;
 using Prism.Commands;
 using Prism.Mvvm;
@@ -13,36 +16,27 @@ namespace Data.Application.Services
         public string Name { get; set; }
     }
 
-    public interface ISingleFileService : INotifyPropertyChanged
+    public interface ISingleFileService : INotifyPropertyChanged, IService
     {
-        FileValidationResult FileValidationResult { get; set; }
-        VariablesTableModel[] Variables { get; set; }
-
         DelegateCommand ReturnCommand { get; set; }
         DelegateCommand ContinueCommand { get; set; }
         DelegateCommand<string> ValidateCommand { get; set; }
         DelegateCommand<string> LoadCommand { get; set; }
     }
 
-    public class SingleFileService : BindableBase, ISingleFileService
+    internal class SingleFileService : BindableBase, ISingleFileService
     {
-        private VariablesTableModel[] _variables;
+        public SingleFileService(ITransientControllerBase<SingleFileService> controller)
+        {
+            controller.Initialize(this);
+        }
 
         public DelegateCommand ReturnCommand { get; set; }
         public DelegateCommand ContinueCommand { get; set; }
         public DelegateCommand<string> ValidateCommand { get; set; }
         public DelegateCommand<string> LoadCommand { get; set; }
 
-        public FileValidationResult FileValidationResult { get; set; } = new FileValidationResult();
-        public VariablesTableModel[] Variables
-        {
-            get => _variables;
-            set
-            {
-                _variables = value;
-                RaisePropertyChanged();
-            }
-        }
+        public FileValidationResult FileValidationResult => SingleFileSourceViewModel.Instance.FileValidationResult;
 
         public void SetLoading()
         {
@@ -60,7 +54,7 @@ namespace Data.Application.Services
         {
             FileValidationResult.IsValidatingFile = FileValidationResult.IsLoadingFile = false;
             FileValidationResult.IsLoaded = true;
-            Variables = trainingData.Variables.InputVariableNames.Union(trainingData.Variables.TargetVariableNames)
+            SingleFileSourceViewModel.Instance.Variables = trainingData.Variables.InputVariableNames.Union(trainingData.Variables.TargetVariableNames)
                 .Select((s, i) => new VariablesTableModel()
                 {
                     Column = i+1, Name = s
@@ -74,13 +68,6 @@ namespace Data.Application.Services
             FileValidationResult.IsFileValid = result;
             FileValidationResult.Rows = rows;
             FileValidationResult.Cols = cols;
-        }
-
-
-        public void Reset()
-        {
-            FileValidationResult = new FileValidationResult();
-            Variables = default;
         }
     }
 }
