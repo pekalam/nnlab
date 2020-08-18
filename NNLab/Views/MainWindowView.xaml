@@ -89,8 +89,8 @@
                         <DropShadowEffect Direction="1" BlurRadius="3" Opacity="1" Color="#FF959595" ShadowDepth="0" />
                     </Border.Effect>
                 </Border>
-                <ContentControl prism:RegionManager.RegionName="{x:Static infrastructure:AppRegions.ContentRegion}" Margin="50,40,50,61"/>
 
+                <ContentControl prism:RegionManager.RegionName="{x:Static infrastructure:AppRegions.ContentRegion}"/>
             </Grid>
         </Grid>
     </Grid>

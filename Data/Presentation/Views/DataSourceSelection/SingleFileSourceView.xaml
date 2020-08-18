@@ -11,7 +11,8 @@
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800"
              d:DataContext="{d:DesignInstance dd:DesignSingleFileSourceVm, IsDesignTimeCreatable=True}"
-             mvvm:ViewModelLocator.AutoWireViewModel="True" Name="root">
+             mvvm:ViewModelLocator.AutoWireViewModel="True" Name="root"
+             Style="{StaticResource ContentUserControl}">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="Bool2Vis" />
         <infrastructure:TextBlockTrimToVisConverter x:Key="TextBlockTrimToVis"/>

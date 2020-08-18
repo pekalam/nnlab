@@ -10,6 +10,7 @@
     <SolidColorBrush x:Key="MenuInvalid" Color="Red" />
     <SolidColorBrush x:Key="ContentPanelBackground" Color="White" />
 
+    
 
     <Style x:Key="NavMenuButton" TargetType="{x:Type Button}">
         <Setter Property="Foreground" Value="Black" />
@@ -180,5 +181,13 @@
         </Setter>
     </Style>
 
+
+    <Style TargetType="Grid" x:Key="ContentGrid">
+        <Setter Property="Margin" Value="50,40,50,61"/>
+    </Style>
+
+    <Style TargetType="UserControl" x:Key="ContentUserControl">
+        <Setter Property="Margin" Value="50,40,50,61"/>
+    </Style>
 
 </ResourceDictionary>

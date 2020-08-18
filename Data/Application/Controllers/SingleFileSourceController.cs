@@ -3,6 +3,7 @@ using Data.Application.Services;
 using Data.Application.ViewModels;
 using Data.Domain.Services;
 using Data.Presentation.Views;
+using Data.Presentation.Views.DataSource.FileDataSource;
 using Infrastructure;
 using Infrastructure.Domain;
 using Prism.Commands;
@@ -30,7 +31,7 @@ namespace Data.Application.Controllers
             _appState = appState;
 
 
-            _singleFileService.ContinueCommand = new DelegateCommand(SingleFileContinue, () => _loadedTrainingData != null);
+            _singleFileService.ContinueCommand = new DelegateCommand(Continue, () => _loadedTrainingData != null);
             _singleFileService.ValidateCommand = new DelegateCommand<string>(ValidateSingleFile);
             _singleFileService.LoadCommand = new DelegateCommand<string>(LoadSingleFile, _ => _canLoad);
             _singleFileService.ReturnCommand = new DelegateCommand(() =>
@@ -90,12 +91,14 @@ namespace Data.Application.Controllers
             
         }
 
-        private void SingleFileContinue()
+        private void Continue()
         {
             var session = _appState.SessionManager.Create();
 
             session.TrainingData = _loadedTrainingData;
             _loadedTrainingData = null;
+
+            _rm.Regions[AppRegions.ContentRegion].RequestNavigate(nameof(FileDataSourceView));
         }
     }
 }

@@ -8,6 +8,8 @@ using Data.Presentation.Services;
 using Data.Presentation.Views;
 using Data.Presentation.Views.CustomDataSet;
 using Data.Presentation.Views.DataSetDivision;
+using Data.Presentation.Views.DataSource.FileDataSource;
+using Data.Presentation.Views.DataSource.Preview;
 using Prism.Ioc;
 using Prism.Modularity;
 using Prism.Regions;
@@ -44,6 +46,8 @@ namespace Data
             containerRegistry.RegisterForNavigation<MultiFileSourceView>();
             containerRegistry.RegisterForNavigation<CustomDataSetView>();
             containerRegistry.RegisterForNavigation<DataSetDivisionView>();
+            containerRegistry.RegisterForNavigation<DataSourcePreviewView>();
+            containerRegistry.RegisterForNavigation<FileDataSourceView>();
         }
     }
 }

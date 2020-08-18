@@ -5,6 +5,8 @@ using Data.Application.Services;
 using Data.Application.ViewModels;
 using Data.Application.ViewModels.CustomDataSet;
 using Data.Application.ViewModels.DataSetDivision;
+using Data.Application.ViewModels.DataSource.FileDataSource;
+using Data.Application.ViewModels.DataSource.Preview;
 
 namespace Data.Presentation.__DesignData
 {
@@ -48,6 +50,13 @@ namespace Data.Presentation.__DesignData
     class DesignDataSetDivisionActionLeftVm : ActionMenuLeftViewModel
     {
         public DesignDataSetDivisionActionLeftVm() : base(null)
+        {
+        }
+    }
+
+    class DesignFileDataSourceVm : FileDataSourceViewModel
+    {
+        public DesignFileDataSourceVm() : base(null)
         {
         }
     }

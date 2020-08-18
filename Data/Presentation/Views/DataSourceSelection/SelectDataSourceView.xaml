@@ -9,7 +9,8 @@
     xmlns:dd="clr-namespace:Data.Presentation.__DesignData"
     mc:Ignorable="d" x:Class="Data.Presentation.Views.SelectDataSourceView"
     d:DataContext="{d:DesignInstance dd:DesignSelectDataSourceVm, IsDesignTimeCreatable=True}"
-    prism:ViewModelLocator.AutoWireViewModel="True" d:DesignWidth="1600.5" d:DesignHeight="800.951">
+    prism:ViewModelLocator.AutoWireViewModel="True" d:DesignWidth="1600.5" d:DesignHeight="800.951"
+    Style="{StaticResource ContentUserControl}">
 
 
     <UserControl.Resources>
