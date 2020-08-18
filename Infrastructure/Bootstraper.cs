@@ -35,8 +35,10 @@ namespace Infrastructure
     {
         public static void RegisterTypes(IContainerRegistry cr)
         {
-            cr.Register<IRegionNavigationContentLoader, RegionNavigationContentLoaderProxy>();
-            cr.RegisterSingleton<AppState>();
+            cr
+                .Register<IRegionNavigationContentLoader, RegionNavigationContentLoaderProxy>()
+                .Register<IActionMenuNavigationService, ActionMenuNavigationService>()
+                .RegisterSingleton<AppState>();
         }
     }
 

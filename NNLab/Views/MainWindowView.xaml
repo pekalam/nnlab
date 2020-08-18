@@ -12,6 +12,9 @@
                  mc:Ignorable="d"
                  d:DataContext="{d:DesignInstance dd:DesignMainWindowVm, IsDesignTimeCreatable=True}"
                  Title="{Binding Title}" Height="800" Width="1200" WindowTitleBrush="Gray">
+    <mah:MetroWindow.Resources>
+        <infrastructure:NullToVisibilityConverter x:Key="NullToVisibility"/>
+    </mah:MetroWindow.Resources>
     <mah:MetroWindow.Flyouts>
         <mah:FlyoutsControl>
             <mah:Flyout
@@ -44,8 +47,32 @@
 
                 <StackPanel>
                     <ContentControl Height="61"/>
-                    <Rectangle Height="1" Fill="#72787878" />
-                    <ContentControl Height="58"/>
+                    <StackPanel>
+                        <StackPanel.Style>
+                            <Style TargetType="StackPanel">
+                                <Style.Triggers>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding ElementName=ActionMenuLeftRegion,Path=Content}" Value="{x:Null}"/>
+                                            <Condition Binding="{Binding ElementName=ActionMenuRightRegion,Path=Content}" Value="{x:Null}"/>
+                                        </MultiDataTrigger.Conditions>
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </MultiDataTrigger>
+                   
+                                </Style.Triggers>
+                            </Style>
+                        </StackPanel.Style>
+                        <Rectangle Height="1" Fill="#72787878" />
+                        <Grid Margin="0,13,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <ContentControl x:Name="ActionMenuLeftRegion" Height="45" prism:RegionManager.RegionName="{x:Static infrastructure:AppRegions.ActionMenuLeftRegion}"/>
+                            <ContentControl x:Name="ActionMenuRightRegion" Grid.Column="1" Height="45" prism:RegionManager.RegionName="{x:Static infrastructure:AppRegions.ActionMenuRightRegion}"/>
+                        </Grid>
+                    </StackPanel>
+
                 </StackPanel>
             </Grid>
 
@@ -62,7 +89,7 @@
                         <DropShadowEffect Direction="1" BlurRadius="3" Opacity="1" Color="#FF959595" ShadowDepth="0" />
                     </Border.Effect>
                 </Border>
-                <ContentControl prism:RegionManager.RegionName="ContentRegion" Margin="50,40,50,61"/>
+                <ContentControl prism:RegionManager.RegionName="{x:Static infrastructure:AppRegions.ContentRegion}" Margin="50,40,50,61"/>
 
             </Grid>
         </Grid>

@@ -2,13 +2,13 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:infrastructure="clr-namespace:Infrastructure;assembly=Infrastructure">
 
-    <SolidColorBrush x:Key="ContentColorBackground" Color="#F8F9FA"/>
-    <SolidColorBrush x:Key="MenuColorHighlighted" Color="#0078D7"/>
-    <SolidColorBrush x:Key="MenuColor" Color="#071D32"/>
-    <SolidColorBrush x:Key="MenuDisabled" Color="#9F787878"/>
-    <SolidColorBrush x:Key="MenuForeground" Color="#EBEBEB"/>
-    <SolidColorBrush x:Key="MenuInvalid" Color="Red"/>
-    <SolidColorBrush x:Key="ContentPanelBackground" Color="White"/>
+    <SolidColorBrush x:Key="ContentColorBackground" Color="#F8F9FA" />
+    <SolidColorBrush x:Key="MenuColorHighlighted" Color="#0078D7" />
+    <SolidColorBrush x:Key="MenuColor" Color="#071D32" />
+    <SolidColorBrush x:Key="MenuDisabled" Color="#9F787878" />
+    <SolidColorBrush x:Key="MenuForeground" Color="#EBEBEB" />
+    <SolidColorBrush x:Key="MenuInvalid" Color="Red" />
+    <SolidColorBrush x:Key="ContentPanelBackground" Color="White" />
 
 
     <Style x:Key="NavMenuButton" TargetType="{x:Type Button}">
@@ -38,8 +38,8 @@
 
     <Style x:Key="MenuButton" TargetType="{x:Type Button}">
         <Setter Property="Background" Value="White" />
-        <Setter Property="MinWidth" Value="36"/>
-        <Setter Property="MinHeight" Value="36"/>
+        <Setter Property="MinWidth" Value="36" />
+        <Setter Property="MinHeight" Value="36" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
@@ -60,12 +60,47 @@
             </Trigger>
 
             <Trigger Property="IsEnabled" Value="False">
-                <Setter Property="Foreground" Value="#B8B8B8"/>
+                <Setter Property="Foreground" Value="#B8B8B8" />
             </Trigger>
             <Trigger Property="IsEnabled" Value="True">
-                <Setter Property="Foreground" Value="Black"/>
+                <Setter Property="Foreground" Value="Black" />
             </Trigger>
         </Style.Triggers>
+    </Style>
+
+
+    <Style x:Key="ActionMenuButton" TargetType="{x:Type Button}">
+        <Setter Property="Background" Value="White" />
+        <Setter Property="Width" Value="66" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <ControlTemplate.Resources>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Margin" Value="0,4,0,0" />
+                            <Setter Property="FontSize" Value="12" />
+                        </Style>
+                    </ControlTemplate.Resources>
+                    <Grid Background="{TemplateBinding Background}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="1" />
+                        </Grid.ColumnDefinitions>
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        <Rectangle Grid.Column="1" Width="1" Height="26" Fill="#D7D7D7" DockPanel.Dock="Right" />
+                    </Grid>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Foreground" Value="{StaticResource MenuColorHighlighted}" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Foreground" Value="#D7D7D7" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
 
 
@@ -98,9 +133,9 @@
             <Setter.Value>
                 <ControlTemplate TargetType="ContentControl">
                     <Grid>
-                        <Border Style="{StaticResource ShadowBorder}"/>
+                        <Border Style="{StaticResource ShadowBorder}" />
                         <Border Style="{StaticResource ShadowInBorder}">
-                            <ContentPresenter HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                            <ContentPresenter HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
                         </Border>
                     </Grid>
                 </ControlTemplate>
@@ -114,17 +149,17 @@
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
                     <Border Background="Transparent" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                        <ContentPresenter/>
+                        <ContentPresenter />
                     </Border>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="False">
-            <Setter Property="Foreground" Value="White"/>
+                <Setter Property="Foreground" Value="White" />
             </Trigger>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Foreground" Value="{StaticResource MenuColorHighlighted}"/>
+                <Setter Property="Foreground" Value="{StaticResource MenuColorHighlighted}" />
             </Trigger>
         </Style.Triggers>
     </Style>
@@ -135,10 +170,10 @@
             <Setter.Value>
                 <Binding Path="PlacementTarget">
                     <Binding.Converter>
-                        <infrastructure:TextBlockTrimToVisConverter/>
+                        <infrastructure:TextBlockTrimToVisConverter />
                     </Binding.Converter>
                     <Binding.RelativeSource>
-                        <RelativeSource Mode="Self"/>
+                        <RelativeSource Mode="Self" />
                     </Binding.RelativeSource>
                 </Binding>
             </Setter.Value>
