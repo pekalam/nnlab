@@ -51,16 +51,7 @@ namespace CommonUI.MatrixPreview
             {
                 if (_matrix != null)
                 {
-                    double d;
-                    if (string.IsNullOrWhiteSpace(value))
-                    {
-                        d = 0;
-                    }
-                    else
-                    {
-                        d = double.Parse(value);
-                    }
-                    _matrix[_row, key] = d;
+                    _matrix[_row, key] = double.Parse(value);
                 }
                 _dictionary[key] = value;
             }

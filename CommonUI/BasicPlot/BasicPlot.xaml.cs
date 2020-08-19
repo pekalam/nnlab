@@ -6,6 +6,8 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using CommonServiceLocator;
 using Microsoft.Win32;
+using OxyPlot;
+using OxyPlot.Wpf;
 using Prism.Mvvm;
 using Prism.Regions;
 

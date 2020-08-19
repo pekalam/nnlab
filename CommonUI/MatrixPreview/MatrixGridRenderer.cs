@@ -6,15 +6,11 @@ using MathNet.Numerics.LinearAlgebra;
 
 namespace CommonUI.MatrixPreview
 {
-    public class UDataGridTextColumn : DataGridTextColumn
-    {
-    }
-
     internal class MatrixGridRenderer
     {
         private readonly MatrixPreviewViewModel _vm;
         private List<MatrixPreviewModel> _models;
-        private readonly List<UDataGridTextColumn> _columns = new List<UDataGridTextColumn>();
+        private readonly List<DataGridTextColumn> _columns = new List<DataGridTextColumn>();
 
         public MatrixGridRenderer(MatrixPreviewViewModel vm)
         {
@@ -35,11 +31,12 @@ namespace CommonUI.MatrixPreview
 
                 for (int i = 0; i < matrix.ColumnCount; i++)
                 {
-                    _columns.Add(new UDataGridTextColumn()
+                    _columns.Add(new DataGridTextColumn()
                     {
                         Binding = new Binding("Props[" + i + "]")
                         {
-                            Mode = BindingMode.TwoWay, UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+                            Mode = BindingMode.TwoWay, UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
+                            ValidationRules = { new DoubleValidationRule()}
                         },
                         Header = columnTitle(i),
                     });

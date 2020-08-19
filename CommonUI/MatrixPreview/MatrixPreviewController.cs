@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows.Input;
-using CommonUI.MatrixPreview.Messaging;
 using MathNet.Numerics.LinearAlgebra;
 using NNLib;
 using Prism.Commands;
@@ -62,7 +61,7 @@ namespace CommonUI.MatrixPreview
 
             ColumnClicked = new DelegateCommand<int?>((columnIndex) =>
             {
-                _ea.GetEvent<MatrixPreviewColumnClicked>().Publish((_selectedLayerNum, columnIndex.Value));
+                //_ea.GetEvent<MatrixPreviewColumnClicked>().Publish((_selectedLayerNum, columnIndex.Value));
             });
 
             _vm.PropertyChanged += VmOnPropertyChanged;
