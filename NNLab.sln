@@ -33,6 +33,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure.Tests", "Inf
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NNLib.Data", "..\NNLib\NNLib.Common\NNLib.Data.csproj", "{295E51BF-1041-4CDA-B0DD-FD222639933C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonUI", "CommonUI\CommonUI.csproj", "{0D0A072E-1DBC-49B2-AB66-B7F7F5CA1933}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,6 +85,10 @@ Global
 		{295E51BF-1041-4CDA-B0DD-FD222639933C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{295E51BF-1041-4CDA-B0DD-FD222639933C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{295E51BF-1041-4CDA-B0DD-FD222639933C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0D0A072E-1DBC-49B2-AB66-B7F7F5CA1933}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D0A072E-1DBC-49B2-AB66-B7F7F5CA1933}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D0A072E-1DBC-49B2-AB66-B7F7F5CA1933}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D0A072E-1DBC-49B2-AB66-B7F7F5CA1933}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -96,6 +102,7 @@ Global
 		{9F95F312-EEBA-4BC0-92D6-8AA1F320C304} = {3D1BC4BB-5F93-4E69-8536-060D08CFED87}
 		{9C07672C-834B-4EB4-BC8F-AFF158B29C26} = {3D1BC4BB-5F93-4E69-8536-060D08CFED87}
 		{95CE5DA9-1BF4-4F83-9FBE-59C690582A44} = {3D1BC4BB-5F93-4E69-8536-060D08CFED87}
+		{0D0A072E-1DBC-49B2-AB66-B7F7F5CA1933} = {5444BEEC-50B2-4D40-915A-BF73E5775651}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2AD07BAC-B96F-4540-814D-B11B85EBB73C}

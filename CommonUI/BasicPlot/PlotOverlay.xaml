@@ -1,0 +1,38 @@
+﻿<UserControl x:Class="CommonUI.BasicPlot.PlotOverlay"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+             mc:Ignorable="d" 
+             d:DesignWidth="450">
+    <UserControl.Resources>
+        <Style TargetType="{x:Type Button}">
+            <Setter Property="Width" Value="26"/>
+            <Setter Property="Height" Value="26"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+    </UserControl.Resources>
+    <StackPanel Orientation="Horizontal" Background="#A514202B" Margin="0,10,0,0">
+        <Button Background="#A514202B" Foreground="#FFFFFF" Name="Reset" Click="Reset_Click">
+            <iconPacks:FontAwesome Kind="CompressArrowsAltSolid"/>
+        </Button>
+        <Button Background="#A514202B" Foreground="#FFFFFF" Name="ZoomIn" Click="ZoomIn_Click">
+            <iconPacks:FontAwesome Kind="SearchPlusSolid"/>
+        </Button>
+        <Button Background="#A514202B" Foreground="#FFFFFF" Name="ZoomOut" Click="ZoomOut_Click">
+            <iconPacks:FontAwesome Kind="SearchMinusSolid"/>
+        </Button>
+        <Button Background="#A514202B" Foreground="#FFFFFF" Name="AsPhoto" Click="AsPhoto_Click">
+            <iconPacks:FontAwesome Kind="CameraSolid"/>
+        </Button>
+        <Button Background="#A514202B" Foreground="#FFFFFF" Name="SettingsBtn" Click="SettingsBtn_Click">
+            <iconPacks:FontAwesome Kind="CogSolid"/>
+        </Button>
+        <Button Background="#A514202B" Foreground="#FFFFFF" Name="NewWindowBtn" Click="NewWindowBtn_Click" Visibility="{Binding NewWindowVisibility}">
+            <iconPacks:FontAwesome Kind="ExternalLinkAltSolid"/>
+        </Button>
+
+    </StackPanel>
+</UserControl>
