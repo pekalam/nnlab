@@ -10,7 +10,7 @@ namespace Infrastructure
         public static void RegisterTypes(IContainerRegistry cr)
         {
             cr
-                .Register<IRegionNavigationContentLoader, RegionNavigationContentLoaderProxy>()
+                .Register<IRegionNavigationContentLoader, RegionNavigationContentLoaderDecorator>()
                 .Register<IActionMenuNavigationService, ActionMenuNavigationService>()
                 .RegisterSingleton<AppState>();
         }

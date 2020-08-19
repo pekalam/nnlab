@@ -3,13 +3,13 @@
 namespace Infrastructure
 {
     /// <summary>
-    /// Proxy class that's responsible for adding "view" parameter when navigating in region.
+    /// Decorator class that's responsible for adding "view" parameter when navigating in region.
     /// </summary>
-    internal class RegionNavigationContentLoaderProxy : IRegionNavigationContentLoader
+    internal class RegionNavigationContentLoaderDecorator : IRegionNavigationContentLoader
     {
         private readonly RegionNavigationContentLoader _baseLoader;
 
-        public RegionNavigationContentLoaderProxy(RegionNavigationContentLoader baseLoader)
+        public RegionNavigationContentLoaderDecorator(RegionNavigationContentLoader baseLoader)
         {
             _baseLoader = baseLoader;
         }
