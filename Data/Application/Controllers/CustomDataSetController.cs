@@ -8,6 +8,7 @@ using Data.Application.ViewModels.CustomDataSet;
 using Data.Application.ViewModels.DataSetDivision;
 using Data.Presentation.Views.CustomDataSet;
 using Data.Presentation.Views.DataSetDivision;
+using Data.Presentation.Views.DataSource.VariablesSelection;
 using Infrastructure;
 using Infrastructure.Domain;
 using Infrastructure.Messaging;
@@ -31,7 +32,8 @@ namespace Data.Application.Controllers
         private readonly IEventAggregator _ea;
         private readonly IActionMenuNavigationService _actionMenuNavService;
 
-        public CustomDataSetController(AppState appState, IRegionManager rm, IEventAggregator ea, IActionMenuNavigationService actionMenuNavService)
+        public CustomDataSetController(AppState appState, IRegionManager rm, IEventAggregator ea,
+            IActionMenuNavigationService actionMenuNavService)
         {
             _appState = appState;
             _rm = rm;
@@ -48,13 +50,33 @@ namespace Data.Application.Controllers
             };
         }
 
+        public void Initialize(CustomDataSetService service)
+        {
+            _dsService = service;
+            _dsService.PlotMouseDownCommand = new DelegateCommand<OxyMouseDownEventArgs>(PlotMouseDown);
+            _dsService.OpenDivisionViewCommand = new DelegateCommand(OpenDivisionView,
+                    () => _appState.SessionManager.ActiveSession.TrainingData != null);
+            _dsService.SelectVariablesCommand = new DelegateCommand(SelectVariables,
+                () => _appState.SessionManager.ActiveSession.TrainingData != null);
+        }
+
+        private void SelectVariables()
+        {
+            _ea.GetEvent<ShowFlyout>().Publish(new FlyoutArgs()
+            {
+                Title = "Select variables"
+            });
+            _rm.Regions[AppRegions.FlyoutRegion].RequestNavigate(nameof(VariablesSelectionView));
+        }
+
         private void OpenDivisionView()
         {
             _ea.GetEvent<ShowFlyout>().Publish(new FlyoutArgs()
             {
                 Title = "Divide data set"
             });
-            _rm.Regions[AppRegions.FlyoutRegion].RequestNavigate(nameof(DataSetDivisionView), new InMemoryDataSetDivisionNavParams(_input, _target));
+            _rm.Regions[AppRegions.FlyoutRegion].RequestNavigate(nameof(DataSetDivisionView),
+                new InMemoryDataSetDivisionNavParams(_input, _target));
         }
 
         private void PlotMouseDown(OxyMouseDownEventArgs args)
@@ -98,8 +120,8 @@ namespace Data.Application.Controllers
 
         private void AddPoint(DataPoint p)
         {
-            _input.Add(new[] { p.X });
-            _target.Add(new[] { p.Y });
+            _input.Add(new[] {p.X});
+            _target.Add(new[] {p.Y});
 
             SortPoints();
 
@@ -109,18 +131,14 @@ namespace Data.Application.Controllers
                     _target.ToArray()));
 
                 var trainingData = new TrainingData(sets,
-                    new SupervisedSetVariables(new SupervisedSetVariableIndexes(new[] { 0 }, new[] { 1 }),
-                        new[] { new VariableName("x"), new VariableName("y"), }), TrainingDataSource.Memory);
+                    new SupervisedSetVariables(new SupervisedSetVariableIndexes(new[] {0}, new[] {1}),
+                        new[] {new VariableName("x"), new VariableName("y"),}), TrainingDataSource.Memory);
 
                 _appState.SessionManager.ActiveSession.TrainingData = trainingData;
-            }
-        }
 
-        public void Initialize(CustomDataSetService service)
-        {
-            _dsService = service;
-            _dsService.PlotMouseDownCommand = new DelegateCommand<OxyMouseDownEventArgs>(PlotMouseDown);
-            _dsService.OpenDivisionViewCommand = new DelegateCommand(OpenDivisionView);
+                _dsService.OpenDivisionViewCommand.RaiseCanExecuteChanged();
+                _dsService.SelectVariablesCommand.RaiseCanExecuteChanged();
+            }
         }
     }
 }

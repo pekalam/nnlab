@@ -50,20 +50,21 @@ namespace Data.Application.ViewModels.DataSource.Preview
                 var inputInstance = _set.Input[j];
                 var targetInstance = _set.Target[j];
 
-                var rows = new string[_dataTable.Columns.Count];
+                var row = new string[_dataTable.Columns.Count];
 
                 int i = 0;
-                for (int k = 0; k < _trainingData.Variables.Indexes.InputVarIndexes.Length; k++)
+                foreach (var inputVarIndex in _trainingData.Variables.Indexes.InputVarIndexes)
                 {
-                    rows[i++] = inputInstance[k, 0].ToString();
+                    row[inputVarIndex] = inputInstance[i++, 0].ToString();
                 }
 
-                for (int k = 0; k < _trainingData.Variables.Indexes.TargetVarIndexes.Length; k++)
+                i = 0;
+                foreach (var targetVarIndex in _trainingData.Variables.Indexes.TargetVarIndexes)
                 {
-                    rows[i++] = targetInstance[k, 0].ToString();
+                    row[targetVarIndex] = targetInstance[i++, 0].ToString();
                 }
 
-                _dataTable.Rows.Add(rows.Where(r => r != null).ToArray());
+                _dataTable.Rows.Add(row);
             }
 
             return _dataTable;

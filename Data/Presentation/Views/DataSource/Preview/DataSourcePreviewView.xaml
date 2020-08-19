@@ -4,7 +4,7 @@
              xmlns:prism="http://prismlibrary.com/"
              xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:infrastructure="clr-namespace:Infrastructure;assembly=Infrastructure"
-             prism:ViewModelLocator.AutoWireViewModel="True">
+        >
     <UserControl.Resources>
         <infrastructure:BooleanNegToVisibilityConverter x:Key="BoolNegToVis"/>
     </UserControl.Resources>
@@ -128,7 +128,7 @@
             </DataGrid>
         </StackPanel>
 
-        <Grid Grid.RowSpan="3" Background="White" Visibility="{Binding PreviewErrorVisibility}">
+        <Grid Grid.Row="0" Grid.RowSpan="3" Background="White" Visibility="{Binding PreviewErrorVisibility}">
             <TextBlock Text="Cannot display preview" HorizontalAlignment="Center" VerticalAlignment="Center"/>
         </Grid>
     </Grid>

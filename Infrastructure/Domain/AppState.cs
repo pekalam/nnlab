@@ -115,6 +115,12 @@ namespace Infrastructure.Domain
 
         public string Name { get; }
 
+        public string? SingleDataFile { get; set; }
+        public string? TrainingDataFile { get; set; }
+        public string? ValidationDataFile { get; set; }
+        public string? TestDataFile { get; set; }
+
+
         public TrainingData? TrainingData
         {
             get => _trainingData;

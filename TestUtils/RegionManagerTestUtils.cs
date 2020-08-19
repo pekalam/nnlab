@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Security.Principal;
 using Moq;
 using Moq.AutoMock;
 using Prism.Regions;
@@ -54,6 +55,14 @@ namespace TestUtils
             mocker.Use<TI>(mock.Object);
 
             return mock;
+        }
+
+        public static TImlp UseImpl<TImlp>(this AutoMocker mocker) where TImlp : class
+        {
+            var impl = mocker.CreateInstance<TImlp>();
+            mocker.Use<TImlp>(impl);
+
+            return impl;
         }
 
         public static TImlp UseImpl<TI, TImlp>(this AutoMocker mocker) where TI : class where TImlp : class, TI

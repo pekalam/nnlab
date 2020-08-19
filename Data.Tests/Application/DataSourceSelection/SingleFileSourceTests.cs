@@ -104,6 +104,7 @@ namespace Data.Tests.Application.DataSourceSelection
         [Fact]
         public async void Continue_command_sets_app_state()
         {
+            var file = "C:\\file.csv";
             //arrange
             var trainingData = TrainingDataMocks.ValidData1;
             _csvValidation.Setup(f => f.Validate(It.IsAny<string>())).Returns((true, null, 2, 2));
@@ -114,7 +115,8 @@ namespace Data.Tests.Application.DataSourceSelection
             //act & assert
             singleFileService.ContinueCommand.CanExecute().Should().BeFalse();
 
-            singleFileService.ValidateCommand.Execute("file.csv");
+            //set and trigger validation cmd
+            _vm.SelectedFilePath = file;
 
             //wait for async call completion
             await Task.Delay(2_000);
@@ -129,6 +131,7 @@ namespace Data.Tests.Application.DataSourceSelection
             var session = _appState.SessionManager.ActiveSession;
 
             session.TrainingData.Should().Be(trainingData);
+            session.SingleDataFile.Should().Be(file);
         }
     }
 }

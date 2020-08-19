@@ -8,6 +8,9 @@ using Data.Application.ViewModels.DataSetDivision;
 using Data.Application.ViewModels.DataSource.FileDataSource;
 using Data.Application.ViewModels.DataSource.Normalization;
 using Data.Application.ViewModels.DataSource.Preview;
+using Data.Application.ViewModels.DataSource.VariablesSelection;
+using Data.Presentation.Views.DataSource.FileDataSource;
+using ActionMenuLeftViewModel = Data.Application.ViewModels.CustomDataSet.ActionMenuLeftViewModel;
 
 namespace Data.Presentation.__DesignData
 {
@@ -67,5 +70,25 @@ namespace Data.Presentation.__DesignData
         public DesignNormalizationViewModel() : base(null)
         {
         }
+    }
+
+    class DesignFileDataSourceViewModel : FileDataSourceViewModel
+    {
+        public DesignFileDataSourceViewModel() : base(null, null, null)
+        {
+        }
+    }
+
+    class DesignFileDataSourceActionMenuVm : Data.Application.ViewModels.DataSource.FileDataSource.
+        ActionMenuLeftViewModel
+    {
+        public DesignFileDataSourceActionMenuVm() : base(null)
+        {
+        }
+    }
+
+    class DesignVariablesSelectionVm : VariablesSelectionViewModel
+    {
+
     }
 }

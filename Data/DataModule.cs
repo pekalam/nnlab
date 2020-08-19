@@ -3,6 +3,7 @@ using System.IO;
 using CommonServiceLocator;
 using Data.Application.Controllers;
 using Data.Application.Services;
+using Data.Application.ViewModels.DataSource.VariablesSelection;
 using Data.Domain.Services;
 using Data.Presentation.Services;
 using Data.Presentation.Views;
@@ -11,6 +12,7 @@ using Data.Presentation.Views.DataSetDivision;
 using Data.Presentation.Views.DataSource.FileDataSource;
 using Data.Presentation.Views.DataSource.Normalization;
 using Data.Presentation.Views.DataSource.Preview;
+using Data.Presentation.Views.DataSource.VariablesSelection;
 using Infrastructure;
 using Prism.Ioc;
 using Prism.Modularity;
@@ -49,8 +51,10 @@ namespace Data
                 
                 
                 .RegisterSingleton<ITransientControllerBase<CustomDataSetService>, CustomDataSetController>()
-                .Register<ICustomDataSetService, CustomDataSetService>();
+                .Register<ICustomDataSetService, CustomDataSetService>()
 
+                .RegisterSingleton<ITransientControllerBase<VariablesSelectionService>, VariablesSelectionController>()
+                .Register<IVariablesSelectionService, VariablesSelectionService>();
 
             containerRegistry.RegisterSingleton<ModuleController>();
 
@@ -63,6 +67,7 @@ namespace Data
             containerRegistry.RegisterForNavigation<DataSourcePreviewView>();
             containerRegistry.RegisterForNavigation<FileDataSourceView>();
             containerRegistry.RegisterForNavigation<NormalizationView>();
+            containerRegistry.RegisterForNavigation<VariablesSelectionView>();
         }
     }
 }

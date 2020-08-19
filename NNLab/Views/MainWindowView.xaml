@@ -79,7 +79,7 @@
 
             <Grid Grid.Row="1" Background="{StaticResource ContentColorBackground}">
 
-                <Border BorderThickness="0,1,0,0" BorderBrush="#72787878" ClipToBounds="True">
+                <Border BorderThickness="0,1,0,0" BorderBrush="#72787878" ClipToBounds="True" Panel.ZIndex="999">
                     <Border.Effect>
                         <DropShadowEffect Direction="1" BlurRadius="6" Opacity="0.7" Color="#787878" ShadowDepth="0" />
                     </Border.Effect>

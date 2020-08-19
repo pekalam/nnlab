@@ -14,7 +14,7 @@ namespace Infrastructure.Domain
         public SupervisedTrainingSets Sets { get; }
         public SupervisedSetVariables Variables { get; }
         public TrainingDataSource Source { get; }
-        
+
         public TrainingData(SupervisedTrainingSets sets, SupervisedSetVariables variables, TrainingDataSource source)
         {
             Sets = sets;

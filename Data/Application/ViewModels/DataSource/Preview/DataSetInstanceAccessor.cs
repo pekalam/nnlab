@@ -41,22 +41,22 @@ namespace Data.Application.ViewModels.DataSource.Preview
             var inputInstance = _set.Input[index];
             var targetInstance = _set.Target[index];
 
-            var rows = new string[_trainingData.Variables.Length];
+            var row = new string[_trainingData.Variables.Length];
 
             int i = 0;
             foreach (var inputVarIndex in _trainingData.Variables.Indexes.InputVarIndexes)
             {
-                rows[inputVarIndex] = inputInstance[i++, 0].ToString();
+                row[inputVarIndex] = inputInstance[i++, 0].ToString();
             }
 
             i = 0;
             foreach (var targetVarIndex in _trainingData.Variables.Indexes.TargetVarIndexes)
             {
-                rows[targetVarIndex] = targetInstance[i++, 0].ToString();
+                row[targetVarIndex] = targetInstance[i++, 0].ToString();
             }
 
             _dataTable.Rows.Clear();
-            _dataTable.Rows.Add(rows.Where(r => r != null).ToArray());
+            _dataTable.Rows.Add(row);
 
             return _dataTable;
         }

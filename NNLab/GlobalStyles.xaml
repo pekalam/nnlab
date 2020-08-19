@@ -98,6 +98,9 @@
                         <Trigger Property="IsPressed" Value="True">
                             <Setter Property="Foreground" Value="#D7D7D7" />
                         </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Foreground" Value="#D7D7D7" />
+                        </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>

@@ -90,6 +90,7 @@ namespace Data.Application.Controllers
             var session = _appState.SessionManager.Create();
 
             session.TrainingData = _loadedTrainingData;
+            session.SingleDataFile = SingleFileSourceViewModel.Instance.SelectedFilePath;
             _loadedTrainingData = null;
 
             _rm.Regions[AppRegions.ContentRegion].RequestNavigate(nameof(FileDataSourceView));
