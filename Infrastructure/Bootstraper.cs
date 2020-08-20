@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using Infrastructure.Domain;
+using Infrastructure.PrismDecorators;
 using Prism.Ioc;
 using Prism.Regions;
 
@@ -11,6 +12,7 @@ namespace Infrastructure
         {
             cr
                 .Register<IRegionNavigationContentLoader, RegionNavigationContentLoaderDecorator>()
+                .RegisterSingleton<IRegionManager, RegionManagerNavigationDecorator>()
                 .Register<IActionMenuNavigationService, ActionMenuNavigationService>()
                 .RegisterSingleton<AppState>();
         }

@@ -68,7 +68,7 @@ namespace Data.Tests.Application.DataSourceSelection
 
 
             //assert
-            _regions[AppRegions.ContentRegion].VerifyNavigation(nameof(SingleFileSourceView), Times.Exactly(1));
+            _rm.VerifyContentNavigation(nameof(SingleFileSourceView), Times.Exactly(1));
 
 
             sigVm.SelectedFilePath.Should().Be(successfulPath);
@@ -91,7 +91,7 @@ namespace Data.Tests.Application.DataSourceSelection
 
 
             //assert
-            _regions[AppRegions.ContentRegion].VerifyNavigation(nameof(SingleFileSourceView), Times.Never());
+            _rm.VerifyContentNavigation(nameof(SingleFileSourceView), Times.Never());
 
 
             sigVm.SelectedFilePath.Should().Be(default);

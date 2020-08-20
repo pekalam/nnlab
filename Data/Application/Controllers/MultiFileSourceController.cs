@@ -7,6 +7,7 @@ using Data.Presentation.Services;
 using Data.Presentation.Views;
 using Infrastructure;
 using Infrastructure.Domain;
+using Infrastructure.Extensions;
 using Prism.Commands;
 using Prism.Regions;
 
@@ -61,7 +62,7 @@ namespace Data.Application.Controllers
             _multiFileService.ReturnCommand = new DelegateCommand(() =>
             {
                 _trainingData = null;
-                _rm.Regions[AppRegions.ContentRegion].RequestNavigate(nameof(SelectDataSourceView));
+                _rm.NavigateContentRegion(nameof(SelectDataSourceView), "");
             });
             _multiFileService.ContinueCommand = new DelegateCommand(Continue, () => _continueCanExec);
         }

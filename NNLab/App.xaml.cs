@@ -4,10 +4,12 @@ using Prism.Ioc;
 using NNLab.Views;
 using System.Windows;
 using Data;
+using Infrastructure;
 using NeuralNetwork;
 using Prism.Modularity;
 using Prism.Mvvm;
 using Training;
+using Prism.Regions;
 
 namespace NNLab
 {
@@ -28,6 +30,7 @@ namespace NNLab
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
             Infrastructure.Bootstraper.RegisterTypes(containerRegistry);
+            containerRegistry.Register<IContentRegionHistoryService, ContentRegionHistoryService>();
         }
 
 

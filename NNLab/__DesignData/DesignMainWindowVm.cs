@@ -8,7 +8,10 @@ namespace NNLab.__DesignData
 {
     class DesignMainWindowVm : MainWindowViewModel
     {
-        public DesignMainWindowVm() : base(null, null)
+    }
+
+    class DesignNavigationBreadcrumbsVm : NavigationBreadcrumbsViewModel {
+        public DesignNavigationBreadcrumbsVm() : base(null, null)
         {
         }
     }

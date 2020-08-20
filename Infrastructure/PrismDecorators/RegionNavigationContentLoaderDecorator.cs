@@ -1,6 +1,6 @@
 ﻿using Prism.Regions;
 
-namespace Infrastructure
+namespace Infrastructure.PrismDecorators
 {
     /// <summary>
     /// Decorator class that's responsible for adding "view" parameter when navigating in region.

@@ -24,6 +24,8 @@ namespace Data
 {
     public class DataModule : IModule
     {
+        public const int NavIdentifier = 1;
+
         public void OnInitialized(IContainerProvider containerProvider)
         {
             containerProvider.Resolve<ModuleController>().Run();

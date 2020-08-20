@@ -7,6 +7,7 @@ using Data.Presentation.Services;
 using Data.Presentation.Views;
 using Data.Presentation.Views.CustomDataSet;
 using Infrastructure;
+using Infrastructure.Extensions;
 using Microsoft.Win32;
 using Prism.Commands;
 using Prism.Regions;
@@ -34,7 +35,7 @@ namespace Data.Application.Controllers
 
         private void SelectFiles()
         {
-            _rm.Regions[AppRegions.ContentRegion].RequestNavigate(nameof(MultiFileSourceView));
+            _rm.NavigateContentRegion(nameof(MultiFileSourceView), "Files");
         }
 
 
@@ -43,14 +44,14 @@ namespace Data.Application.Controllers
             var dialog = _fileDialogService.OpenCsv(null);
             if (dialog.result == true)
             {
-                _rm.Regions[AppRegions.ContentRegion].RequestNavigate(nameof(SingleFileSourceView));
+                _rm.NavigateContentRegion(nameof(SingleFileSourceView), "File");
                 SingleFileSourceViewModel.Instance.SelectedFilePath = dialog.filePath;
             }
         }
 
         private void CreateDataSet()
         {
-            _rm.Regions[AppRegions.ContentRegion].RequestNavigate(nameof(CustomDataSetView));
+            _rm.NavigateContentRegion(nameof(CustomDataSetView), "Custom data set");
         }
     }
 }

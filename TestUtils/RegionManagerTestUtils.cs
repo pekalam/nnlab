@@ -1,21 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Security.Principal;
+using Infrastructure.PrismDecorators;
 using Moq;
 using Moq.AutoMock;
+using Prism.Events;
 using Prism.Regions;
 
 namespace TestUtils
 {
     public static class RegionManagerTestUtils
     {
-        public static (Mock<IRegionManager> regionManager, Dictionary<string, Mock<IRegion>> regions)
-            CreateTestRegionManager()
+        private static void SetupEvents(Mock<IRegionManager> rm, Dictionary<string, Mock<IRegion>> regions)
         {
-            var rm = new Mock<IRegionManager>();
-            var regions = new Dictionary<string, Mock<IRegion>>();
-
             _ = Assembly.Load("Infrastructure").GetTypes()
                 .Union(Assembly.Load("Data").GetTypes())
                 .Where(t => t.Name.Contains("Regions"))
@@ -31,11 +28,32 @@ namespace TestUtils
 
                     return m;
                 }).ToList();
+        }
 
+        public static (Mock<IRegionManager> regionManager, Dictionary<string, Mock<IRegion>> regions)
+            CreateTestRegionManager()
+        {
+            var rm = new Mock<IRegionManager>();
+            var regions = new Dictionary<string, Mock<IRegion>>();
+
+            SetupEvents(rm, regions);
 
             return (rm, regions);
         }
 
+        public static (Mock<RegionManagerNavigationDecorator> regionManager, Dictionary<string, Mock<IRegion>> regions, TestEa ea)
+            CreateDecoratedTestRegionManager(AutoMocker mocker)
+        {
+            var ea = mocker.UseTestEa();
+            var rm = new Mock<IRegionManager>();
+            var regions = new Dictionary<string, Mock<IRegion>>();
+
+            SetupEvents(rm, regions);
+
+            var decrm = new Mock<RegionManagerNavigationDecorator>(() => new RegionManagerNavigationDecorator(rm.Object, ea));
+
+            return (decrm, regions, ea);
+        }
 
     }
 
@@ -73,6 +91,13 @@ namespace TestUtils
             return impl;
         }
 
+        public static TestEa UseTestEa(this AutoMocker mocker)
+        {
+            var ea = new TestEa(new EventAggregator());
+            mocker.Use<IEventAggregator>(ea);
+            return ea;
+        }
+
         public static (Mock<IRegionManager> rm, Dictionary<string, Mock<IRegion>> regions) UseTestRm(
             this AutoMocker mocker)
         {
@@ -81,6 +106,15 @@ namespace TestUtils
             mocker.Use(rm.Object);
 
             return (rm, regions);
+        }
+
+        public static (Mock<RegionManagerNavigationDecorator> rm, Dictionary<string, Mock<IRegion>> regions, TestEa ea) UseDecoratedTestRm(this AutoMocker mocker)
+        {
+            var (rm, regions, ea) = RegionManagerTestUtils.CreateDecoratedTestRegionManager(mocker);
+
+            mocker.Use(rm.Object);
+
+            return (rm, regions, ea);
         }
     }
 }

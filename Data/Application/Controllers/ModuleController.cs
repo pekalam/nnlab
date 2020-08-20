@@ -6,6 +6,9 @@ using Data.Application.Controllers.DataSource;
 using Data.Presentation.Views;
 using Infrastructure;
 using Infrastructure.Domain;
+using Infrastructure.Extensions;
+using Infrastructure.Messaging;
+using Prism.Events;
 using Prism.Regions;
 
 namespace Data.Application.Controllers
@@ -14,6 +17,7 @@ namespace Data.Application.Controllers
     {
         private IRegionManager _rm;
         private AppState _appState;
+        private IEventAggregator _ea;
 
         //Instantiate singleton controllers
         private readonly FileController _fileController;
@@ -22,7 +26,7 @@ namespace Data.Application.Controllers
         private readonly NormalizationController _normalizationController;
         private readonly FileDataSourceController _fileDataSourceController;
 
-        public ModuleController(IRegionManager rm, AppState appState, FileController fileController, DataSetDivisionController dataSetDivisionController, VariablesSelectionController variablesSelectionController, NormalizationController normalizationController, FileDataSourceController fileDataSourceController)
+        public ModuleController(IRegionManager rm, AppState appState, FileController fileController, DataSetDivisionController dataSetDivisionController, VariablesSelectionController variablesSelectionController, NormalizationController normalizationController, FileDataSourceController fileDataSourceController, IEventAggregator ea)
         {
             _rm = rm;
             _appState = appState;
@@ -31,6 +35,7 @@ namespace Data.Application.Controllers
             _variablesSelectionController = variablesSelectionController;
             _normalizationController = normalizationController;
             _fileDataSourceController = fileDataSourceController;
+            _ea = ea;
         }
 
 
@@ -40,7 +45,9 @@ namespace Data.Application.Controllers
             _fileController.Initialize();
 
 
-            _rm.Regions[AppRegions.ContentRegion].RequestNavigate(nameof(SelectDataSourceView));
+            _ea.GetEvent<EnableNavMenuItem>().Publish(DataModule.NavIdentifier);
+            _ea.GetEvent<CheckNavMenuItem>().Publish(DataModule.NavIdentifier);
+            _rm.NavigateContentRegion(nameof(SelectDataSourceView), "Data source");
         }
     }
 }

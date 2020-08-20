@@ -3,7 +3,12 @@ using System.Linq.Expressions;
 using AutoFixture;
 using FluentAssertions;
 using Infrastructure.Domain;
+using Infrastructure.Messaging;
+using Infrastructure.PrismDecorators;
+using Moq;
 using NNLib;
+using Prism.Events;
+using Prism.Regions;
 using TestUtils;
 using Xunit;
 

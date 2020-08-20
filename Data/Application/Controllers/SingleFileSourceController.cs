@@ -6,6 +6,7 @@ using Data.Presentation.Views;
 using Data.Presentation.Views.DataSource.FileDataSource;
 using Infrastructure;
 using Infrastructure.Domain;
+using Infrastructure.Extensions;
 using Prism.Commands;
 using Prism.Regions;
 
@@ -40,7 +41,7 @@ namespace Data.Application.Controllers
             _singleFileService.ReturnCommand = new DelegateCommand(() =>
             {
                 _loadedTrainingData = null;
-                _rm.Regions[AppRegions.ContentRegion].RequestNavigate(nameof(SelectDataSourceView));
+                _rm.NavigateContentRegion(nameof(SelectDataSourceView), "Data source");
             }, () => _canReturn);
         }
 
@@ -93,7 +94,7 @@ namespace Data.Application.Controllers
             session.SingleDataFile = SingleFileSourceViewModel.Instance.SelectedFilePath;
             _loadedTrainingData = null;
 
-            _rm.Regions[AppRegions.ContentRegion].RequestNavigate(nameof(FileDataSourceView));
+            _rm.NavigateContentRegion(nameof(FileDataSourceView), "Data");
         }
     }
 }

@@ -7,6 +7,9 @@ namespace Training
 {
     public class TrainingModule : IModule
     {
+        public const int NavIdentifier = 3;
+
+
         public void OnInitialized(IContainerProvider containerProvider)
         {
 
