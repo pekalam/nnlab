@@ -81,9 +81,9 @@ namespace Data.Application.Controllers
                 var testSetCount = (int)Math.Ceiling(vm.TestSetPercent * total / 100f);
                 testSetCount = testSetCount > left ? left : testSetCount;
 
-                var calcTrainingPerc = trainingSetCount * 100 / total;
-                var calcValidationPerc = validationSetCount * 100 / total;
-                var calcTestPerc = testSetCount * 100 / total;
+                var calcTrainingPerc = (int)Math.Round(trainingSetCount * 100.0 / total);
+                var calcValidationPerc = (int)Math.Round(validationSetCount * 100.0 / total);
+                var calcTestPerc = (int)Math.Round(testSetCount * 100.0 / total);
 
 
                 if (vm.TrainingSetPercent != calcTrainingPerc || vm.ValidationSetPercent != calcValidationPerc ||

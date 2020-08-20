@@ -9,6 +9,7 @@ using Data.Presentation.Views.DataSetDivision;
 using Data.Presentation.Views.DataSource.FileDataSource;
 using Data.Presentation.Views.DataSource.VariablesSelection;
 using Infrastructure;
+using Infrastructure.Domain;
 using Infrastructure.Messaging;
 using Prism.Commands;
 using Prism.Events;
@@ -21,12 +22,14 @@ namespace Data.Application.Controllers.DataSource
         private IRegionManager _rm;
         private IEventAggregator _ea;
         private readonly IActionMenuNavigationService _actionMenuNavService;
+        private AppState _appState;
 
-        public FileDataSourceController(IFileDataSourceService service, IRegionManager rm, IEventAggregator ea, IActionMenuNavigationService actionMenuNavService)
+        public FileDataSourceController(IFileDataSourceService service, IRegionManager rm, IEventAggregator ea, IActionMenuNavigationService actionMenuNavService, AppState appState)
         {
             _rm = rm;
             _ea = ea;
             _actionMenuNavService = actionMenuNavService;
+            _appState = appState;
 
 
             service.SelectVariablesCommand = new DelegateCommand(SelectVariables);
@@ -44,11 +47,12 @@ namespace Data.Application.Controllers.DataSource
 
         private void DivideDataset()
         {
+            var session = _appState.SessionManager.ActiveSession;
             _ea.GetEvent<ShowFlyout>().Publish(new FlyoutArgs()
             {
                 Title = "Divide data set"
             });
-            _rm.Regions[AppRegions.FlyoutRegion].RequestNavigate(nameof(DataSetDivisionView), new FileDataSetDivisionNavParams("C:\\Users\\Marek Pękala\\Desktop\\bigsin.csv"));
+            _rm.Regions[AppRegions.FlyoutRegion].RequestNavigate(nameof(DataSetDivisionView), new FileDataSetDivisionNavParams(session.SingleDataFile));
         }
 
         private void SelectVariables()
