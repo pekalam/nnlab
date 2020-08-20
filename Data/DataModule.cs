@@ -2,6 +2,7 @@
 using System.IO;
 using CommonServiceLocator;
 using Data.Application.Controllers;
+using Data.Application.Controllers.DataSource;
 using Data.Application.Services;
 using Data.Application.ViewModels.DataSource.VariablesSelection;
 using Data.Domain.Services;
@@ -54,6 +55,9 @@ namespace Data
                 
                 .RegisterSingleton<ITransientControllerBase<CustomDataSetService>, CustomDataSetController>()
                 .Register<ICustomDataSetService, CustomDataSetService>()
+
+                .RegisterSingleton<ITransientControllerBase<StatisticsService>, StatisticsController>()
+                .Register<IStatisticsService, StatisticsService>()
 
                 .RegisterSingleton<ITransientControllerBase<VariablesSelectionService>, VariablesSelectionController>()
                 .Register<IVariablesSelectionService, VariablesSelectionService>();

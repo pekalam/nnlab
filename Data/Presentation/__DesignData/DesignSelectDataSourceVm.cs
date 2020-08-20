@@ -8,6 +8,7 @@ using Data.Application.ViewModels.DataSetDivision;
 using Data.Application.ViewModels.DataSource.FileDataSource;
 using Data.Application.ViewModels.DataSource.Normalization;
 using Data.Application.ViewModels.DataSource.Preview;
+using Data.Application.ViewModels.DataSource.Statistics;
 using Data.Application.ViewModels.DataSource.VariablesSelection;
 using Data.Presentation.Views.DataSource.FileDataSource;
 using ActionMenuLeftViewModel = Data.Application.ViewModels.CustomDataSet.ActionMenuLeftViewModel;
@@ -88,6 +89,11 @@ namespace Data.Presentation.__DesignData
     }
 
     class DesignVariablesSelectionVm : VariablesSelectionViewModel
+    {
+
+    }
+
+    class DesignStatisticsVm : StatisticsViewModel
     {
 
     }

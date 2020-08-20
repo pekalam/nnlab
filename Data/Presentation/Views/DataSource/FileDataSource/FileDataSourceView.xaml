@@ -9,6 +9,7 @@
              xmlns:dd="clr-namespace:Data.Presentation.__DesignData"
              xmlns:preview="clr-namespace:Data.Presentation.Views.DataSource.Preview"
              xmlns:normalization="clr-namespace:Data.Presentation.Views.DataSource.Normalization"
+             xmlns:statistics="clr-namespace:Data.Presentation.Views.DataSource.Statistics"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance dd:DesignFileDataSourceVm, IsDesignTimeCreatable=True}"
              prism:ViewModelLocator.AutoWireViewModel="True">
@@ -41,8 +42,7 @@
                 </ContentControl>
 
                 <ContentControl Grid.Row="2" Margin="0,30,0,0" Style="{StaticResource ContentPanel}">
-                    <ContentControl
-                        prism:RegionManager.RegionName="{x:Static data:FileDataSourceRegions.FileDataSourceRightPanel1}" />
+                    <statistics:StatisticsView/>
                 </ContentControl>
             </Grid>
         </ScrollViewer>
