@@ -1,6 +1,6 @@
-﻿using Infrastructure.Domain;
-using NNLib.Common;
+﻿using NNLib.Common;
 using System;
+using Common.Domain;
 
 namespace Data.Application.ViewModels.DataSource.Preview
 {

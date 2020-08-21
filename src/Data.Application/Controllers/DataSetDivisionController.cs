@@ -1,13 +1,13 @@
 ﻿using Data.Application.Services;
 using Data.Application.ViewModels.DataSetDivision;
 using Data.Domain.Services;
-using Infrastructure.Domain;
 using NNLib.Common;
 using Prism.Commands;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using Common.Domain;
 
 namespace Data.Application.Controllers
 {

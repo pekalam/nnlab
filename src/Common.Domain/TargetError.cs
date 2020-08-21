@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Infrastructure.Domain
+namespace Common.Domain
 {
     public class TargetError : DomainPrimitive<double, TargetError>
     {

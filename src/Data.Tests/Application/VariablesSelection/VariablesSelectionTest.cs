@@ -1,10 +1,10 @@
-﻿using Common.Framework;
+﻿using Common.Domain;
+using Common.Framework;
 using Data.Application.Controllers;
 using Data.Application.Services;
 using Data.Application.ViewModels.DataSource.VariablesSelection;
 using Data.Domain.Services;
 using FluentAssertions;
-using Infrastructure.Domain;
 using Moq.AutoMock;
 using NNLib.Common;
 using TestUtils;

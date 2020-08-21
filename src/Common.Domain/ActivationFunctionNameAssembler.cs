@@ -1,7 +1,7 @@
-﻿using NNLib;
-using System;
+﻿using System;
+using NNLib;
 
-namespace Infrastructure.Domain
+namespace Common.Domain
 {
     public static class ActivationFunctionNameAssembler
     {

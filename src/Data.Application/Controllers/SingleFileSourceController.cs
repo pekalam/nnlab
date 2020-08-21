@@ -3,11 +3,11 @@ using Data.Application.Services;
 using Data.Application.ViewModels.DataSource.FileDataSource;
 using Data.Application.ViewModels.DataSourceSelection;
 using Data.Domain.Services;
-using Infrastructure.Domain;
 using Prism.Commands;
 using Prism.Regions;
 using Shell.Interface;
 using System.Threading.Tasks;
+using Common.Domain;
 
 namespace Data.Application.Controllers
 {

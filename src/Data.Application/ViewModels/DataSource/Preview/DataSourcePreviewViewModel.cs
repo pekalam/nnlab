@@ -1,11 +1,11 @@
 ﻿using Common.Framework;
-using Infrastructure.Domain;
 using NNLib.Common;
 using Prism.Commands;
 using System;
 using System.Data;
 using System.Windows;
 using System.Windows.Input;
+using Common.Domain;
 
 namespace Data.Application.ViewModels.DataSource.Preview
 {

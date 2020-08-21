@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using NNLib.Common;
 using NNLib.Csv;
 
-namespace Infrastructure.Domain
+namespace Common.Domain
 {
     public enum TrainingDataSource
     {

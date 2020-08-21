@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Text;
 using NNLib;
 using Prism.Mvvm;
 
-namespace Infrastructure.Domain
+namespace Common.Domain
 {
     public class AppState : INotifyPropertyChanged
     {

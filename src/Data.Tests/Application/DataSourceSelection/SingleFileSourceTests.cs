@@ -1,11 +1,11 @@
 ﻿using System.Threading.Tasks;
+using Common.Domain;
 using Common.Framework;
 using Data.Application.Controllers;
 using Data.Application.Services;
 using Data.Application.ViewModels.DataSourceSelection;
 using Data.Domain.Services;
 using FluentAssertions;
-using Infrastructure.Domain;
 using Moq;
 using Moq.AutoMock;
 using Prism.Commands;

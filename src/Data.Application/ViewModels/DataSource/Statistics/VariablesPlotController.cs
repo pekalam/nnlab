@@ -1,4 +1,4 @@
-﻿using Infrastructure.Domain;
+﻿using Common.Domain;
 using NNLib.Common;
 using OxyPlot;
 using OxyPlot.Series;

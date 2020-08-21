@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using Common.Domain;
 using Data.Application.Controllers;
 using Data.Application.Services;
 using Data.Application.ViewModels.DataSetDivision;
 using FluentAssertions;
-using Infrastructure.Domain;
 using Moq;
 using Moq.AutoMock;
 using Prism.Events;

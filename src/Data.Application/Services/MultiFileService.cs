@@ -1,10 +1,10 @@
 ﻿using Common.Framework;
 using Data.Application.ViewModels.DataSourceSelection;
-using Infrastructure.Domain;
 using Prism.Commands;
 using Prism.Mvvm;
 using System.ComponentModel;
 using System.Linq;
+using Common.Domain;
 using Data.Application.ViewModels;
 
 namespace Data.Application.Services

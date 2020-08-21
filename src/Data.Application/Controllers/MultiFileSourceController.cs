@@ -2,11 +2,11 @@
 using Data.Application.Services;
 using Data.Application.ViewModels.DataSourceSelection;
 using Data.Domain.Services;
-using Infrastructure.Domain;
 using Prism.Commands;
 using Prism.Regions;
 using Shell.Interface;
 using System.Linq;
+using Common.Domain;
 using Data.Application.Interfaces;
 
 namespace Data.Application.Controllers

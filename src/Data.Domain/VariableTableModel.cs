@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Linq;
-using Infrastructure.Domain;
+using Common.Domain;
 using NNLib.Common;
 using Prism.Mvvm;
 

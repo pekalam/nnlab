@@ -1,4 +1,4 @@
-﻿namespace Infrastructure.Domain
+﻿namespace Common.Domain
 {
     public enum ActivationFunctionName
     {

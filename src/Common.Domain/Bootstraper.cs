@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Infrastructure.Domain;
 using Prism.Ioc;
 
 namespace Common.Domain

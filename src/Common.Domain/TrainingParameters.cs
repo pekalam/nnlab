@@ -1,8 +1,7 @@
 ﻿using System;
 using NNLib;
-using Prism.Mvvm;
 
-namespace Infrastructure.Domain
+namespace Common.Domain
 {
     public enum TrainingAlgorithm
     {

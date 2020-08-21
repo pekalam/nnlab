@@ -1,12 +1,12 @@
 ﻿using Common.Framework;
 using Data.Application.Services;
 using Data.Domain;
-using Infrastructure.Domain;
 using Prism.Regions;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Input;
+using Common.Domain;
 
 namespace Data.Application.ViewModels.DataSetDivision
 {

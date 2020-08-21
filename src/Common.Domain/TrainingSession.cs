@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
-using MathNet.Numerics.LinearAlgebra;
 using NNLib;
 
-namespace Infrastructure.Domain
+namespace Common.Domain
 {
     public class EpochEndArgs
     {

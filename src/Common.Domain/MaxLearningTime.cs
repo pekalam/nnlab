@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Infrastructure.Domain
+namespace Common.Domain
 {
     public class MaxLearningTime : DomainPrimitive<TimeSpan, MaxLearningTime>
     {

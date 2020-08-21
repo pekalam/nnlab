@@ -2,11 +2,11 @@
 using Common.Framework;
 using Data.Application.Services;
 using Data.Application.ViewModels.DataSource.Statistics;
-using Infrastructure.Domain;
 using NNLib.Common;
 using Prism.Commands;
 using System.Collections.Generic;
 using System.ComponentModel;
+using Common.Domain;
 using Data.Application.Controllers.DataSource;
 using Prism.Ioc;
 

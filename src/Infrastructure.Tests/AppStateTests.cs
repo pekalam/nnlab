@@ -1,7 +1,7 @@
 using System;
 using AutoFixture;
+using Common.Domain;
 using FluentAssertions;
-using Infrastructure.Domain;
 using TestUtils;
 using Xunit;
 

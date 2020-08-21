@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Common.Domain;
 using NNLib.Common;
 
-namespace Infrastructure.Domain
+namespace Common.Domain
 {
     public class SupervisedSetVariables
     {

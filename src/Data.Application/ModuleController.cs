@@ -2,7 +2,6 @@
 using Data.Application.Controllers;
 using Data.Application.Controllers.DataSource;
 using Data.Application.ViewModels.DataSourceSelection;
-using Infrastructure.Domain;
 using Prism.Events;
 using Prism.Regions;
 using Shell.Interface;

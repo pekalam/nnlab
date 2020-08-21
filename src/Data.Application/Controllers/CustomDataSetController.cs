@@ -4,7 +4,6 @@ using Data.Application.Services;
 using Data.Application.ViewModels.CustomDataSet;
 using Data.Application.ViewModels.DataSetDivision;
 using Data.Application.ViewModels.DataSource.VariablesSelection;
-using Infrastructure.Domain;
 using NNLib.Common;
 using OxyPlot;
 using OxyPlot.Axes;

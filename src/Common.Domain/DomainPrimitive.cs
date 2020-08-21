@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Infrastructure.Domain
+namespace Common.Domain
 {
     public class DomainPrimitive<TVal, TSubcl> : IEquatable<TSubcl>, IComparable<TSubcl>
         where TSubcl : DomainPrimitive<TVal, TSubcl> where TVal : IComparable<TVal>

@@ -1,7 +1,7 @@
+using Common.Domain;
 using Data.Application.ViewModels.DataSource.Preview;
 using Data.Domain.Services;
 using FluentAssertions;
-using Infrastructure.Domain;
 using NNLib.Common;
 using Xunit;
 

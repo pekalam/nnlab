@@ -1,5 +1,4 @@
-﻿using Infrastructure.Domain;
-using NNLib.Common;
+﻿using NNLib.Common;
 using OxyPlot;
 using OxyPlot.Series;
 using Serilog;
@@ -7,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using Common.Domain;
 
 namespace Data.Application.ViewModels.DataSource.Statistics
 {

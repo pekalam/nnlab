@@ -2,12 +2,12 @@
 using Data.Application.ViewModels.DataSetDivision;
 using Data.Application.ViewModels.DataSource.FileDataSource;
 using Data.Application.ViewModels.DataSource.VariablesSelection;
-using Infrastructure.Domain;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Regions;
 using Shell.Interface;
 using System.Windows;
+using Common.Domain;
 
 namespace Data.Application.Controllers.DataSource
 {

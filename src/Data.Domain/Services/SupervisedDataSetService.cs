@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using Common.Domain;
-using Infrastructure.Domain;
 using NNLib.Common;
 using NNLib.Csv;
 

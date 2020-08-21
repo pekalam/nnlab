@@ -1,7 +1,6 @@
 ﻿using System;
 using Castle.DynamicProxy;
 using Common.Domain;
-using Infrastructure.Domain;
 using Moq;
 using NNLib.Common;
 using Prism.Regions;
