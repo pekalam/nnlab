@@ -1,5 +1,4 @@
 ﻿using Common.Domain;
-using Common.Framework;
 using Data.Application.Controllers;
 using Data.Application.Services;
 using Data.Application.ViewModels.DataSource.VariablesSelection;
@@ -10,7 +9,7 @@ using NNLib.Common;
 using TestUtils;
 using Xunit;
 
-namespace Data.Application.Tests.Application.VariablesSelection
+namespace Data.Application.Tests.VariablesSelection
 {
     public class VariablesSelectionTest
     {
@@ -26,9 +25,9 @@ namespace Data.Application.Tests.Application.VariablesSelection
         {
             _mocker.UseTestRm();
 
-            _mocker.UseImpl<ISupervisedDataSetService,SupervisedDataSetService>();
             _appState = _mocker.UseImpl<AppState>();
-            _session = _appState.SessionManager.Create();
+            _mocker.UseImpl<ITrainingDataService,TrainingDataService>();
+            _session = _appState.CreateSession();
             _session.TrainingData = TrainingDataMocks.ValidData4;
 
             _ctrl = _mocker.UseImpl<IVariablesSelectionService, VariablesSelectionController>();
@@ -47,10 +46,10 @@ namespace Data.Application.Tests.Application.VariablesSelection
                 model.PropertyChanged += (sender, args) => _ = model[args.PropertyName];
             }
 
-            //how many times training data was set
+            //how many times variables were set
             var called = 0;
-            _session.PropertyChanged +=
-                (sender, args) => _ = args.PropertyName == nameof(Session.TrainingData) ? called++ : 0;
+            _session.TrainingData.PropertyChanged +=
+                (sender, args) => _ = args.PropertyName == nameof(TrainingData.Variables) ? called++ : 0;
 
             //Input Input Target
             _vm.Variables[1].VariableUse = VariableUses.Input;

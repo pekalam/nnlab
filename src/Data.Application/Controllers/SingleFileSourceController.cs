@@ -17,14 +17,14 @@ namespace Data.Application.Controllers
         private bool _canLoad;
         private bool _canReturn = true;
         private TrainingData _loadedTrainingData;
-        private readonly ISupervisedDataSetService _dataSetService;
+        private readonly ITrainingDataService _dataService;
         private readonly ICsvValidationService _csvValidationService;
         private readonly IRegionManager _rm;
         private readonly AppState _appState;
 
-        public SingleFileSourceController(ISupervisedDataSetService dataSetService, ICsvValidationService csvValidationService, IRegionManager rm, AppState appState)
+        public SingleFileSourceController(ITrainingDataService dataService, ICsvValidationService csvValidationService, IRegionManager rm, AppState appState)
         {
-            _dataSetService = dataSetService;
+            _dataService = dataService;
             _csvValidationService = csvValidationService;
             _rm = rm;
             _appState = appState;
@@ -56,7 +56,7 @@ namespace Data.Application.Controllers
         {
             SetCanReturn(false);
             _singleFileService.SetLoading();
-            await Task.Run(() => _loadedTrainingData = _dataSetService.LoadDefaultSet(path));
+            await Task.Run(() => _loadedTrainingData = _dataService.LoadDefaultSet(path));
             _singleFileService.SetLoaded(_loadedTrainingData);
             SetCanReturn(true);
             _singleFileService.ContinueCommand.RaiseCanExecuteChanged();
@@ -87,7 +87,7 @@ namespace Data.Application.Controllers
 
         private void Continue()
         {
-            var session = _appState.SessionManager.Create();
+            var session = _appState.CreateSession();
 
             session.TrainingData = _loadedTrainingData;
             session.SingleDataFile = SingleFileSourceViewModel.Instance.SelectedFilePath;

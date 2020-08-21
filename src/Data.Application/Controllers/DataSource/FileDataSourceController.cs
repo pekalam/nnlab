@@ -40,7 +40,7 @@ namespace Data.Application.Controllers.DataSource
 
         private void DivideDataset()
         {
-            var session = _appState.SessionManager.ActiveSession;
+            var session = _appState.ActiveSession;
             _ea.GetEvent<ShowFlyout>().Publish(new FlyoutArgs()
             {
                 Title = "Divide data set"

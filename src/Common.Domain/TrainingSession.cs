@@ -1,5 +1,10 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using NNLib;
@@ -24,97 +29,98 @@ namespace Common.Domain
         Paused,
     }
 
-    //TODO training
-    // public class SessionEndTypeConverter : IValueConverter
-    // {
-    //     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-    //     {
-    //         var t = (TrainingSessionReport) value;
-    //
-    //         if (t == null)
-    //         {
-    //             return "";
-    //         }
-    //
-    //         switch (t.SessionEndType)
-    //         {
-    //             case SessionEndType.TargetReached:
-    //                 return $"Target reached ({t.TrainingParameters.TargetError})";
-    //
-    //             case SessionEndType.Stopped:
-    //                 return "Session stopped";
-    //             case SessionEndType.Timeout:
-    //                 return "Timeout";
-    //             case SessionEndType.MaxEpoch:
-    //                 return "Max epoch number reached";
-    //             case SessionEndType.NaNResult:
-    //                 return "Error reached NaN value";
-    //             case SessionEndType.AlgorithmError:
-    //                 return "Algorithm error";
-    //             case SessionEndType.Paused:
-    //                 return "Session paused";
-    //         }
-    //
-    //         return string.Empty;
-    //     }
-    //
-    //     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-    //     {
-    //         throw new NotImplementedException();
-    //     }
-    // }
+    public class TrainingReportsCollection : ObservableCollection<TrainingSessionReport>
+    {
+        protected override void ClearItems()
+        {
+            if (Count > 0 && TrainingSessionReport.IsTerminatingSessionType(Items[^1].SessionEndType))
+            {
+                throw new InvalidOperationException("Cannot clear session reports because last session is of type " + Items[^1].SessionEndType);
+            }
+            base.ClearItems();
+        }
 
+        protected override void InsertItem(int index, TrainingSessionReport item)
+        {
+            if (index != Count) throw new InvalidOperationException("Cannot insert item with index " + index);
+            if(Items.Count > 0 && Items[^1].StartDate + Items[^1].Duration > item.StartDate) throw new ArgumentException("Training session is overlapping previous");
+            
+            base.InsertItem(index, item);
+        }
+
+        protected override void MoveItem(int oldIndex, int newIndex)
+        {
+            throw new InvalidOperationException("Cannot move item in session reports collection");
+        }
+
+        protected override void RemoveItem(int index)
+        {
+            if (index == Count - 1 && TrainingSessionReport.IsTerminatingSessionType(Items[index].SessionEndType))
+            {
+                throw new InvalidOperationException("Cannot remove report of type " + Items[index].SessionEndType);
+            }
+            base.RemoveItem(index);
+        }
+
+        protected override void SetItem(int index, TrainingSessionReport item)
+        {
+            throw new InvalidOperationException("Cannot replace item in session reports collection");
+        }
+    }
+
+    public static class Time
+    {
+        internal static Func<DateTime> TimeProvider = () => DateTime.Now;
+        public static DateTime Now => TimeProvider();
+    }
+    
     public class TrainingSessionReport
     {
+        public static bool IsTerminatingSessionType(SessionEndType type) =>
+            type == SessionEndType.Stopped || type == SessionEndType.TargetReached;
+        
         public SessionEndType SessionEndType { get; }
         public int TotalEpochs { get; }
         public double Error { get; }
-        public TrainingParameters TrainingParameters { get; }
         public DateTime StartDate { get; }
-        public TimeSpan EndTime { get; }
-        public string SessionName { get; }
+        public TimeSpan Duration { get; }
+        
+        public DateTime EndDate { get; }
         public double? ValidationError { get; set; }
         public double? TestError { get; set; }
 
-        public TrainingSessionReport(SessionEndType sessionEndType, int totalEpochs, double error,
-            TrainingParameters trainingParameters, DateTime startDate, TimeSpan endTime, string sessionName)
+        public TrainingSessionReport(SessionEndType sessionEndType, int totalEpochs, double error, DateTime startDate, TimeSpan duration)
         {
+            if(totalEpochs < 0) throw new ArgumentException("totalEpochs < 0");
+            if(error < 0d) throw new ArgumentException("error < 0");
             SessionEndType = sessionEndType;
             TotalEpochs = totalEpochs;
             Error = error;
-            TrainingParameters = trainingParameters;
             StartDate = startDate;
-            EndTime = endTime;
-            SessionName = sessionName;
+            Duration = duration;
+            EndDate = startDate + duration;
         }
 
-        public static TrainingSessionReport CreateStoppedSessionReport(int totalEpochs, double error,
-            TrainingParameters trainingParameters, DateTime startTime, string sessionName) =>
-            new TrainingSessionReport(SessionEndType.Stopped, totalEpochs, error, trainingParameters, startTime, DateTime.Now - startTime, sessionName);
+        public static TrainingSessionReport CreateStoppedSessionReport(int totalEpochs, double error, DateTime startTime) =>
+            new TrainingSessionReport(SessionEndType.Stopped, totalEpochs, error, startTime, Time.Now - startTime);
 
-        public static TrainingSessionReport CreatePausedSessionReport(int totalEpochs, double error,
-            TrainingParameters trainingParameters, DateTime startTime, string sessionName) =>
-            new TrainingSessionReport(SessionEndType.Paused, totalEpochs, error, trainingParameters, startTime, DateTime.Now - startTime, sessionName);
+        public static TrainingSessionReport CreatePausedSessionReport(int totalEpochs, double error, DateTime startTime) =>
+            new TrainingSessionReport(SessionEndType.Paused, totalEpochs, error, startTime, Time.Now - startTime);
 
-        public static TrainingSessionReport CreateTargetReachedSessionReport(int totalEpochs, double error,
-            TrainingParameters trainingParameters, DateTime startTime, string sessionName) =>
-            new TrainingSessionReport(SessionEndType.TargetReached, totalEpochs, error, trainingParameters, startTime, DateTime.Now - startTime, sessionName);
+        public static TrainingSessionReport CreateTargetReachedSessionReport(int totalEpochs, double error, DateTime startTime) =>
+            new TrainingSessionReport(SessionEndType.TargetReached, totalEpochs, error, startTime, Time.Now - startTime);
 
-        public static TrainingSessionReport CreateMaxEpochSessionReport(int totalEpochs, double error,
-            TrainingParameters trainingParameters, DateTime startTime, string sessionName) =>
-            new TrainingSessionReport(SessionEndType.MaxEpoch, totalEpochs, error, trainingParameters, startTime, DateTime.Now - startTime, sessionName);
+        public static TrainingSessionReport CreateMaxEpochSessionReport(int totalEpochs, double error, DateTime startTime) =>
+            new TrainingSessionReport(SessionEndType.MaxEpoch, totalEpochs, error, startTime, Time.Now - startTime);
 
-        public static TrainingSessionReport CreateTimeoutSessionReport(int totalEpochs, double error,
-            TrainingParameters trainingParameters, DateTime startTime, string sessionName) =>
-            new TrainingSessionReport(SessionEndType.Timeout, totalEpochs, error, trainingParameters, startTime, DateTime.Now - startTime, sessionName);
+        public static TrainingSessionReport CreateTimeoutSessionReport(int totalEpochs, double error, DateTime startTime) =>
+            new TrainingSessionReport(SessionEndType.Timeout, totalEpochs, error, startTime, Time.Now - startTime);
 
-        public static TrainingSessionReport CreateNaNSessionReport(int totalEpochs, double error,
-            TrainingParameters trainingParameters, DateTime startTime, string sessionName) =>
-            new TrainingSessionReport(SessionEndType.NaNResult, totalEpochs, error, trainingParameters, startTime, DateTime.Now - startTime, sessionName);
+        public static TrainingSessionReport CreateNaNSessionReport(int totalEpochs, double error, DateTime startTime) =>
+            new TrainingSessionReport(SessionEndType.NaNResult, totalEpochs, error, startTime, Time.Now - startTime);
 
-        public static TrainingSessionReport CreateAlgorithmErrorSessionReport(int totalEpochs, double error,
-            TrainingParameters trainingParameters, DateTime startTime, string sessionName) =>
-            new TrainingSessionReport(SessionEndType.AlgorithmError, totalEpochs, error, trainingParameters, startTime, DateTime.Now - startTime, sessionName);
+        public static TrainingSessionReport CreateAlgorithmErrorSessionReport(int totalEpochs, double error, DateTime startTime) =>
+            new TrainingSessionReport(SessionEndType.AlgorithmError, totalEpochs, error, startTime, Time.Now - startTime);
     }
 
     public class TrainingSession
@@ -202,7 +208,7 @@ namespace Common.Domain
         {
             if (!Started)
             {
-                Report = TrainingSessionReport.CreateStoppedSessionReport(Trainer.Epochs, Trainer.Error, TrainingParameters, StartTime, SessionName);
+                Report = TrainingSessionReport.CreateStoppedSessionReport(Trainer.Epochs, Trainer.Error, StartTime);
                 Stopped = true;
                 return Task.CompletedTask;
             }
@@ -228,26 +234,23 @@ namespace Common.Domain
                 if (_stopRequested)
                 {
                     Stopped = true;
-                    return TrainingSessionReport.CreateStoppedSessionReport(Trainer.Epochs, Trainer.Error,
-                        TrainingParameters, StartTime, SessionName);
+                    return TrainingSessionReport.CreateStoppedSessionReport(Trainer.Epochs, Trainer.Error, StartTime);
                 }
 
                 if ((DateTime.Now - StartTime) + _elapsed > TrainingParameters.MaxLearningTime)
                 {
                     Stopped = true;
-                    return TrainingSessionReport.CreateTimeoutSessionReport(Trainer.Epochs, Trainer.Error,
-                        TrainingParameters, StartTime, SessionName);
+                    return TrainingSessionReport.CreateTimeoutSessionReport(Trainer.Epochs, Trainer.Error, StartTime);
                 }
 
-                return TrainingSessionReport.CreatePausedSessionReport(Trainer.Epochs, Trainer.Error,
-                    TrainingParameters, StartTime, SessionName);
+                return TrainingSessionReport.CreatePausedSessionReport(Trainer.Epochs, Trainer.Error, StartTime);
             }
 
             CheckCanStart();
 
             if (double.IsNaN(Trainer.Error) && !_reseted)
             {
-                return TrainingSessionReport.CreateNaNSessionReport(Trainer.Epochs, Trainer.Error, TrainingParameters, StartTime, SessionName);
+                return TrainingSessionReport.CreateNaNSessionReport(Trainer.Epochs, Trainer.Error, StartTime);
             }
 
             if (TrainingParameters.MaxLearningTime != TimeSpan.MaxValue)
@@ -277,7 +280,7 @@ namespace Common.Domain
                 }
                 catch (AlgorithmFailed)
                 {
-                    return TrainingSessionReport.CreateAlgorithmErrorSessionReport(Trainer.Epochs,error,TrainingParameters, StartTime, SessionName);
+                    return TrainingSessionReport.CreateAlgorithmErrorSessionReport(Trainer.Epochs,error, StartTime);
                 }
 
                 var arg = new EpochEndArgs()
@@ -296,18 +299,18 @@ namespace Common.Domain
                 if (Trainer.Epochs == TrainingParameters.MaxEpochs)
                 {
                     Stopped = true;
-                    return TrainingSessionReport.CreateMaxEpochSessionReport(Trainer.Epochs, error, TrainingParameters, StartTime, SessionName);
+                    return TrainingSessionReport.CreateMaxEpochSessionReport(Trainer.Epochs, error, StartTime);
                 }
 
                 if (double.IsNaN(error))
                 {
-                    return TrainingSessionReport.CreateNaNSessionReport(Trainer.Epochs, error, TrainingParameters, StartTime, SessionName);
+                    return TrainingSessionReport.CreateNaNSessionReport(Trainer.Epochs, error, StartTime);
                 }
 
             } while (error > TrainingParameters.TargetError);
 
             Stopped = true;
-            return TrainingSessionReport.CreateTargetReachedSessionReport(Trainer.Epochs, error, TrainingParameters, StartTime, SessionName);
+            return TrainingSessionReport.CreateTargetReachedSessionReport(Trainer.Epochs, error, StartTime);
         }
 
         public Task<TrainingSessionReport> Start()

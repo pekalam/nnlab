@@ -7,7 +7,7 @@ namespace Data.Domain
     {
         public static void RegisterTypes(IContainerRegistry cr)
         {
-            cr.Register<ISupervisedDataSetService, SupervisedDataSetService>()
+            cr.Register<ITrainingDataService, TrainingDataService>()
                 .Register<ICsvValidationService, CsvValidationService>()
                 .Register<INormalizationDomainService, NormalizationDomainService>();
         }

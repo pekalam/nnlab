@@ -12,7 +12,7 @@ using Prism.Regions;
 using TestUtils;
 using Xunit;
 
-namespace Data.Application.Tests.Application
+namespace Data.Application.Tests
 {
     public class DataSetDivisionTests
     {
@@ -27,7 +27,7 @@ namespace Data.Application.Tests.Application
         {
             _mocker.UseMock<IEventAggregator, EventAggregator>();
             _mocker.UseTestRm();
-            _appState = _mocker.UseMock<AppState>().Object;
+            _appState = _mocker.UseImpl<AppState>();
             _service = _mocker.UseMock<IDataSetDivisionService, DataSetDivisionService>().Object;
             _ctrl = _mocker.CreateInstance<DataSetDivisionController>();
             _vm = _mocker.CreateInstance<DataSetDivisionViewModel>();
@@ -37,7 +37,7 @@ namespace Data.Application.Tests.Application
         public void DivideMemoryDataCommand_sets_divided_training_data_in_appstate()
         {
             //arrange
-            var session = _appState.SessionManager.Create();
+            var session = _appState.CreateSession();
             session.TrainingData = TrainingDataMocks.ValidData2;
 
             _vm.TrainingSetPercent = 50;
@@ -106,7 +106,7 @@ namespace Data.Application.Tests.Application
         public void DataSetDivisionVm_sets_data_set_percents_based_on_app_state()
         {
             var appState = new AppState();
-            var session = appState.SessionManager.Create();
+            var session = appState.CreateSession();
             session.TrainingData = TrainingDataMocks.ValidData1;
 
             var vm = new DataSetDivisionViewModel(_service, appState);

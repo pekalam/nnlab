@@ -1,5 +1,4 @@
 ﻿using Common.Domain;
-using Common.Framework;
 using Data.Application.Controllers;
 using Data.Application.Services;
 using Data.Application.ViewModels.CustomDataSet;
@@ -9,7 +8,7 @@ using OxyPlot;
 using TestUtils;
 using Xunit;
 
-namespace Data.Application.Tests.Application.CustomDataSet
+namespace Data.Application.Tests.CustomDataSet
 {
     public class CustomDataSetCreationTests
     {
@@ -23,8 +22,8 @@ namespace Data.Application.Tests.Application.CustomDataSet
         public CustomDataSetCreationTests()
         {
             _mocker.UseTestRm();
+            _appState = _mocker.UseImpl<AppState>();
             _ctrl = _mocker.UseImpl<ICustomDataSetService,CustomDataSetController>();
-            _appState = _mocker.UseMock<AppState>().Object;
             _vm = _mocker.CreateInstance<CustomDataSetViewModel>();
 
             _dsService = _ctrl;
@@ -35,8 +34,8 @@ namespace Data.Application.Tests.Application.CustomDataSet
         [Fact]
         public void New_session_is_created_after_viewmodel_is_created()
         {
-            _appState.SessionManager.Sessions.Count.Should().Be(1);
-            _appState.SessionManager.ActiveSession.Should().NotBeNull();
+            _appState.Sessions.Count.Should().Be(1);
+            _appState.ActiveSession.Should().NotBeNull();
         }
 
         [Fact]
@@ -48,7 +47,7 @@ namespace Data.Application.Tests.Application.CustomDataSet
                 ClickCount = 2, Position = new ScreenPoint(0,0), ChangedButton = OxyMouseButton.Left,
             });
             //assert
-            _appState.SessionManager.ActiveSession.TrainingData.Should().BeNull();
+            _appState.ActiveSession.TrainingData.Should().BeNull();
 
             //act
             _dsService.PlotMouseDownCommand.Execute(new OxyMouseDownEventArgs()
@@ -56,7 +55,7 @@ namespace Data.Application.Tests.Application.CustomDataSet
                 ClickCount = 2, Position = new ScreenPoint(1, 0), ChangedButton = OxyMouseButton.Left,
             });
             //assert
-            _appState.SessionManager.ActiveSession.TrainingData.Should().BeNull();
+            _appState.ActiveSession.TrainingData.Should().BeNull();
 
 
             //act
@@ -65,10 +64,10 @@ namespace Data.Application.Tests.Application.CustomDataSet
                 ClickCount = 2, Position = new ScreenPoint(2, 0), ChangedButton = OxyMouseButton.Left,
             });
             //assert
-            _appState.SessionManager.ActiveSession.TrainingData.Should().NotBeNull();
+            _appState.ActiveSession.TrainingData.Should().NotBeNull();
 
-            _appState.SessionManager.ActiveSession.TrainingData.Sets.TrainingSet.Input.Count.Should().Be(3);
-            _appState.SessionManager.ActiveSession.TrainingData.Sets.TrainingSet.Target.Count.Should().Be(3);
+            _appState.ActiveSession.TrainingData.Sets.TrainingSet.Input.Count.Should().Be(3);
+            _appState.ActiveSession.TrainingData.Sets.TrainingSet.Target.Count.Should().Be(3);
         }
     }
 }

@@ -7,19 +7,16 @@ namespace Common.Domain
 {
     public class SupervisedSetVariables
     {
-        private readonly SupervisedSetVariableIndexes _variableIndexes;
-        private readonly VariableName[] _variableNames;
-
         public SupervisedSetVariables(SupervisedSetVariableIndexes variableIndexes, VariableName[] variableNames)
         {
             ValidateCtorParams(variableIndexes, variableNames);
-            _variableIndexes = variableIndexes;
-            _variableNames = variableNames;
+            Indexes = variableIndexes;
+            Names = variableNames;
         }
 
-        public SupervisedSetVariableIndexes Indexes => _variableIndexes;
-        public VariableName[] Names => _variableNames;
-        public int Length => _variableNames.Length;
+        public SupervisedSetVariableIndexes Indexes { get; }
+        public VariableName[] Names { get; }
+        public int Length => Names.Length;
 
         private void ValidateCtorParams(SupervisedSetVariableIndexes variableIndexes, VariableName[] variableNames)
         {
@@ -42,7 +39,7 @@ namespace Common.Domain
                 var names = new List<string>();
                 for (int i = 0; i < Indexes.InputVarIndexes.Length; i++)
                 {
-                    names.Add(_variableNames[Indexes.InputVarIndexes[i]]);
+                    names.Add(Names[Indexes.InputVarIndexes[i]]);
                 }
 
                 return names.ToArray();
@@ -56,13 +53,13 @@ namespace Common.Domain
                 var names = new List<string>();
                 for (int i = 0; i < Indexes.TargetVarIndexes.Length; i++)
                 {
-                    names.Add(_variableNames[Indexes.TargetVarIndexes[i]]);
+                    names.Add(Names[Indexes.TargetVarIndexes[i]]);
                 }
 
                 return names.ToArray();
             }
         }
 
-        public SupervisedSetVariables Clone() => new SupervisedSetVariables(_variableIndexes.Clone(), _variableNames.Select(v => new VariableName(v.ToString())).ToArray());
+        public SupervisedSetVariables Clone() => new SupervisedSetVariables(Indexes.Clone(), Names.Select(v => new VariableName(v.ToString())).ToArray());
     }
 }

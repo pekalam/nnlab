@@ -16,7 +16,7 @@ namespace Data.Application.Controllers
         private MultiFileService _multiFileService;
         private readonly IRegionManager _rm;
         private readonly ICsvValidationService _csvValidationService;
-        private readonly ISupervisedDataSetService _dataSetService;
+        private readonly ITrainingDataService _dataService;
         private readonly IFileDialogService _fileDialogService;
         private readonly AppState _appState;
 
@@ -31,11 +31,11 @@ namespace Data.Application.Controllers
 
 
         public MultiFileSourceController(IRegionManager rm, ICsvValidationService csvValidationService,
-            ISupervisedDataSetService dataSetService, AppState appState, IFileDialogService fileDialogService)
+            ITrainingDataService dataService, AppState appState, IFileDialogService fileDialogService)
         {
             _rm = rm;
             _csvValidationService = csvValidationService;
-            _dataSetService = dataSetService;
+            _dataService = dataService;
             _appState = appState;
             _fileDialogService = fileDialogService;
         }
@@ -69,7 +69,7 @@ namespace Data.Application.Controllers
         private void Continue()
         {
             var vm = MultiFileSourceViewModel.Instance;
-            var session = _appState.SessionManager.Create();
+            var session = _appState.CreateSession();
             session.TrainingData = _trainingData;
             session.TrainingDataFile = vm.TrainingSetFilePath;
             session.TestDataFile = vm.TestSetFilePath;
@@ -104,7 +104,7 @@ namespace Data.Application.Controllers
         {
             _multiFileService.SetIsLoading();
 
-            _trainingData = _dataSetService.LoadDefaultSetsFromFiles(arg.Value.trainingFile, arg.Value.validationFile,
+            _trainingData = _dataService.LoadDefaultSetsFromFiles(arg.Value.trainingFile, arg.Value.validationFile,
                 arg.Value.testFile);
             _continueCanExec = true;
             _multiFileService.ContinueCommand.RaiseCanExecuteChanged();

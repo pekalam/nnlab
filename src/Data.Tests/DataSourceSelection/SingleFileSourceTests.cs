@@ -12,14 +12,14 @@ using Prism.Commands;
 using TestUtils;
 using Xunit;
 
-namespace Data.Application.Tests.Application
+namespace Data.Application.Tests.DataSourceSelection
 {
     public class SingleFileSourceTests
     {
         private AutoMocker _mocker = new AutoMocker();
         private Mock<ICsvValidationService> _csvValidation;
         private SingleFileService _singleFileService;
-        private Mock<ISupervisedDataSetService> _dataSetService;
+        private Mock<ITrainingDataService> _dataSetService;
 
         private SingleFileSourceController _ctrl;
         private SingleFileSourceViewModel _vm;
@@ -28,9 +28,9 @@ namespace Data.Application.Tests.Application
         public SingleFileSourceTests()
         {
             _mocker.UseTestRm();
+            _appState = _mocker.UseImpl<AppState>();
             _csvValidation = _mocker.UseMock<ICsvValidationService>();
-            _dataSetService = _mocker.UseMock<ISupervisedDataSetService>();
-            _appState = _mocker.UseMock<AppState>().Object;
+            _dataSetService = _mocker.UseMock<ITrainingDataService>();
             _ctrl = _mocker.UseImpl<ITransientController<SingleFileService>, SingleFileSourceController>();
             _singleFileService = _mocker.UseImpl<ISingleFileService, SingleFileService>();
 
@@ -122,8 +122,8 @@ namespace Data.Application.Tests.Application
 
             singleFileService.ContinueCommand.Execute();
 
-            _appState.SessionManager.Sessions.Count.Should().Be(1);
-            var session = _appState.SessionManager.ActiveSession;
+            _appState.Sessions.Count.Should().Be(1);
+            var session = _appState.ActiveSession;
 
             session.TrainingData.Should().Be(trainingData);
             session.SingleDataFile.Should().Be(file);

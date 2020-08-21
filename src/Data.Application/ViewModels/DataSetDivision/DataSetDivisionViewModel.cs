@@ -47,9 +47,9 @@ namespace Data.Application.ViewModels.DataSetDivision
             Service = service;
             KeepAlive = false;
 
-            if (appState.SessionManager.ActiveSession?.TrainingData != null)
+            if (appState.ActiveSession?.TrainingData != null)
             {
-                var data = appState.SessionManager.ActiveSession.TrainingData;
+                var data = appState.ActiveSession.TrainingData;
                 var total = data.Sets.TrainingSet.Input.Count + (data.Sets.ValidationSet?.Input.Count ?? 0) + (data.Sets.TestSet?.Input.Count ?? 0);
 
                 _trainingSetPercent = (int)Math.Round(data.Sets.TrainingSet.Input.Count * 100.0 / total);

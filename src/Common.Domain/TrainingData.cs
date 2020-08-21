@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using NNLib.Common;
 using NNLib.Csv;
+using Prism.Mvvm;
 
 namespace Common.Domain
 {
@@ -8,11 +10,17 @@ namespace Common.Domain
     {
         Memory,Csv
     }
-    public class TrainingData
+    public class TrainingData : BindableBase
     {
+        private SupervisedSetVariables _variables;
         public SupervisedTrainingSets Sets { get; }
-        public SupervisedSetVariables Variables { get; }
         public TrainingDataSource Source { get; }
+
+        public SupervisedSetVariables Variables
+        {
+            get => _variables;
+            set => SetProperty(ref _variables, value ?? throw new NullReferenceException("Null Variables"));
+        }
 
         public TrainingData(SupervisedTrainingSets sets, SupervisedSetVariables variables, TrainingDataSource source)
         {
@@ -46,7 +54,7 @@ namespace Common.Domain
             }
         }
 
-        public SupervisedSet GetSet(DataSetType type)
+        public SupervisedSet? GetSet(DataSetType type)
         {
             switch (type)
             {
@@ -97,7 +105,7 @@ namespace Common.Domain
             }
 
 
-            return new TrainingData(setsCpy, Variables.Clone(), Source);
+            return new TrainingData(setsCpy!, Variables.Clone(), Source);
         }
     }
 }

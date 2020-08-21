@@ -6,15 +6,15 @@ using NNLib.Csv;
 
 namespace Data.Domain.Services
 {
-    public interface ISupervisedDataSetService
+    public interface ITrainingDataService
     {
         TrainingData LoadDefaultSet(string fileName);
         TrainingData LoadSets(string fileName, IDataSetDivider? divider, DataSetDivisionOptions? divisionOptions, SupervisedSetVariableIndexes? variableIndexes);
         TrainingData LoadDefaultSetsFromFiles(string trainingSetFile, string validationSetFile, string testSetFile);
-        TrainingData ChangeVariables(SupervisedSetVariableIndexes newVariableIndexes, TrainingData trainingData);
+        void ChangeVariables(SupervisedSetVariableIndexes newVariableIndexes, TrainingData trainingData);
     }
 
-    internal class SupervisedDataSetService : ISupervisedDataSetService
+    internal class TrainingDataService : ITrainingDataService
     {
         public TrainingData LoadDefaultSet(string fileName) => LoadSets(fileName, null, null, null);
 
@@ -66,7 +66,7 @@ namespace Data.Domain.Services
             return new TrainingData(sets, variables, TrainingDataSource.Csv);
         }
 
-        public TrainingData ChangeVariables(SupervisedSetVariableIndexes newVariableIndexes, TrainingData trainingData)
+        public void ChangeVariables(SupervisedSetVariableIndexes newVariableIndexes, TrainingData trainingData)
         {
             if (trainingData.Source == TrainingDataSource.Csv)
             {
@@ -74,7 +74,7 @@ namespace Data.Domain.Services
             }
 
             var newVariables = new SupervisedSetVariables(newVariableIndexes, trainingData.Variables.Names);
-            return new TrainingData(trainingData.Sets, newVariables, trainingData.Source);
+            trainingData.Variables = newVariables;
         }
     }
 }

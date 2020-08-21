@@ -13,7 +13,7 @@ using TestUtils;
 using Xunit;
 
 [assembly: CollectionBehavior(DisableTestParallelization = true)]
-namespace Data.Application.Tests.Application
+namespace Data.Application.Tests.DataSourceSelection
 {
     public class FileSelectTest
     {

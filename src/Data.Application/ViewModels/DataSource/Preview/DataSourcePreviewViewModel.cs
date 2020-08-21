@@ -45,18 +45,18 @@ namespace Data.Application.ViewModels.DataSource.Preview
 
         public DataSourcePreviewViewModel(AppState appState)
         {
-            if (appState.SessionManager.ActiveSession?.TrainingData != null)
+            if (appState.ActiveSession?.TrainingData != null)
             {
-                SetTrainingData(appState.SessionManager.ActiveSession.TrainingData);
+                SetTrainingData(appState.ActiveSession.TrainingData);
             }
 
-            if (appState.SessionManager.ActiveSession != null)
+            if (appState.ActiveSession != null)
             {
-                appState.SessionManager.ActiveSession.PropertyChanged += (sender, args) =>
+                appState.ActiveSession.PropertyChanged += (sender, args) =>
                 {
                     if (args.PropertyName == nameof(Session.TrainingData))
                     {
-                        SetTrainingData(appState.SessionManager.ActiveSession.TrainingData);
+                        SetTrainingData(appState.ActiveSession.TrainingData);
                     }
                 };
             }

@@ -1,30 +1,42 @@
 ﻿using System.IO;
 using System.Linq;
+using Castle.DynamicProxy;
+using Common.Domain;
 using Data.Domain.Services;
 using FluentAssertions;
+using Moq.AutoMock;
 using NNLib.Common;
+using TestUtils;
 using Xunit;
 
-namespace Data.Application.Tests.Domain.FileServices
+namespace Data.Domain.Tests
 {
-    public class SupervisedDataSetServiceTests
+    public class TrainingDataServiceTests
     {
-        [Theory]
-        [InlineData(100, 99, 1024 * 1024)]
-        [InlineData(100, 99, 16)]
-        [InlineData(33, 33, 16)]
-        [InlineData(33, 33, 1024 * 1024)]
-        public void LoadSets_when_valid_params_returns_valid_trainingData(int trainingSetPercentage, int setCount,
-            int pageSize)
+        private AutoMocker _mocker = new AutoMocker();
+        private ITrainingDataService _service;
+
+        public TrainingDataServiceTests()
         {
-            var dsService = new SupervisedDataSetService();
+            _service = _mocker.CreateInstance<TrainingDataService>();
+        }
+
+        [Theory]
+        [InlineData(100, 99)]
+        [InlineData(100, 99)]
+        [InlineData(33, 33)]
+        [InlineData(33, 33)]
+        public void LoadSets_when_valid_params_returns_valid_trainingData(int trainingSetPercentage, int setCount)
+        {
 
             var fileName = @"Files\plik.csv";
 
-            var trainingData = dsService.LoadSets(fileName, new LinearDataSetDivider(), new DataSetDivisionOptions()
+            var trainingData = _service.LoadSets(fileName, new LinearDataSetDivider(), new DataSetDivisionOptions()
             {
                 TrainingSetPercent = trainingSetPercentage,
             }, new SupervisedSetVariableIndexes(new[] { 0 }, new[] { 1 }));
+            CheckFileIsNotLocked(fileName);
+            
 
 
             var trainingSet = trainingData.Sets.TrainingSet;
@@ -44,25 +56,27 @@ namespace Data.Application.Tests.Domain.FileServices
 
             trainingSet.Input.Dispose();
             trainingSet.Target.Dispose();
+
         }
 
 
         [Theory]
-        [InlineData(33, 33, 33, 33, 33, 33, 1024 * 1024)]
-        public void LoadSets_when_valid_params_returns_returns_3_divided_sets(int trainingSetPercentage,
+        [InlineData(33, 33, 33, 33, 33, 33)]
+        public void LoadSets_when_valid_params_returns_trainingData_with_3_sets(int trainingSetPercentage,
             int trainingSetCount, int validationSetPercentage, int validationSetCount, int testSetPercentage,
-            int testSetCount, int pageSize)
+            int testSetCount)
         {
-            var dsService = new SupervisedDataSetService();
 
             var fileName = @"Files\plik.csv";
 
-            var trainingData = dsService.LoadSets(fileName, new LinearDataSetDivider(), new DataSetDivisionOptions()
+            var trainingData = _service.LoadSets(fileName, new LinearDataSetDivider(), new DataSetDivisionOptions()
             {
                 TrainingSetPercent = trainingSetPercentage,
                 ValidationSetPercent = validationSetPercentage,
                 TestSetPercent = testSetPercentage,
             }, new SupervisedSetVariableIndexes(new[] { 0 }, new[] { 1 }));
+            CheckFileIsNotLocked(fileName);
+            
 
 
             var trainingSet = trainingData.Sets.TrainingSet;
@@ -118,16 +132,19 @@ namespace Data.Application.Tests.Domain.FileServices
 
             trainingSet.Input.Dispose();
             trainingSet.Target.Dispose();
+
         }
 
         [Fact]
         public void LoadDefaultSet_when_valid_params_returns_valid_default_trainingData()
         {
-            var dsService = new SupervisedDataSetService();
 
             var fileName = @"Files\plik.csv";
 
-            var trainingData = dsService.LoadDefaultSet(fileName);
+            var trainingData = _service.LoadDefaultSet(fileName);
+            CheckFileIsNotLocked(fileName);
+            
+
             trainingData.Variables.Names.Select(v => (string)v).Should().BeEquivalentTo("x", "y");
             trainingData.Variables.Indexes.InputVarIndexes.Should().BeEquivalentTo(0);
             trainingData.Variables.Indexes.TargetVarIndexes.Should().AllBeEquivalentTo(1);
@@ -175,11 +192,14 @@ namespace Data.Application.Tests.Domain.FileServices
         [Fact]
         public void LoadSetFiles_when_valid_csv_file_reads_files_into_sets()
         {
-            var dsService = new SupervisedDataSetService();
 
             var files = new[] { @"Files\plik_t.csv", @"Files\plik_v.csv", @"Files\plik_ts.csv" };
 
-            var trainingData = dsService.LoadDefaultSetsFromFiles(trainingSetFile: files[0], validationSetFile: files[1], testSetFile: files[2]);
+            var trainingData = _service.LoadDefaultSetsFromFiles(trainingSetFile: files[0], validationSetFile: files[1], testSetFile: files[2]);
+            CheckFileIsNotLocked(files[0]);
+            CheckFileIsNotLocked(files[1]);
+            CheckFileIsNotLocked(files[2]);
+
             trainingData.Variables.Names.Select(v => (string)v).Should().BeEquivalentTo("x", "y");
             trainingData.Variables.Indexes.InputVarIndexes.Should().BeEquivalentTo(0);
             trainingData.Variables.Indexes.TargetVarIndexes.Should().BeEquivalentTo(1);
@@ -203,34 +223,33 @@ namespace Data.Application.Tests.Domain.FileServices
         [Fact]
         public void ChangeVariables_when_called_changes_vector_sets_indices()
         {
-            var dsService = new SupervisedDataSetService();
             var fileName = @"Files\testxyz.csv";
 
 
-            var loadedData = dsService.LoadSets(fileName, new LinearDataSetDivider(), new DataSetDivisionOptions()
+            var trainingData = _service.LoadSets(fileName, new LinearDataSetDivider(), new DataSetDivisionOptions()
             {
                 TrainingSetPercent = 33,
                 ValidationSetPercent = 33,
                 TestSetPercent = 33
             }, new SupervisedSetVariableIndexes(new[] { 0 }, new[] { 1, 2 }));
+            
 
-
-            loadedData.Sets.TrainingSet.Input[0].RowCount.Should().Be(1);
-            loadedData.Sets.TrainingSet.Input[0][0, 0].Should().Be(1);
-            loadedData.Sets.TrainingSet.Target[0].RowCount.Should().Be(2);
-            loadedData.Sets.TrainingSet.Target[0][0, 0].Should().Be(1);
-            loadedData.Sets.TrainingSet.Target[0][1, 0].Should().Be(1);
+            trainingData.Sets.TrainingSet.Input[0].RowCount.Should().Be(1);
+            trainingData.Sets.TrainingSet.Input[0][0, 0].Should().Be(1);
+            trainingData.Sets.TrainingSet.Target[0].RowCount.Should().Be(2);
+            trainingData.Sets.TrainingSet.Target[0][0, 0].Should().Be(1);
+            trainingData.Sets.TrainingSet.Target[0][1, 0].Should().Be(1);
 
 
             var newVariables = new SupervisedSetVariableIndexes(new[] { 0, 1 }, new[] { 2 });
 
-            loadedData = dsService.ChangeVariables(newVariables, loadedData);
+            _service.ChangeVariables(newVariables, trainingData);
 
 
-            loadedData.Sets.TrainingSet.Input[0].RowCount.Should().Be(2);
-            loadedData.Sets.TrainingSet.Input[0][0, 0].Should().Be(1);
-            loadedData.Sets.TrainingSet.Input[0][1, 0].Should().Be(1);
-            loadedData.Sets.TrainingSet.Target[0].RowCount.Should().Be(1);
+            trainingData.Sets.TrainingSet.Input[0].RowCount.Should().Be(2);
+            trainingData.Sets.TrainingSet.Input[0][0, 0].Should().Be(1);
+            trainingData.Sets.TrainingSet.Input[0][1, 0].Should().Be(1);
+            trainingData.Sets.TrainingSet.Target[0].RowCount.Should().Be(1);
 
         }
     }

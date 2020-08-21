@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using NNLib;
@@ -7,93 +8,67 @@ using Prism.Mvvm;
 
 namespace Common.Domain
 {
-    public class AppState : INotifyPropertyChanged
+    public enum DuplicateOptions
     {
-        public AppState()
-        {
-            SessionManager = new SessionManager();
-        }
-
-        public SessionManager SessionManager { get; }
-
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+        All, NoData, NoNetwork, NoTrainingParams
     }
 
 
-    public class SessionManager : INotifyPropertyChanged
+    public class AppState : BindableBase
     {
-        public enum DuplicateOptions
+        private Session? _activeSession;
+
+
+        public Session? ActiveSession
         {
-            All,NoData,NoNetwork,NoTrainingParams
+            get => _activeSession;
+            set
+            {
+                if (value == null) throw new NullReferenceException("Null session");
+                if (!Sessions.Contains(value)) throw new ArgumentException("Session not found");
+                SetProperty(ref _activeSession, value);
+            }
         }
 
+        public ObservableCollection<Session> Sessions { get; } = new ObservableCollection<Session>();
 
-        private readonly List<Session> _sessions = new List<Session>();
-
-        public Session? ActiveSession { get; private set; }
-
-        public IReadOnlyList<Session> Sessions => _sessions;
-
-        public Session Create()
+        public Session CreateSession()
         {
-            var newSession = new Session("Unnamed" + (_sessions.Count > 0 ? " " + _sessions.Count : String.Empty));
-            _sessions.Add(newSession);
+            var newSession = new Session("Unnamed" + (Sessions.Count > 0 ? " " + Sessions.Count : string.Empty));
+            Sessions.Add(newSession);
 
-            if (_sessions.Count == 1)
+            if (Sessions.Count == 1)
             {
-                SetActive(newSession);
+                ActiveSession = newSession;
             }
 
             return newSession;
         }
 
-        public Session DuplicateActive(DuplicateOptions duplicateOptions = DuplicateOptions.All)
+        public Session DuplicateActiveSession(DuplicateOptions duplicateOptions = DuplicateOptions.All)
         {
-            if(ActiveSession == null) throw new InvalidOperationException("Cannot duplicate - null active session");
+            if (ActiveSession == null) throw new InvalidOperationException("Cannot duplicate - null active session");
 
-            var cpy = new Session("Unnamed" + (_sessions.Count > 0 ? " " + _sessions.Count : String.Empty));
+            var cpy = new Session("Unnamed" + (Sessions.Count > 0 ? " " + Sessions.Count : string.Empty));
 
             cpy.Network = duplicateOptions != DuplicateOptions.NoNetwork ? ActiveSession.Network?.Clone() : null;
             cpy.TrainingData = duplicateOptions != DuplicateOptions.NoData ? ActiveSession.TrainingData?.Clone() : null;
             cpy.TrainingParameters = duplicateOptions != DuplicateOptions.NoTrainingParams
-                ? ActiveSession.TrainingParameters.Clone()
+                ? ActiveSession.TrainingParameters?.Clone()
                 : null;
 
 
-            _sessions.Add(cpy);
-            SetActive(cpy);
+            Sessions.Add(cpy);
+            ActiveSession = cpy;
             return cpy;
         }
-
-        public void SetActive(Session session)
-        {
-            ActiveSession = session;
-            OnPropertyChanged(nameof(ActiveSession));
-        }
-
-
-
-
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
     }
+
 
     public class Session : BindableBase
     {
         private TrainingData? _trainingData;
         private MLPNetwork? _network;
-        private TrainingSessionReport? _trainingReport;
         private TrainingParameters? _trainingParameters;
 
         public Session(string name)
@@ -115,17 +90,24 @@ namespace Common.Domain
             set => SetProperty(ref _trainingData, value);
         }
 
+        public void UnloadTrainingData()
+        {
+            if(_trainingData == null) throw new NullReferenceException("Null trainingData");
+
+            _trainingData.Sets.TrainingSet.Dispose();
+            _trainingData.Sets.ValidationSet?.Dispose();
+            _trainingData.Sets.TestSet?.Dispose();
+
+            _trainingData = null;
+        }
+
         public MLPNetwork? Network
         {
             get => _network;
             set => SetProperty(ref _network, value);
         }
 
-        public TrainingSessionReport? TrainingReport
-        {
-            get => _trainingReport;
-            set => SetProperty(ref _trainingReport, value);
-        }
+        public TrainingReportsCollection TrainingReports { get; } = new TrainingReportsCollection();
 
         public TrainingParameters? TrainingParameters
         {

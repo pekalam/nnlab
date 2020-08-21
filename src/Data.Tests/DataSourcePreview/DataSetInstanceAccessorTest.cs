@@ -5,13 +5,13 @@ using FluentAssertions;
 using NNLib.Common;
 using Xunit;
 
-namespace Data.Application.Tests.Application.DataSourcePreview
+namespace Data.Application.Tests.DataSourcePreview
 {
     public class DataSetInstanceAccessorTest
     {
         private TrainingData LoadTrainingData(string fileName, SupervisedSetVariableIndexes variableIndexes)
         {
-            var dsService = new SupervisedDataSetService();
+            var dsService = new TrainingDataService();
             var data = dsService.LoadSets(fileName, new LinearDataSetDivider(), new DataSetDivisionOptions()
             {
                 TrainingSetPercent = 100,

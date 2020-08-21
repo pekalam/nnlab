@@ -2,7 +2,7 @@
 using FluentAssertions;
 using Xunit;
 
-namespace Data.Application.Tests.Domain.FileServices
+namespace Data.Domain.Tests
 {
     public class CsvValidationServiceTests
     {

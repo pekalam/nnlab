@@ -1,6 +1,8 @@
 using System;
+using System.Linq;
 using AutoFixture;
 using Common.Domain;
+using FakeItEasy;
 using FluentAssertions;
 using TestUtils;
 using Xunit;
@@ -9,32 +11,43 @@ namespace Common.Tests
 {
     public class AppStateTests
     {
+        private AppState appState = new AppState();
+
+
         [Fact]
         public void When_created_session_manager_has_no_active_sessions()
         {
-            //arrange & act
-            var appState = new AppState();
+            //assert
+            appState.ActiveSession.Should().BeNull();
+            appState.Sessions.Count.Should().Be(0);
+        }
+
+        [Fact]
+        public void CreatedSessions_distinct_names()
+        {
+            
+            appState.CreateSession(); 
+            appState.CreateSession();
 
             //assert
-            appState.SessionManager.ActiveSession.Should().BeNull();
-            appState.SessionManager.Sessions.Count.Should().Be(0);
+            appState.Sessions.Select(v => v.Name).Distinct().Should().HaveCount(2);
         }
 
         [Fact]
         public void CreateSession_when_0_sessions_calls_property_changed_event()
         {
             //arrange
-            var appState = new AppState();
-            appState.SessionManager.PropertyChanged += (sender, args) =>
-                args.PropertyName.Should().Be(nameof(SessionManager.ActiveSession));
+            
+            appState.PropertyChanged += (sender, args) =>
+                args.PropertyName.Should().Be(nameof(AppState.ActiveSession));
 
             //act
-            var session = appState.SessionManager.Create();
+            var session = appState.CreateSession();
 
 
             //assert
-            appState.SessionManager.Sessions.Count.Should().Be(1);
-            appState.SessionManager.ActiveSession.Should().Be(session);
+            appState.Sessions.Count.Should().Be(1);
+            appState.ActiveSession.Should().Be(session);
         }
 
 
@@ -44,20 +57,20 @@ namespace Common.Tests
             int times = 0;
 
             //arrange
-            var appState = new AppState();
-            appState.SessionManager.PropertyChanged += (sender, args) =>
+            
+            appState.PropertyChanged += (sender, args) =>
             {
-                if (args.PropertyName == nameof(SessionManager.ActiveSession))
+                if (args.PropertyName == nameof(AppState.ActiveSession))
                     times++;
             };
-            var session1 = appState.SessionManager.Create(); //active session changed
-            appState.SessionManager.Create(); //does not call
+            appState.CreateSession(); //active session changed
+            var session1 = appState.CreateSession(); //does not call
 
             //act
-            appState.SessionManager.SetActive(session1); //active session changed
+            appState.ActiveSession = session1; //active session changed
 
             //assert
-            appState.SessionManager.ActiveSession.Should().Be(session1);
+            appState.ActiveSession.Should().Be(session1);
             times.Should().Be(2);
         }
 
@@ -68,24 +81,24 @@ namespace Common.Tests
             //arrange
 
             int times = 0;
-            var appState = new AppState();
-            appState.SessionManager.PropertyChanged += (sender, args) =>
+            
+            appState.PropertyChanged += (sender, args) =>
             {
-                if (args.PropertyName == nameof(SessionManager.ActiveSession))
+                if (args.PropertyName == nameof(AppState.ActiveSession))
                     times++;
             };
 
-            var session = appState.SessionManager.Create();
+            var session = appState.CreateSession();
             session.TrainingData = TrainingDataMocks.ValidData3;
             session.TrainingParameters = new Fixture().Create<TrainingParameters>();
 
             //act
-            var dup = appState.SessionManager.DuplicateActive();
+            var dup = appState.DuplicateActiveSession();
 
             //assert
             times.Should().Be(2);
-            appState.SessionManager.Sessions.Count.Should().Be(2);
-            appState.SessionManager.ActiveSession.Should().Be(dup);
+            appState.Sessions.Count.Should().Be(2);
+            appState.ActiveSession.Should().Be(dup);
 
 
             dup.TrainingData.Should().NotBe(session.TrainingData).And.Should().NotBeNull();
@@ -95,8 +108,64 @@ namespace Common.Tests
         [Fact]
         public void DuplicateActive_throws_if_0_sessions()
         {
-            var appState = new AppState();
-            Assert.ThrowsAny<Exception>(() => appState.SessionManager.DuplicateActive());
+            Assert.ThrowsAny<Exception>(() => appState.DuplicateActiveSession());
         }
+
+
+
+        
     }
+
+
+    public class SessionTests
+    {
+        private AppState appState = new AppState();
+
+        [Fact]
+        public void Unload_data_sets_null_training_data()
+        {
+            var session = appState.CreateSession();
+            session.TrainingData = TrainingDataMocks.ValidData1;
+
+            session.UnloadTrainingData();
+            session.TrainingData.Should().BeNull();
+        }
+
+        
+    }
+
+
+    public class SessionReportsCollectionTetsts
+    {
+        private TrainingReportsCollection collection = new TrainingReportsCollection();
+
+        [Fact]
+        public void Add_when_overlapping_added_throws()
+        {
+            var paused = TrainingSessionReport.CreatePausedSessionReport(10, 0.1, Time.Now.Subtract(TimeSpan.FromHours(1)));
+            Time.TimeProvider = () => DateTime.Now.AddMinutes(5);
+            var stopped = TrainingSessionReport.CreateStoppedSessionReport(10, 0.1, Time.Now.Subtract(TimeSpan.FromHours(1)));
+            
+            collection.Add(paused);
+            
+            Assert.ThrowsAny<Exception>(() => collection.Add(stopped));
+        }
+
+        [Fact]
+        public void Add_when_last_is_of_terminating_type_throws()
+        {
+            var paused = TrainingSessionReport.CreatePausedSessionReport(10, 0.1, Time.Now.Subtract(TimeSpan.FromHours(1)));
+            Time.TimeProvider = () => DateTime.Now.AddHours(1);
+            var stopped = TrainingSessionReport.CreateStoppedSessionReport(10, 0.1, Time.Now.Subtract(TimeSpan.FromHours(1)));
+            Time.TimeProvider = () => DateTime.Now.AddHours(1);
+            var timeout = TrainingSessionReport.CreateTimeoutSessionReport(10, 0.1, Time.Now.Subtract(TimeSpan.FromHours(1)));
+            
+            collection.Add(paused);
+            collection.Add(stopped);
+            
+            Assert.ThrowsAny<Exception>(() => collection.Add(timeout));
+        }
+        
+    }
+
 }

@@ -32,9 +32,9 @@ namespace Data.Application.Controllers
     {
         private AppState _appState;
         private SupervisedSetVariableIndexes _currentIndexes;
-        private readonly ISupervisedDataSetService _dsService;
+        private readonly ITrainingDataService _dsService;
 
-        public VariablesSelectionController(AppState appState, ISupervisedDataSetService dsService)
+        public VariablesSelectionController(AppState appState, ITrainingDataService dsService)
         {
             _appState = appState;
             _dsService = dsService;
@@ -43,7 +43,7 @@ namespace Data.Application.Controllers
 
             VariablesSelectionViewModel.Created += () =>
             {
-                _currentIndexes = _appState.SessionManager.ActiveSession.TrainingData.Variables.Indexes;
+                _currentIndexes = _appState.ActiveSession.TrainingData.Variables.Indexes;
 
                 InitVmWithData();
             };
@@ -53,7 +53,7 @@ namespace Data.Application.Controllers
 
         private void InitVmWithData()
         {
-            var trainingData = _appState.SessionManager.ActiveSession.TrainingData;
+            var trainingData = _appState.ActiveSession.TrainingData;
             var vm = VariablesSelectionViewModel.Instance;
 
             var variables = VariableTableModel.FromTrainingData(trainingData);
@@ -80,7 +80,7 @@ namespace Data.Application.Controllers
             }
 
 
-            var trainingData = _appState.SessionManager.ActiveSession.TrainingData;
+            var trainingData = _appState.ActiveSession.TrainingData;
             var newIndexes = new SupervisedSetVariableIndexes(inputIndexes.ToArray(), targetIndexes.ToArray(), ignoredIndexes.ToArray());
 
 
@@ -88,7 +88,7 @@ namespace Data.Application.Controllers
 
             _currentIndexes = newIndexes;
 
-            _appState.SessionManager.ActiveSession.TrainingData = _dsService.ChangeVariables(_currentIndexes, trainingData);
+            _dsService.ChangeVariables(_currentIndexes, trainingData);
         }
 
         private void IgnoreAll()
@@ -109,8 +109,8 @@ namespace Data.Application.Controllers
                 }
             }
 
-            var trainingData = _appState.SessionManager.ActiveSession.TrainingData;
-            _appState.SessionManager.ActiveSession.TrainingData = _dsService.ChangeVariables(_currentIndexes, trainingData);
+            var trainingData = _appState.ActiveSession.TrainingData;
+            _dsService.ChangeVariables(_currentIndexes, trainingData);
 
             foreach (var model in vm.Variables)
             {

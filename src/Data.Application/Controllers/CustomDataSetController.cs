@@ -51,14 +51,14 @@ namespace Data.Application.Controllers
 
             PlotMouseDownCommand = new DelegateCommand<OxyMouseDownEventArgs>(PlotMouseDown);
             OpenDivisionViewCommand = new DelegateCommand(OpenDivisionView,
-                () => _appState.SessionManager.ActiveSession.TrainingData != null);
+                () => _appState.ActiveSession.TrainingData != null);
             SelectVariablesCommand = new DelegateCommand(SelectVariables,
-                () => _appState.SessionManager.ActiveSession.TrainingData != null);
+                () => _appState.ActiveSession.TrainingData != null);
 
             CustomDataSetViewModel.Created += () =>
             {
                 //create session when navigated
-                _appState.SessionManager.Create();
+                _appState.CreateSession();
 
                 //TODO
                 //_actionMenuNavService.SetLeftMenu<ActionMenuLeftView>();
@@ -143,7 +143,7 @@ namespace Data.Application.Controllers
                     new SupervisedSetVariables(new SupervisedSetVariableIndexes(new[] {0}, new[] {1}),
                         new[] {new VariableName("x"), new VariableName("y"),}), TrainingDataSource.Memory);
 
-                _appState.SessionManager.ActiveSession.TrainingData = trainingData;
+                _appState.ActiveSession.TrainingData = trainingData;
 
                 OpenDivisionViewCommand.RaiseCanExecuteChanged();
                 SelectVariablesCommand.RaiseCanExecuteChanged();

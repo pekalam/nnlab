@@ -15,12 +15,12 @@ namespace Data.Application.Controllers
     {
         private readonly DataSetDivisionService _service;
         private readonly AppState _appState;
-        private readonly ISupervisedDataSetService _dataSetService;
+        private readonly ITrainingDataService _dataService;
 
-        public DataSetDivisionController(DataSetDivisionService service, ISupervisedDataSetService dataSetService, AppState appState)
+        public DataSetDivisionController(DataSetDivisionService service, ITrainingDataService dataService, AppState appState)
         {
             _service = service;
-            _dataSetService = dataSetService;
+            _dataService = dataService;
             _appState = appState;
 
             _service.DivideFileDataCommand =
@@ -53,9 +53,9 @@ namespace Data.Application.Controllers
             var vm = DataSetDivisionViewModel.Instance;
             if (!CanDivide()) return;
 
-            if (_appState.SessionManager.ActiveSession?.TrainingData != null)
+            if (_appState.ActiveSession?.TrainingData != null)
             {
-                var data = _appState.SessionManager.ActiveSession.TrainingData;
+                var data = _appState.ActiveSession.TrainingData;
                 var total = data.Sets.TrainingSet.Input.Count + (data.Sets.ValidationSet?.Input.Count ?? 0) + (data.Sets.TestSet?.Input.Count ?? 0);
                 var left = total;
 
@@ -149,7 +149,7 @@ namespace Data.Application.Controllers
                 ValidationSet = validation
             };
 
-            var existing = _appState.SessionManager.ActiveSession.TrainingData;
+            var existing = _appState.ActiveSession.TrainingData;
 
 
             var total = sets.TrainingSet.Input.Count + (sets.ValidationSet?.Input.Count ?? 0) +
@@ -166,13 +166,13 @@ namespace Data.Application.Controllers
             vm.UpdateRatio();
             vm.PropertyChanged += VmOnPropertyChanged;
 
-            _appState.SessionManager.ActiveSession.TrainingData = new TrainingData(sets, existing.Variables, TrainingDataSource.Memory);
+            _appState.ActiveSession.TrainingData = new TrainingData(sets, existing.Variables, TrainingDataSource.Memory);
         }
 
         private void DivideFileData(string path)
         {
-            var existingData = _appState.SessionManager.ActiveSession.TrainingData;
-            _appState.SessionManager.ActiveSession.TrainingData = _dataSetService.LoadSets(path, new LinearDataSetDivider(), ConstructDivOptions(), existingData.Variables.Indexes);
+            var existingData = _appState.ActiveSession.TrainingData;
+            _appState.ActiveSession.TrainingData = _dataService.LoadSets(path, new LinearDataSetDivider(), ConstructDivOptions(), existingData.Variables.Indexes);
         }
     }
 }

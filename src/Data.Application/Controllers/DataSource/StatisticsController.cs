@@ -36,7 +36,7 @@ namespace Data.Application.Controllers.DataSource
         {
             _appState = appState;
 
-            _appState.SessionManager.ActiveSession.PropertyChanged += ActiveSessionOnPropertyChanged;
+            _appState.ActiveSession.PropertyChanged += ActiveSessionOnPropertyChanged;
 
             Created = vm =>
             {
@@ -64,7 +64,7 @@ namespace Data.Application.Controllers.DataSource
 
         private void SetTrainingData()
         {
-            var trainingData = _appState.SessionManager.ActiveSession.TrainingData;
+            var trainingData = _appState.ActiveSession.TrainingData;
 
             var setTypes = new List<DataSetType>() {DataSetType.Training};
             if (trainingData.Sets.TestSet != null) setTypes.Add(DataSetType.Test);
@@ -76,7 +76,7 @@ namespace Data.Application.Controllers.DataSource
 
         private void SelectDataSetExecute(DataSetType? set)
         {
-            _variablesPlotCtrl.Plot(_appState.SessionManager.ActiveSession.TrainingData, set.Value);
+            _variablesPlotCtrl.Plot(_appState.ActiveSession.TrainingData, set.Value);
         }
     }
 }

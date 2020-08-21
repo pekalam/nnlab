@@ -13,14 +13,14 @@ using TestUtils;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Data.Application.Tests.Application
+namespace Data.Application.Tests.DataSourceSelection
 {
     public class MultiFileSourceTest
     {
         private AutoMocker _mocker = new AutoMocker();
         private Mock<ICsvValidationService> _csvValidation;
         private MultiFileService _multiFileService;
-        private Mock<ISupervisedDataSetService> _dataSetService;
+        private Mock<ITrainingDataService> _dataSetService;
         private Mock<IFileDialogService> _dialogService;
         private Mock<FileService> _fileService;
 
@@ -34,9 +34,9 @@ namespace Data.Application.Tests.Application
         {
             _testOutput = testOutput;
             _mocker.UseTestRm();
-            _dataSetService = _mocker.UseMock<ISupervisedDataSetService>();
+            _appState = _mocker.UseImpl<AppState>();
+            _dataSetService = _mocker.UseMock<ITrainingDataService>();
             _dialogService = _mocker.UseMock<IFileDialogService>();
-            _appState = _mocker.UseMock<AppState>().Object;
             _csvValidation = _mocker.UseMock<ICsvValidationService>();
             _ctrl = _mocker.UseImpl<ITransientController<MultiFileService>, MultiFileSourceController>();
             _multiFileService = _mocker.UseImpl<IMultiFileService, MultiFileService>();
@@ -231,11 +231,11 @@ namespace Data.Application.Tests.Application
             multiFileService.ContinueCommand.Execute();
 
             //assert
-            _appState.SessionManager.Sessions.Count.Should().Be(1);
+            _appState.Sessions.Count.Should().Be(1);
 
 
-            _appState.SessionManager.Sessions.Count.Should().Be(1);
-            var session = _appState.SessionManager.ActiveSession;
+            _appState.Sessions.Count.Should().Be(1);
+            var session = _appState.ActiveSession;
 
             session.TrainingData.Should().Be(trainingData);
             session.SingleDataFile.Should().BeNull();
