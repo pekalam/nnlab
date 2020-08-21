@@ -11,7 +11,7 @@ using OxyPlot.Wpf;
 using Prism.Mvvm;
 using Prism.Regions;
 
-namespace CommonUI.BasicPlot
+namespace SharedUI.BasicPlot
 {
     public class BooleanHiddenVisibilityConverter : IValueConverter
     {
@@ -40,7 +40,7 @@ namespace CommonUI.BasicPlot
         };
 
         public static readonly DependencyProperty PlotModelProperty = DependencyProperty.Register(
-            nameof(PlotModel), typeof(BasicPlotModel), typeof(BasicPlot),
+            nameof(OxyPlot.PlotModel), typeof(BasicPlotModel), typeof(BasicPlot),
             new FrameworkPropertyMetadata(default(BasicPlotModel), FrameworkPropertyMetadataOptions.AffectsRender,
                 (o, args) =>
                 {

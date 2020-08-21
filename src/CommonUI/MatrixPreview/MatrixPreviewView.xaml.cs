@@ -2,7 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 
-namespace CommonUI.MatrixPreview
+namespace SharedUI.MatrixPreview
 {
     /// <summary>
     /// Interaction logic for MatrixPreviewView.xaml

@@ -9,10 +9,26 @@ using Prism.Commands;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Input;
+using Data.Application.Controllers;
+using Prism.Ioc;
+
+namespace Data.Application.Services
+{
+    public interface IVariablesSelectionService
+    {
+        ICommand IgnoreAllCommand { get; set; }
+
+        public static void Register(IContainerRegistry cr)
+        {
+            cr.RegisterSingleton<IVariablesSelectionService, VariablesSelectionController>();
+        }
+    }
+}
 
 namespace Data.Application.Controllers
 {
-    internal class VariablesSelectionController : ITransientControllerBase<VariablesSelectionService>
+    internal class VariablesSelectionController : IVariablesSelectionService, ITransientController
     {
         private AppState _appState;
         private SupervisedSetVariableIndexes _currentIndexes;
@@ -23,6 +39,7 @@ namespace Data.Application.Controllers
             _appState = appState;
             _dsService = dsService;
 
+            IgnoreAllCommand = new DelegateCommand(IgnoreAll);
 
             VariablesSelectionViewModel.Created += () =>
             {
@@ -31,6 +48,8 @@ namespace Data.Application.Controllers
                 InitVmWithData();
             };
         }
+
+        public ICommand IgnoreAllCommand { get; set; }
 
         private void InitVmWithData()
         {
@@ -72,12 +91,6 @@ namespace Data.Application.Controllers
             _appState.SessionManager.ActiveSession.TrainingData = _dsService.ChangeVariables(_currentIndexes, trainingData);
         }
 
-
-        public void Initialize(VariablesSelectionService service)
-        {
-            service.IgnoreAll = new DelegateCommand(IgnoreAll);
-        }
-
         private void IgnoreAll()
         {
             var vm = VariablesSelectionViewModel.Instance;
@@ -104,5 +117,6 @@ namespace Data.Application.Controllers
                 model.OnVariableUseSet = OnVariableUseSet;
             }
         }
+
     }
 }

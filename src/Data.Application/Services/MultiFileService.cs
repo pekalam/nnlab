@@ -5,10 +5,10 @@ using Prism.Commands;
 using Prism.Mvvm;
 using System.ComponentModel;
 using System.Linq;
+using Data.Application.ViewModels;
 
 namespace Data.Application.Services
 {
-    //TODO move state to view
     public interface IMultiFileService : INotifyPropertyChanged, IService
     {
         DelegateCommand SelectTrainingFileCommand { get; set; }
@@ -29,7 +29,7 @@ namespace Data.Application.Services
     {
         private VariablesTableModel[] _variables;
 
-        public MultiFileService(ITransientControllerBase<MultiFileService> controller)
+        public MultiFileService(ITransientController<MultiFileService> controller)
         {
             controller.Initialize(this);
         }

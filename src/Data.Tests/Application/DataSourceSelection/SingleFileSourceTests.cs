@@ -31,7 +31,7 @@ namespace Data.Application.Tests.Application
             _csvValidation = _mocker.UseMock<ICsvValidationService>();
             _dataSetService = _mocker.UseMock<ISupervisedDataSetService>();
             _appState = _mocker.UseMock<AppState>().Object;
-            _ctrl = _mocker.UseImpl<ITransientControllerBase<SingleFileService>, SingleFileSourceController>();
+            _ctrl = _mocker.UseImpl<ITransientController<SingleFileService>, SingleFileSourceController>();
             _singleFileService = _mocker.UseImpl<ISingleFileService, SingleFileService>();
 
             _vm = _mocker.CreateInstance<SingleFileSourceViewModel>();

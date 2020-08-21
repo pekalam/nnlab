@@ -8,7 +8,7 @@ using NNLib;
 using Prism.Commands;
 using Prism.Events;
 
-namespace CommonUI.MatrixPreview
+namespace SharedUI.MatrixPreview
 {
     public class MatrixPreviewController
     {

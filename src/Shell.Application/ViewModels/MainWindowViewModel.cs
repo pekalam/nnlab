@@ -7,6 +7,7 @@ using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
 using Prism.Regions;
+using Shell.Application.Interfaces;
 using Shell.Interface;
 using Unity;
 

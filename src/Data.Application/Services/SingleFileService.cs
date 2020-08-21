@@ -5,6 +5,7 @@ using Prism.Commands;
 using Prism.Mvvm;
 using System.ComponentModel;
 using System.Linq;
+using Data.Application.ViewModels;
 
 namespace Data.Application.Services
 {
@@ -24,7 +25,7 @@ namespace Data.Application.Services
 
     internal class SingleFileService : BindableBase, ISingleFileService
     {
-        public SingleFileService(ITransientControllerBase<SingleFileService> controller)
+        public SingleFileService(ITransientController<SingleFileService> controller)
         {
             controller.Initialize(this);
         }

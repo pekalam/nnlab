@@ -4,7 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using MathNet.Numerics.LinearAlgebra;
 
-namespace CommonUI.MatrixPreview
+namespace SharedUI.MatrixPreview
 {
     internal class MatrixGridRenderer
     {

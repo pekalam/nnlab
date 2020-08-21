@@ -11,8 +11,6 @@ using System.Linq;
 
 namespace Data.Application.Controllers
 {
-
-
     internal class DataSetDivisionController
     {
         private readonly DataSetDivisionService _service;

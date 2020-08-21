@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Windows.Data;
 
-namespace CommonUI.MatrixPreview
+namespace SharedUI.MatrixPreview
 {
     public class MatrixTypeConverter : IValueConverter
     {

@@ -1,4 +1,4 @@
-﻿namespace Data.Application
+﻿namespace Data.Application.Interfaces
 {
     public interface IFileDialogService
     {

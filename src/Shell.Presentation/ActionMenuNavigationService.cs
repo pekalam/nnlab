@@ -5,6 +5,7 @@ using System.Text;
 using System.Windows.Controls;
 using Prism.Regions;
 using Shell.Application;
+using Shell.Application.Interfaces;
 using Shell.Interface;
 
 namespace Shell.Presentation

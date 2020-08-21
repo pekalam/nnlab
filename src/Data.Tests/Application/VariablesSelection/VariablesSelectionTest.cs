@@ -17,7 +17,7 @@ namespace Data.Application.Tests.Application.VariablesSelection
         private AutoMocker _mocker = new AutoMocker();
         private AppState _appState;
         private VariablesSelectionController _ctrl;
-        private VariablesSelectionService _service;
+        private IVariablesSelectionService _service;
         private VariablesSelectionViewModel _vm;
 
         private Session _session;
@@ -31,8 +31,8 @@ namespace Data.Application.Tests.Application.VariablesSelection
             _session = _appState.SessionManager.Create();
             _session.TrainingData = TrainingDataMocks.ValidData4;
 
-            _ctrl = _mocker.UseImpl<ITransientControllerBase<VariablesSelectionService>, VariablesSelectionController>();
-            _service = _mocker.UseImpl<IVariablesSelectionService,VariablesSelectionService>();
+            _ctrl = _mocker.UseImpl<IVariablesSelectionService, VariablesSelectionController>();
+            _service = _ctrl;
 
             _vm = _mocker.CreateInstance<VariablesSelectionViewModel>();
         }

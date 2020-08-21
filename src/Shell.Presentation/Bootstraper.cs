@@ -1,5 +1,6 @@
 ﻿using Prism.Ioc;
 using Shell.Application;
+using Shell.Application.Interfaces;
 using Shell.Interface;
 
 namespace Shell.Presentation

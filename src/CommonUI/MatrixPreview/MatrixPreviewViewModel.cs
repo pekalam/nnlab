@@ -6,7 +6,7 @@ using CommonServiceLocator;
 using Prism.Events;
 using Prism.Mvvm;
 
-namespace CommonUI.MatrixPreview
+namespace SharedUI.MatrixPreview
 {
     public class MatrixPreviewViewModel : BindableBase
     {

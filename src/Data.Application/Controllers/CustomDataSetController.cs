@@ -15,12 +15,29 @@ using Prism.Regions;
 using Shell.Interface;
 using System.Collections.Generic;
 using System.Linq;
+using Data.Application.Controllers;
+using Prism.Ioc;
+
+
+namespace Data.Application.Services
+{
+    public interface ICustomDataSetService
+    {
+        DelegateCommand<OxyMouseDownEventArgs> PlotMouseDownCommand { get; set; }
+        DelegateCommand OpenDivisionViewCommand { get; set; }
+        DelegateCommand SelectVariablesCommand { get; set; }
+
+        public static void Register(IContainerRegistry cr)
+        {
+            cr.Register<ICustomDataSetService, CustomDataSetController>();
+        }
+    }
+}
 
 namespace Data.Application.Controllers
 {
-    internal class CustomDataSetController : ITransientControllerBase<CustomDataSetService>
+    internal class CustomDataSetController : ICustomDataSetService, ITransientController
     {
-        private CustomDataSetService _dsService;
         private readonly AppState _appState;
         private readonly List<double[]> _input = new List<double[]>();
         private readonly List<double[]> _target = new List<double[]>();
@@ -36,6 +53,11 @@ namespace Data.Application.Controllers
             _ea = ea;
             _actionMenuNavService = actionMenuNavService;
 
+            PlotMouseDownCommand = new DelegateCommand<OxyMouseDownEventArgs>(PlotMouseDown);
+            OpenDivisionViewCommand = new DelegateCommand(OpenDivisionView,
+                () => _appState.SessionManager.ActiveSession.TrainingData != null);
+            SelectVariablesCommand = new DelegateCommand(SelectVariables,
+                () => _appState.SessionManager.ActiveSession.TrainingData != null);
 
             CustomDataSetViewModel.Created += () =>
             {
@@ -47,15 +69,9 @@ namespace Data.Application.Controllers
             };
         }
 
-        public void Initialize(CustomDataSetService service)
-        {
-            _dsService = service;
-            _dsService.PlotMouseDownCommand = new DelegateCommand<OxyMouseDownEventArgs>(PlotMouseDown);
-            _dsService.OpenDivisionViewCommand = new DelegateCommand(OpenDivisionView,
-                    () => _appState.SessionManager.ActiveSession.TrainingData != null);
-            _dsService.SelectVariablesCommand = new DelegateCommand(SelectVariables,
-                () => _appState.SessionManager.ActiveSession.TrainingData != null);
-        }
+        public DelegateCommand<OxyMouseDownEventArgs> PlotMouseDownCommand { get; set; }
+        public DelegateCommand OpenDivisionViewCommand { get; set; }
+        public DelegateCommand SelectVariablesCommand { get; set; }
 
         private void SelectVariables()
         {
@@ -133,8 +149,8 @@ namespace Data.Application.Controllers
 
                 _appState.SessionManager.ActiveSession.TrainingData = trainingData;
 
-                _dsService.OpenDivisionViewCommand.RaiseCanExecuteChanged();
-                _dsService.SelectVariablesCommand.RaiseCanExecuteChanged();
+                OpenDivisionViewCommand.RaiseCanExecuteChanged();
+                SelectVariablesCommand.RaiseCanExecuteChanged();
             }
         }
     }

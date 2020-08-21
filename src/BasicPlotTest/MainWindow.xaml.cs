@@ -2,8 +2,8 @@
 using OxyPlot;
 using OxyPlot.Series;
 using System.Windows;
-using CommonUI.BasicPlot;
 using OxyPlot.Axes;
+using SharedUI.BasicPlot;
 
 namespace BasicPlotTest
 {

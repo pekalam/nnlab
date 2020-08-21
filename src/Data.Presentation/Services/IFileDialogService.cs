@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Windows;
 using Data.Application;
+using Data.Application.Interfaces;
 using Data.Presentation.Views;
 using Data.Presentation.Views.CustomDataSet;
 using Data.Presentation.Views.DataSetDivision;

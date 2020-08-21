@@ -1,10 +1,11 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:services="clr-namespace:Data.Application.Services;assembly=Data.Application">
+                    xmlns:services="clr-namespace:Data.Application.Services;assembly=Data.Application"
+                    xmlns:viewModels="clr-namespace:Data.Application.ViewModels;assembly=Data.Application">
     <Style TargetType="ContentControl" x:Key="FileValidationControl">
         <Setter Property="ContentTemplate">
             <Setter.Value>
-                <DataTemplate DataType="{x:Type services:FileValidationResult}">
+                <DataTemplate DataType="{x:Type viewModels:FileValidationResult}">
                     <StackPanel>
                         <TextBlock x:Name="ValidationProgress" />
 

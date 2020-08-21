@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Windows;
 
-namespace CommonUI.BasicPlot
+namespace SharedUI.BasicPlot
 {
     /// <summary>
     /// Interaction logic for ExternalWindow.xaml

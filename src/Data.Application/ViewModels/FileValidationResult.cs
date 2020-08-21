@@ -1,6 +1,6 @@
 ﻿using Prism.Mvvm;
 
-namespace Data.Application.Services
+namespace Data.Application.ViewModels
 {
     public class FileValidationResult : BindableBase
     {

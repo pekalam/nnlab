@@ -8,10 +8,4 @@ namespace Shell.Application
     {
         public void Run() { }
     }
-
-    public interface IContentRegionHistoryService
-    {
-        void SaveContentForModule(int moduleNavId);
-        void TryRestoreContentForModule(int moduleNavId);
-    }
 }

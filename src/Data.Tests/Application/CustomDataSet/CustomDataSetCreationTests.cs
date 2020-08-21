@@ -15,19 +15,21 @@ namespace Data.Application.Tests.Application.CustomDataSet
     {
         private AutoMocker _mocker = new AutoMocker();
 
-        private CustomDataSetService _dsService;
         private CustomDataSetController _ctrl;
         private CustomDataSetViewModel _vm;
         private AppState _appState;
+        private ICustomDataSetService _dsService;
 
         public CustomDataSetCreationTests()
         {
             _mocker.UseTestRm();
-            _ctrl = _mocker.UseImpl<ITransientControllerBase<CustomDataSetService>,CustomDataSetController>();
-            _dsService = _mocker.UseImpl<ICustomDataSetService, CustomDataSetService>();
+            _ctrl = _mocker.UseImpl<ICustomDataSetService,CustomDataSetController>();
             _appState = _mocker.UseMock<AppState>().Object;
             _vm = _mocker.CreateInstance<CustomDataSetViewModel>();
+
+            _dsService = _ctrl;
         }
+
 
 
         [Fact]

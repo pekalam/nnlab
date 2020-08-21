@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using MathNet.Numerics.LinearAlgebra;
 
-namespace CommonUI.MatrixPreview
+namespace SharedUI.MatrixPreview
 {
     public class MatrixRowDictionary : IDictionary<int, string>
     {

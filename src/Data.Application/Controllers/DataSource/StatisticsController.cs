@@ -1,4 +1,5 @@
-﻿using Common.Framework;
+﻿using System;
+using Common.Framework;
 using Data.Application.Services;
 using Data.Application.ViewModels.DataSource.Statistics;
 using Infrastructure.Domain;
@@ -6,10 +7,26 @@ using NNLib.Common;
 using Prism.Commands;
 using System.Collections.Generic;
 using System.ComponentModel;
+using Data.Application.Controllers.DataSource;
+using Prism.Ioc;
+
+namespace Data.Application.Services
+{
+    public interface IStatisticsService : ITransientController
+    {
+        DelegateCommand<DataSetType?> SelectDataSet { get; set; }
+        Action<StatisticsViewModel> Created { get; set; }
+
+        public static void Register(IContainerRegistry cr)
+        {
+            cr.Register<IStatisticsService, StatisticsController>();
+        }
+    }
+}
 
 namespace Data.Application.Controllers.DataSource
 {
-    internal class StatisticsController : ITransientControllerBase<StatisticsService>
+    internal class StatisticsController : IStatisticsService
     {
         private HistogramController _histogramCtrl;
         private VariablesPlotController _variablesPlotCtrl;
@@ -20,7 +37,19 @@ namespace Data.Application.Controllers.DataSource
             _appState = appState;
 
             _appState.SessionManager.ActiveSession.PropertyChanged += ActiveSessionOnPropertyChanged;
+
+            Created = vm =>
+            {
+                _histogramCtrl = new HistogramController(vm.HistogramVm);
+                _variablesPlotCtrl = new VariablesPlotController(vm.VariablesPlotVm);
+
+                SetTrainingData();
+                SelectDataSet = new DelegateCommand<DataSetType?>(SelectDataSetExecute);
+            };
         }
+
+        public DelegateCommand<DataSetType?> SelectDataSet { get; set; }
+        public Action<StatisticsViewModel> Created { get; set; }
 
         private void ActiveSessionOnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
@@ -45,20 +74,7 @@ namespace Data.Application.Controllers.DataSource
             _variablesPlotCtrl.Plot(trainingData, DataSetType.Training);
         }
 
-
-        public void Initialize(StatisticsService service)
-        {
-            service.Created = vm =>
-            {
-                _histogramCtrl = new HistogramController(vm.HistogramVm);
-                _variablesPlotCtrl = new VariablesPlotController(vm.VariablesPlotVm);
-
-                SetTrainingData();
-                service.SelectDataSet = new DelegateCommand<DataSetType?>(SelectDataSet);
-            };
-        }
-
-        private void SelectDataSet(DataSetType? set)
+        private void SelectDataSetExecute(DataSetType? set)
         {
             _variablesPlotCtrl.Plot(_appState.SessionManager.ActiveSession.TrainingData, set.Value);
         }

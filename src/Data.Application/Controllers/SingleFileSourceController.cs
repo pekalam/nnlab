@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Data.Application.Controllers
 {
-    internal class SingleFileSourceController : ITransientControllerBase<SingleFileService>
+    internal class SingleFileSourceController : ITransientController<SingleFileService>
     {
         private SingleFileService _singleFileService;
         private bool _canLoad;

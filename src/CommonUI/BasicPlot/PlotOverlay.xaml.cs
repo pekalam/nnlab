@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace CommonUI.BasicPlot
+namespace SharedUI.BasicPlot
 {
     /// <summary>
     /// Interaction logic for PlotOverlay.xaml

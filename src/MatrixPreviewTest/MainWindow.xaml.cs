@@ -3,8 +3,8 @@ using System.Threading.Tasks;
 using NNLib;
 using System.Windows;
 using System.Windows.Threading;
-using CommonUI.MatrixPreview;
 using MathNet.Numerics.LinearAlgebra;
+using SharedUI.MatrixPreview;
 
 namespace MatrixPreviewTest
 {

@@ -1,5 +1,6 @@
 ﻿using Common.Framework;
 using Data.Application.Controllers;
+using Data.Application.Interfaces;
 using Data.Application.Services;
 using Data.Application.ViewModels.DataSourceSelection;
 using Data.Domain.Services;
@@ -37,7 +38,7 @@ namespace Data.Application.Tests.Application
             _dialogService = _mocker.UseMock<IFileDialogService>();
             _appState = _mocker.UseMock<AppState>().Object;
             _csvValidation = _mocker.UseMock<ICsvValidationService>();
-            _ctrl = _mocker.UseImpl<ITransientControllerBase<MultiFileService>, MultiFileSourceController>();
+            _ctrl = _mocker.UseImpl<ITransientController<MultiFileService>, MultiFileSourceController>();
             _multiFileService = _mocker.UseImpl<IMultiFileService, MultiFileService>();
             _fileService = _mocker.UseMock<IFileService, FileService>();
 

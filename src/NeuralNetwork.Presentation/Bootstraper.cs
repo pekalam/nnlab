@@ -8,7 +8,7 @@ namespace NeuralNetwork.Presentation
     {
         public static void RegisterTypes(IContainerRegistry cr)
         {
-            cr.RegisterForNavigation<ViewA>(nameof(ViewAViewModel));
+            cr.RegisterForNavigation<ViewAView>(nameof(ViewAViewModel));
         }
     }
 }

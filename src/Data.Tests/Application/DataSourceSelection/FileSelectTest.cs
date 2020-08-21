@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Common.Framework;
 using Data.Application.Controllers;
+using Data.Application.Interfaces;
 using Data.Application.Services;
 using Data.Application.ViewModels.DataSourceSelection;
 using FluentAssertions;
@@ -31,9 +32,9 @@ namespace Data.Application.Tests.Application
             (_rm, _regions) = _mocker.UseTestRm();
             _dialogService = _mocker.UseMock<IFileDialogService>();
             _fileService = _mocker.UseMock<IFileService, FileService>();
-            _mocker.UseImpl<ITransientControllerBase<SingleFileService>, SingleFileSourceController>();
+            _mocker.UseImpl<ITransientController<SingleFileService>, SingleFileSourceController>();
             _singleFileService = _mocker.UseImpl<ISingleFileService, SingleFileService>();
-            _mocker.UseImpl<ITransientControllerBase<MultiFileService>,MultiFileSourceController>();
+            _mocker.UseImpl<ITransientController<MultiFileService>,MultiFileSourceController>();
             _multiFileService = _mocker.UseImpl<IMultiFileService, MultiFileService>();
 
 

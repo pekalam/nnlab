@@ -1,4 +1,4 @@
-﻿namespace CommonUI.MatrixPreview
+﻿namespace SharedUI.MatrixPreview
 {
     public enum MatrixTypes
     {

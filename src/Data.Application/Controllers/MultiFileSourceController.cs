@@ -7,10 +7,11 @@ using Prism.Commands;
 using Prism.Regions;
 using Shell.Interface;
 using System.Linq;
+using Data.Application.Interfaces;
 
 namespace Data.Application.Controllers
 {
-    internal class MultiFileSourceController : ITransientControllerBase<MultiFileService>
+    internal class MultiFileSourceController : ITransientController<MultiFileService>
     {
         private MultiFileService _multiFileService;
         private readonly IRegionManager _rm;

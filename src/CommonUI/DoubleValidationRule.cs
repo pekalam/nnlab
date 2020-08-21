@@ -2,7 +2,7 @@
 using System.Text.RegularExpressions;
 using System.Windows.Controls;
 
-namespace CommonUI
+namespace SharedUI
 {
     public class DoubleValidationRule : ValidationRule
     {

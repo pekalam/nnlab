@@ -3,6 +3,7 @@ using Data.Application.Controllers;
 using Data.Application.Controllers.DataSource;
 using Data.Application.Services;
 using Prism.Ioc;
+using Prism.Unity;
 
 namespace Data.Application
 {
@@ -12,26 +13,21 @@ namespace Data.Application
         {
             cr
                 .RegisterSingleton<FileService>().RegisterSingleton<IFileService, FileService>()
-                .RegisterSingleton<DataSetDivisionService>().RegisterSingleton<IDataSetDivisionService, DataSetDivisionService>()
-                .RegisterSingleton<NormalizationService>().RegisterSingleton<INormalizationService, NormalizationService>()
-                .RegisterSingleton<FileDataSourceService>().RegisterSingleton<IFileDataSourceService, FileDataSourceService>()
+                .RegisterSingleton<DataSetDivisionService>()
+                .RegisterSingleton<IDataSetDivisionService, DataSetDivisionService>()
+                .RegisterSingleton<FileDataSourceService>()
+                .RegisterSingleton<IFileDataSourceService, FileDataSourceService>();
 
+                INormalizationService.Register(cr);
+                IStatisticsService.Register(cr);
+                ICustomDataSetService.Register(cr);
+                IVariablesSelectionService.Register(cr);
 
-                .Register<ITransientControllerBase<SingleFileService>, SingleFileSourceController>()
-                .Register<ISingleFileService, SingleFileService>()
+                cr.Register<ITransientController<SingleFileService>, SingleFileSourceController>()
+                    .Register<ISingleFileService, SingleFileService>()
 
-                .Register<ITransientControllerBase<MultiFileService>, MultiFileSourceController>()
-                .Register<IMultiFileService, MultiFileService>()
-
-
-                .RegisterSingleton<ITransientControllerBase<CustomDataSetService>, CustomDataSetController>()
-                .Register<ICustomDataSetService, CustomDataSetService>()
-
-                .RegisterSingleton<ITransientControllerBase<StatisticsService>, StatisticsController>()
-                .Register<IStatisticsService, StatisticsService>()
-
-                .RegisterSingleton<ITransientControllerBase<VariablesSelectionService>, VariablesSelectionController>()
-                .Register<IVariablesSelectionService, VariablesSelectionService>();
+                    .Register<ITransientController<MultiFileService>, MultiFileSourceController>()
+                    .Register<IMultiFileService, MultiFileService>();
         }
     }
 }

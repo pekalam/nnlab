@@ -7,6 +7,8 @@ using System.Reflection;
 using System.Windows.Controls;
 using FluentAssertions;
 using NetArchTest.Rules;
+using Prism.Unity.Ioc;
+using Unity;
 using Xunit;
 using Xunit.Abstractions;
 using Xunit.Sdk;
@@ -119,15 +121,26 @@ namespace ArchTests
                     .ArePublic()
                     .And()
                     .HaveName("Bootstraper")
-                    .GetTypes();
+                    .GetTypes().ToList();
 
-                if (result.Count() != assemblies.Count())
+                foreach (var assembly in assemblies)
                 {
-                    _output.WriteLine("Cannot find Bootstraper for " + package);
-                    Assert.False(true);
+                    bool fail = true;
+                    foreach (var type in result)
+                    {
+                        if (type.FullName.Contains(assembly.FullName.Split(',')[0]))
+                        {
+                            fail = false;
+                            break;
+                        }
+                    }
+
+                    if (fail)
+                    {
+                        _output.WriteLine("Cannot find Bootstraper for " + assembly.FullName);
+                        Assert.False(fail);
+                    }
                 }
-
-
             }
         }
 
@@ -165,8 +178,70 @@ namespace ArchTests
 
             }
 
-
             Assert.False(fail);
+        }
+
+
+        [Fact]
+        public void Services_from_application_layer_reside_in_services_namespace()
+        {
+            foreach (var package in _packages)
+            {
+                var result = Types
+                    .InAssemblies(GetAssembliesFromPackage(package, new[] {".Application"}))
+                    .That()
+                    .HaveNameEndingWith("Service")
+                    .Should()
+                    .ResideInNamespaceContaining("Services")
+                    .Or()
+                    .ResideInNamespaceContaining("Interfaces")
+                    .GetResult();
+
+                AssertArchTest(result, _output);
+            }
+        }
+
+        [Fact]
+        public void Interfaces_that_reside_in_services_or_interfaces_namespace_are_registered_by_bootstraper()
+        {
+            var container = new UnityContainerExtension(new UnityContainer());
+
+            foreach (var package in _packages)
+            {
+                var asssemblies = GetAssembliesFromPackage(package);
+                var interfaces = Types
+                    .InAssemblies(asssemblies)
+                    .That()
+                    .AreInterfaces().And()
+                    .ResideInNamespaceContaining("Interfaces")
+                    .Or()
+                    .AreInterfaces().And()
+                    .ResideInNamespaceContaining("Services")
+                    .GetTypes().ToList();
+
+                var bootstrapers = Types
+                    .InAssemblies(asssemblies)
+                    .That()
+                    .ResideInNamespace(package)
+                    .And()
+                    .AreClasses()
+                    .And()
+                    .ArePublic()
+                    .And()
+                    .HaveName("Bootstraper").GetTypes().ToList();
+
+                foreach (var bootstraper in bootstrapers)
+                {
+                    bootstraper.GetMethod("RegisterTypes").Invoke(null, new []{container});
+                }
+
+                foreach (var type in interfaces)
+                {
+                    container.Instance.Registrations.Select(r => r.RegisteredType)
+                        .Should()
+                        .Contain(type);
+                }
+            }
         }
     }
 }
