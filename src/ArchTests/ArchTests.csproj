@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentAssertions" Version="5.10.3" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.7.1" />
+    <PackageReference Include="NetArchTest.Rules" Version="1.2.6" />
+    <PackageReference Include="xunit" Version="2.4.1" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Common.Domain\Common.Domain.csproj" />
+    <ProjectReference Include="..\Common.Framework\Common.Framework.csproj" />
+    <ProjectReference Include="..\Common.Infrastructure\Common.Infrastructure.csproj" />
+    <ProjectReference Include="..\Data.Application\Data.Application.csproj" />
+    <ProjectReference Include="..\Data.Domain\Data.Domain.csproj" />
+    <ProjectReference Include="..\Data.Presentation\Data.Presentation.csproj" />
+    <ProjectReference Include="..\NeuralNetwork.Application\NeuralNetwork.Application.csproj" />
+    <ProjectReference Include="..\NeuralNetwork.Domain\NeuralNetwork.Domain.csproj" />
+    <ProjectReference Include="..\NeuralNetwork.Presentation\NeuralNetwork.Presentation.csproj" />
+    <ProjectReference Include="..\Shell.Application\Shell.Application.csproj" />
+    <ProjectReference Include="..\Shell.Presentation\Shell.Presentation.csproj" />
+    <ProjectReference Include="..\Training.Application\Training.Application.csproj" />
+    <ProjectReference Include="..\Training.Domain\Training.Domain.csproj" />
+    <ProjectReference Include="..\Training.Presentation\Training.Presentation.csproj" />
+  </ItemGroup>
+
+</Project>

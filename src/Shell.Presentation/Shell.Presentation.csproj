@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <AssemblyName>Shell.Presentation</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Common.Framework\Common.Framework.csproj" />
+    <ProjectReference Include="..\Common.Presentation\Common.Presentation.csproj" />
+    <ProjectReference Include="..\Shell.Application\Shell.Application.csproj" />
+    <ProjectReference Include="..\Shell.Interface\Shell.Interface.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Views\NavigationBreadcrumbsView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Views\NavigationBreadcrumbsView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+</Project>

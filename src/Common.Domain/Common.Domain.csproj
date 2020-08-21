@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Prism.Core" Version="7.2.0.1422" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\NNLib\NNLib.Common\NNLib.Data.csproj" />
+    <ProjectReference Include="..\..\..\NNLib\NNLib.Csv\NNLib.Csv.csproj" />
+    <ProjectReference Include="..\..\..\NNLib\NNLib\NNLib.csproj" />
+  </ItemGroup>
+
+</Project>
