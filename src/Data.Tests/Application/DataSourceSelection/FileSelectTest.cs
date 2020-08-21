@@ -1,22 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Windows;
+﻿using System.Collections.Generic;
 using Common.Framework;
-using Data.Application;
 using Data.Application.Controllers;
 using Data.Application.Services;
-using Data.Application.ViewModels;
 using Data.Application.ViewModels.DataSourceSelection;
-using Data.Domain.Services;
-using Data.Presentation.Services;
-using Data.Presentation.Views;
-using Data.Presentation.Views.DataSourceSelection;
 using FluentAssertions;
-using Infrastructure;
-using Infrastructure.Domain;
 using Moq;
 using Moq.AutoMock;
 using Prism.Commands;
@@ -25,7 +12,7 @@ using TestUtils;
 using Xunit;
 
 [assembly: CollectionBehavior(DisableTestParallelization = true)]
-namespace Data.Tests.Application.DataSourceSelection
+namespace Data.Application.Tests.Application
 {
     public class FileSelectTest
     {
@@ -65,14 +52,14 @@ namespace Data.Tests.Application.DataSourceSelection
             //stop validation execution
             _singleFileService.ValidateCommand = new DelegateCommand<string>(s => { }, _ => false);
             //setup dialog success
-            _dialogService.Setup(f => f.OpenCsv(It.IsAny<Window>())).Returns((true, successfulPath));
+            _dialogService.Setup(f => f.OpenCsv()).Returns((true, successfulPath));
 
             //act
             vm.FileService.SelectFileCommand.Execute();
 
 
             //assert
-            _rm.VerifyContentNavigation(nameof(SingleFileSourceView), Times.Exactly(1));
+            _rm.VerifyContentNavigation(nameof(SingleFileSourceViewModel), Times.Exactly(1));
 
 
             sigVm.SelectedFilePath.Should().Be(successfulPath);
@@ -88,14 +75,14 @@ namespace Data.Tests.Application.DataSourceSelection
             var sigVm = _mocker.CreateInstance<SingleFileSourceViewModel>();
 
 
-            _dialogService.Setup(f => f.OpenCsv(It.IsAny<Window>())).Returns((false, default));
+            _dialogService.Setup(f => f.OpenCsv()).Returns((false, default));
 
             //act
             vm.FileService.SelectFileCommand.Execute();
 
 
             //assert
-            _rm.VerifyContentNavigation(nameof(SingleFileSourceView), Times.Never());
+            _rm.VerifyContentNavigation(nameof(SingleFileSourceViewModel), Times.Never());
 
 
             sigVm.SelectedFilePath.Should().Be(default);
@@ -121,17 +108,17 @@ namespace Data.Tests.Application.DataSourceSelection
 
             //act & assert
             //training file
-            _dialogService.Setup(f => f.OpenCsv(It.IsAny<Window>())).Returns((true, trainingPath));
+            _dialogService.Setup(f => f.OpenCsv()).Returns((true, trainingPath));
             _multiFileService.SelectTrainingFileCommand.Execute();
             mulVm.TrainingSetFilePath.Should().Be(trainingPath);
 
             //validation file
-            _dialogService.Setup(f => f.OpenCsv(It.IsAny<Window>())).Returns((true, validationPath));
+            _dialogService.Setup(f => f.OpenCsv()).Returns((true, validationPath));
             _multiFileService.SelectValidationFileCommand.Execute();
             mulVm.ValidationSetFilePath.Should().Be(validationPath);
 
             //training file
-            _dialogService.Setup(f => f.OpenCsv(It.IsAny<Window>())).Returns((true, testPath));
+            _dialogService.Setup(f => f.OpenCsv()).Returns((true, testPath));
             _multiFileService.SelectTestFileCommand.Execute();
             mulVm.TestSetFilePath.Should().Be(testPath);
         }

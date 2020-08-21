@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Common.Domain;
+﻿using Common.Domain;
 using Common.Framework;
 using Data.Application.Services;
-using Data.Application.ViewModels;
 using Data.Application.ViewModels.CustomDataSet;
 using Data.Application.ViewModels.DataSetDivision;
 using Data.Application.ViewModels.DataSource.VariablesSelection;
-using Infrastructure;
 using Infrastructure.Domain;
 using NNLib.Common;
 using OxyPlot;
@@ -19,6 +13,8 @@ using Prism.Commands;
 using Prism.Events;
 using Prism.Regions;
 using Shell.Interface;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Data.Application.Controllers
 {

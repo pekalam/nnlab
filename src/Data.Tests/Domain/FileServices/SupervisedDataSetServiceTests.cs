@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
-using System.Text;
 using Data.Domain.Services;
 using FluentAssertions;
 using NNLib.Common;
 using Xunit;
 
-namespace Data.Tests.Domain.SupervisedDataSetServiceTests
+namespace Data.Application.Tests.Domain.FileServices
 {
     public class SupervisedDataSetServiceTests
     {

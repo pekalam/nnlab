@@ -1,15 +1,11 @@
-using FluentAssertions;
-using Infrastructure.Domain;
-using System;
 using Data.Application.ViewModels.DataSource.Preview;
 using Data.Domain.Services;
-using Infrastructure;
-using Moq;
+using FluentAssertions;
+using Infrastructure.Domain;
 using NNLib.Common;
-using Prism.Events;
 using Xunit;
 
-namespace Data.Tests
+namespace Data.Application.Tests.Application.DataSourcePreview
 {
     public class DataSetInstanceAccessorTest
     {

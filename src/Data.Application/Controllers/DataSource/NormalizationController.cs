@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Data.Application.Services;
+﻿using Data.Application.Services;
 using Data.Domain.Services;
 using Prism.Commands;
+using System;
 
 namespace Data.Application.Controllers.DataSource
 {

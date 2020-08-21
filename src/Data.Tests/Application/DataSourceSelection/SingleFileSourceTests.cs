@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Security.Permissions;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using Common.Framework;
 using Data.Application.Controllers;
 using Data.Application.Services;
-using Data.Application.ViewModels;
 using Data.Application.ViewModels.DataSourceSelection;
 using Data.Domain.Services;
-using Data.Presentation.Services;
 using FluentAssertions;
-using Infrastructure;
 using Infrastructure.Domain;
 using Moq;
 using Moq.AutoMock;
@@ -18,7 +12,7 @@ using Prism.Commands;
 using TestUtils;
 using Xunit;
 
-namespace Data.Tests.Application.DataSourceSelection
+namespace Data.Application.Tests.Application
 {
     public class SingleFileSourceTests
     {

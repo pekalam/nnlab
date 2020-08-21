@@ -1,17 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using Common.Framework;
+﻿using Common.Framework;
 using Data.Application.Services;
 using Data.Application.ViewModels.DataSource.VariablesSelection;
 using Data.Domain;
 using Data.Domain.Services;
-using Infrastructure;
 using Infrastructure.Domain;
 using NNLib.Common;
 using Prism.Commands;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Data.Application.Controllers
 {

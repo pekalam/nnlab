@@ -1,23 +1,15 @@
-﻿using Data.Application.Controllers;
+﻿using Common.Framework;
+using Data.Application.Controllers;
 using Data.Application.Services;
-using Data.Application.ViewModels;
+using Data.Application.ViewModels.CustomDataSet;
 using FluentAssertions;
 using Infrastructure.Domain;
-using Moq;
 using Moq.AutoMock;
-using System;
-using System.Collections.Generic;
-using System.Data.Common;
-using System.Text;
-using System.Windows;
-using Data.Application.ViewModels.CustomDataSet;
-using Infrastructure;
-using MahApps.Metro.Controls;
+using OxyPlot;
 using TestUtils;
 using Xunit;
-using OxyPlot;
 
-namespace Data.Tests.Application.CustomDataSet
+namespace Data.Application.Tests.Application.CustomDataSet
 {
     public class CustomDataSetCreationTests
     {

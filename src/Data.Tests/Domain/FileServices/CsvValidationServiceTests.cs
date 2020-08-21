@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Data.Domain.Services;
+﻿using Data.Domain.Services;
 using FluentAssertions;
 using Xunit;
 
-namespace Data.Tests.Domain.FileServices
+namespace Data.Application.Tests.Domain.FileServices
 {
     public class CsvValidationServiceTests
     {

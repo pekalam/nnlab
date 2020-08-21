@@ -1,15 +1,13 @@
-﻿using System.Threading.Tasks;
-using Common.Framework;
+﻿using Common.Framework;
 using Data.Application.Services;
-using Data.Application.ViewModels;
 using Data.Application.ViewModels.DataSource.FileDataSource;
 using Data.Application.ViewModels.DataSourceSelection;
 using Data.Domain.Services;
-using Infrastructure;
 using Infrastructure.Domain;
 using Prism.Commands;
 using Prism.Regions;
 using Shell.Interface;
+using System.Threading.Tasks;
 
 namespace Data.Application.Controllers
 {

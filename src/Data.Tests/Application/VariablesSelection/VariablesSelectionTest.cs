@@ -1,21 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using Common.Framework;
 using Data.Application.Controllers;
 using Data.Application.Services;
 using Data.Application.ViewModels.DataSource.VariablesSelection;
 using Data.Domain.Services;
 using FluentAssertions;
-using Infrastructure;
 using Infrastructure.Domain;
-using Moq;
 using Moq.AutoMock;
 using NNLib.Common;
 using TestUtils;
 using Xunit;
 
-namespace Data.Tests.Application.VariablesSelection
+namespace Data.Application.Tests.Application.VariablesSelection
 {
     public class VariablesSelectionTest
     {

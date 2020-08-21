@@ -14,7 +14,6 @@ namespace Training.Presentation
 
         public void RegisterTypes(IContainerRegistry containerRegistry)
         {
-
         }
     }
 }

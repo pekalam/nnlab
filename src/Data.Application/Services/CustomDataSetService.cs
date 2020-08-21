@@ -1,17 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Windows.Input;
-using Common.Framework;
-using Data.Application.ViewModels;
-using Infrastructure;
+﻿using Common.Framework;
 using OxyPlot;
-using OxyPlot.Axes;
-using OxyPlot.Series;
 using Prism.Commands;
 using Prism.Mvvm;
+using System.ComponentModel;
 
 namespace Data.Application.Services
 {

@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Globalization;
-using System.Windows.Data;
-using System.Windows.Input;
-using Common.Framework;
+﻿using Common.Framework;
 using Data.Application.Services;
 using Data.Domain;
-using Infrastructure;
 using Infrastructure.Domain;
 using Prism.Regions;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Windows.Input;
 
 namespace Data.Application.ViewModels.DataSetDivision
 {

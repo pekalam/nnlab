@@ -1,6 +1,5 @@
 ﻿using Common.Framework;
 using Data.Application.Services;
-using Infrastructure;
 using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Series;

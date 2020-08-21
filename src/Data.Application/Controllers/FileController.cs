@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Common.Framework;
+﻿using Common.Framework;
 using Data.Application.Services;
-using Data.Application.ViewModels;
 using Data.Application.ViewModels.CustomDataSet;
 using Data.Application.ViewModels.DataSourceSelection;
-using Infrastructure;
-using Microsoft.Win32;
 using Prism.Commands;
 using Prism.Regions;
 using Shell.Interface;

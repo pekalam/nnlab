@@ -1,15 +1,12 @@
-﻿using System.IO.Pipes;
-using System.Linq;
-using Common.Framework;
+﻿using Common.Framework;
 using Data.Application.Services;
-using Data.Application.ViewModels;
 using Data.Application.ViewModels.DataSourceSelection;
 using Data.Domain.Services;
-using Infrastructure;
 using Infrastructure.Domain;
 using Prism.Commands;
 using Prism.Regions;
 using Shell.Interface;
+using System.Linq;
 
 namespace Data.Application.Controllers
 {

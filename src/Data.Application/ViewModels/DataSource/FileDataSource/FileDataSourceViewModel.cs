@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows;
-using Common.Framework;
+﻿using Common.Framework;
 using Data.Application.Services;
 using Data.Application.ViewModels.DataSource.Normalization;
 using Data.Application.ViewModels.DataSource.Preview;
-using Infrastructure;
+using System.Windows;
 
 namespace Data.Application.ViewModels.DataSource.FileDataSource
 {

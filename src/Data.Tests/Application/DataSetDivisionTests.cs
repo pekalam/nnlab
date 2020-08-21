@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using Data.Application.Controllers;
 using Data.Application.Services;
-using Data.Application.ViewModels;
 using Data.Application.ViewModels.DataSetDivision;
 using FluentAssertions;
 using Infrastructure.Domain;
@@ -14,7 +12,7 @@ using Prism.Regions;
 using TestUtils;
 using Xunit;
 
-namespace Data.Tests.Application
+namespace Data.Application.Tests.Application
 {
     public class DataSetDivisionTests
     {

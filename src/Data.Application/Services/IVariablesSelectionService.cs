@@ -1,6 +1,5 @@
-﻿using System.Windows.Input;
-using Common.Framework;
-using Infrastructure;
+﻿using Common.Framework;
+using System.Windows.Input;
 
 namespace Data.Application.Services
 {

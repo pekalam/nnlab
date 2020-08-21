@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using Infrastructure.Domain;
+﻿using Infrastructure.Domain;
 using NNLib.Common;
 using OxyPlot;
 using OxyPlot.Series;
 using Serilog;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
 
 namespace Data.Application.ViewModels.DataSource.Statistics
 {

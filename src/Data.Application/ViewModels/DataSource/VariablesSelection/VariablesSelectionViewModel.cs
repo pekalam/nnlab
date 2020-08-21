@@ -1,12 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Globalization;
-using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using Common.Framework;
+﻿using Common.Framework;
 using Data.Domain;
-using Infrastructure;
 
 namespace Data.Application.ViewModels.DataSource.VariablesSelection
 {

@@ -1,9 +1,6 @@
-﻿using System.Text;
-using Common.Framework;
+﻿using Common.Framework;
 using Data.Application.Services;
-using Infrastructure;
 using NNLib.Common;
-using Serilog;
 using Unity;
 
 namespace Data.Application.ViewModels.DataSource.Statistics

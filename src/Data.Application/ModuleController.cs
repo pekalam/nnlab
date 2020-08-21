@@ -1,9 +1,7 @@
 ﻿using Common.Domain;
 using Data.Application.Controllers;
 using Data.Application.Controllers.DataSource;
-using Data.Application.ViewModels;
 using Data.Application.ViewModels.DataSourceSelection;
-using Data.Domain;
 using Infrastructure.Domain;
 using Prism.Events;
 using Prism.Regions;

@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Common.Framework;
+﻿using Common.Framework;
 using Data.Application.ViewModels.DataSource.Statistics;
-using Infrastructure;
 using NNLib.Common;
 using Prism.Commands;
+using System;
 
 namespace Data.Application.Services
 {

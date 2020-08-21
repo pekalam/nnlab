@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Text;
-using System.Windows;
-using System.Windows.Input;
-using Common.Framework;
-using Infrastructure;
+﻿using Common.Framework;
 using Infrastructure.Domain;
 using NNLib.Common;
 using Prism.Commands;
-using Prism.Regions;
+using System;
+using System.Data;
+using System.Windows;
+using System.Windows.Input;
 
 namespace Data.Application.ViewModels.DataSource.Preview
 {

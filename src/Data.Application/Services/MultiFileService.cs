@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Linq;
-using Common.Framework;
-using Data.Application.ViewModels;
+﻿using Common.Framework;
 using Data.Application.ViewModels.DataSourceSelection;
-using Infrastructure;
 using Infrastructure.Domain;
 using Prism.Commands;
 using Prism.Mvvm;
+using System.ComponentModel;
+using System.Linq;
 
 namespace Data.Application.Services
 {

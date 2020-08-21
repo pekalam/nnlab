@@ -1,6 +1,5 @@
 ﻿using Common.Framework;
 using Data.Application.Services;
-using Infrastructure;
 
 namespace Data.Application.ViewModels.CustomDataSet
 {

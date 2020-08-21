@@ -1,17 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows;
-using Data.Application.Services;
+﻿using Data.Application.Services;
 using Data.Application.ViewModels.DataSetDivision;
 using Data.Application.ViewModels.DataSource.FileDataSource;
 using Data.Application.ViewModels.DataSource.VariablesSelection;
-using Infrastructure;
 using Infrastructure.Domain;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Regions;
 using Shell.Interface;
+using System.Windows;
 
 namespace Data.Application.Controllers.DataSource
 {

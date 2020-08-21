@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Common.Framework;
+﻿using Common.Framework;
 using Data.Application.Services;
-using Infrastructure;
 
 namespace Data.Application.ViewModels.DataSource.Normalization
 {

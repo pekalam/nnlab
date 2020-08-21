@@ -1,19 +1,13 @@
 ﻿using Data.Application.Services;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Windows.Data;
-using Data.Application.ViewModels;
 using Data.Application.ViewModels.DataSetDivision;
 using Data.Domain.Services;
 using Infrastructure.Domain;
 using NNLib.Common;
 using Prism.Commands;
-using Prism.Events;
-using Prism.Regions;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
 
 namespace Data.Application.Controllers
 {

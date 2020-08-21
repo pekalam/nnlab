@@ -21,7 +21,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NNLib", "..\..\NNLib\NNLib\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NNLib.Csv", "..\..\NNLib\NNLib.Csv\NNLib.Csv.csproj", "{42B52161-802D-4A70-A2D5-17BBB70E82B7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Data.Tests", "Data.Tests\Data.Tests.csproj", "{9F95F312-EEBA-4BC0-92D6-8AA1F320C304}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Data.Application.Tests", "Data.Tests\Data.Application.Tests.csproj", "{9F95F312-EEBA-4BC0-92D6-8AA1F320C304}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestUtils", "TestUtils\TestUtils.csproj", "{9C07672C-834B-4EB4-BC8F-AFF158B29C26}"
 EndProject

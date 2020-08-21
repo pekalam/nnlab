@@ -1,12 +1,9 @@
-﻿using System.Windows;
+﻿using Common.Framework;
 using Data.Application.Controllers;
 using Data.Application.Services;
-using Data.Application.ViewModels;
 using Data.Application.ViewModels.DataSourceSelection;
 using Data.Domain.Services;
-using Data.Presentation.Services;
 using FluentAssertions;
-using Infrastructure;
 using Infrastructure.Domain;
 using Moq;
 using Moq.AutoMock;
@@ -15,7 +12,7 @@ using TestUtils;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Data.Tests.Application.DataSourceSelection
+namespace Data.Application.Tests.Application
 {
     public class MultiFileSourceTest
     {
@@ -185,7 +182,7 @@ namespace Data.Tests.Application.DataSourceSelection
         {
             var multiFileService = _multiFileService;
 
-            _dialogService.Setup(f => f.OpenCsv(It.IsAny<Window>())).Returns((true, "x.csv"));
+            _dialogService.Setup(f => f.OpenCsv()).Returns((true, "x.csv"));
             //setup training file validation
             _csvValidation.Setup(f => f.Validate(It.IsAny<string>())).Returns((false, null, 2, 2));
             _csvValidation.Setup(f => f.ReadHeaders(It.IsAny<string>())).Returns(new string[] { "x", "y" });

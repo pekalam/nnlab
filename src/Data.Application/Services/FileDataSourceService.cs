@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Prism.Commands;
+﻿using Prism.Commands;
+using System;
 
 namespace Data.Application.Services
 {

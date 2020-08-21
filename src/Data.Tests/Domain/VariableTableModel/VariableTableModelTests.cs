@@ -1,21 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Data.Application.Services;
-using Data.Domain;
-using FluentAssertions;
+﻿using FluentAssertions;
 using NNLib.Common;
 using TestUtils;
 using Xunit;
 
-namespace Data.Tests.Domain.VariableTableModelTests
+namespace Data.Application.Tests.Domain.VariableTableModel
 {
     public class VariableTableModelTests
     {
         [Fact]
         public void FromTrainingData_constructs_valid_model()
         {
-            var model = VariableTableModel.FromTrainingData(TrainingDataMocks.ValidData4);
+            var model = Data.Domain.VariableTableModel.FromTrainingData(TrainingDataMocks.ValidData4);
 
             model.Length.Should().Be(3);
 
@@ -30,7 +25,7 @@ namespace Data.Tests.Domain.VariableTableModelTests
         {
             int e1=0, e2=0, e3 = 0;
             int c1 = 0, c2 = 0, c3 = 0;
-            var model = VariableTableModel.FromTrainingData(TrainingDataMocks.ValidData4);
+            var model = Data.Domain.VariableTableModel.FromTrainingData(TrainingDataMocks.ValidData4);
 
             model[0].OnError = s => _ = s != null ? e1++ : c1++;
             model[1].OnError = s => _ = s != null ? e2++ : c2++;
@@ -39,7 +34,7 @@ namespace Data.Tests.Domain.VariableTableModelTests
 
             //Target Target Target
             model[0].VariableUse = VariableUses.Target;
-            model[0][nameof(VariableTableModel.VariableUse)].Should().NotBeNullOrEmpty();
+            model[0][nameof(Data.Domain.VariableTableModel.VariableUse)].Should().NotBeNullOrEmpty();
             c1.Should().Be(0);
             e1.Should().Be(1);
             c2.Should().Be(0);
@@ -49,7 +44,7 @@ namespace Data.Tests.Domain.VariableTableModelTests
 
             //Ignore Target Target
             model[0].VariableUse = VariableUses.Ignore;
-            model[0][nameof(VariableTableModel.VariableUse)].Should().NotBeNullOrEmpty();
+            model[0][nameof(Data.Domain.VariableTableModel.VariableUse)].Should().NotBeNullOrEmpty();
             c1.Should().Be(0);
             e1.Should().Be(2);
             c2.Should().Be(0);
@@ -60,7 +55,7 @@ namespace Data.Tests.Domain.VariableTableModelTests
 
             //Ignore Input Target
             model[1].VariableUse = VariableUses.Input;
-            model[0][nameof(VariableTableModel.VariableUse)].Should().BeNullOrEmpty();
+            model[0][nameof(Data.Domain.VariableTableModel.VariableUse)].Should().BeNullOrEmpty();
             c1.Should().Be(1);
             e1.Should().Be(2);
             c2.Should().Be(0);
@@ -70,7 +65,7 @@ namespace Data.Tests.Domain.VariableTableModelTests
 
             //Ignore Input Input
             model[2].VariableUse = VariableUses.Input;
-            model[2][nameof(VariableTableModel.VariableUse)].Should().NotBeNullOrEmpty();
+            model[2][nameof(Data.Domain.VariableTableModel.VariableUse)].Should().NotBeNullOrEmpty();
             c1.Should().Be(1);
             e1.Should().Be(2);
             c2.Should().Be(0);

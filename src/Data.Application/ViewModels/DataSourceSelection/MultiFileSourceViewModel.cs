@@ -1,9 +1,9 @@
-﻿using System;
+﻿using Common.Framework;
+using Data.Application.Services;
+using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
-using Common.Framework;
-using Data.Application.Services;
 
 namespace Data.Application.ViewModels.DataSourceSelection
 {

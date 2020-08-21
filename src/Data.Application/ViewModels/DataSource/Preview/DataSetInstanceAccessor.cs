@@ -1,7 +1,6 @@
-﻿using System.Data;
-using System.Linq;
-using Infrastructure.Domain;
+﻿using Infrastructure.Domain;
 using NNLib.Common;
+using System.Data;
 
 namespace Data.Application.ViewModels.DataSource.Preview
 {

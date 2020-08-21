@@ -1,7 +1,5 @@
-﻿using System.Windows.Input;
-using Common.Framework;
+﻿using Common.Framework;
 using Data.Application.Services;
-using Infrastructure;
 
 namespace Data.Application.ViewModels.DataSource.FileDataSource
 {
