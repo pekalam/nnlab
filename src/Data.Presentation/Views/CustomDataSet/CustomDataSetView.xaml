@@ -6,10 +6,15 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:dd="clr-namespace:Data.Presentation.__DesignData"
+             xmlns:customDataSet="clr-namespace:Data.Presentation.Views.CustomDataSet"
+             xmlns:interface="clr-namespace:Shell.Interface;assembly=Shell.Interface"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance dd:DesignCustomDataSetVm, IsDesignTimeCreatable=True}"
              prism:ViewModelLocator.AutoWireViewModel="True">
-    <Grid Margin="40">
+    <UserControl.Resources>
+        <customDataSet:ActionMenuLeftView x:Key="ActionMenuLeft"/>
+    </UserControl.Resources>
+    <Grid Margin="40" interface:ActionMenuHelpers.LeftMenuView="{StaticResource ActionMenuLeft}">
         <ContentControl Style="{StaticResource ContentPanel}">
             <oxy:PlotView Model="{Binding PlotModel}" Controller="{Binding PlotController}" />
         </ContentControl>

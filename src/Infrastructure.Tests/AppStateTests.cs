@@ -1,12 +1,11 @@
 using System;
-using System.Linq.Expressions;
 using AutoFixture;
 using FluentAssertions;
 using Infrastructure.Domain;
 using TestUtils;
 using Xunit;
 
-namespace Infrastructure.Tests
+namespace Common.Tests
 {
     public class AppStateTests
     {

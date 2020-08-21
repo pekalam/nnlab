@@ -1,11 +1,13 @@
-using System;
 using FluentAssertions;
 using Moq;
 using Prism.Events;
 using Prism.Regions;
+using Shell.Application.PrismDecorators;
+using Shell.Interface;
+using System;
 using Xunit;
 
-namespace Infrastructure.Tests
+namespace Shell.Application.Tests
 {
     class TestRegionCollectionDecorator : RegionCollectionDecorator
     {

@@ -15,14 +15,12 @@ namespace Data.Application.Controllers.DataSource
     {
         private IRegionManager _rm;
         private IEventAggregator _ea;
-        private readonly IActionMenuNavigationService _actionMenuNavService;
         private AppState _appState;
 
-        public FileDataSourceController(IFileDataSourceService service, IRegionManager rm, IEventAggregator ea, IActionMenuNavigationService actionMenuNavService, AppState appState)
+        public FileDataSourceController(IFileDataSourceService service, IRegionManager rm, IEventAggregator ea, AppState appState)
         {
             _rm = rm;
             _ea = ea;
-            _actionMenuNavService = actionMenuNavService;
             _appState = appState;
 
 

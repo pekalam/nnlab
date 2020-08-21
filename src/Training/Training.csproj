@@ -5,6 +5,8 @@
     <AssemblyName>Training</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Prism.Wpf" Version="7.2.0.1422" />
+    <ProjectReference Include="..\Training.Application\Training.Application.csproj" />
+    <ProjectReference Include="..\Training.Domain\Training.Domain.csproj" />
+    <ProjectReference Include="..\Training.Presentation\Training.Presentation.csproj" />
   </ItemGroup>
 </Project>

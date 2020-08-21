@@ -32,7 +32,7 @@ namespace Assemlber
             Common.Domain.Bootstraper.RegisterTypes(containerRegistry);
             Common.Framework.Bootstraper.RegisterTypes(containerRegistry);
 
-            Bootstraper.RegisterTypes(containerRegistry);
+            Shell.Bootstraper.RegisterTypes(containerRegistry);
         }
 
 

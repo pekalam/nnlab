@@ -5,9 +5,6 @@
     <AssemblyName>NeuralNetwork.Presentation</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Prism.Wpf" Version="7.2.0.1422" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\NeuralNetwork.Application\NeuralNetwork.Application.csproj" />
   </ItemGroup>
 </Project>

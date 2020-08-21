@@ -1,51 +1,12 @@
-﻿using System;
-using System.Windows.Controls;
-using Common.Framework.Extensions;
+﻿using System.Runtime.CompilerServices;
+using CommonServiceLocator;
 using Prism.Events;
-using Prism.Regions;
+using Prism.Ioc;
+using Prism.Mvvm;
+using Prism.Unity;
 
 namespace Shell.Interface
 {
-    public interface IActionMenuNavigationService
-    {
-        void SetLeftMenu<T>() where T : UserControl, new();
-        void SetRightMenu<T>() where T : UserControl, new();
-    }
-
-    public static class RegionManagerExtensions
-    {
-        public static void NavigateContentRegion(this IRegionManager rm, string viewName,
-            ContentRegionNavigationParameters navParams)
-        {
-            rm.RequestNavigate(AppRegions.ContentRegion, viewName, navParams);
-        }
-
-
-        public static void NavigateContentRegion(this IRegionManager rm, string viewName, string breadcrumb)
-        {
-            rm.RequestNavigate(AppRegions.ContentRegion, viewName, new ContentRegionNavigationParameters(breadcrumb));
-        }
-    }
-
-    public static class EventAggregatorExtenstions
-    {
-        public static void OnFirstNavigation(this IEventAggregator ea, int moduleNavId, Action action)
-        {
-            ea.GetEvent<PreviewCheckNavMenuItem>().SubscribeOnceWhen(_ => action(), args => args.Next == moduleNavId);
-        }
-    }
-
-    public static class AppRegions
-    {
-        public static string ContentRegion = nameof(ContentRegion);
-        public static string FlyoutRegion = nameof(FlyoutRegion);
-        public static string TopMenuRightRegion = nameof(TopMenuRightRegion);
-        public static string TopMenuLeftRegion = nameof(TopMenuLeftRegion);
-        public static string ActionMenuRightRegion = nameof(ActionMenuRightRegion);
-        public static string ActionMenuLeftRegion = nameof(ActionMenuLeftRegion);
-    }
-
-
     class Class1
     {
     }
@@ -62,26 +23,6 @@ namespace Shell.Interface
 
     public class HideFlyout : PubSubEvent { }
 
-
-    public class ContentRegionNavigationParameters : NavigationParameters
-    {
-        internal const string BreadcrumbKeyName = "Breadcrumb";
-
-        public ContentRegionNavigationParameters(string breadcrumb, bool showBreadcrumbs = true)
-        {
-            if (string.IsNullOrWhiteSpace(breadcrumb))
-            {
-                //TODO
-                //throw new ArgumentException("breadcrumbName cannot be null or white space");
-            }
-
-            ShowBreadcrumbs = showBreadcrumbs;
-            Add(BreadcrumbKeyName, breadcrumb);
-        }
-
-        public bool ShowBreadcrumbs { get; }
-        public string Breadcrumb => GetValue<string>(BreadcrumbKeyName);
-    }
 
     public class ContentRegionViewChangedEventArgs
     {

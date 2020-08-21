@@ -1,6 +1,3 @@
-using System;
-using System.ComponentModel;
-using System.Linq;
 using Common.Domain;
 using FluentAssertions;
 using Moq;
@@ -8,6 +5,9 @@ using Prism.Events;
 using Prism.Regions;
 using Shell.Application.ViewModels;
 using Shell.Interface;
+using System;
+using System.ComponentModel;
+using System.Linq;
 using Xunit;
 
 namespace Shell.Application.Tests

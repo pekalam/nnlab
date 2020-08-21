@@ -12,12 +12,15 @@ namespace Data.Application.ViewModels.DataSource.FileDataSource
 
         public FileDataSourceViewModel(IFileDataSourceService service,DataSourcePreviewViewModel dataSourcePreviewVm, NormalizationViewModel normalizationVm)
         {
+            Service = service;
             DataSourcePreviewVm = dataSourcePreviewVm;
             NormalizationVm = normalizationVm;
             KeepAlive = true;
 
             service.Initialized?.Invoke();
         }
+
+        public IFileDataSourceService Service { get; }
 
         public Visibility ShowLoadingVisibility
         {

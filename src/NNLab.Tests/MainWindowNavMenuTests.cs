@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
 using Common.Domain;
 using FluentAssertions;
 using Moq;
@@ -8,6 +6,8 @@ using Prism.Regions;
 using Shell.Application.PrismDecorators;
 using Shell.Application.ViewModels;
 using Shell.Interface;
+using System.Collections.Generic;
+using System.Linq;
 using TestUtils;
 using Xunit;
 

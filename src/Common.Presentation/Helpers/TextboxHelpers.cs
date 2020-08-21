@@ -2,7 +2,9 @@
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using CommonServiceLocator;
 using Prism.Commands;
+using Prism.Regions;
 
 namespace Common.Presentation.Helpers
 {

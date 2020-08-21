@@ -43,15 +43,12 @@ namespace Data.Application.Controllers
         private readonly List<double[]> _target = new List<double[]>();
         private readonly IRegionManager _rm;
         private readonly IEventAggregator _ea;
-        private readonly IActionMenuNavigationService _actionMenuNavService;
 
-        public CustomDataSetController(AppState appState, IRegionManager rm, IEventAggregator ea,
-            IActionMenuNavigationService actionMenuNavService)
+        public CustomDataSetController(AppState appState, IRegionManager rm, IEventAggregator ea)
         {
             _appState = appState;
             _rm = rm;
             _ea = ea;
-            _actionMenuNavService = actionMenuNavService;
 
             PlotMouseDownCommand = new DelegateCommand<OxyMouseDownEventArgs>(PlotMouseDown);
             OpenDivisionViewCommand = new DelegateCommand(OpenDivisionView,

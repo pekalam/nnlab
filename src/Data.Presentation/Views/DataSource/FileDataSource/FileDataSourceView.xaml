@@ -10,10 +10,15 @@
              xmlns:preview="clr-namespace:Data.Presentation.Views.DataSource.Preview"
              xmlns:normalization="clr-namespace:Data.Presentation.Views.DataSource.Normalization"
              xmlns:statistics="clr-namespace:Data.Presentation.Views.DataSource.Statistics"
+             xmlns:interface="clr-namespace:Shell.Interface;assembly=Shell.Interface"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance dd:DesignFileDataSourceVm, IsDesignTimeCreatable=True}"
-             prism:ViewModelLocator.AutoWireViewModel="True">
-    <Grid>
+             prism:ViewModelLocator.AutoWireViewModel="True"
+             >
+    <UserControl.Resources>
+        <data:ActionMenuLeftView x:Key="ActionMenuLeft"/>
+    </UserControl.Resources>
+    <Grid interface:ActionMenuHelpers.LeftMenuView="{StaticResource ActionMenuLeft}">
         <ScrollViewer>
 
         

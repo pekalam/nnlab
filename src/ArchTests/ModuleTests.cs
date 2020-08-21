@@ -167,7 +167,8 @@ namespace ArchTests
                     .GetTypes().ToList();
 
 
-                foreach (var view in views)
+                //exclude action menu
+                foreach (var view in views.Where(v => !v.FullName.Contains("ActionMenu")))
                 {
                     if (!vms.Any(vm => vm.FullName == view.FullName.Replace("Views", "ViewModels").Replace("Presentation","Application") + "Model"))
                     {

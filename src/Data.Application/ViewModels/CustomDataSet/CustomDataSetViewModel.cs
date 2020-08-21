@@ -3,11 +3,18 @@ using Data.Application.Services;
 using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Series;
+using Unity;
 
 namespace Data.Application.ViewModels.CustomDataSet
 {
     public class CustomDataSetViewModel : ViewModelBase<CustomDataSetViewModel>
     {
+        public CustomDataSetViewModel()
+        {
+            
+        }
+
+        [InjectionConstructor]
         public CustomDataSetViewModel(ICustomDataSetService customDataSetService)
         {
             Service = customDataSetService;

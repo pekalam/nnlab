@@ -10,7 +10,6 @@ namespace Shell.Presentation
         public static void RegisterTypes(IContainerRegistry cr)
         {
             cr
-                .Register<IActionMenuNavigationService, ActionMenuNavigationService>()
                 .Register<IContentRegionHistoryService, ContentRegionHistoryService>();
                 
         }

@@ -9,8 +9,10 @@ namespace Common.Framework
     /// Base class of view models.
     /// </summary>
     /// <typeparam name="T">Inheriting class type</typeparam>
-    public class ViewModelBase<T> : BindableBase, INavigationAware, IRegionMemberLifetime, IActiveAware where T : ViewModelBase<T>
+    public class ViewModelBase<T> : BindableBase, INavigationAware, IRegionMemberLifetime, IActiveAware
+        where T : ViewModelBase<T>
     {
+        private bool _isActive;
         public static T Instance { get; private set; }
         public static event Action Created;
 
@@ -21,7 +23,17 @@ namespace Common.Framework
         }
 
         public bool KeepAlive { get; set; }
-        public bool IsActive { get; set; }
+
+        public bool IsActive
+        {
+            get => _isActive;
+            set
+            {
+                _isActive = value;
+                IsActiveChanged?.Invoke(this, null);
+            }
+        }
+
         public event EventHandler IsActiveChanged;
 
         public virtual void OnNavigatedTo(NavigationContext navigationContext)
@@ -41,7 +53,7 @@ namespace Common.Framework
     /// </summary>
     /// <typeparam name="T">Inheriting class type</typeparam>
     /// <typeparam name="TV">View abstraction type</typeparam>
-    public class ViewModelBase<T, TV> : ViewModelBase<T> where T : ViewModelBase<T> where TV : class,IView
+    public class ViewModelBase<T, TV> : ViewModelBase<T> where T : ViewModelBase<T> where TV : class, IView
     {
         /// <summary>
         /// Provides view abstraction for view model.
@@ -55,7 +67,9 @@ namespace Common.Framework
         /// Called after <see cref="View"/> property is set.
         /// </summary>
         /// <param name="view">View abstraction</param>
-        protected virtual void ViewChanged(TV view) { }
+        protected virtual void ViewChanged(TV view)
+        {
+        }
 
         public override void OnNavigatedTo(NavigationContext navigationContext)
         {

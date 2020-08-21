@@ -12,7 +12,6 @@ using Data.Application.ViewModels.DataSource.Statistics;
 using Data.Application.ViewModels.DataSource.VariablesSelection;
 using Data.Application.ViewModels.DataSourceSelection;
 using Data.Presentation.Views.DataSource.FileDataSource;
-using ActionMenuLeftViewModel = Data.Application.ViewModels.CustomDataSet.ActionMenuLeftViewModel;
 
 namespace Data.Presentation.__DesignData
 {
@@ -41,21 +40,11 @@ namespace Data.Presentation.__DesignData
 
     class DesignCustomDataSetVm : CustomDataSetViewModel
     {
-        public DesignCustomDataSetVm(ICustomDataSetService customDataSetService) : base(null)
-        {
-        }
     }
 
     class DesignDataSetDivisionVm : DataSetDivisionViewModel
     {
         public DesignDataSetDivisionVm() : base(null, null)
-        {
-        }
-    }
-
-    class DesignDataSetDivisionActionLeftVm : ActionMenuLeftViewModel
-    {
-        public DesignDataSetDivisionActionLeftVm() : base(null)
         {
         }
     }
@@ -77,14 +66,6 @@ namespace Data.Presentation.__DesignData
     class DesignFileDataSourceViewModel : FileDataSourceViewModel
     {
         public DesignFileDataSourceViewModel() : base(null, null, null)
-        {
-        }
-    }
-
-    class DesignFileDataSourceActionMenuVm : Data.Application.ViewModels.DataSource.FileDataSource.
-        ActionMenuLeftViewModel
-    {
-        public DesignFileDataSourceActionMenuVm() : base(null)
         {
         }
     }
