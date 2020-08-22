@@ -45,7 +45,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
                     <Border Cursor="Hand" Padding="9" Background="{TemplateBinding Background}" BorderBrush="#B8B8B8"
-                            BorderThickness="2" CornerRadius="7">
+                            BorderThickness="3" CornerRadius="7">
                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                     </Border>
                 </ControlTemplate>
@@ -62,9 +62,6 @@
 
             <Trigger Property="IsEnabled" Value="False">
                 <Setter Property="Foreground" Value="#B8B8B8" />
-            </Trigger>
-            <Trigger Property="IsEnabled" Value="True">
-                <Setter Property="Foreground" Value="Black" />
             </Trigger>
         </Style.Triggers>
     </Style>
