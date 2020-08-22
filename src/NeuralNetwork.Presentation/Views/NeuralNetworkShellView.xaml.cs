@@ -18,9 +18,9 @@ namespace NeuralNetwork.Presentation.Views
     /// <summary>
     /// Interaction logic for ViewA.xaml
     /// </summary>
-    public partial class ViewAView : UserControl
+    public partial class NeuralNetworkShellView : UserControl
     {
-        public ViewAView()
+        public NeuralNetworkShellView()
         {
             InitializeComponent();
         }

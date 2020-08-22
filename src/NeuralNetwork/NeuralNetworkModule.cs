@@ -19,6 +19,7 @@ namespace NeuralNetwork
         {
             containerRegistry.RegisterSingleton<ModuleController>();
 
+            NeuralNetwork.Domain.Bootstraper.RegisterTypes(containerRegistry);
             NeuralNetwork.Application.Bootstraper.RegisterTypes(containerRegistry);
             NeuralNetwork.Presentation.Bootstraper.RegisterTypes(containerRegistry);
         }

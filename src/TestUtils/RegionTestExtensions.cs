@@ -2,6 +2,7 @@
 using Castle.DynamicProxy;
 using Common.Domain;
 using Moq;
+using NNLib;
 using NNLib.Common;
 using Prism.Regions;
 using Shell.Interface;
@@ -27,6 +28,16 @@ namespace TestUtils
         }
     }
 
+
+    public static class MLPMocks
+    {
+        public static MLPNetwork ValidNet1 = new MLPNetwork(new PerceptronLayer(1, 10, new SigmoidActivationFunction()),
+            new PerceptronLayer(10, 1, new ArcTanActivationFunction()));
+
+        public static MLPNetwork ValidNet2 = new MLPNetwork(new PerceptronLayer(1, 10, new SigmoidActivationFunction()),
+            new PerceptronLayer(10, 1, new ArcTanActivationFunction()),
+                new PerceptronLayer(1, 2, new ArcTanActivationFunction()));
+    }
 
     public static class TrainingDataMocks
     {

@@ -5,7 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Common.Framework\Common.Framework.csproj" />
+    <ProjectReference Include="..\..\..\..\..\Marek Pękala\source\repos\NNControl\NNLibAdapter\NNLibAdapter.csproj" />
+    <ProjectReference Include="..\Common.Domain\Common.Domain.csproj" />
   </ItemGroup>
 
 </Project>

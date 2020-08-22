@@ -1,0 +1,42 @@
+﻿<UserControl x:Class="NeuralNetwork.Presentation.Views.NeuralNetworkShellView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:NeuralNetwork.Presentation.Views"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             d:DesignHeight="300" d:DesignWidth="300"
+             xmlns:prism="http://prismlibrary.com/"
+             xmlns:neuralNetwork="clr-namespace:NeuralNetwork.Application.View;assembly=NeuralNetwork.Application"
+             xmlns:designData="clr-namespace:NeuralNetwork.Presentation.__DesignData"
+             prism:ViewModelLocator.AutoWireViewModel="True" 
+             mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance designData:DesignNeuralNetworkShellVm, IsDesignTimeCreatable=True}">
+    <Grid Style="{StaticResource ContentGrid}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="20" />
+            <RowDefinition Height="1.618*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*" />
+            <ColumnDefinition Width="2" />
+            <ColumnDefinition Width="1*" />
+        </Grid.ColumnDefinitions>
+
+        <Grid Grid.ColumnSpan="3" Panel.ZIndex="999" Name="Ref">
+            <Border Style="{DynamicResource ShadowBorder}">
+            </Border>
+            <Border Style="{DynamicResource ShadowInBorder}" Padding="0">
+                <local:NetDisplayView/>
+            </Border>
+        </Grid>
+
+
+        <ContentControl Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="3" MaxWidth="{Binding ElementName=Ref,Path=ActualWidth}" Style="{StaticResource ContentPanel}">
+            <ContentControl
+                prism:RegionManager.RegionName="{x:Static neuralNetwork:NeuralNetworkRegions.NetworkDownRegion}"/>
+        </ContentControl>
+
+        <GridSplitter Background="Transparent" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Height="20"/>
+    </Grid>
+</UserControl>

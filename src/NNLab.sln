@@ -45,41 +45,41 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "B. NeuralNetwork", "B. Neur
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "B. Training", "B. Training", "{72CBFB17-54C5-4F3B-9BE4-F778A03694B7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.Framework", "Common.Framework\Common.Framework.csproj", "{4AE84EF6-C394-4470-B428-7D7F4D13B8E8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.Framework", "Common.Framework\Common.Framework.csproj", "{4AE84EF6-C394-4470-B428-7D7F4D13B8E8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.Domain", "Common.Domain\Common.Domain.csproj", "{717C47CA-C83D-47D2-8994-E71F7E14D646}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.Domain", "Common.Domain\Common.Domain.csproj", "{717C47CA-C83D-47D2-8994-E71F7E14D646}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.Infrastructure", "Common.Infrastructure\Common.Infrastructure.csproj", "{08AB1F12-5600-4160-86CC-12103ADAEA4B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.Infrastructure", "Common.Infrastructure\Common.Infrastructure.csproj", "{08AB1F12-5600-4160-86CC-12103ADAEA4B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shell", "Shell\Shell.csproj", "{F9F12FD9-1307-4DC4-8367-FBC699DE6BD5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shell", "Shell\Shell.csproj", "{F9F12FD9-1307-4DC4-8367-FBC699DE6BD5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shell.Application", "Shell.Application\Shell.Application.csproj", "{0CFAA46F-3610-4310-9D51-3652555E9F45}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shell.Application", "Shell.Application\Shell.Application.csproj", "{0CFAA46F-3610-4310-9D51-3652555E9F45}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArchTests", "ArchTests\ArchTests.csproj", "{038D586E-239D-48F2-9807-89C8B83D75C4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArchTests", "ArchTests\ArchTests.csproj", "{038D586E-239D-48F2-9807-89C8B83D75C4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shell.Presentation", "Shell.Presentation\Shell.Presentation.csproj", "{6A2B24E8-5B2E-4A95-ACF9-3D85760BA7AA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shell.Presentation", "Shell.Presentation\Shell.Presentation.csproj", "{6A2B24E8-5B2E-4A95-ACF9-3D85760BA7AA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Training.Presentation", "Training.Presentation\Training.Presentation.csproj", "{C0D5CA5D-5CA6-4EE0-8B72-350D7C32FA49}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Training.Presentation", "Training.Presentation\Training.Presentation.csproj", "{C0D5CA5D-5CA6-4EE0-8B72-350D7C32FA49}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Training.Application", "Training.Application\Training.Application.csproj", "{E8E86053-9CE6-4DC6-A495-629ACC1B5BFF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Training.Application", "Training.Application\Training.Application.csproj", "{E8E86053-9CE6-4DC6-A495-629ACC1B5BFF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Training.Domain", "Training.Domain\Training.Domain.csproj", "{25DDA3E7-91D4-40FC-8CF8-95C7205C181D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Training.Domain", "Training.Domain\Training.Domain.csproj", "{25DDA3E7-91D4-40FC-8CF8-95C7205C181D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeuralNetwork.Application", "NeuralNetwork.Application\NeuralNetwork.Application.csproj", "{5A5F513B-7FE6-41B8-BBC7-49B86050FD63}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NeuralNetwork.Application", "NeuralNetwork.Application\NeuralNetwork.Application.csproj", "{5A5F513B-7FE6-41B8-BBC7-49B86050FD63}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeuralNetwork.Presentation", "NeuralNetwork.Presentation\NeuralNetwork.Presentation.csproj", "{34736CB0-EA39-4C26-812C-94B963A50534}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NeuralNetwork.Presentation", "NeuralNetwork.Presentation\NeuralNetwork.Presentation.csproj", "{34736CB0-EA39-4C26-812C-94B963A50534}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeuralNetwork.Domain", "NeuralNetwork.Domain\NeuralNetwork.Domain.csproj", "{B50F82B6-62E3-410C-9C26-F7885771D377}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NeuralNetwork.Domain", "NeuralNetwork.Domain\NeuralNetwork.Domain.csproj", "{B50F82B6-62E3-410C-9C26-F7885771D377}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.Domain", "Data.Domain\Data.Domain.csproj", "{0C329F0C-3BBE-4564-9112-94BDCBA83641}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Data.Domain", "Data.Domain\Data.Domain.csproj", "{0C329F0C-3BBE-4564-9112-94BDCBA83641}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.Application", "Data.Application\Data.Application.csproj", "{E5E0EF14-01C4-4A1C-BC4A-D263A50AAECC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Data.Application", "Data.Application\Data.Application.csproj", "{E5E0EF14-01C4-4A1C-BC4A-D263A50AAECC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.Presentation", "Data.Presentation\Data.Presentation.csproj", "{F4AA87F0-175A-42C8-859D-567F1F47388A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Data.Presentation", "Data.Presentation\Data.Presentation.csproj", "{F4AA87F0-175A-42C8-859D-567F1F47388A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shell.Interface", "Shell.Interface\Shell.Interface.csproj", "{53C2EB33-8E54-422E-B358-0629E1E61BA3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shell.Interface", "Shell.Interface\Shell.Interface.csproj", "{53C2EB33-8E54-422E-B358-0629E1E61BA3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.Presentation", "Common.Presentation\Common.Presentation.csproj", "{B2DBB502-0802-4CB4-904C-C8A39D3153FD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.Presentation", "Common.Presentation\Common.Presentation.csproj", "{B2DBB502-0802-4CB4-904C-C8A39D3153FD}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{FCE68A69-E535-4566-A14D-43172A7B9772}"
 EndProject
@@ -91,7 +91,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{A640586B
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{B965F54C-6C2B-4425-8D47-8ECDC47AA308}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.Domain.Tests", "Data.Domain.Tests\Data.Domain.Tests.csproj", "{8963D48D-2863-415C-AB59-03D05A0EBF3A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Data.Domain.Tests", "Data.Domain.Tests\Data.Domain.Tests.csproj", "{8963D48D-2863-415C-AB59-03D05A0EBF3A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NNControl", "..\..\..\..\Marek Pękala\source\repos\NNControl\NNControl\NNControl.csproj", "{AADC9003-D0B4-40BA-A7DF-ADFDDD49DE70}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NNLibAdapter", "..\..\..\..\Marek Pękala\source\repos\NNControl\NNLibAdapter\NNLibAdapter.csproj", "{DFD639C1-1826-48F3-8D71-FA6623DB1083}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeuralNetwork.Application.Tests", "NeuralNetwork.Application.Tests\NeuralNetwork.Application.Tests.csproj", "{5D2584F3-132C-474F-BE09-655C12A44D4B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -231,6 +237,18 @@ Global
 		{8963D48D-2863-415C-AB59-03D05A0EBF3A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8963D48D-2863-415C-AB59-03D05A0EBF3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8963D48D-2863-415C-AB59-03D05A0EBF3A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AADC9003-D0B4-40BA-A7DF-ADFDDD49DE70}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AADC9003-D0B4-40BA-A7DF-ADFDDD49DE70}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AADC9003-D0B4-40BA-A7DF-ADFDDD49DE70}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AADC9003-D0B4-40BA-A7DF-ADFDDD49DE70}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DFD639C1-1826-48F3-8D71-FA6623DB1083}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DFD639C1-1826-48F3-8D71-FA6623DB1083}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DFD639C1-1826-48F3-8D71-FA6623DB1083}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DFD639C1-1826-48F3-8D71-FA6623DB1083}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5D2584F3-132C-474F-BE09-655C12A44D4B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5D2584F3-132C-474F-BE09-655C12A44D4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5D2584F3-132C-474F-BE09-655C12A44D4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5D2584F3-132C-474F-BE09-655C12A44D4B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -270,6 +288,7 @@ Global
 		{A640586B-B40F-409D-A35C-42475619EF1F} = {23B4C127-5737-4663-BB86-A43DFEE350CF}
 		{B965F54C-6C2B-4425-8D47-8ECDC47AA308} = {5444BEEC-50B2-4D40-915A-BF73E5775651}
 		{8963D48D-2863-415C-AB59-03D05A0EBF3A} = {FCE68A69-E535-4566-A14D-43172A7B9772}
+		{5D2584F3-132C-474F-BE09-655C12A44D4B} = {D3DD61FE-0B7C-41DD-9861-24A149397A0B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2AD07BAC-B96F-4540-814D-B11B85EBB73C}

@@ -1,6 +1,9 @@
-﻿using NeuralNetwork.Application.ViewModels;
+﻿using NeuralNetwork.Application.Services;
+using NeuralNetwork.Application.ViewModels;
 using NeuralNetwork.Presentation.Views;
 using Prism.Ioc;
+using LayerEditorView = NeuralNetwork.Presentation.Views.LayerEditorView;
+using LayersDisplayView = NeuralNetwork.Presentation.Views.LayersDisplayView;
 
 namespace NeuralNetwork.Presentation
 {
@@ -8,7 +11,9 @@ namespace NeuralNetwork.Presentation
     {
         public static void RegisterTypes(IContainerRegistry cr)
         {
-            cr.RegisterForNavigation<ViewAView>(nameof(ViewAViewModel));
+            cr.RegisterForNavigation<NeuralNetworkShellView>(nameof(NeuralNetworkShellViewModel));
+            cr.RegisterForNavigation<LayerEditorView>(nameof(LayerEditorViewModel));
+            cr.RegisterForNavigation<LayersDisplayView>(nameof(LayersDisplayViewModel));
         }
     }
 }

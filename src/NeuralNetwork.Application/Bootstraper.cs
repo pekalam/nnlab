@@ -1,4 +1,7 @@
-﻿using Prism.Ioc;
+﻿using NeuralNetwork.Application.Controllers;
+using NeuralNetwork.Application.Services;
+using NeuralNetwork.Domain;
+using Prism.Ioc;
 
 namespace NeuralNetwork.Application
 {
@@ -6,8 +9,14 @@ namespace NeuralNetwork.Application
     {
         public static void RegisterTypes(IContainerRegistry cr)
         {
-            
-                
+            cr.RegisterSingleton<ModuleState>();
+
+            cr.Register<INeuralNetworkService, NNControlNeuralNetworkServiceDecorator>();
+
+            INetDisplayService.Register(cr);
+            ILayerEditorService.Register(cr);
+            ILayersDisplayService.Register(cr);
+            INeuralNetworkShellService.Register(cr);
         }
     }
 }
