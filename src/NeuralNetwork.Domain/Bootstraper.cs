@@ -52,6 +52,7 @@ namespace NeuralNetwork.Domain
         {
             var newLayer = new PerceptronLayer(NeuralNetwork.Layers[^1].NeuronsCount, 1, new LinearActivationFunction());
             NeuralNetwork.AddLayer(newLayer);
+            _appState.ActiveSession?.RaiseNetworkStructureChanged();
             return Validate();
         }
 
@@ -61,6 +62,7 @@ namespace NeuralNetwork.Domain
             {
                 var toRemove = NeuralNetwork.Layers[layerIndex];
                 NeuralNetwork.RemoveLayer(toRemove);
+                _appState.ActiveSession?.RaiseNetworkStructureChanged();
                 return Validate();
             }
 
@@ -70,6 +72,7 @@ namespace NeuralNetwork.Domain
         public bool SetNeuronsCount(Layer layer, int neuronsCount)
         {
             layer.NeuronsCount = neuronsCount;
+            _appState.ActiveSession?.RaiseNetworkStructureChanged();
             return Validate();
         }
 
@@ -81,6 +84,7 @@ namespace NeuralNetwork.Domain
         public bool SetInputsCount(int inputsCount)
         {
             NeuralNetwork.BaseLayers[0].InputsCount = inputsCount;
+            _appState.ActiveSession?.RaiseNetworkStructureChanged();
             return Validate();
         }
 

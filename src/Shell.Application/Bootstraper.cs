@@ -1,6 +1,7 @@
 ﻿using Prism.Ioc;
 using Prism.Regions;
 using Shell.Application.PrismDecorators;
+using Shell.Application.Services;
 using Shell.Interface;
 
 namespace Shell.Application
@@ -12,6 +13,8 @@ namespace Shell.Application
             cr
                 .Register<IRegionNavigationContentLoader, RegionNavigationContentLoaderDecorator>()
                 .RegisterSingleton<IRegionManager, RegionManagerNavigationDecorator>();
+
+            IStatusBarService.Register(cr);
         }
     }
 }

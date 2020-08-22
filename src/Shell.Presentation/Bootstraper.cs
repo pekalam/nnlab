@@ -11,7 +11,6 @@ namespace Shell.Presentation
         {
             cr
                 .Register<IContentRegionHistoryService, ContentRegionHistoryService>();
-                
         }
     }
 }

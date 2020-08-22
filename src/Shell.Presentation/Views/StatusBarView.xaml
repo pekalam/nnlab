@@ -1,0 +1,207 @@
+﻿<UserControl x:Class="Shell.Presentation.Views.StatusBarView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:prism="http://prismlibrary.com/"
+             prism:ViewModelLocator.AutoWireViewModel="True"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:designData="clr-namespace:Shell.Presentation.__DesignData"
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+             xmlns:domain="clr-namespace:Common.Domain;assembly=Common.Domain"
+             xmlns:converters="clr-namespace:Common.Presentation.Converters;assembly=Common.Presentation"
+             xmlns:presentation="clr-namespace:Shell.Presentation"
+             xmlns:viewModels="clr-namespace:Shell.Application.ViewModels;assembly=Shell.Application"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance designData:DesignStatusBarVm, IsDesignTimeCreatable=True}">
+    <UserControl.Resources>
+        <converters:NegVisibilityConverter x:Key="NegVisibility" />
+        <Storyboard x:Key="ErrorNotificationShow">
+            <DoubleAnimationUsingKeyFrames
+                Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.Y)">
+                <EasingDoubleKeyFrame KeyTime="00:00:00" Value="32" />
+                <EasingDoubleKeyFrame KeyTime="00:00:10" Value="0" />
+            </DoubleAnimationUsingKeyFrames>
+
+        </Storyboard>
+        <viewModels:FileNameConverter x:Key="FileNameConverter"/>
+        <converters:NullToBooleanConverter x:Key="NullToBoolean"/>
+    </UserControl.Resources>
+    <Grid>
+        <Grid Background="{StaticResource StatusBarBackground}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1" />
+                <RowDefinition Height="31" />
+            </Grid.RowDefinitions>
+            <Border BorderThickness="0,1,0,0" BorderBrush="#72787878" ClipToBounds="True" Panel.ZIndex="999" Visibility="{Binding ErrorNotificationVisibility,Converter={StaticResource NegVisibility}}">
+                <Border.Effect>
+                    <DropShadowEffect Direction="1" BlurRadius="6" Opacity="0.7" Color="#787878" ShadowDepth="0" />
+                </Border.Effect>
+            </Border>
+            <Rectangle Grid.Row="0" Height="1" Fill="#72787878" />
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel VerticalAlignment="Stretch" Orientation="Horizontal" Visibility="{Binding ErrorNotificationVisibility,Converter={StaticResource NegVisibility}}">
+                    <iconPacks:PackIconFontAwesome Kind="FlaskSolid" Width="50" Height="14" VerticalAlignment="Center">
+                        <iconPacks:PackIconFontAwesome.Style>
+                            <Style TargetType="iconPacks:PackIconFontAwesome">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding AppState.ActiveSession}" Value="{x:Null}">
+                                        <Setter Property="Visibility" Value="Hidden"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </iconPacks:PackIconFontAwesome.Style>
+                    </iconPacks:PackIconFontAwesome>
+                    <!-- <Border BorderThickness="1" CornerRadius="7" Height="21.5" Width="120"> -->
+                    <!--     <Border.Style> -->
+                    <!--         <Style TargetType="Border"> -->
+                    <!--             <Setter Property="Background" Value="White" /> -->
+                    <!--             <Style.Triggers> -->
+                    <!--                 <Trigger Property="IsMouseOver" Value="True"> -->
+                    <!--                     <Setter Property="BorderBrush" -->
+                    <!--                             Value="{StaticResource MenuColorHighlighted}" /> -->
+                    <!--                 </Trigger> -->
+                    <!--                 <Trigger Property="IsMouseOver" Value="False"> -->
+                    <!--                     <Setter Property="BorderBrush" Value="#A5BBBBBB" /> -->
+                    <!--                 </Trigger> -->
+                    <!--             </Style.Triggers> -->
+                    <!--         </Style> -->
+                    <!--     </Border.Style> -->
+                    <!--     <TextBlock FontSize="12" Text="Session 1" VerticalAlignment="Center" Margin="10,0,0,0" /> -->
+                    <!-- </Border> -->
+
+                    <ComboBox Height="21.5" Width="120" ItemsSource="{Binding AppState.Sessions}"
+                              SelectedItem="{Binding AppState.ActiveSession}">
+                        <ComboBox.Style>
+                            <Style TargetType="ComboBox">
+                                <Setter Property="ItemTemplate">
+                                    <Setter.Value>
+                                        <DataTemplate DataType="{x:Type domain:Session}">
+                                            <TextBlock Text="{Binding Name}" />
+                                        </DataTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                                <Style.Triggers>
+                                    <Trigger Property="SelectedItem" Value="{x:Null}">
+                                        <Setter Property="Visibility" Value="Hidden"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ComboBox.Style>
+                    </ComboBox>
+                    <Button Width="26" Height="26" Margin="10,0,0,0" ToolTip="Duplicate current session" Command="{Binding Serivce.DuplicateSessionCommand}">
+                        <Button.Style>
+                            <Style BasedOn="{StaticResource MenuButton}" TargetType="Button">
+                                <Setter Property="MinWidth" Value="0"/>
+                                <Setter Property="MinHeight" Value="0"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="{x:Type Button}">
+                                            <Border Cursor="Hand" Background="{TemplateBinding Background}" BorderBrush="#B8B8B8"
+                                                    BorderThickness="2" CornerRadius="7">
+                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding AppState.ActiveSession}" Value="{x:Null}">
+                                        <Setter Property="Visibility" Value="Hidden"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                        <iconPacks:PackIconFontAwesome Kind="CopyRegular" Width="10" Height="10" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                    </Button>
+                    <Button Width="26" Height="26" Margin="8,0,0,0" ToolTip="Add new session" Command="{Binding Serivce.AddSessionCommand}">
+                        <Button.Style>
+                            <Style BasedOn="{StaticResource MenuButton}" TargetType="Button">
+                                <Setter Property="MinWidth" Value="0"/>
+                                <Setter Property="MinHeight" Value="0"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="{x:Type Button}">
+                                            <Border Cursor="Hand" Background="{TemplateBinding Background}" BorderBrush="#B8B8B8"
+                                                    BorderThickness="2" CornerRadius="7">
+                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding AppState.ActiveSession}" Value="{x:Null}">
+                                        <Setter Property="Visibility" Value="Hidden"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                        <iconPacks:PackIconFontAwesome Kind="PlusSolid" Width="10" Height="10" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                    </Button>
+
+
+                    
+                </StackPanel>
+
+                <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,16,0">
+
+                    <StackPanel Orientation="Horizontal">
+                        <StackPanel.Style>
+                            <Style TargetType="StackPanel">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding AppState.ActiveSession.TrainingData}" Value="{x:Null}">
+                                        <Setter Property="Visibility" Value="Hidden"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </StackPanel.Style>
+                        <iconPacks:PackIconFontAwesome Kind="DatabaseSolid" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                        <TextBlock VerticalAlignment="Center" Margin="0,0,20,0">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding AppState.ActiveSession.SingleDataFile}" Value="{x:Null}">
+                                            <Setter Property="Text" Value="Multiple files"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding AppState.ActiveSession.TrainingDataFile}" Value="{x:Null}">
+                                            <Setter Property="Text" Value="{Binding AppState.ActiveSession.SingleDataFile,Converter={StaticResource FileNameConverter}}"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </StackPanel>
+
+
+                    <StackPanel Orientation="Horizontal">
+                        <StackPanel.Style>
+                            <Style TargetType="StackPanel">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding AppState.ActiveSession.Network}" Value="{x:Null}">
+                                        <Setter Property="Visibility" Value="Hidden"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </StackPanel.Style>
+                        <iconPacks:PackIconFontAwesome Kind="ProjectDiagramSolid" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                        <TextBlock VerticalAlignment="Center" Text="{Binding NetworkInfo}"/>
+                   
+                    </StackPanel>
+                   
+
+                </StackPanel>
+                <StackPanel Grid.Column="0" Grid.ColumnSpan="2" x:Name="ErrorNotificationPanel" Orientation="Horizontal" Background="Black"
+                            Visibility="{Binding ErrorNotificationVisibility}" RenderTransformOrigin="0.5,0.5">
+                    <iconPacks:PackIconFontAwesome VerticalAlignment="Center" Kind="ExclamationTriangleSolid" Width="50"
+                                                   Height="18" Foreground="Red" />
+                    <TextBlock Text="{Binding ErrorMessage}" Foreground="White" VerticalAlignment="Center" />
+                </StackPanel>
+            </Grid>
+        </Grid>
+
+        
+    </Grid>
+
+</UserControl>

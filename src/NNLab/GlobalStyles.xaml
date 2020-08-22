@@ -238,4 +238,6 @@
         <Setter Property="Margin" Value="50,40,50,61"/>
     </Style>
 
+    <SolidColorBrush x:Key="StatusBarBackground" Color="#E2E2E2"/>
+    
 </ResourceDictionary>

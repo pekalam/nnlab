@@ -63,4 +63,13 @@ namespace Shell.Interface
     }
 
     public class PreviewCheckNavMenuItem : PubSubEvent<PreviewCheckNavMenuItemArgs> { }
+
+    public class ErrorNotificationArgs
+    {
+        public string Message { get; set; }
+    }
+
+    public class ShowErrorNotification : PubSubEvent<ErrorNotificationArgs> { }
+
+    public class HideErrorNotification : PubSubEvent { }
 }

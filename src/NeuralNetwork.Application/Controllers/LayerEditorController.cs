@@ -10,8 +10,10 @@ using NeuralNetwork.Application.ViewModels;
 using NeuralNetwork.Domain;
 using NNLib;
 using Prism.Commands;
+using Prism.Events;
 using Prism.Ioc;
 using SharedUI.MatrixPreview;
+using Shell.Interface;
 
 namespace NeuralNetwork.Application.Services
 {
@@ -35,13 +37,16 @@ namespace NeuralNetwork.Application.Controllers
         private INeuralNetworkShellService _shellService;
         private readonly IViewModelAccessor _accessor;
         private readonly INeuralNetworkService _networkService;
+        private readonly IEventAggregator _ea;
+
         private int _layerNum;
 
-        public LayerEditorController(INeuralNetworkShellService shellService, IViewModelAccessor accessor, INeuralNetworkService networkService)
+        public LayerEditorController(INeuralNetworkShellService shellService, IViewModelAccessor accessor, INeuralNetworkService networkService, IEventAggregator ea)
         {
             _shellService = shellService;
             _accessor = accessor;
             _networkService = networkService;
+            _ea = ea;
             Navigated = OnNavigated;
             ExitCommand = shellService.CloseLayerEditorCommand;
         }
@@ -84,12 +89,32 @@ namespace NeuralNetwork.Application.Controllers
             }
             else if (e.PropertyName == nameof(model.NeuronsCount))
             {
-                _networkService.SetNeuronsCount(model.Layer, model.NeuronsCount);
+                if (!_networkService.SetNeuronsCount(model.Layer, model.NeuronsCount))
+                {
+                    _ea.GetEvent<ShowErrorNotification>().Publish(new ErrorNotificationArgs()
+                    {
+                        Message = "Invalid network architecture"
+                    });
+                }
+                else
+                {
+                    _ea.GetEvent<HideErrorNotification>().Publish();
+                }
                 vm.MatrixPreview.Controller.SelectMatrix(_layerNum, MatrixTypes.Weights);
             }
             else if (e.PropertyName == nameof(model.InputsCount))
             {
-                _networkService.SetInputsCount(model.InputsCount);
+                if (!_networkService.SetInputsCount(model.InputsCount))
+                {
+                    _ea.GetEvent<ShowErrorNotification>().Publish(new ErrorNotificationArgs()
+                    {
+                        Message = "Invalid network architecture"
+                    });
+                }
+                else
+                {
+                    _ea.GetEvent<HideErrorNotification>().Publish();
+                }
                 vm.MatrixPreview.Controller.SelectMatrix(_layerNum, MatrixTypes.Weights);
             }
         }

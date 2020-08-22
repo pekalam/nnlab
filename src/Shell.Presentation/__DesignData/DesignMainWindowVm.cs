@@ -11,4 +11,9 @@ namespace Shell.Presentation.__DesignData
         {
         }
     }
+
+    class DesignStatusBarVm : StatusBarViewModel
+    {
+
+    }
 }

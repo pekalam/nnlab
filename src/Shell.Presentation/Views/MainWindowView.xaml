@@ -63,8 +63,11 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition />
+                <RowDefinition Height="32"/>
             </Grid.RowDefinitions>
-            <Grid>
+
+
+            <Grid Grid.Row="0">
 
                 <StackPanel>
                     <Grid>
@@ -120,6 +123,10 @@
 
                 <ContentControl prism:RegionManager.RegionName="{x:Static shellInterface:AppRegions.ContentRegion}"/>
             </Grid>
+
+
+            <views:StatusBarView Grid.Row="2"/>
+
         </Grid>
     </Grid>
 </mah:MetroWindow>

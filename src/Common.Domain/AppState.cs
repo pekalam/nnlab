@@ -70,6 +70,12 @@ namespace Common.Domain
         private TrainingData? _trainingData;
         private MLPNetwork? _network;
         private TrainingParameters? _trainingParameters;
+        private string? _singleDataFile;
+        private string? _trainingDataFile;
+        private string? _validationDataFile;
+        private string? _testDataFile;
+
+        public event Action<MLPNetwork> NetworkStructureChanged;
 
         public Session(string name)
         {
@@ -78,10 +84,29 @@ namespace Common.Domain
 
         public string Name { get; }
 
-        public string? SingleDataFile { get; set; }
-        public string? TrainingDataFile { get; set; }
-        public string? ValidationDataFile { get; set; }
-        public string? TestDataFile { get; set; }
+        public string? SingleDataFile
+        {
+            get => _singleDataFile;
+            set => SetProperty(ref _singleDataFile, value);
+        }
+
+        public string? TrainingDataFile
+        {
+            get => _trainingDataFile;
+            set => SetProperty(ref _trainingDataFile, value);
+        }
+
+        public string? ValidationDataFile
+        {
+            get => _validationDataFile;
+            set => SetProperty(ref _validationDataFile, value);
+        }
+
+        public string? TestDataFile
+        {
+            get => _testDataFile;
+            set => SetProperty(ref _testDataFile, value);
+        }
 
 
         public TrainingData? TrainingData
@@ -105,6 +130,11 @@ namespace Common.Domain
         {
             get => _network;
             set => SetProperty(ref _network, value);
+        }
+
+        public void RaiseNetworkStructureChanged()
+        {
+            NetworkStructureChanged?.Invoke(Network);
         }
 
         public TrainingReportsCollection TrainingReports { get; } = new TrainingReportsCollection();
