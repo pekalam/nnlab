@@ -2,6 +2,7 @@
 using Prism.Mvvm;
 using Prism.Regions;
 using System;
+using Microsoft.VisualBasic;
 
 namespace Common.Framework
 {
@@ -81,6 +82,26 @@ namespace Common.Framework
 
         public override void OnNavigatedFrom(NavigationContext navigationContext)
         {
+        }
+    }
+
+
+    public interface IViewModelAccessor 
+    {
+        T? Get<T>() where T : ViewModelBase<T>;
+        void OnCreated<T>(Action action) where T : ViewModelBase<T>;
+    }
+
+    internal class DefaultViewModelAccessor : IViewModelAccessor
+    {
+        public T? Get<T>() where T : ViewModelBase<T>
+        {
+            return ViewModelBase<T>.Instance;
+        }
+
+        public void OnCreated<T>(Action action) where T : ViewModelBase<T>
+        {
+            ViewModelBase<T>.Created += action;
         }
     }
 }

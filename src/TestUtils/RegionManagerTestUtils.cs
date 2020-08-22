@@ -1,6 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
+using Common.Framework;
 using Moq;
 using Moq.AutoMock;
 using Prism.Events;
@@ -12,8 +15,19 @@ namespace TestUtils
     {
         public static void SetupEvents(Mock<IRegionManager> rm, Dictionary<string, Mock<IRegion>> regions)
         {
-            _ = Assembly.Load("Infrastructure").GetTypes()
-                .Union(Assembly.Load("Data").GetTypes())
+            var packages = new[] {"Shell", "Data", "NeuralNetwork", "Training"};
+            var files = Directory.GetFiles(".");
+
+            var assemblies = new List<Assembly>();
+            foreach (var package in packages)
+            {
+                foreach (var file in files.Where(f => f.Contains(package) && f.EndsWith("dll")))
+                {
+                    assemblies.Add(Assembly.Load(file.Replace(".dll", "").Replace(".\\", "")));
+                }
+            }
+
+            _ = assemblies.SelectMany(v => v.GetTypes())
                 .Where(t => t.Name.Contains("Regions"))
                 .SelectMany(t => t.GetMembers())
                 .Select(m =>
@@ -40,6 +54,35 @@ namespace TestUtils
             return (rm, regions);
         }
 
+    }
+
+    public class TestViewModelAccessor : IViewModelAccessor
+    {
+        private Dictionary<Type,object> _vms = new Dictionary<Type, object>();
+        private Dictionary<Type,Action> _onCreated = new Dictionary<Type, Action>();
+
+        public TestViewModelAccessor()
+        {
+            
+        }
+
+        public virtual T Get<T>() where T : ViewModelBase<T>
+        {
+            _vms.TryGetValue(typeof(T), out var vm);
+            return vm as T;
+        }
+
+        public void OnCreated<T>(Action action) where T : ViewModelBase<T>
+        {
+            _onCreated[typeof(T)] = action;
+        }
+
+        public virtual void Register<T>(T vm) where T : ViewModelBase<T>
+        {
+            _vms[typeof(T)] = vm; 
+            _onCreated.TryGetValue(typeof(T), out var action);
+            action?.Invoke();
+        }
     }
 
     public static class AutoMockerExtensions
@@ -91,6 +134,22 @@ namespace TestUtils
             mocker.Use(rm.Object);
 
             return (rm, regions);
+        }
+
+        public static void UseTestVmAccessor(this AutoMocker mocker)
+        {
+            var accessor = new TestViewModelAccessor();
+            mocker.Use<IViewModelAccessor>(accessor);
+            mocker.Use(accessor);
+        }
+
+        public static T UseVm<T>(this AutoMocker mocker) where T : ViewModelBase<T>
+        {
+            var accessor = mocker.Get<TestViewModelAccessor>();
+            var vm = mocker.UseImpl<T>();
+            accessor.Register(vm);
+
+            return vm;
         }
     }
 }
