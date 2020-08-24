@@ -231,11 +231,11 @@
 
 
     <Style TargetType="Grid" x:Key="ContentGrid">
-        <Setter Property="Margin" Value="50,40,50,61"/>
+        <Setter Property="Margin" Value="50,40,50,40"/>
     </Style>
 
     <Style TargetType="UserControl" x:Key="ContentUserControl">
-        <Setter Property="Margin" Value="50,40,50,61"/>
+        <Setter Property="Margin" Value="50,40,50,40"/>
     </Style>
 
     <SolidColorBrush x:Key="StatusBarBackground" Color="#E2E2E2"/>

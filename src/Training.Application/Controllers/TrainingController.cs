@@ -1,0 +1,122 @@
+﻿using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using Accessibility;
+using Common.Framework;
+using Prism.Commands;
+using Prism.Events;
+using Prism.Regions;
+using Prism.Services.Dialogs;
+using Shell.Interface;
+using Training.Application.Services;
+using Training.Application.ViewModels;
+using Training.Application.ViewModels.PanelLayout;
+using Training.Domain;
+
+namespace Training.Application.Controllers
+{
+    internal interface ITrainingController : ISingletonController { }
+
+    class TrainingController : ITrainingController
+    {
+        private readonly TrainingService _service;
+        private readonly IRegionManager _rm;
+        private readonly IEventAggregator _ea;
+        private readonly IViewModelAccessor _accessor;
+        private readonly IDialogService _dialogService;
+        private List<PanelSelectModel> _lastSelectedPanels = new List<PanelSelectModel>();
+
+        private ModuleState _moduleState;
+
+        public TrainingController(TrainingService service, IRegionManager rm, IEventAggregator ea, IViewModelAccessor accessor, IDialogService dialogService, ModuleState moduleState)
+        {
+            _service = service;
+            _rm = rm;
+            _ea = ea;
+            _accessor = accessor;
+            _dialogService = dialogService;
+            _moduleState = moduleState;
+
+            _service.OpenParametersCommand = new DelegateCommand(OpenParameters);
+            _service.OpenReportsCommand = new DelegateCommand(OpenReports);
+            _service.SelectPanelsClickCommand = new DelegateCommand(SelectPanels);
+            _service.StartTrainingSessionCommand = new DelegateCommand(StartTrainingSession, () => 
+                _moduleState.ActiveSession != null && (!_moduleState.ActiveSession.Stopped && !_moduleState.ActiveSession.Started));
+            _service.StopTrainingSessionCommand = new DelegateCommand(StopTrainingSession);
+            _service.PauseTrainingSessionCommand = new DelegateCommand(PauseTrainingSession);
+
+            _moduleState.ActiveSessionChanged += (_, __) =>
+            {
+                _service.StartTrainingSessionCommand.RaiseCanExecuteChanged();
+                _service.StopTrainingSessionCommand.RaiseCanExecuteChanged();
+                _service.PauseTrainingSessionCommand.RaiseCanExecuteChanged();
+            };
+        }
+
+        private async void PauseTrainingSession()
+        {
+            await Session.Pause();
+        }
+
+        private async void StopTrainingSession()
+        {
+            await Session.Stop();
+        }
+
+        private TrainingSession Session => _moduleState.ActiveSession;
+
+        private async void StartTrainingSession()
+        {
+            await Session.Start();
+        }
+
+        private void SelectPanels()
+        {
+            var parameters = new DialogParameters()
+            {
+                {"single", false},
+                {"maxSelected", 4},
+                { nameof(PanelSelectionResult), new PanelSelectionResult(OnPanelsSelected)}
+            };
+
+            if (_lastSelectedPanels.Count > 0)
+            {
+                parameters.Add("selected", _lastSelectedPanels.Select(v => v.PanelType).ToArray());
+            }
+
+            _dialogService.ShowDialog("PanelSelectView", parameters, null);
+        }
+
+        private void OnPanelsSelected(List<PanelSelectModel> list)
+        {
+            var vm = _accessor.Get<TrainingViewModel>();
+            _rm.Regions[TrainingViewRegions.PanelLayoutRegion].RemoveAll();
+            _lastSelectedPanels = list;
+
+            if (list.Count > 0)
+            {
+                var param = new PanelLayoutNavigationParams(list);
+                _rm.Regions[TrainingViewRegions.PanelLayoutRegion].RequestNavigate("PanelLayoutView", param);
+                _service.ShowPanels();
+            }
+            else
+            {
+                _service.HidePanels();
+            }
+        }
+
+        private void OpenReports()
+        {
+            _rm.NavigateContentRegion("TrainingReportView", "Reports");
+        }
+
+        private void OpenParameters()
+        {
+            _rm.NavigateContentRegion("TrainingParametersView", "Parameters");
+        }
+
+        public void Initialize()
+        {
+        }
+    }
+}

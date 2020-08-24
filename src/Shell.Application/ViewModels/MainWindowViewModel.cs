@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Globalization;
+using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Threading;
 using Common.Domain;
+using Common.Framework;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
@@ -26,7 +30,7 @@ namespace Shell.Application.ViewModels
         }
     }
 
-    public class MainWindowViewModel : BindableBase
+    public class MainWindowViewModel : ViewModelBase<MainWindowViewModel>
     {
         private readonly IEventAggregator _ea;
         private readonly IRegionManager _rm;
@@ -75,6 +79,9 @@ namespace Shell.Application.ViewModels
                     case ModuleIds.NeuralNetwork:
                         IsNetworkItemEnabled = true;
                         break;
+                    case ModuleIds.Training:
+                        IsTrainingItemEnabled = true;
+                        break;
                 }
 
             });
@@ -89,6 +96,9 @@ namespace Shell.Application.ViewModels
                     case ModuleIds.NeuralNetwork:
                         IsNetworkItemEnabled = false;
                         break;
+                    case ModuleIds.Training:
+                        IsTrainingItemEnabled = false;
+                        break;
                 }
 
             });
@@ -97,7 +107,6 @@ namespace Shell.Application.ViewModels
             {
                 CheckedNavItemId = identifier;
             });
-
 
             CloseFlyoutCommand = new DelegateCommand(() =>
             {

@@ -1,0 +1,32 @@
+﻿<UserControl x:Class="Training.Presentation.Views.Training.ActionMenuRightView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Training.Presentation.Views.Training"
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+             xmlns:dd="clr-namespace:Training.Presentation.__DesignData"
+             d:DesignHeight="450" d:DesignWidth="800"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance dd:DesignTrainingVm, IsDesignTimeCreatable=True}">
+  <StackPanel Orientation="Horizontal">
+    <Button Style="{StaticResource ActionMenuButton}" Command="{Binding Service.StartTrainingSessionCommand}">
+      <StackPanel>
+        <iconPacks:PackIconFontAwesome Kind="PlaySolid" Width="18" Height="20" HorizontalAlignment="Center"/>
+                <TextBlock>Start</TextBlock>
+      </StackPanel>
+    </Button>
+        <Button Style="{StaticResource ActionMenuButton}" Command="{Binding Service.PauseTrainingSessionCommand}">
+      <StackPanel>
+        <iconPacks:PackIconFontAwesome Kind="PauseSolid" Width="18" Height="20" HorizontalAlignment="Center"/>
+        <TextBlock>Pause</TextBlock>
+      </StackPanel>
+    </Button>
+        <Button Style="{StaticResource ActionMenuButton}" Command="{Binding Service.StopTrainingSessionCommand}">
+          <StackPanel>
+              <iconPacks:PackIconFontAwesome Kind="StopSolid" Width="19" Height="20" HorizontalAlignment="Center"/>
+              <TextBlock>Stop</TextBlock>
+          </StackPanel>
+      </Button>
+    </StackPanel>
+</UserControl>

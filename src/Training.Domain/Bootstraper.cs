@@ -6,6 +6,7 @@ namespace Training.Domain
     {
         public static void RegisterTypes(IContainerRegistry cr)
         {
+            cr.RegisterSingleton<ModuleState>();
         }
     }
 }

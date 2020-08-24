@@ -1,0 +1,11 @@
+﻿<UserControl x:Class="Training.Presentation.Views.MatrixTrainingPreviewView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:prism="http://prismlibrary.com/"
+             xmlns:matrixPreview="clr-namespace:SharedUI.MatrixPreview;assembly=SharedUI"
+             prism:ViewModelLocator.AutoWireViewModel="True">
+    <Grid>
+        <Rectangle x:Name="RefRect" Fill="Transparent"/>
+        <matrixPreview:MatrixPreviewView DataContext="{Binding MatVm}" Editable="False" />
+    </Grid>
+</UserControl>

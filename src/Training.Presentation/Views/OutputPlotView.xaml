@@ -1,0 +1,10 @@
+﻿<UserControl x:Class="Training.Presentation.Views.OutputPlotView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:prism="http://prismlibrary.com/"
+             xmlns:basicPlot="clr-namespace:SharedUI.BasicPlot;assembly=SharedUI"
+             prism:ViewModelLocator.AutoWireViewModel="True">
+    <Grid>
+        <basicPlot:BasicPlot MinHeight="300" PlotModel="{Binding BasicPlotModel}"/>
+    </Grid>
+</UserControl>

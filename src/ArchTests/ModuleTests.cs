@@ -148,6 +148,8 @@ namespace ArchTests
         [Fact]
         public void Views_from_presentation_modules_have_vm_in_corresponding_namespace_in_application_module()
         {
+            var ignored = new[] {"ActionMenu", "PanelContainer"};
+
             bool fail = false;
             foreach (var package in _packages)
             {
@@ -168,7 +170,7 @@ namespace ArchTests
 
 
                 //exclude action menu
-                foreach (var view in views.Where(v => !v.FullName.Contains("ActionMenu")))
+                foreach (var view in views.Where(v => !ignored.Any(i => v.FullName.Contains(i))))
                 {
                     if (!vms.Any(vm => vm.FullName == view.FullName.Replace("Views", "ViewModels").Replace("Presentation","Application") + "Model"))
                     {

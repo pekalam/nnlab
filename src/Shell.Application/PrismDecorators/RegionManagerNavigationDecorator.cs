@@ -106,7 +106,7 @@ namespace Shell.Application.PrismDecorators
         public void RequestNavigate(string regionName, Uri target, Action<NavigationResult> navigationCallback,
             NavigationParameters navigationParameters)
         {
-            Debug.Assert(navigationParameters is ContentRegionNavigationParameters);
+            Debug.Assert(regionName != AppRegions.ContentRegion || navigationParameters is ContentRegionNavigationParameters);
 
             _regionManager.RequestNavigate(regionName, target, navigationCallback, navigationParameters);
             TrySendNavigationEventForRegion(regionName, target, navigationParameters as ContentRegionNavigationParameters);
@@ -115,7 +115,7 @@ namespace Shell.Application.PrismDecorators
         public void RequestNavigate(string regionName, string target, Action<NavigationResult> navigationCallback,
             NavigationParameters navigationParameters)
         {
-            Debug.Assert(navigationParameters is ContentRegionNavigationParameters);
+            Debug.Assert(regionName != AppRegions.ContentRegion || navigationParameters is ContentRegionNavigationParameters);
 
             _regionManager.RequestNavigate(regionName, target, navigationCallback, navigationParameters);
             TrySendNavigationEventForRegion(regionName, new Uri(target, UriKind.RelativeOrAbsolute),
@@ -124,7 +124,7 @@ namespace Shell.Application.PrismDecorators
 
         public void RequestNavigate(string regionName, Uri target, NavigationParameters navigationParameters)
         {
-            Debug.Assert(navigationParameters is ContentRegionNavigationParameters);
+            Debug.Assert(regionName != AppRegions.ContentRegion || navigationParameters is ContentRegionNavigationParameters);
 
             _regionManager.RequestNavigate(regionName, target, navigationParameters);
             TrySendNavigationEventForRegion(regionName, target, navigationParameters as ContentRegionNavigationParameters);
@@ -132,7 +132,7 @@ namespace Shell.Application.PrismDecorators
 
         public void RequestNavigate(string regionName, string target, NavigationParameters navigationParameters)
         {
-            Debug.Assert(navigationParameters is ContentRegionNavigationParameters);
+            Debug.Assert(regionName != AppRegions.ContentRegion || navigationParameters is ContentRegionNavigationParameters);
 
             _regionManager.RequestNavigate(regionName, target, navigationParameters);
             TrySendNavigationEventForRegion(regionName, new Uri(target, UriKind.RelativeOrAbsolute),

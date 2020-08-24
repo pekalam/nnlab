@@ -145,7 +145,14 @@
                     
                 </StackPanel>
 
-                <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,16,0">
+                <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,65,0">
+
+
+
+                    <StackPanel Orientation="Horizontal" Margin="0,0,65,0">
+                        <iconPacks:PackIconFontAwesome Kind="CogSolid" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                        <TextBlock Text="Training" VerticalAlignment="Center"/>
+                    </StackPanel>
 
                     <StackPanel Orientation="Horizontal">
                         <StackPanel.Style>
@@ -189,7 +196,8 @@
                         <TextBlock VerticalAlignment="Center" Text="{Binding NetworkInfo}"/>
                    
                     </StackPanel>
-                   
+
+
 
                 </StackPanel>
                 <StackPanel Grid.Column="0" Grid.ColumnSpan="2" x:Name="ErrorNotificationPanel" Orientation="Horizontal" Background="Black"

@@ -1,0 +1,11 @@
+﻿<UserControl x:Class="Training.Presentation.Views.PanelLayout.PanelLayoutView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:prism="http://prismlibrary.com/"
+             xmlns:panelLayout="clr-namespace:Training.Application.ViewModels.PanelLayout;assembly=Training.Application"
+             prism:ViewModelLocator.AutoWireViewModel="True">
+    <Grid>
+        <ContentControl prism:RegionManager.RegionName="{x:Static panelLayout:PanelLayoutRegions.PanelLayoutMain}"
+                        Margin="5" />
+    </Grid>
+</UserControl>

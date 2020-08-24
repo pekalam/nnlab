@@ -17,18 +17,19 @@
                  d:DataContext="{d:DesignInstance dd:DesignMainWindowVm, IsDesignTimeCreatable=True}"
                  Title="{Binding Title}" Height="800" Width="1200" WindowTitleBrush="Gray">
     <mah:MetroWindow.Resources>
-        <converters:NullToVisibilityConverter x:Key="NullToVisibility"/>
-        <viewModels:NavItemIdConverter x:Key="NavItemIdConverter"/>
+        <converters:NullToVisibilityConverter x:Key="NullToVisibility" />
+        <viewModels:NavItemIdConverter x:Key="NavItemIdConverter" />
     </mah:MetroWindow.Resources>
     <mah:MetroWindow.Flyouts>
         <mah:FlyoutsControl>
             <mah:Flyout
-                             Margin="0,150,0,0"
-                             AreAnimationsEnabled="True"
-                             Header="{Binding FlyoutTitle}"
-                             Position="Right"
-                             IsOpen="{Binding IsFlyoutOpen}" Theme="Inverse" CloseCommand="{Binding CloseFlyoutCommand}">
-                <ContentControl Margin="10,10,0,0" prism:RegionManager.RegionName="{x:Static shellInterface:AppRegions.FlyoutRegion}" />
+                Margin="0,150,0,0"
+                AreAnimationsEnabled="True"
+                Header="{Binding FlyoutTitle}"
+                Position="Right"
+                IsOpen="{Binding IsFlyoutOpen}" Theme="Inverse" CloseCommand="{Binding CloseFlyoutCommand}">
+                <ContentControl Margin="10,10,0,0"
+                                prism:RegionManager.RegionName="{x:Static shellInterface:AppRegions.FlyoutRegion}" />
             </mah:Flyout>
         </mah:FlyoutsControl>
     </mah:MetroWindow.Flyouts>
@@ -42,28 +43,39 @@
                 <iconPacks:PackIconFontAwesome Kind="BarsSolid" Width="28" Height="19"
                                                VerticalAlignment="Center" HorizontalAlignment="Center" />
             </Button>
-            <RadioButton Style="{StaticResource NavButton2}" Height="60" IsChecked="{Binding CheckedNavItemId, Converter={StaticResource NavItemIdConverter},ConverterParameter={x:Static domain:ModuleIds.Data}}" IsEnabled="{Binding IsDataItemEnabled}">
+            <RadioButton Style="{StaticResource NavButton2}" Height="60"
+                         IsChecked="{Binding CheckedNavItemId, Converter={StaticResource NavItemIdConverter},ConverterParameter={x:Static domain:ModuleIds.Data}}"
+                         IsEnabled="{Binding IsDataItemEnabled}">
                 <iconPacks:PackIconFontAwesome Kind="DatabaseSolid" Width="25" Height="19"
-                                               VerticalAlignment="Center" HorizontalAlignment="Center" Margin="12,0,0,0"/>
+                                               VerticalAlignment="Center" HorizontalAlignment="Center"
+                                               Margin="12,0,0,0" />
             </RadioButton>
-            <RadioButton Style="{StaticResource NavButton2}" Height="60" IsChecked="{Binding CheckedNavItemId, Converter={StaticResource NavItemIdConverter},ConverterParameter={x:Static  domain:ModuleIds.NeuralNetwork}}" IsEnabled="{Binding IsNetworkItemEnabled}">
+            <RadioButton Style="{StaticResource NavButton2}" Height="60"
+                         IsChecked="{Binding CheckedNavItemId, Converter={StaticResource NavItemIdConverter},ConverterParameter={x:Static  domain:ModuleIds.NeuralNetwork}}"
+                         IsEnabled="{Binding IsNetworkItemEnabled}">
                 <iconPacks:PackIconFontAwesome Kind="ProjectDiagramSolid" Width="24" Height="17"
-                                               VerticalAlignment="Center" HorizontalAlignment="Center"  Margin="13,2,0,0"/>
+                                               VerticalAlignment="Center" HorizontalAlignment="Center"
+                                               Margin="13,2,0,0" />
             </RadioButton>
-            <RadioButton Style="{StaticResource NavButton2}" Height="60" IsEnabled="{Binding IsTrainingItemEnabled}">
+            <RadioButton Style="{StaticResource NavButton2}" Height="60"
+                         IsChecked="{Binding CheckedNavItemId, Converter={StaticResource NavItemIdConverter},ConverterParameter={x:Static  domain:ModuleIds.Training}}"
+                         IsEnabled="{Binding IsTrainingItemEnabled}">
                 <iconPacks:PackIconFontAwesome Kind="CaretRightSolid" Width="26" Height="20"
-                                               VerticalAlignment="Center" HorizontalAlignment="Center" Margin="12,0,0,0" />
+                                               VerticalAlignment="Center" HorizontalAlignment="Center"
+                                               Margin="12,0,0,0" />
             </RadioButton>
-            <RadioButton Style="{StaticResource NavButton2}" Height="60" IsEnabled="{Binding IsPredictionItemEnabled}">
+            <RadioButton Style="{StaticResource NavButton2}" Height="60"
+                         IsEnabled="{Binding IsPredictionItemEnabled}">
                 <iconPacks:PackIconFontAwesome Kind="ChartLineSolid" Width="22" Height="16"
-                                               VerticalAlignment="Center" HorizontalAlignment="Center" Margin="14,2,0,0" />
+                                               VerticalAlignment="Center" HorizontalAlignment="Center"
+                                               Margin="14,2,0,0" />
             </RadioButton>
         </StackPanel>
         <Grid Grid.Column="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition />
-                <RowDefinition Height="32"/>
+                <RowDefinition Height="32" />
             </Grid.RowDefinitions>
 
 
@@ -72,11 +84,12 @@
                 <StackPanel>
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition/>
-                            <ColumnDefinition/>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
                         </Grid.ColumnDefinitions>
-                        <views:NavigationBreadcrumbsView DataContext="{Binding NavigationBreadcrumbsVm}"/>
-                        <ContentControl Height="61" Grid.Column="1" prism:RegionManager.RegionName="{x:Static shellInterface:AppRegions.TopMenuRightRegion}"/>
+                        <views:NavigationBreadcrumbsView DataContext="{Binding NavigationBreadcrumbsVm}" />
+                        <ContentControl Height="61" Grid.Column="1"
+                                        prism:RegionManager.RegionName="{x:Static shellInterface:AppRegions.TopMenuRightRegion}" />
                     </Grid>
                     <StackPanel>
                         <StackPanel.Style>
@@ -84,23 +97,30 @@
                                 <Style.Triggers>
                                     <MultiDataTrigger>
                                         <MultiDataTrigger.Conditions>
-                                            <Condition Binding="{Binding ElementName=ActionMenuLeftRegion,Path=Content}" Value="{x:Null}"/>
-                                            <Condition Binding="{Binding ElementName=ActionMenuRightRegion,Path=Content}" Value="{x:Null}"/>
+                                            <Condition
+                                                Binding="{Binding ElementName=ActionMenuLeftRegion,Path=Content}"
+                                                Value="{x:Null}" />
+                                            <Condition
+                                                Binding="{Binding ElementName=ActionMenuRightRegion,Path=Content}"
+                                                Value="{x:Null}" />
                                         </MultiDataTrigger.Conditions>
-                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Setter Property="Visibility" Value="Collapsed" />
                                     </MultiDataTrigger>
-                   
+
                                 </Style.Triggers>
                             </Style>
                         </StackPanel.Style>
                         <Rectangle Height="1" Fill="#72787878" />
                         <Grid Margin="0,13,0,0">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition/>
-                                <ColumnDefinition/>
+                                <ColumnDefinition />
+                                <ColumnDefinition />
                             </Grid.ColumnDefinitions>
-                            <ContentControl x:Name="ActionMenuLeftRegion" Height="45" prism:RegionManager.RegionName="{x:Static shellInterface:AppRegions.ActionMenuLeftRegion}"/>
-                            <ContentControl x:Name="ActionMenuRightRegion" Grid.Column="1" Height="45" prism:RegionManager.RegionName="{x:Static shellInterface:AppRegions.ActionMenuRightRegion}"/>
+                            <ContentControl x:Name="ActionMenuLeftRegion" Height="45"
+                                            prism:RegionManager.RegionName="{x:Static shellInterface:AppRegions.ActionMenuLeftRegion}" />
+                            <ContentControl x:Name="ActionMenuRightRegion" Grid.Column="1" Height="45"
+                                            HorizontalAlignment="Right"
+                                            prism:RegionManager.RegionName="{x:Static shellInterface:AppRegions.ActionMenuRightRegion}" />
                         </Grid>
                     </StackPanel>
 
@@ -112,20 +132,22 @@
 
                 <Border BorderThickness="0,1,0,0" BorderBrush="#72787878" ClipToBounds="True" Panel.ZIndex="999">
                     <Border.Effect>
-                        <DropShadowEffect Direction="1" BlurRadius="6" Opacity="0.7" Color="#787878" ShadowDepth="0" />
+                        <DropShadowEffect Direction="1" BlurRadius="6" Opacity="0.7" Color="#787878"
+                                          ShadowDepth="0" />
                     </Border.Effect>
                 </Border>
                 <Border BorderThickness="0.6,0,0,0" BorderBrush="#B5B5B5" Panel.ZIndex="999">
                     <Border.Effect>
-                        <DropShadowEffect Direction="1" BlurRadius="3" Opacity="1" Color="#FF959595" ShadowDepth="0" />
+                        <DropShadowEffect Direction="1" BlurRadius="3" Opacity="1" Color="#FF959595"
+                                          ShadowDepth="0" />
                     </Border.Effect>
                 </Border>
 
-                <ContentControl prism:RegionManager.RegionName="{x:Static shellInterface:AppRegions.ContentRegion}"/>
+                <ContentControl prism:RegionManager.RegionName="{x:Static shellInterface:AppRegions.ContentRegion}" />
             </Grid>
 
 
-            <views:StatusBarView Grid.Row="2"/>
+            <views:StatusBarView Grid.Row="2" />
 
         </Grid>
     </Grid>

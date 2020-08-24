@@ -1,0 +1,69 @@
+﻿<UserControl x:Class="Training.Presentation.Views.ParametersEditView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:prism="http://prismlibrary.com/"
+             xmlns:domain="clr-namespace:Common.Domain;assembly=Common.Domain"
+             xmlns:presentation="clr-namespace:Common.Presentation;assembly=Common.Presentation"
+             prism:ViewModelLocator.AutoWireViewModel="True">
+    <StackPanel>
+
+        <TextBlock Text="Training parameters" Margin="10,10,0,0" FontSize="16" />
+        <UniformGrid Columns="1" Margin="20">
+            <UniformGrid.Style>
+                <Style TargetType="UniformGrid">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding TrainingParametersModel.Algorithm}" Value="{x:Static domain:TrainingAlgorithm.GradientDescent}">
+                            <Setter Property="Visibility" Value="Visible"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </UniformGrid.Style>
+            <TextBlock Text="Learning rate" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,10,0,10" />
+            <presentation:SubmitNumericUpDown Minimum="0"
+                                        StringFormat="###0.###################"
+                                        Speedup="True"
+                                        Interval="0.0001"
+                                        Value="{Binding Path=TrainingParametersModel.GradientDescentParamsModel.LearningRate, Mode=TwoWay}"
+                                        HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" />
+
+            <TextBlock Text="Momentum" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,10,0,10" />
+            <presentation:SubmitNumericUpDown
+                Minimum="0"
+                StringFormat="###0.###################"
+                Speedup="True"
+                Interval="0.0001"
+                Value="{Binding Path=TrainingParametersModel.GradientDescentParamsModel.Momentum, Mode=TwoWay}" HorizontalAlignment="Stretch"
+                HorizontalContentAlignment="Stretch" />
+        </UniformGrid>
+
+        <UniformGrid Columns="1" Margin="20">
+            <UniformGrid.Style>
+                <Style TargetType="UniformGrid">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding TrainingParametersModel.Algorithm}" Value="{x:Static domain:TrainingAlgorithm.LevenbergMarquardt}">
+                            <Setter Property="Visibility" Value="Visible"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </UniformGrid.Style>
+            <TextBlock Text="Damping parameter increment factor" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,10,0,10" />
+            <presentation:SubmitNumericUpDown Minimum="0"
+                                        StringFormat="###0.###################"
+                                        Speedup="True"
+                                        Interval="0.0001"
+                                        Value="{Binding Path=TrainingParametersModel.LevenbergMarquardtParamsModel.DampingParamIncFactor, Mode=TwoWay}"
+                                        HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" />
+
+            <TextBlock Text="Damping parameter decrement factor" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,10,0,10" />
+            <presentation:SubmitNumericUpDown
+                Minimum="0"
+                StringFormat="###0.###################"
+                Speedup="True"
+                Interval="0.0001"
+                Value="{Binding Path=TrainingParametersModel.LevenbergMarquardtParamsModel.DampingParamDecFactor, Mode=TwoWay}" HorizontalAlignment="Stretch"
+                HorizontalContentAlignment="Stretch" />
+        </UniformGrid>
+    </StackPanel>
+</UserControl>

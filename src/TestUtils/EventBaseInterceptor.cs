@@ -73,7 +73,11 @@ namespace TestUtils
 
         public void VerifyTimesCalled<TEventType>(Times times) where TEventType : EventBase, new()
         {
-            if(!EventTimesCalled.ContainsKey(typeof(TEventType))) throw new ArgumentException(nameof(TEventType) + " was not called");
+            if (!EventTimesCalled.ContainsKey(typeof(TEventType)))
+            {
+                if (times.Equals(Times.Never())) return;
+                throw new ArgumentException(nameof(TEventType) + " was not called");
+            }
 
             var (from, to) = times;
             EventTimesCalled[typeof(TEventType)].Should().BeGreaterOrEqualTo(from);
@@ -82,7 +86,11 @@ namespace TestUtils
 
         public void VerifyTimesCalled<TEventType>(int times) where TEventType : EventBase, new()
         {
-            if (!EventTimesCalled.ContainsKey(typeof(TEventType))) throw new ArgumentException(nameof(TEventType) + " was not called");
+            if (!EventTimesCalled.ContainsKey(typeof(TEventType)))
+            {
+                if (times == 0) return;
+                throw new ArgumentException(nameof(TEventType) + " was not called");
+            }
 
             EventTimesCalled[typeof(TEventType)].Should().Be(times);
         }

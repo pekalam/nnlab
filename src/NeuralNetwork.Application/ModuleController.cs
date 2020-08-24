@@ -34,6 +34,7 @@ namespace NeuralNetwork.Application
             _appState.PropertyChanged += AppStateOnPropertyChanged;
             if (_appState.ActiveSession != null)
             {
+                //TODO mv
                 ea.GetEvent<EnableNavMenuItem>().Publish(ModuleIds.NeuralNetwork);
 
                 if (_appState.ActiveSession.TrainingData != null)

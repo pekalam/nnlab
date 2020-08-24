@@ -97,7 +97,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NNControl", "..\..\..\..\Ma
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NNLibAdapter", "..\..\..\..\Marek Pękala\source\repos\NNControl\NNLibAdapter\NNLibAdapter.csproj", "{DFD639C1-1826-48F3-8D71-FA6623DB1083}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeuralNetwork.Application.Tests", "NeuralNetwork.Application.Tests\NeuralNetwork.Application.Tests.csproj", "{5D2584F3-132C-474F-BE09-655C12A44D4B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NeuralNetwork.Application.Tests", "NeuralNetwork.Application.Tests\NeuralNetwork.Application.Tests.csproj", "{5D2584F3-132C-474F-BE09-655C12A44D4B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Training.Interface", "Training.Interface\Training.Interface.csproj", "{7B4C29ED-AFEA-49D5-83AA-7E294435CA39}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PanelLayoutTest", "PanelLayoutTest\PanelLayoutTest.csproj", "{98C821A0-5BCD-4C8B-B82A-E0CB1608809C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Training.Domain.Tests", "Training.Domain.Tests\Training.Domain.Tests.csproj", "{DC30F655-75C3-45FC-928A-FCFA364B29E2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Training.Application.Tests", "Training.Application.Tests\Training.Application.Tests.csproj", "{E69B8F58-8A72-4F6D-BF9B-5B11462A4FBB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -249,6 +257,22 @@ Global
 		{5D2584F3-132C-474F-BE09-655C12A44D4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5D2584F3-132C-474F-BE09-655C12A44D4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5D2584F3-132C-474F-BE09-655C12A44D4B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7B4C29ED-AFEA-49D5-83AA-7E294435CA39}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B4C29ED-AFEA-49D5-83AA-7E294435CA39}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B4C29ED-AFEA-49D5-83AA-7E294435CA39}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B4C29ED-AFEA-49D5-83AA-7E294435CA39}.Release|Any CPU.Build.0 = Release|Any CPU
+		{98C821A0-5BCD-4C8B-B82A-E0CB1608809C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{98C821A0-5BCD-4C8B-B82A-E0CB1608809C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{98C821A0-5BCD-4C8B-B82A-E0CB1608809C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{98C821A0-5BCD-4C8B-B82A-E0CB1608809C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DC30F655-75C3-45FC-928A-FCFA364B29E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC30F655-75C3-45FC-928A-FCFA364B29E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC30F655-75C3-45FC-928A-FCFA364B29E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC30F655-75C3-45FC-928A-FCFA364B29E2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E69B8F58-8A72-4F6D-BF9B-5B11462A4FBB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E69B8F58-8A72-4F6D-BF9B-5B11462A4FBB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E69B8F58-8A72-4F6D-BF9B-5B11462A4FBB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E69B8F58-8A72-4F6D-BF9B-5B11462A4FBB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -289,6 +313,10 @@ Global
 		{B965F54C-6C2B-4425-8D47-8ECDC47AA308} = {5444BEEC-50B2-4D40-915A-BF73E5775651}
 		{8963D48D-2863-415C-AB59-03D05A0EBF3A} = {FCE68A69-E535-4566-A14D-43172A7B9772}
 		{5D2584F3-132C-474F-BE09-655C12A44D4B} = {D3DD61FE-0B7C-41DD-9861-24A149397A0B}
+		{7B4C29ED-AFEA-49D5-83AA-7E294435CA39} = {72CBFB17-54C5-4F3B-9BE4-F778A03694B7}
+		{98C821A0-5BCD-4C8B-B82A-E0CB1608809C} = {152CB1FE-CCA9-452E-9150-017A3B6CDD4D}
+		{DC30F655-75C3-45FC-928A-FCFA364B29E2} = {152CB1FE-CCA9-452E-9150-017A3B6CDD4D}
+		{E69B8F58-8A72-4F6D-BF9B-5B11462A4FBB} = {152CB1FE-CCA9-452E-9150-017A3B6CDD4D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2AD07BAC-B96F-4540-814D-B11B85EBB73C}

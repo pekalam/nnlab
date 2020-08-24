@@ -1,0 +1,15 @@
+﻿<UserControl x:Class="Training.Presentation.Views.ErrorPlotView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:prism="http://prismlibrary.com/"
+             xmlns:basicPlot="clr-namespace:SharedUI.BasicPlot;assembly=SharedUI"
+             prism:ViewModelLocator.AutoWireViewModel="True">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition Height="30"/>
+        </Grid.RowDefinitions>
+        <basicPlot:BasicPlot PlotModel="{Binding BasicPlotModel}"/>
+        <TextBlock Grid.Row="1" x:Name="errorText"/>
+    </Grid>
+</UserControl>

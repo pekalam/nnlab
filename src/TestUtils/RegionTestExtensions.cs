@@ -70,5 +70,36 @@ namespace TestUtils
             new SupervisedSetVariables(new SupervisedSetVariableIndexes(new[] {0}, new[] {1, 2}),
                 new[] {new VariableName("x"), new VariableName("y"), new VariableName("z"),}),
             TrainingDataSource.Memory);
+
+
+        public static SupervisedSet AndGateSet()
+        {
+            var input = new[]
+            {
+                new[] {0d, 0d},
+                new[] {0d, 1d},
+                new[] {1d, 0d},
+                new[] {1d, 1d},
+            };
+
+            var expected = new[]
+            {
+                new[] {0d},
+                new[] {0d},
+                new[] {0d},
+                new[] {1d},
+            };
+
+            return SupervisedSet.FromArrays(input, expected);
+        }
+
+        public static TrainingData AndGateTrainingData()
+        {
+            var set = AndGateSet();
+            var data = new TrainingData(new SupervisedTrainingSets(set),
+                new SupervisedSetVariables(new SupervisedSetVariableIndexes(new[] { 0 }, new[] { 1 }),
+                    new VariableName[] { "x", "y" }), TrainingDataSource.Memory);
+            return data;
+        }
     }
 }

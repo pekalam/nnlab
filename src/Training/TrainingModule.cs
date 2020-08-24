@@ -1,6 +1,7 @@
 ﻿using Prism.Ioc;
 using Prism.Modularity;
 using Prism.Regions;
+using Training.Application;
 
 namespace Training
 {
@@ -9,14 +10,18 @@ namespace Training
         public const int NavIdentifier = 3;
 
 
-        public void OnInitialized(IContainerProvider containerProvider)
+        public void OnInitialized(IContainerProvider cp)
         {
-
+            cp.Resolve<ModuleController>().Run();
         }
 
-        public void RegisterTypes(IContainerRegistry containerRegistry)
+        public void RegisterTypes(IContainerRegistry cr)
         {
+            cr.RegisterSingleton<ModuleController>();
 
+            Training.Domain.Bootstraper.RegisterTypes(cr);
+            Training.Application.Bootstraper.RegisterTypes(cr);
+            Training.Presentation.Bootstraper.RegisterTypes(cr);
         }
     }
 }
