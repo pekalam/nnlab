@@ -10,6 +10,7 @@ using NNLib.Common;
 using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Series;
+using Prism.Regions;
 using SharedUI.BasicPlot;
 using Training.Application.Services;
 using Training.Domain;
@@ -27,8 +28,10 @@ namespace Training.Application.ViewModels
 
         public OutputPlotViewModel(IOutputPlotService service)
         {
-            
+            Service = service;
         }
+
+        public IOutputPlotService Service { get; }
 
         public OutputPlotType PlotType
         {
@@ -40,6 +43,11 @@ namespace Training.Application.ViewModels
 
         public PlotModel PlotModel => BasicPlotModel.Model;
         public PlotController PlotController => BasicPlotModel.Controller;
+
+        public override void OnNavigatedTo(NavigationContext navigationContext)
+        {
+            Service.Navigated(navigationContext);
+        }
     }
 
 

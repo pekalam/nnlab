@@ -5,6 +5,11 @@
              xmlns:converters="clr-namespace:Common.Presentation.Converters;assembly=Common.Presentation"
              xmlns:domain="clr-namespace:Common.Domain;assembly=Common.Domain"
              xmlns:converters1="clr-namespace:Training.Presentation.Converters"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:dd="clr-namespace:Training.Presentation.__DesignData"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance dd:DesignTrainingInfoVm, IsDesignTimeCreatable=True}"
              prism:ViewModelLocator.AutoWireViewModel="True">
     <UserControl.Resources>
         <Style x:Key="StatsTitle" TargetType="TextBlock">
@@ -24,7 +29,7 @@
         <Style x:Key="GdPanel" TargetType="TextBlock" BasedOn="{StaticResource StatsText}">
             <Setter Property="Visibility" Value="Collapsed"/>
             <Style.Triggers>
-                <DataTrigger Binding="{Binding Path=TrainingParameters.Algorithm}" Value="{x:Static domain:TrainingAlgorithm.GradientDescent}">
+                <DataTrigger Binding="{Binding AppState.ActiveSession.TrainingParameters.Algorithm}" Value="{x:Static domain:TrainingAlgorithm.GradientDescent}">
                     <Setter Property="Visibility" Value="Visible"/>
                 </DataTrigger>
             </Style.Triggers>
@@ -32,7 +37,7 @@
         <Style x:Key="LmPanel" TargetType="TextBlock" BasedOn="{StaticResource StatsText}">
             <Setter Property="Visibility" Value="Collapsed"/>
             <Style.Triggers>
-                <DataTrigger Binding="{Binding Path=TrainingParameters.Algorithm}" Value="{x:Static domain:TrainingAlgorithm.LevenbergMarquardt}">
+                <DataTrigger Binding="{Binding AppState.ActiveSession.TrainingParameters.Algorithm}" Value="{x:Static domain:TrainingAlgorithm.LevenbergMarquardt}">
                     <Setter Property="Visibility" Value="Visible"/>
                 </DataTrigger>
             </Style.Triggers>
@@ -45,21 +50,21 @@
         <TextBlock Text="Training" Margin="0,0,0,10" Style="{StaticResource StatsTitle}"/>
         <UniformGrid Columns="2">
             <TextBlock Text="Algorithm:" Style="{StaticResource StatsText}"/>
-            <TextBlock Text="{Binding TrainingParameters, Converter={StaticResource TrainingAlgorithmText}}" Style="{StaticResource StatsText}"/>
+            <TextBlock Text="{Binding AppState.ActiveSession.TrainingParameters, Converter={StaticResource TrainingAlgorithmText}}" Style="{StaticResource StatsText}"/>
             <TextBlock Text="Learning rate:" Style="{StaticResource GdPanel}"/>
-            <TextBlock Text="{Binding TrainingParameters.GDParams.LearningRate, Converter={StaticResource FloatingPointText}}" Style="{StaticResource GdPanel}"/>
+            <TextBlock Text="{Binding AppState.ActiveSession.TrainingParameters.GDParams.LearningRate, Converter={StaticResource FloatingPointText}}" Style="{StaticResource GdPanel}"/>
             <TextBlock Text="Momentum:" Style="{StaticResource GdPanel}"/>
-            <TextBlock Text="{Binding TrainingParameters.GDParams.Momentum, Converter={StaticResource FloatingPointText}}" Style="{StaticResource GdPanel}"/>
+            <TextBlock Text="{Binding AppState.ActiveSession.TrainingParameters.GDParams.Momentum, Converter={StaticResource FloatingPointText}}" Style="{StaticResource GdPanel}"/>
 
             <TextBlock Text="Damping parameter inc factor:" Style="{StaticResource LmPanel}"/>
-            <TextBlock Text="{Binding TrainingParameters.LMParams.DampingParamIncFactor, Converter={StaticResource FloatingPointText}}" Style="{StaticResource LmPanel}"/>
+            <TextBlock Text="{Binding AppState.ActiveSession.TrainingParameters.LMParams.DampingParamIncFactor, Converter={StaticResource FloatingPointText}}" Style="{StaticResource LmPanel}"/>
             <TextBlock Text="Damping parameter dec factor:" Style="{StaticResource LmPanel}"/>
-            <TextBlock Text="{Binding TrainingParameters.LMParams.DampingParamDecFactor, Converter={StaticResource FloatingPointText}}" Style="{StaticResource LmPanel}"/>
+            <TextBlock Text="{Binding AppState.ActiveSession.TrainingParameters.LMParams.DampingParamDecFactor, Converter={StaticResource FloatingPointText}}" Style="{StaticResource LmPanel}"/>
         </UniformGrid>
         <TextBlock Text="Training Time" Style="{StaticResource StatsTitle}"/>
         <UniformGrid Columns="2">
             <TextBlock Text="Start time:" Style="{StaticResource StatsText}"/>
-            <TextBlock Text="{Binding StartTime}" Style="{StaticResource StatsText}"/>
+            <TextBlock Text="{Binding ModuleState.ActiveSession.StartTime}" Style="{StaticResource StatsText}"/>
             <TextBlock Text="Elapsed time:" Style="{StaticResource StatsText}"/>
             <TextBlock x:Name="TimerText" Style="{StaticResource StatsText}"/>
         </UniformGrid>

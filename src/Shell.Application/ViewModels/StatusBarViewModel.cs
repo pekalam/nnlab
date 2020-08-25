@@ -7,7 +7,9 @@ using System.Windows;
 using System.Windows.Data;
 using Common.Domain;
 using Common.Framework;
+using Prism.Events;
 using Shell.Application.Services;
+using Shell.Interface;
 
 namespace Shell.Application.ViewModels
 {
@@ -17,15 +19,31 @@ namespace Shell.Application.ViewModels
         private string _errorMessage = "Invalid error";
         private string _networkInfo;
         private StringBuilder _bldr = new StringBuilder();
+        private Visibility _progressVisibility = Visibility.Hidden;
+        private string _progressTooltip;
+        private string _progressMessage;
+        private bool _canModifyActiveSession = true;
 
         public StatusBarViewModel()
         {
         }
 
-        public StatusBarViewModel(AppState appState, IStatusBarService serivce)
+        public StatusBarViewModel(AppState appState, IStatusBarService serivce, IEventAggregator ea)
         {
             AppState = appState;
             Serivce = serivce;
+
+            ea.GetEvent<ShowProgressArea>().Subscribe(args =>
+            {
+                ProgressMessage = args.Message;
+                ProgressTooltip = args.Tooltip;
+                ProgressVisibility = Visibility.Visible;
+            }, ThreadOption.UIThread);
+
+            ea.GetEvent<HideProgressArea>().Subscribe(() =>
+            {
+                ProgressVisibility = Visibility.Hidden;
+            }, ThreadOption.UIThread);
 
             appState.PropertyChanged += (sender, args) =>
             {
@@ -93,6 +111,31 @@ namespace Shell.Application.ViewModels
         {
             get => _networkInfo;
             set => SetProperty(ref _networkInfo, value);
+        }
+
+        public bool CanModifyActiveSession
+        {
+            get => _canModifyActiveSession;
+            set => SetProperty(ref _canModifyActiveSession, value);
+        }
+
+
+        public Visibility ProgressVisibility
+        {
+            get => _progressVisibility;
+            set => SetProperty(ref _progressVisibility, value);
+        }
+
+        public string ProgressTooltip
+        {
+            get => _progressTooltip;
+            set => _progressTooltip = value;
+        }
+
+        public string ProgressMessage
+        {
+            get => _progressMessage;
+            set => _progressMessage = value;
         }
     }
 

@@ -19,6 +19,4 @@ namespace Common.Framework.Extensions
             _token = token;
         }
     }
-
-    
 }

@@ -11,6 +11,18 @@ namespace Shell.Interface
     {
     }
 
+    public class ProgressAreaArgs
+    {
+        public string Message { get; set; }
+        public string Tooltip { get; set; }
+    }
+
+    public class ShowProgressArea : PubSubEvent<ProgressAreaArgs>
+    {
+    }
+
+    public class HideProgressArea : PubSubEvent { }
+
     public class FlyoutArgs
     {
         public string Title { get; set; }

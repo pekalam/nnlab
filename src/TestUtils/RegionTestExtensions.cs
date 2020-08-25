@@ -37,6 +37,9 @@ namespace TestUtils
         public static MLPNetwork ValidNet2 = new MLPNetwork(new PerceptronLayer(1, 10, new SigmoidActivationFunction()),
             new PerceptronLayer(10, 1, new ArcTanActivationFunction()),
                 new PerceptronLayer(1, 2, new ArcTanActivationFunction()));
+
+        public static MLPNetwork AndGateNet = new MLPNetwork(new PerceptronLayer(2, 2, new LinearActivationFunction()),
+        new PerceptronLayer(2, 1, new SigmoidActivationFunction()));
     }
 
     public static class TrainingDataMocks

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using NNLib;
 
 namespace Common.Domain
@@ -10,7 +11,7 @@ namespace Common.Domain
     }
 
 
-    public class TrainingParameters
+    public class TrainingParameters : IDataErrorInfo
     {
         public GradientDescentParams GDParams { get; set; } = new GradientDescentParams();
         public LevenbergMarquardtParams LMParams { get; set; } = new LevenbergMarquardtParams();
@@ -44,6 +45,16 @@ namespace Common.Domain
                 MaxLearningTime = MaxLearningTime,
                 TargetError = TargetError,
             };
+        }
+
+        public string Error { get; }
+
+        public string this[string columnName]
+        {
+            get
+            {
+                return null;
+            }
         }
     }
 }

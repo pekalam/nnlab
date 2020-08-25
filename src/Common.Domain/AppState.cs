@@ -18,6 +18,7 @@ namespace Common.Domain
     {
         private Session? _activeSession;
 
+        public event EventHandler<Session> ActiveSessionChanged; 
 
         public Session? ActiveSession
         {
@@ -27,6 +28,7 @@ namespace Common.Domain
                 if (value == null) throw new NullReferenceException("Null session");
                 if (!Sessions.Contains(value)) throw new ArgumentException("Session not found");
                 SetProperty(ref _activeSession, value);
+                ActiveSessionChanged?.Invoke(this, value);
             }
         }
 
@@ -112,7 +114,14 @@ namespace Common.Domain
         public TrainingData? TrainingData
         {
             get => _trainingData;
-            set => SetProperty(ref _trainingData, value);
+            set
+            {
+                SetProperty(ref _trainingData, value);
+                if(value != null && _network != null)
+                {
+                    TrainingParameters = new TrainingParameters();
+                }
+            }
         }
 
         public void UnloadTrainingData()
@@ -129,7 +138,14 @@ namespace Common.Domain
         public MLPNetwork? Network
         {
             get => _network;
-            set => SetProperty(ref _network, value);
+            set
+            {
+                SetProperty(ref _network, value);
+                if (value != null && _trainingData != null)
+                {
+                    TrainingParameters = new TrainingParameters();
+                }
+            }
         }
 
         public void RaiseNetworkStructureChanged()

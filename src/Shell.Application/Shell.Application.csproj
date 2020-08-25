@@ -8,5 +8,6 @@
     <ProjectReference Include="..\Common.Domain\Common.Domain.csproj" />
     <ProjectReference Include="..\Common.Framework\Common.Framework.csproj" />
     <ProjectReference Include="..\Shell.Interface\Shell.Interface.csproj" />
+    <ProjectReference Include="..\Training.Interface\Training.Interface.csproj" />
   </ItemGroup>
 </Project>

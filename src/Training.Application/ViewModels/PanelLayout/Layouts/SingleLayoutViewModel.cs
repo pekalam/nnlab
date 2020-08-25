@@ -21,11 +21,11 @@ namespace Training.Application.ViewModels.PanelLayout.Layouts
             set => SetProperty(ref _selected1, value);
         }
 
-        protected override void OnPanelsSelected(string[] views, List<PanelSelectModel> selected)
+        protected override void OnPanelsSelected(string[] views, List<PanelSelectModel> selected, NavigationParameters navParams)
         {
             var viewName = views.First();
             Selected1 = selected.First();
-            Rm.Regions[SingleLayoutRegions.SingleLayoutMainRegion].RequestNavigate(viewName);
+            Rm.Regions[SingleLayoutRegions.SingleLayoutMainRegion].RequestNavigate(viewName, navParams);
             PropertyChanged += ViewModelOnPropertyChanged;
         }
 
@@ -34,7 +34,7 @@ namespace Training.Application.ViewModels.PanelLayout.Layouts
             if (e.PropertyName == nameof(SingleLayoutViewModel.Selected1))
             {
                 var newView = PanelToViewHelper.GetView(Selected1);
-                ClearAndNavgate(SingleLayoutRegions.SingleLayoutMainRegion, newView);
+                ClearAndNavgate(SingleLayoutRegions.SingleLayoutMainRegion, newView, InitialNavParams);
             }
         }
 
@@ -67,14 +67,14 @@ namespace Training.Application.ViewModels.PanelLayout.Layouts
             set => SetProperty(ref _selected2, value);
         }
 
-        protected override void OnPanelsSelected(string[] views, List<PanelSelectModel> selected)
+        protected override void OnPanelsSelected(string[] views, List<PanelSelectModel> selected, NavigationParameters navParams)
         {
             var first = views.First();
             var second = views.ElementAt(1);
             Selected1 = selected[0];
             Selected2 = selected[1];
-            Rm.Regions[Horizontal2LayoutRegions.Horizontal2LayoutRegion1].RequestNavigate(first);
-            Rm.Regions[Horizontal2LayoutRegions.Horizontal2LayoutRegion2].RequestNavigate(second);
+            Rm.Regions[Horizontal2LayoutRegions.Horizontal2LayoutRegion1].RequestNavigate(first, navParams);
+            Rm.Regions[Horizontal2LayoutRegions.Horizontal2LayoutRegion2].RequestNavigate(second, navParams);
             PropertyChanged += vmOnPropertyChanged;
         }
 
@@ -83,13 +83,13 @@ namespace Training.Application.ViewModels.PanelLayout.Layouts
             if (e.PropertyName == nameof(Horizontal2LayoutViewModel.Selected1))
             {
                 var newView = PanelToViewHelper.GetView(Selected1);
-                ClearAndNavgate(Horizontal2LayoutRegions.Horizontal2LayoutRegion1, newView);
+                ClearAndNavgate(Horizontal2LayoutRegions.Horizontal2LayoutRegion1, newView, InitialNavParams);
             }
 
             if (e.PropertyName == nameof(Horizontal2LayoutViewModel.Selected2))
             {
                 var newView = PanelToViewHelper.GetView(Selected2);
-                ClearAndNavgate(Horizontal2LayoutRegions.Horizontal2LayoutRegion2, newView);
+                ClearAndNavgate(Horizontal2LayoutRegions.Horizontal2LayoutRegion2, newView, InitialNavParams);
             }
         }
 
@@ -130,7 +130,7 @@ namespace Training.Application.ViewModels.PanelLayout.Layouts
             set => SetProperty(ref _selected3, value);
         }
 
-        protected override void OnPanelsSelected(string[] views, List<PanelSelectModel> selected)
+        protected override void OnPanelsSelected(string[] views, List<PanelSelectModel> selected, NavigationParameters navParams)
         {
             var first = views.First();
             var second = views.ElementAt(1);
@@ -138,9 +138,9 @@ namespace Training.Application.ViewModels.PanelLayout.Layouts
             Selected1 = selected[0];
             Selected2 = selected[1];
             Selected3 = selected[2];
-            Rm.Regions[Part3LayoutRegions.Part3LayoutRegion1].RequestNavigate(first);
-            Rm.Regions[Part3LayoutRegions.Part3LayoutRegion2].RequestNavigate(second);
-            Rm.Regions[Part3LayoutRegions.Part3LayoutRegion3].RequestNavigate(third);
+            Rm.Regions[Part3LayoutRegions.Part3LayoutRegion1].RequestNavigate(first, navParams);
+            Rm.Regions[Part3LayoutRegions.Part3LayoutRegion2].RequestNavigate(second, navParams);
+            Rm.Regions[Part3LayoutRegions.Part3LayoutRegion3].RequestNavigate(third, navParams);
             PropertyChanged += vmOnPropertyChanged;
         }
 
@@ -149,19 +149,19 @@ namespace Training.Application.ViewModels.PanelLayout.Layouts
             if (e.PropertyName == nameof(Part3LayoutViewModel.Selected1))
             {
                 var newView = PanelToViewHelper.GetView(Selected1);
-                ClearAndNavgate(Part3LayoutRegions.Part3LayoutRegion1, newView);
+                ClearAndNavgate(Part3LayoutRegions.Part3LayoutRegion1, newView, InitialNavParams);
             }
 
             if (e.PropertyName == nameof(Part3LayoutViewModel.Selected2))
             {
                 var newView = PanelToViewHelper.GetView(Selected2);
-                ClearAndNavgate(Part3LayoutRegions.Part3LayoutRegion2, newView);
+                ClearAndNavgate(Part3LayoutRegions.Part3LayoutRegion2, newView, InitialNavParams);
             }
 
             if (e.PropertyName == nameof(Part3LayoutViewModel.Selected3))
             {
                 var newView = PanelToViewHelper.GetView(Selected3);
-                ClearAndNavgate(Part3LayoutRegions.Part3LayoutRegion3, newView);
+                ClearAndNavgate(Part3LayoutRegions.Part3LayoutRegion3, newView, InitialNavParams);
             }
         }
 
@@ -211,7 +211,7 @@ namespace Training.Application.ViewModels.PanelLayout.Layouts
             set => SetProperty(ref _selected4, value);
         }
 
-        protected override void OnPanelsSelected(string[] views, List<PanelSelectModel> selected)
+        protected override void OnPanelsSelected(string[] views, List<PanelSelectModel> selected, NavigationParameters navParams)
         {
             var first = views[0];
             var second = views[1];
@@ -221,10 +221,10 @@ namespace Training.Application.ViewModels.PanelLayout.Layouts
             Selected2 = selected[1];
             Selected3 = selected[2];
             Selected4 = selected[3];
-            Rm.RequestNavigate(Part4LayoutRegions.Part4LayoutRegion1, first);
-            Rm.RequestNavigate(Part4LayoutRegions.Part4LayoutRegion2, second);
-            Rm.RequestNavigate(Part4LayoutRegions.Part4LayoutRegion3, third);
-            Rm.RequestNavigate(Part4LayoutRegions.Part4LayoutRegion4, fourth);
+            Rm.RequestNavigate(Part4LayoutRegions.Part4LayoutRegion1, first, navParams);
+            Rm.RequestNavigate(Part4LayoutRegions.Part4LayoutRegion2, second, navParams);
+            Rm.RequestNavigate(Part4LayoutRegions.Part4LayoutRegion3, third, navParams);
+            Rm.RequestNavigate(Part4LayoutRegions.Part4LayoutRegion4, fourth, navParams);
             PropertyChanged += vmOnPropertyChanged;
         }
 
@@ -233,25 +233,25 @@ namespace Training.Application.ViewModels.PanelLayout.Layouts
             if (e.PropertyName == nameof(Part4LayoutViewModel.Selected1))
             {
                 var newView = PanelToViewHelper.GetView(Selected1);
-                ClearAndNavgate(Part4LayoutRegions.Part4LayoutRegion1, newView);
+                ClearAndNavgate(Part4LayoutRegions.Part4LayoutRegion1, newView, InitialNavParams);
             }
 
             if (e.PropertyName == nameof(Part4LayoutViewModel.Selected2))
             {
                 var newView = PanelToViewHelper.GetView(Selected2);
-                ClearAndNavgate(Part4LayoutRegions.Part4LayoutRegion2, newView);
+                ClearAndNavgate(Part4LayoutRegions.Part4LayoutRegion2, newView, InitialNavParams);
             }
 
             if (e.PropertyName == nameof(Part4LayoutViewModel.Selected3))
             {
                 var newView = PanelToViewHelper.GetView(Selected3);
-                ClearAndNavgate(Part4LayoutRegions.Part4LayoutRegion3, newView);
+                ClearAndNavgate(Part4LayoutRegions.Part4LayoutRegion3, newView, InitialNavParams);
             }
 
             if (e.PropertyName == nameof(Part4LayoutViewModel.Selected4))
             {
                 var newView = PanelToViewHelper.GetView(Selected4);
-                ClearAndNavgate(Part4LayoutRegions.Part4LayoutRegion4, newView);
+                ClearAndNavgate(Part4LayoutRegions.Part4LayoutRegion4, newView, InitialNavParams);
             }
         }
     }

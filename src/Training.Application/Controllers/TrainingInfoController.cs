@@ -59,6 +59,9 @@ namespace Training.Application.Controllers
             {
                 _accessor.Get<TrainingInfoViewModel>().TestError = d;
             });
+
+
+            _epochEndConsumer.Initialize();
         }
 
         private void SessionOnPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -68,7 +71,6 @@ namespace Training.Application.Controllers
                 var session = sender as TrainingSession;
                 if (session.Started)
                 {
-                    _accessor.Get<TrainingInfoViewModel>().StartTime = session.StartTime;
                 }
             }
         }

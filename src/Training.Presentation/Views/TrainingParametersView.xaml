@@ -6,182 +6,189 @@
              xmlns:domain="clr-namespace:Common.Domain;assembly=Common.Domain"
              xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:converters="clr-namespace:Common.Presentation.Converters;assembly=Common.Presentation"
-             prism:ViewModelLocator.AutoWireViewModel="True">
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:dd="clr-namespace:Training.Presentation.__DesignData"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance dd:DesignTrainingParametersVm, IsDesignTimeCreatable=True}"
+             prism:ViewModelLocator.AutoWireViewModel="True" Style="{StaticResource ContentUserControl}">
     <UserControl.Resources>
         <converters:BooleanNegConverter x:Key="boolNegConverter" />
     </UserControl.Resources>
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition />
-            <ColumnDefinition />
-        </Grid.ColumnDefinitions>
-        <StackPanel Orientation="Vertical">
-            <Grid Margin="10,20,20,20">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                </Grid.ColumnDefinitions>
-                <TextBlock VerticalAlignment="Center" FontSize="20" Text="Algorithm:"/>
-                <ComboBox Grid.Column="1" ItemsSource="{Binding Algorithms}" SelectedItem="{Binding Path=TrainingParameters.Algorithm}"/>
-            </Grid>
-            <TextBlock Text="Training parameters" Margin="10,10,0,0" FontSize="20" />
-            <Grid Margin="20">
-                <Grid.Style>
-                    <Style TargetType="Grid">
-                        <Setter Property="Visibility" Value="Collapsed"/>
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding TrainingParametersModel.Algorithm}" Value="{x:Static domain:TrainingAlgorithm.GradientDescent}">
-                                <Setter Property="Visibility" Value="Visible"/>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Grid.Style>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="8" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="8" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-                <TextBlock Text="Learning rate" HorizontalAlignment="Left" VerticalAlignment="Center"
+    <ContentControl Style="{StaticResource ContentPanel}">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <StackPanel Orientation="Vertical">
+                <Grid Margin="10,20,20,20">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock VerticalAlignment="Center" FontSize="20" Text="Algorithm:"/>
+                    <ComboBox Grid.Column="1" ItemsSource="{Binding Algorithms}" SelectedItem="{Binding Path=TrainingParameters.Algorithm}"/>
+                </Grid>
+                <TextBlock Text="Training parameters" Margin="10,10,0,0" FontSize="20" />
+                <Grid Margin="20">
+                    <Grid.Style>
+                        <Style TargetType="Grid">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding TrainingParameters.Algorithm}" Value="{x:Static domain:TrainingAlgorithm.GradientDescent}">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Grid.Style>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="8" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="8" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="Learning rate" HorizontalAlignment="Left" VerticalAlignment="Center"
                            Margin="0,10,0,10" />
-                <presentation:SubmitNumericUpDown MinWidth="120"
+                    <presentation:SubmitNumericUpDown Grid.Row="0" MinWidth="120"
                                             Grid.Column="1"
                                             Minimum="0"
                                             StringFormat="###0.###################"
                                             Speedup="True"
                                             Interval="0.0001"
-                                            Value="{Binding Path=TrainingParameters.GradientDescentParamsModel.LearningRate, Mode=TwoWay, UpdateSourceTrigger=Explicit, ValidatesOnExceptions=True}"
+                                            Value="{Binding TrainingParameters.GDParams.LearningRate, Mode=TwoWay, UpdateSourceTrigger=Explicit, ValidatesOnDataErrors=True}"
                                             HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" />
 
-                <TextBlock Grid.Row="2" Text="Momentum" HorizontalAlignment="Left" VerticalAlignment="Center"
+                    <TextBlock Grid.Column="0" Grid.Row="2" Text="Momentum" HorizontalAlignment="Left" VerticalAlignment="Center"
                            Margin="0,10,0,10" />
-                <presentation:SubmitNumericUpDown MinWidth="120"
+                    <presentation:SubmitNumericUpDown MinWidth="120"
                                             Grid.Row="2"
                                             Grid.Column="1"
                                             Minimum="0"
                                             StringFormat="###0.###################"
                                             Speedup="True"
                                             Interval="0.0001"
-                                            Value="{Binding Path=TrainingParameters.GradientDescentParamsModel.Momentum, Mode=TwoWay, UpdateSourceTrigger=Explicit, ValidatesOnExceptions=True}"
+                                            Value="{Binding TrainingParameters.GDParams.Momentum, Mode=TwoWay, UpdateSourceTrigger=Explicit, ValidatesOnDataErrors=True}"
                                             HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" />
-                <TextBlock Grid.Row="4" Text="Batch size" HorizontalAlignment="Left" VerticalAlignment="Center"
+                    <TextBlock Grid.Column="0" Grid.Row="4" Text="Batch size" HorizontalAlignment="Left" VerticalAlignment="Center"
                            Margin="0,10,0,10" />
-                <presentation:SubmitNumericUpDown MinWidth="120"
+                    <presentation:SubmitNumericUpDown MinWidth="120"
                                             Grid.Row="4"
                                             Grid.Column="1"
                                             Minimum="1"
                                             StringFormat="0"
                                             Speedup="True"
                                             Interval="1"
-                                            Value="{Binding Path=TrainingParameters.GradientDescentParamsModel.BatchSize, Mode=TwoWay, UpdateSourceTrigger=Explicit, ValidatesOnExceptions=True}"
+                                            Value="{Binding TrainingParameters.GDParams.BatchParams.BatchSize, Mode=TwoWay, UpdateSourceTrigger=Explicit, ValidatesOnDataErrors=True}"
                                             HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" />
-            </Grid>
+                </Grid>
 
-            <Grid Margin="20">
-                <Grid.Style>
-                    <Style TargetType="Grid">
-                        <Setter Property="Visibility" Value="Collapsed"/>
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding TrainingParametersModel.Algorithm}" Value="{x:Static domain:TrainingAlgorithm.LevenbergMarquardt}">
-                                <Setter Property="Visibility" Value="Visible"/>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Grid.Style>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="8" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="8" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-                <TextBlock Text="Damping parameter increment factor" HorizontalAlignment="Left" VerticalAlignment="Center"
+                <Grid Margin="20">
+                    <Grid.Style>
+                        <Style TargetType="Grid">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding TrainingParameters.Algorithm}" Value="{x:Static domain:TrainingAlgorithm.LevenbergMarquardt}">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Grid.Style>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="8" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="8" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="Damping parameter increment factor" HorizontalAlignment="Left" VerticalAlignment="Center"
                            Margin="0,10,0,10" />
-                <presentation:SubmitNumericUpDown MinWidth="120"
+                    <presentation:SubmitNumericUpDown Grid.Row="0" MinWidth="120"
                                             Grid.Column="1"
                                             Minimum="0"
                                             StringFormat="###0.###################"
                                             Speedup="True"
                                             Interval="0.0001"
-                                            Value="{Binding Path=TrainingParameters.LevenbergMarquardtParamsModel.DampingParamIncFactor, Mode=TwoWay, UpdateSourceTrigger=Explicit, ValidatesOnExceptions=True}"
+                                            Value="{Binding TrainingParameters.LMParams.DampingParamIncFactor, Mode=TwoWay, UpdateSourceTrigger=Explicit, ValidatesOnDataErrors=True}"
                                             HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" />
 
-                <TextBlock Grid.Row="2" Text="Damping parameter decrement factor" HorizontalAlignment="Left" VerticalAlignment="Center"
+                    <TextBlock Grid.Column="0" Grid.Row="2" Text="Damping parameter decrement factor" HorizontalAlignment="Left" VerticalAlignment="Center"
                            Margin="0,10,0,10" />
-                <presentation:SubmitNumericUpDown MinWidth="120"
+                    <presentation:SubmitNumericUpDown MinWidth="120"
                                             Grid.Row="2"
                                             Grid.Column="1"
                                             Minimum="0"
                                             StringFormat="###0.###################"
                                             Speedup="True"
                                             Interval="0.0001"
-                                            Value="{Binding Path=TrainingParameters.LevenbergMarquardtParamsModel.DampingParamDecFactor, Mode=TwoWay, UpdateSourceTrigger=Explicit, ValidatesOnExceptions=True}"
+                                            Value="{Binding TrainingParameters.LMParams.DampingParamDecFactor, Mode=TwoWay, UpdateSourceTrigger=Explicit, ValidatesOnDataErrors=True}"
                                             HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" />
-            </Grid>
+                </Grid>
 
-            <TextBlock Text="Stop criteria" Margin="10,10,0,0" FontSize="20" />
-            <Grid Margin="20">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="8" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="8" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-                <TextBlock Grid.Row="0" Text="Target error" HorizontalAlignment="Left" VerticalAlignment="Center"
+                <TextBlock Text="Stop criteria" Margin="10,10,0,0" FontSize="20" />
+                <Grid Margin="20">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="8" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="8" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Text="Target error" HorizontalAlignment="Left" VerticalAlignment="Center"
                            Margin="0,10,0,10" />
-                <mah:NumericUpDown MinWidth="120"
+                    <mah:NumericUpDown MinWidth="120"
                                    Grid.Row="0"
                                    Grid.Column="1"
                                    Minimum="0"
                                    Interval="0.0001"
                                    StringFormat="###0.###################"
-                                   Value="{Binding Path=TrainingParameters.TargetError, Mode=TwoWay, ValidatesOnExceptions=True}"
+                                   Value="{Binding TrainingParameters.TargetError, Mode=TwoWay, ValidatesOnDataErrors=True}"
                                    HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" />
-                <TextBlock Grid.Row="2" Text="Max learning time" HorizontalAlignment="Left"
+                    <TextBlock Grid.Column="0" Grid.Row="2" Text="Max learning time" HorizontalAlignment="Left"
                            VerticalAlignment="Center" Margin="0,10,0,10" />
-                <Grid Grid.Row="2" Grid.Column="1">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition />
-                        <ColumnDefinition />
-                    </Grid.ColumnDefinitions>
-                    <CheckBox Content="Undefined" IsChecked="{Binding IsMaxLearningTimeChecked}" x:Name="maxLearningTimeCheckbox"
+                    <Grid Grid.Row="2" Grid.Column="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <CheckBox Content="Undefined" IsChecked="{Binding IsMaxLearningTimeChecked}" x:Name="maxLearningTimeCheckbox"
                               Margin="0,0,10,0" />
-                    <mah:TimePicker Grid.Column="1"
+                        <mah:TimePicker Grid.Column="1"
                                     PickerVisibility="HourMinute"
-                                    SelectedDateTime="{Binding Path=TrainingParameters.MaxLearningTime, Mode=TwoWay, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True}"
+                                    SelectedDateTime="{Binding MaxLearningTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                                     SelectedTimeFormat="Short"
                                     IsEnabled="{Binding ElementName=maxLearningTimeCheckbox, Path=IsChecked, Converter={StaticResource boolNegConverter}}" />
-                </Grid>
+                    </Grid>
 
-                <TextBlock Grid.Row="4" Text="Max epochs" HorizontalAlignment="Left" VerticalAlignment="Center"
+                    <TextBlock Grid.Column="0" Grid.Row="4" Text="Max epochs" HorizontalAlignment="Left" VerticalAlignment="Center"
                            Margin="0,10,0,10" />
-                <Grid Grid.Row="4" Grid.Column="1">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition />
-                        <ColumnDefinition />
-                    </Grid.ColumnDefinitions>
-                    <CheckBox Content="Undefined" IsChecked="True" x:Name="maxEpochsCheckbox" Margin="0,0,10,0" />
-                    <mah:NumericUpDown Grid.Column="1"
+                    <Grid Grid.Row="4" Grid.Column="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <CheckBox Content="Undefined" IsChecked="True" x:Name="maxEpochsCheckbox" Margin="0,0,10,0" />
+                        <mah:NumericUpDown Grid.Column="1"
                                        IsEnabled="{Binding Path=IsChecked, ElementName=maxLearningTimeCheckbox, Converter={StaticResource boolNegConverter}}" />
+                    </Grid>
                 </Grid>
-            </Grid>
-        </StackPanel>
-    </Grid>
+            </StackPanel>
+        </Grid>
+    </ContentControl>
 </UserControl>

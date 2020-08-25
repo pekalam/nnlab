@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.SymbolStore;
+using System.Diagnostics.Tracing;
 using System.Text;
 using System.Windows;
 using Common.Domain;
@@ -12,6 +13,7 @@ using Shell.Application.Controllers;
 using Shell.Application.Services;
 using Shell.Application.ViewModels;
 using Shell.Interface;
+using Training.Interface;
 
 namespace Shell.Application.Services
 {
@@ -31,15 +33,17 @@ namespace Shell.Application.Controllers
 {
     internal class StatusBarController : ISingletonController,IStatusBarService
     {
-        private readonly IEventAggregator _ea;
         private readonly AppState _appState;
-        
+
         public StatusBarController(IEventAggregator ea, AppState appState)
         {
-            _ea = ea;
             _appState = appState;
-            _ea.GetEvent<ShowErrorNotification>().Subscribe(OnShowErrorNotification);
-            _ea.GetEvent<HideErrorNotification>().Subscribe(OnHideErrorNotification);
+            ea.GetEvent<ShowErrorNotification>().Subscribe(OnShowErrorNotification);
+            ea.GetEvent<HideErrorNotification>().Subscribe(OnHideErrorNotification);
+
+            ea.GetEvent<TrainingSessionStarted>().Subscribe(TrainingStarted, ThreadOption.UIThread);
+            ea.GetEvent<TrainingSessionStopped>().Subscribe(TrainingStopped, ThreadOption.UIThread);
+            ea.GetEvent<TrainingSessionPaused>().Subscribe(TrainingPaused, ThreadOption.UIThread);
 
             AddSessionCommand = new DelegateCommand(AddSession);
             DuplicateSessionCommand = new DelegateCommand(DuplicateSession);
@@ -59,6 +63,25 @@ namespace Shell.Application.Controllers
 
         private void AddSession()
         {
+
+        }
+
+
+        private void TrainingPaused()
+        {
+            var vm = StatusBarViewModel.Instance;
+
+        }
+
+        private void TrainingStopped()
+        {
+            var vm = StatusBarViewModel.Instance;
+
+        }
+
+        private void TrainingStarted()
+        {
+            var vm = StatusBarViewModel.Instance;
 
         }
 

@@ -24,6 +24,8 @@ namespace Training.Presentation
             cr.RegisterForNavigation<ErrorPlotView>();
             cr.RegisterForNavigation<TrainingNetworkPreviewView>();
             cr.RegisterForNavigation<OutputPlotView>();
+            cr.RegisterForNavigation<TrainingParametersView>();
+            cr.RegisterForNavigation<ParametersEditView>();
 
             cr.RegisterDialog<PanelSelectView, PanelSelectViewModel>();
         }

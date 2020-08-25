@@ -26,7 +26,7 @@ namespace Training.Application.Controllers
         private readonly IDialogService _dialogService;
         private List<PanelSelectModel> _lastSelectedPanels = new List<PanelSelectModel>();
 
-        private ModuleState _moduleState;
+        private readonly ModuleState _moduleState;
 
         public TrainingController(TrainingService service, IRegionManager rm, IEventAggregator ea, IViewModelAccessor accessor, IDialogService dialogService, ModuleState moduleState)
         {
@@ -38,19 +38,36 @@ namespace Training.Application.Controllers
             _moduleState = moduleState;
 
             _service.OpenParametersCommand = new DelegateCommand(OpenParameters);
-            _service.OpenReportsCommand = new DelegateCommand(OpenReports);
-            _service.SelectPanelsClickCommand = new DelegateCommand(SelectPanels);
+            _service.OpenReportsCommand = new DelegateCommand(OpenReports, () => _moduleState.ActiveSession?.CurrentReport != null);
+            _service.SelectPanelsClickCommand = new DelegateCommand(SelectPanels, () => _moduleState.ActiveSession != null && _moduleState.ActiveSession.IsValid);
             _service.StartTrainingSessionCommand = new DelegateCommand(StartTrainingSession, () => 
-                _moduleState.ActiveSession != null && (!_moduleState.ActiveSession.Stopped && !_moduleState.ActiveSession.Started));
-            _service.StopTrainingSessionCommand = new DelegateCommand(StopTrainingSession);
-            _service.PauseTrainingSessionCommand = new DelegateCommand(PauseTrainingSession);
+                _moduleState.ActiveSession != null && (_moduleState.ActiveSession.IsValid && !_moduleState.ActiveSession.Stopped && !_moduleState.ActiveSession.Started));
+            _service.StopTrainingSessionCommand = new DelegateCommand(StopTrainingSession, () =>
+                _moduleState.ActiveSession != null && (_moduleState.ActiveSession.IsValid && !_moduleState.ActiveSession.Stopped && _moduleState.ActiveSession.Started));
+            _service.PauseTrainingSessionCommand = new DelegateCommand(PauseTrainingSession, () =>
+                _moduleState.ActiveSession != null && (_moduleState.ActiveSession.IsValid && !_moduleState.ActiveSession.Stopped && _moduleState.ActiveSession.Started));
+            _service.ResetParametersCommand = new DelegateCommand(ResetParameters, () => _moduleState.ActiveSession != null && _moduleState.ActiveSession.IsValid);
 
-            _moduleState.ActiveSessionChanged += (_, __) =>
+            void CheckCommandsCanExec()
             {
                 _service.StartTrainingSessionCommand.RaiseCanExecuteChanged();
                 _service.StopTrainingSessionCommand.RaiseCanExecuteChanged();
                 _service.PauseTrainingSessionCommand.RaiseCanExecuteChanged();
+                _service.OpenReportsCommand.RaiseCanExecuteChanged();
+                _service.SelectPanelsClickCommand.RaiseCanExecuteChanged();
+            }
+
+            _moduleState.ActiveSessionChanged += (_, __) =>
+            {
+                CheckCommandsCanExec();
+
+                Session.PropertyChanged += (a, b) => CheckCommandsCanExec();
             };
+        }
+
+        private void ResetParameters()
+        {
+            throw new System.NotImplementedException();
         }
 
         private async void PauseTrainingSession()
@@ -95,7 +112,10 @@ namespace Training.Application.Controllers
 
             if (list.Count > 0)
             {
-                var param = new PanelLayoutNavigationParams(list);
+                var param = new PanelLayoutNavigationParams(list, new List<(string name, string value)>()
+                {
+                    ("ParentRegion", TrainingViewRegions.PanelLayoutRegion)
+                });
                 _rm.Regions[TrainingViewRegions.PanelLayoutRegion].RequestNavigate("PanelLayoutView", param);
                 _service.ShowPanels();
             }

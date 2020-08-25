@@ -37,6 +37,7 @@ namespace Training.Application.ViewModels.PanelLayout
     public abstract class LayoutViewModelBase : ViewModelBase<LayoutViewModelBase>
     {
         protected IRegionManager Rm;
+        protected NavigationParameters InitialNavParams;
 
         protected LayoutViewModelBase(IRegionManager rm)
         {
@@ -51,11 +52,12 @@ namespace Training.Application.ViewModels.PanelLayout
 
         public override void OnNavigatedTo(NavigationContext navigationContext)
         {
+            InitialNavParams = navigationContext.Parameters;
             var selected = navigationContext.Parameters["selectedPanels"] as List<PanelSelectModel>;
-            OnPanelsSelected(selected.Select(PanelToViewHelper.GetView).ToArray(), selected);
+            OnPanelsSelected(selected.Select(PanelToViewHelper.GetView).ToArray(), selected, navigationContext.Parameters);
         }
 
-        protected abstract void OnPanelsSelected(string[] views, List<PanelSelectModel> selected);
+        protected abstract void OnPanelsSelected(string[] views, List<PanelSelectModel> selected, NavigationParameters navParams);
     }
 
     public class PanelLayoutViewModel : ViewModelBase<PanelLayoutViewModel>
@@ -73,14 +75,12 @@ namespace Training.Application.ViewModels.PanelLayout
             if (_initialized) return;
             //_initialized = true;
             var selected = navigationContext.Parameters["selectedPanels"] as List<PanelSelectModel>;
-            var navParams = new NavigationParameters();
-            navParams.Add("selectedPanels", selected);
             switch (selected.Count)
             {
-                case 1: _rm.RequestNavigate(PanelLayoutRegions.PanelLayoutMain, "SingleLayoutView",navParams); break;
-                case 2: _rm.RequestNavigate(PanelLayoutRegions.PanelLayoutMain, "Horizontal2LayoutView",navParams); break;
-                case 3: _rm.RequestNavigate(PanelLayoutRegions.PanelLayoutMain, "Part3LayoutView",navParams); break;
-                case 4: _rm.RequestNavigate(PanelLayoutRegions.PanelLayoutMain, "Part4LayoutView",navParams); break;
+                case 1: _rm.RequestNavigate(PanelLayoutRegions.PanelLayoutMain, "SingleLayoutView",navigationContext.Parameters); break;
+                case 2: _rm.RequestNavigate(PanelLayoutRegions.PanelLayoutMain, "Horizontal2LayoutView",navigationContext.Parameters); break;
+                case 3: _rm.RequestNavigate(PanelLayoutRegions.PanelLayoutMain, "Part3LayoutView",navigationContext.Parameters); break;
+                case 4: _rm.RequestNavigate(PanelLayoutRegions.PanelLayoutMain, "Part4LayoutView",navigationContext.Parameters); break;
             }
         }
 
@@ -89,9 +89,16 @@ namespace Training.Application.ViewModels.PanelLayout
 
     public class PanelLayoutNavigationParams : NavigationParameters
     {
-        public PanelLayoutNavigationParams(List<PanelSelectModel> selectedPanels)
+        public PanelLayoutNavigationParams(List<PanelSelectModel> selectedPanels, List<(string name, string value)> additionalFields = null)
         {
             Add("selectedPanels", selectedPanels);
+            if (additionalFields != null)
+            {
+                for (int i = 0; i < additionalFields.Count; i++)
+                {
+                    Add(additionalFields[i].name, additionalFields[i].value);
+                }
+            }
         }
     }
 }

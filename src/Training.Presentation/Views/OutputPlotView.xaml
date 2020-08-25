@@ -5,6 +5,6 @@
              xmlns:basicPlot="clr-namespace:SharedUI.BasicPlot;assembly=SharedUI"
              prism:ViewModelLocator.AutoWireViewModel="True">
     <Grid>
-        <basicPlot:BasicPlot MinHeight="300" PlotModel="{Binding BasicPlotModel}"/>
+        <basicPlot:BasicPlot PlotModel="{Binding BasicPlotModel}"/>
     </Grid>
 </UserControl>

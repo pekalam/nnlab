@@ -1,6 +1,7 @@
 ﻿using System.Windows.Controls;
 using CommonServiceLocator;
 using Prism.Regions;
+using Prism.Regions.Behaviors;
 using Training.Application;
 
 namespace Training.Presentation.Views
@@ -23,6 +24,7 @@ namespace Training.Presentation.Views
             {
                 RegionManager.SetRegionName(PanelLayoutContainer, TrainingViewRegions.PanelLayoutRegion);
                 RegionManager.SetRegionManager(PanelLayoutContainer, rm);
+                PanelLayoutContainer.SetValue(ClearChildViewsRegionBehavior.ClearChildViewsProperty, true);
             }
  
         }

@@ -200,27 +200,34 @@ namespace Training.Application
         private readonly Action<TrainingSession>? _onTrainingStarting;
         private readonly Action<TrainingSession>? _onTrainingStopped;
         private readonly Action<TrainingSession>? _onTrainingPaused;
+        private readonly ModuleState _moduleState;
 
         public PlotEpochEndConsumer(ModuleState moduleState, Action<IList<EpochEndArgs>, TrainingSession> callback, Action<TrainingSession>? onTrainingStarting = null,
             Action<TrainingSession>? onTrainingStopped = null, Action<TrainingSession>? onTrainingPaused = null)
         {
+            _moduleState = moduleState;
             _onTrainingStarting = onTrainingStarting;
             _onTrainingStopped = onTrainingStopped;
             _onTrainingPaused = onTrainingPaused;
             _locationChangedCmd = new DelegateCommand(OnLocationChanged);
             _callback = callback;
-            
-
-            moduleState.PropertyChanged += ModuleStateOnPropertyChanged;
-
-
-            //TODO
-            //_appCommands.LocationChanged.RegisterCommand(_locationChangedCmd);
         }
 
-        private void SetTrainingSessionHandlers(ModuleState moduleState)
+        public void Initialize()
         {
-            moduleState.ActiveSession!.PropertyChanged += TrainingSessionOnPropertyChanged;
+            if (_moduleState.ActiveSession != null) SetTrainingSessionHandlers(_moduleState.ActiveSession);
+
+            _moduleState.PropertyChanged += ModuleStateOnPropertyChanged;
+        }
+
+        private void SetTrainingSessionHandlers(TrainingSession session)
+        {
+            _session = session;
+            if (session.Started)
+            {
+                SubscribeSession(session);
+            }
+            session.PropertyChanged += TrainingSessionOnPropertyChanged;
         }
 
         private void TrainingSessionOnPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -229,23 +236,33 @@ namespace Training.Application
             switch (e.PropertyName)
             {
                 case nameof(TrainingSession.Started):
-                    SubscribeSession(session);
+                    if (session.Started)
+                    {
+                        SubscribeSession(session);
+                    }
                     break;
                 case nameof(TrainingSession.Stopped):
-                    _trainingStarted = false;
-                    session.EpochEnd -= Session_EpochEnd;
-                    _sub?.OnCompleted();
-                    EndSubscriptions();
-                    _onTrainingStopped?.Invoke(session);
-                    GlobalDistributingDispatcher.Unregister(this);
+                    if (session.Stopped)
+                    {
+                        _trainingStarted = false;
+                        session.EpochEnd -= Session_EpochEnd;
+                        _sub?.OnCompleted();
+                        EndSubscriptions();
+                        _onTrainingStopped?.Invoke(session);
+                        GlobalDistributingDispatcher.Unregister(this);
+                    }
+
                     break;
                 case nameof(TrainingSession.Paused):
-                    _trainingStarted = false;
-                    session.EpochEnd -= Session_EpochEnd;
-                    _sub?.OnCompleted();
-                    EndSubscriptions();
-                    _onTrainingPaused?.Invoke(session);
-                    GlobalDistributingDispatcher.Unregister(this);
+                    if (session.Paused)
+                    {
+                        _trainingStarted = false;
+                        session.EpochEnd -= Session_EpochEnd;
+                        _sub?.OnCompleted();
+                        EndSubscriptions();
+                        _onTrainingPaused?.Invoke(session);
+                        GlobalDistributingDispatcher.Unregister(this);
+                    }
                     break;
             }
         }
@@ -254,7 +271,7 @@ namespace Training.Application
         {
             if (e.PropertyName == nameof(ModuleState.ActiveSession))
             {
-                SetTrainingSessionHandlers(sender as ModuleState);
+                SetTrainingSessionHandlers((sender as ModuleState).ActiveSession);
             }
         }
 
@@ -269,7 +286,6 @@ namespace Training.Application
         private void SubscribeSession(TrainingSession session)
         {
             GlobalDistributingDispatcher.Register(this);
-            _session = session;
             Subscribe();
             _onTrainingStarting?.Invoke(session);
             _trainingStarted = true;
@@ -279,6 +295,7 @@ namespace Training.Application
         public void SubscribeStartedSession(TrainingSession session)
         {
             if (!session.Started) throw new ArgumentException("Session not started");
+            _session = session;
             SubscribeSession(session);
         }
 

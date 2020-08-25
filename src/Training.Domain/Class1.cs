@@ -130,7 +130,7 @@ namespace Training.Domain
 
         private TimeSpan _elapsed = TimeSpan.Zero;
         private MLPTrainer _trainer;
-        private TrainingSessionReport _currentReport;
+        private TrainingSessionReport? _currentReport;
         private bool _started;
         private bool _stopped;
         private bool _paused;
@@ -152,7 +152,7 @@ namespace Training.Domain
             set => SetProperty(ref _trainer, value);
         }
 
-        public TrainingSessionReport CurrentReport
+        public TrainingSessionReport? CurrentReport
         {
             get => _currentReport;
             set => SetProperty(ref _currentReport, value);

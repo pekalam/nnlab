@@ -14,4 +14,8 @@ namespace Training.Presentation.__DesignData
     {
 
     }
+
+    class DesignTrainingInfoVm : TrainingInfoViewModel { }
+
+    class DesignTrainingParametersVm : TrainingParametersViewModel { }
 }

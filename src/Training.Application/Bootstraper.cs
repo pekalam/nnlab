@@ -13,6 +13,8 @@ namespace Training.Application
 
             IPanelSelectService.Register(cr);
             ITrainingService.Register(cr);
+            IErrorPlotService.Register(cr);
+            IOutputPlotService.Register(cr);
         }
     }
 }

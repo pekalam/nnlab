@@ -3,30 +3,39 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using System.Windows.Threading;
 using Common.Domain;
 using Common.Framework;
+using Common.Framework.Extensions;
 using CommonServiceLocator;
 using NNLib;
 using NNLib.Common;
 using Prism.Events;
+using Prism.Ioc;
 using Prism.Regions;
 using Shell.Interface;
 using Training.Application.Controllers;
 using Training.Application.Services;
 using Training.Application.ViewModels;
 using Training.Domain;
+using Unity.Injection;
 
 namespace Training.Application.Services
 {
     public interface IOutputPlotService : IService
     {
         Action<NavigationContext> Navigated { get; set; }
+
+        public static void Register(IContainerRegistry cr)
+        {
+            cr.Register<ITransientController<OutputPlotService>,OutputPlotController>().Register<IOutputPlotService, OutputPlotService>();
+        }
     }
 
     internal class OutputPlotService : IOutputPlotService
     {
-        public OutputPlotService(OutputPlotController ctrl)
+        public OutputPlotService(ITransientController<OutputPlotService> ctrl)
         {
             ctrl.Initialize(this);
         }
@@ -58,13 +67,6 @@ namespace Training.Application.Controllers
 
     class OutputPlotController : ITransientController<OutputPlotService>
     {
-        public static string EpochSubNavParam = nameof(EpochSubNavParam);
-        public static string NetNavParam = nameof(NetNavParam);
-        public static string SetNavParam = nameof(SetNavParam);
-        public static string DataNavParam = nameof(DataNavParam);
-        public static string CtsNavParam = nameof(CtsNavParam);
-        public static string ParentRegionNavParam = nameof(ParentRegionNavParam);
-
         private string OutputPlotSettingsRegion;
 
         private PlotEpochEndConsumer? _epochEndConsumer;
@@ -168,35 +170,68 @@ namespace Training.Application.Controllers
             p.Add(nameof(PlotEpochEndConsumer), _epochEndConsumer);
             _rm.Regions[OutputPlotSettingsRegion].RemoveAll();
             _rm.Regions[OutputPlotSettingsRegion].RequestNavigate("PlotEpochParametersView", p);
+
+            _epochEndConsumer.Initialize();
         }
 
         private async void OnNavigated(NavigationContext navigationContext)
         {
             var vm = _accessor.Get<OutputPlotViewModel>();
-            var parentRegion = navigationContext.Parameters[ParentRegionNavParam] as string;
-            OutputPlotSettingsRegion = parentRegion + nameof(OutputPlotSettingsRegion);
+            var navParams = OutputPlotNavParams.FromNavParams(navigationContext.Parameters);
+
+            OutputPlotSettingsRegion = navParams.ParentRegion + nameof(OutputPlotSettingsRegion);
             vm.BasicPlotModel.SetSettingsRegion(OutputPlotSettingsRegion);
-            if (!navigationContext.Parameters.ContainsKey(EpochSubNavParam) || (bool)navigationContext.Parameters[EpochSubNavParam])
+
+            if (navParams.EpochEnd)
             {
                 InitPlotEpochEndConsumer();
             }
             else
-            {
-                var set = (DataSetType)navigationContext.Parameters[SetNavParam];
-                var net = navigationContext.Parameters[NetNavParam] as MLPNetwork;
-                var trainingData = navigationContext.Parameters[DataNavParam] as TrainingData;
-                var cts = navigationContext.Parameters[CtsNavParam] as CancellationTokenSource;
+            { 
+             
 
-                _plotSelector.SelectPlot(net);
+                _plotSelector.SelectPlot(navParams.Network);
                 await Task.Run(() =>
                 {
-                    _plotSelector.OutputPlot.GeneratrePlot(set, trainingData, net, vm);
-                }, cts.Token);
+                    _plotSelector.OutputPlot.GeneratrePlot(navParams.Set, navParams.Data, navParams.Network, vm);
+                }, navParams.Cts.Token);
 
                 System.Windows.Application.Current.Dispatcher.Invoke(() => vm.PlotModel.InvalidatePlot(true),
-                    DispatcherPriority.Background, cts.Token);
-
+                    DispatcherPriority.Background, navParams.Cts.Token);
             }
+        }
+    }
+
+    public class OutputPlotNavParams : NavigationParameters
+    {
+        public OutputPlotNavParams(string parentRegion, bool epochEnd, DataSetType dataSet, MLPNetwork network, TrainingData data, CancellationTokenSource cts)
+        {
+            Add(nameof(OutputPlotRecNavParams.ParentRegion), parentRegion);
+            Add(nameof(OutputPlotRecNavParams.EpochEnd), epochEnd);
+            Add(nameof(OutputPlotRecNavParams.Network), network);
+            Add(nameof(OutputPlotRecNavParams.Data), data);
+            Add(nameof(OutputPlotRecNavParams.Cts), cts);
+            Add(nameof(OutputPlotRecNavParams.Set), dataSet);
+
+        }
+
+        public static OutputPlotRecNavParams FromNavParams(NavigationParameters navParams) => new OutputPlotRecNavParams(navParams);
+
+        public class OutputPlotRecNavParams
+        {
+            private NavigationParameters _parameters;
+
+            public OutputPlotRecNavParams(NavigationParameters parameters)
+            {
+                _parameters = parameters;
+            }
+
+            public string ParentRegion => _parameters.GetOrDefault<string>(nameof(ParentRegion));
+            public bool EpochEnd => _parameters.GetOrDefault<bool>(nameof(EpochEnd), true);
+            public DataSetType Set => _parameters.GetOrDefault<DataSetType>(nameof(DataSetType));
+            public MLPNetwork Network => _parameters.GetOrDefault<MLPNetwork>(nameof(Network));
+            public TrainingData Data => _parameters.GetOrDefault<TrainingData>(nameof(Data));
+            public CancellationTokenSource Cts => _parameters.GetOrDefault<CancellationTokenSource>(nameof(Cts));
         }
     }
 }

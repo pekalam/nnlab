@@ -5,13 +5,13 @@ using System.Timers;
 using System.Windows;
 using Common.Domain;
 using Common.Framework;
+using Training.Domain;
+using Unity;
 
 namespace Training.Application.ViewModels
 {
     public class TrainingInfoViewModel : ViewModelBase<TrainingInfoViewModel>
     {
-        private TrainingParameters _trainingParameters;
-        private DateTime? _startTime;
         private int _iterationsPerEpoch;
         private Timer _timer = new Timer(1000);
         private DateTime _timerDate;
@@ -20,6 +20,13 @@ namespace Training.Application.ViewModels
 
         public TrainingInfoViewModel()
         {
+        }
+
+        [InjectionConstructor]
+        public TrainingInfoViewModel(ModuleState moduleState, AppState appState)
+        {
+            ModuleState = moduleState;
+            AppState = appState;
             _timer.Elapsed += TimerOnElapsed;
         }
 
@@ -28,8 +35,10 @@ namespace Training.Application.ViewModels
             UpdateTimer(DateTime.Now - _timerDate);
         }
 
-        internal Action<TimeSpan> UpdateTimer { get; set; }
-        internal Action<double, int, int> UpdateTraining { get; set; }
+        //TODO view abstr
+
+        public Action<TimeSpan> UpdateTimer { get; set; }
+        public Action<double, int, int> UpdateTraining { get; set; }
 
 
         public void StartTimer()
@@ -44,17 +53,8 @@ namespace Training.Application.ViewModels
             _timer.Stop();
         }
 
-        public TrainingParameters TrainingParameters
-        {
-            get => _trainingParameters;
-            set => SetProperty(ref _trainingParameters, value);
-        }
-
-        public DateTime? StartTime
-        {
-            get => _startTime;
-            set => SetProperty(ref _startTime, value);
-        }
+        public ModuleState ModuleState { get; }
+        public AppState AppState { get; }
 
         public int IterationsPerEpoch
         {

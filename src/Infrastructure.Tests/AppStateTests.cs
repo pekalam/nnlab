@@ -12,7 +12,12 @@ namespace Common.Tests
     public class AppStateTests
     {
         private AppState appState = new AppState();
+        private int _activeSessionChangedCalled;
 
+        public AppStateTests()
+        {
+            appState.ActiveSessionChanged += (_, __) => _activeSessionChangedCalled++;
+        }
 
         [Fact]
         public void When_created_session_manager_has_no_active_sessions()
@@ -48,6 +53,7 @@ namespace Common.Tests
             //assert
             appState.Sessions.Count.Should().Be(1);
             appState.ActiveSession.Should().Be(session);
+            _activeSessionChangedCalled.Should().Be(1);
         }
 
 
@@ -72,6 +78,7 @@ namespace Common.Tests
             //assert
             appState.ActiveSession.Should().Be(session1);
             times.Should().Be(2);
+            _activeSessionChangedCalled.Should().Be(2);
         }
 
 
@@ -99,6 +106,7 @@ namespace Common.Tests
             times.Should().Be(2);
             appState.Sessions.Count.Should().Be(2);
             appState.ActiveSession.Should().Be(dup);
+            _activeSessionChangedCalled.Should().Be(2);
 
 
             dup.TrainingData.Should().NotBe(session.TrainingData).And.Should().NotBeNull();
@@ -131,7 +139,18 @@ namespace Common.Tests
             session.TrainingData.Should().BeNull();
         }
 
-        
+        [Fact]
+        public void TrainingParameters_when_data_and_network_are_set_is_created()
+        {
+            var session = appState.CreateSession();
+            session.TrainingParameters.Should().BeNull();
+            session.TrainingData = TrainingDataMocks.ValidData1;
+            session.Network = MLPMocks.ValidNet1;
+
+
+            session.TrainingParameters.Should().NotBeNull();
+        }
+
     }
 
 

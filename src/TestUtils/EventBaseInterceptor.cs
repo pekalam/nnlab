@@ -94,5 +94,16 @@ namespace TestUtils
 
             EventTimesCalled[typeof(TEventType)].Should().Be(times);
         }
+
+        public void VerifyTimesCalled(Type evType, int times)
+        {
+            if (!EventTimesCalled.ContainsKey(evType))
+            {
+                if (times == 0) return;
+                throw new ArgumentException(evType + " was not called");
+            }
+
+            EventTimesCalled[evType].Should().Be(times);
+        }
     }
 }

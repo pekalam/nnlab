@@ -32,18 +32,14 @@ namespace Training.Application.Controllers
 {
     class PanelSelectController : IPanelSelectService, ITransientController
     {
-        private IRegionManager _rm;
-        private IEventAggregator _ea;
         private IViewModelAccessor _accessor;
 
         private PanelSelectionResult _selectionResult;
         private Panels? _startSelected;
         private bool _single;
 
-        public PanelSelectController(IRegionManager rm, IEventAggregator ea, IViewModelAccessor accessor)
+        public PanelSelectController(IViewModelAccessor accessor)
         {
-            _rm = rm;
-            _ea = ea;
             _accessor = accessor;
 
             ApplySelectionCommand = new DelegateCommand(ApplySelection);

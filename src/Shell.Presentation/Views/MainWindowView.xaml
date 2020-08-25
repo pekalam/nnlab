@@ -88,7 +88,7 @@
                             <ColumnDefinition />
                         </Grid.ColumnDefinitions>
                         <views:NavigationBreadcrumbsView DataContext="{Binding NavigationBreadcrumbsVm}" />
-                        <ContentControl Height="61" Grid.Column="1"
+                        <ContentControl Height="61" Grid.Column="1" IsTabStop="False"
                                         prism:RegionManager.RegionName="{x:Static shellInterface:AppRegions.TopMenuRightRegion}" />
                     </Grid>
                     <StackPanel>
@@ -116,10 +116,10 @@
                                 <ColumnDefinition />
                                 <ColumnDefinition />
                             </Grid.ColumnDefinitions>
-                            <ContentControl x:Name="ActionMenuLeftRegion" Height="45"
+                            <ContentControl x:Name="ActionMenuLeftRegion" Height="45" IsTabStop="False"
                                             prism:RegionManager.RegionName="{x:Static shellInterface:AppRegions.ActionMenuLeftRegion}" />
                             <ContentControl x:Name="ActionMenuRightRegion" Grid.Column="1" Height="45"
-                                            HorizontalAlignment="Right"
+                                            HorizontalAlignment="Right" IsTabStop="False"
                                             prism:RegionManager.RegionName="{x:Static shellInterface:AppRegions.ActionMenuRightRegion}" />
                         </Grid>
                     </StackPanel>
@@ -143,7 +143,7 @@
                     </Border.Effect>
                 </Border>
 
-                <ContentControl prism:RegionManager.RegionName="{x:Static shellInterface:AppRegions.ContentRegion}" />
+                <ContentControl prism:RegionManager.RegionName="{x:Static shellInterface:AppRegions.ContentRegion}" IsTabStop="False"/>
             </Grid>
 
 
