@@ -3,6 +3,8 @@ using Common.Domain;
 using FluentAssertions;
 using Moq.AutoMock;
 using NeuralNetwork.Application.Controllers;
+using NeuralNetwork.Application.Services;
+using NeuralNetwork.Application.ViewModels;
 using NeuralNetwork.Domain;
 using Shell.Interface;
 using TestUtils;
@@ -86,7 +88,6 @@ namespace NeuralNetwork.Application.Tests
             _moduleState.ModelAdapter.Should().NotBeNull();
         }
 
-
         [Fact]
         public void Session_network_when_created_has_parameters_compatible_with_data()
         {
@@ -132,4 +133,86 @@ namespace NeuralNetwork.Application.Tests
             _ea.VerifyTimesCalled<EnableNavMenuItem>(1);
         }
     }
+
+
+    public class ModuleStateTests
+    {
+        private AutoMocker _mocker = new AutoMocker();
+        private AppState _appState;
+        private ModuleState _moduleState;
+
+
+        public ModuleStateTests()
+        {
+            _appState = _mocker.UseImpl<AppState>();
+        }
+
+        [Fact]
+        public void ModelAdapter_when_state_created_after_session_changed_event_creates_new_adpater_when_getter_invoked()
+        {
+            //arrange
+            var session = _appState.CreateSession();
+            session.TrainingData = TrainingDataMocks.ValidData1;
+            session.Network = MLPMocks.ValidNet1;
+
+            //act
+            _moduleState = _mocker.UseImpl<ModuleState>();
+
+            //assert
+            _moduleState.ModelAdapter.Should().NotBeNull();
+        }
+
+        [Fact]
+        public void State_when_session_duplicated_sets_new_model_adapter()
+        {
+            //arrange
+            _moduleState = _mocker.UseImpl<ModuleState>();
+            var sesion = _appState.CreateSession();
+            sesion.TrainingData = TrainingDataMocks.ValidData1;
+            sesion.Network = MLPMocks.ValidNet1;
+
+            var adapter = _moduleState.ModelAdapter;
+            //additional check
+            adapter.Should().NotBeNull();
+
+            //act
+            _appState.DuplicateActiveSession();
+            //additional check
+            _moduleState.ModelAdapter.Should().NotBeNull();
+
+            //assert
+            _moduleState.ModelAdapter.Should().NotBe(adapter);
+        }
+
+        [Fact]
+        public void PropertyChanged_event_is_sent_after_active_session_is_set()
+        {
+            _moduleState = _mocker.UseImpl<ModuleState>();
+            int called = 0;
+            _moduleState.PropertyChanged += (sender, args) =>
+                called += (args.PropertyName == nameof(ModuleState.ModelAdapter) ? 1 : 0);
+
+            var sesion = _appState.CreateSession();
+            sesion.TrainingData = TrainingDataMocks.ValidData1;
+            sesion.Network = MLPMocks.ValidNet1;
+
+            called.Should().Be(1);
+
+            var sesion2 = _appState.CreateSession();
+            sesion2.TrainingData = TrainingDataMocks.ValidData1;
+            sesion2.Network = MLPMocks.ValidNet1;
+            _appState.ActiveSession = sesion2;
+
+            called.Should().Be(2);
+
+
+            _appState.ActiveSession = sesion;
+
+
+            called.Should().Be(3);
+
+        }
+    }
+
 }
+ 

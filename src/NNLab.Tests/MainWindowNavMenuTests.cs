@@ -48,6 +48,7 @@ namespace Shell.Application.Tests
     public class MainWindowNavMenuTests
     {
         private AutoMocker _mocker = new AutoMocker();
+        private AppState _appState;
         private TestEa _ea;
         private Mock<RegionManagerNavigationDecorator> _rm;
         private MainWindowViewModel _vm;
@@ -55,8 +56,8 @@ namespace Shell.Application.Tests
         public MainWindowNavMenuTests()
         {
             (_rm, _, _ea) = _mocker.UseDecoratedTestRm();
+            _appState = _mocker.UseImpl<AppState>();
             _mocker.UseImpl<NavigationBreadcrumbsViewModel>();
-
             _vm = _mocker.CreateInstance<MainWindowViewModel>();
             _vm.IsDataItemEnabled = _vm.IsNetworkItemEnabled = _vm.IsTrainingItemEnabled = _vm.IsPredictionItemEnabled = true;
         }
@@ -121,6 +122,35 @@ namespace Shell.Application.Tests
             //should be restored
             _vm.CheckedNavItemId = ModuleIds.NeuralNetwork;
             _vm.NavigationBreadcrumbsVm.Breadcrumbs.Select(b => b.Breadcrumb).Should().BeEquivalentTo("by", "bz");
+        }
+
+        [Fact]
+        public void Reload_and_setup_navigation_events_are_published_when_active_session_is_changed()
+        {
+            var reloadTimesCalled = new int[] {0, 0, 0, 0,0};
+            var startNewNavTimesCalled = new int[] {0, 0, 0, 0,0};
+
+            _ea.GetEvent<ReloadContentForSession>().Subscribe(args => reloadTimesCalled[args.moduleId]++);
+            _ea.GetEvent<SetupNewNavigationForSession>().Subscribe(args => startNewNavTimesCalled[args.moduleId]++);
+
+            _vm.CheckedNavItemId = ModuleIds.Data;
+
+            _appState.CreateSession();
+
+
+
+            reloadTimesCalled[ModuleIds.Data].Should().Be(0);
+            startNewNavTimesCalled[ModuleIds.NeuralNetwork].Should().Be(0);
+            startNewNavTimesCalled[ModuleIds.Sell].Should().Be(0);
+            startNewNavTimesCalled[ModuleIds.Training].Should().Be(0);
+
+            _appState.ActiveSession = _appState.CreateSession();
+
+            reloadTimesCalled[ModuleIds.Data].Should().Be(1);
+            startNewNavTimesCalled[ModuleIds.NeuralNetwork].Should().Be(1);
+            startNewNavTimesCalled[ModuleIds.Sell].Should().Be(0);
+            startNewNavTimesCalled[ModuleIds.Training].Should().Be(1);
+
         }
     }
 }

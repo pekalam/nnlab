@@ -24,9 +24,7 @@ namespace Data.Application.Services
 
 namespace Data.Application.Controllers.DataSource
 {
-    
-
-    internal class NormalizationController : INormalizationService, ISingletonController
+    internal class NormalizationController : INormalizationService
     {
         private INormalizationDomainService _normalizationService;
 

@@ -8,20 +8,62 @@ namespace Training.Application.ViewModels
     public class TrainingParametersViewModel : ViewModelBase<TrainingParametersViewModel>
     {
         private TrainingParameters _trainingParameters;
-        private bool _isMaxLearningTimeChecked = true;
+        private bool _isMaxLearningTimeChecked;
         private DateTime _maxLearningTime;
 
         public TrainingParametersViewModel()
         {
-            
         }
 
         [InjectionConstructor]
         public TrainingParametersViewModel(AppState appState)
         {
+            //TODO ctrl
             appState.ActiveSessionChanged += (sender, session) =>
-                TrainingParameters = appState.ActiveSession.TrainingParameters;
+            {
+                if (session.next.TrainingParameters != null)
+                {
+                    TrainingParameters = session.next.TrainingParameters;
+                    _isMaxLearningTimeChecked = _trainingParameters.MaxLearningTime == TimeSpan.MaxValue;
+                    RaisePropertyChanged(nameof(IsMaxLearningTimeChecked));
+
+                    if (!_isMaxLearningTimeChecked)
+                    {
+                        _maxLearningTime = Time.Now.Add(_trainingParameters.MaxLearningTime);
+                        RaisePropertyChanged(nameof(MaxLearningTime));
+                    }
+                    else _maxLearningTime = default;
+                }
+
+                session.next.PropertyChanged += (o, args) =>
+                {
+                    if (args.PropertyName == nameof(Session.TrainingParameters))
+                    {
+                        TrainingParameters = (o as Session).TrainingParameters;
+                        _isMaxLearningTimeChecked = _trainingParameters.MaxLearningTime == TimeSpan.MaxValue;
+                        RaisePropertyChanged(nameof(IsMaxLearningTimeChecked));
+
+                        if (!_isMaxLearningTimeChecked)
+                        {
+                            _maxLearningTime = Time.Now.Add(_trainingParameters.MaxLearningTime);
+                            RaisePropertyChanged(nameof(MaxLearningTime));
+                        }
+                        else _maxLearningTime = default;
+                    }
+                };
+            };
+
             TrainingParameters = appState.ActiveSession?.TrainingParameters;
+            if (_trainingParameters != null)
+            {
+                _isMaxLearningTimeChecked = _trainingParameters.MaxLearningTime == TimeSpan.MaxValue;
+                if (!_isMaxLearningTimeChecked)
+                {
+                    _maxLearningTime = Time.Now.Add(_trainingParameters.MaxLearningTime);
+                }
+
+            }
+
         }
 
 
@@ -42,13 +84,13 @@ namespace Training.Application.ViewModels
             set
             {
                 _isMaxLearningTimeChecked = value;
-                if (!value)
+                if (value)
                 {
                     TrainingParameters.MaxLearningTime = TimeSpan.MaxValue;
                 }
                 else
                 {
-                    TrainingParameters.MaxLearningTime = DateTime.Now.AddMinutes(10) - DateTime.Now;
+                    TrainingParameters.MaxLearningTime = Time.Now.AddMinutes(10) - Time.Now;
                 }
             }
         }
@@ -59,7 +101,7 @@ namespace Training.Application.ViewModels
             set
             {
                 SetProperty(ref _maxLearningTime, value);
-                TrainingParameters.MaxLearningTime = DateTime.Now - value;
+                TrainingParameters.MaxLearningTime = value - Time.Now;
             }
         }
     }

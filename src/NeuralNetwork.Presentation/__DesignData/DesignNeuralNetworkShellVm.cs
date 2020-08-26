@@ -12,4 +12,6 @@ namespace NeuralNetwork.Presentation.__DesignData
     class DesignLayersDisplayVm : LayersDisplayViewModel { }
 
     class DesignLayerEditorVm : LayerEditorViewModel { }
+
+    class DesignNetDisplayVm : NetDisplayViewModel { }
 }

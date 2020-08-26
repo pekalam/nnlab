@@ -15,6 +15,7 @@ namespace Shell.Presentation
     internal class ContentRegionHistoryService : IContentRegionHistoryService
     {
         private IRegionManager _rm;
+
         //module identifier to previous content view
         private readonly Dictionary<int, object> _previousViews = new Dictionary<int, object>();
 
@@ -27,7 +28,8 @@ namespace Shell.Presentation
         {
             var currentView = _rm.Regions[AppRegions.ContentRegion].ActiveViews.FirstOrDefault();
 
-            _previousViews[moduleNavId] = currentView ?? throw new NullReferenceException("Null content region active view");
+            _previousViews[moduleNavId] =
+                currentView ?? throw new NullReferenceException("Null content region active view");
         }
 
         public void TryRestoreContentForModule(int moduleNavId)
@@ -43,6 +45,14 @@ namespace Shell.Presentation
                     _rm.Regions[AppRegions.ContentRegion].Add(view);
                     _rm.Regions[AppRegions.ContentRegion].Activate(view);
                 }
+            }
+        }
+
+        public void ClearHistoryForModulesExcept(int moduleNavId)
+        {
+            foreach (var key in _previousViews.Keys)
+            {
+                _previousViews.Remove(key);
             }
         }
     }

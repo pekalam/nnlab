@@ -1,4 +1,5 @@
-﻿using Common.Domain;
+﻿using System;
+using Common.Domain;
 using Common.Framework;
 using Data.Application.Services;
 using Data.Application.ViewModels.CustomDataSet;
@@ -13,6 +14,7 @@ using Prism.Events;
 using Prism.Regions;
 using Shell.Interface;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Data.Application.Controllers;
 using Prism.Ioc;
@@ -35,19 +37,45 @@ namespace Data.Application.Services
 
 namespace Data.Application.Controllers
 {
+    internal class CustomDataSetMemento
+    {
+        private Dictionary<Session, (IReadOnlyList<double[]> input, IReadOnlyList<double[]> target)> _storage = new Dictionary<Session, (IReadOnlyList<double[]> input, IReadOnlyList<double[]> target)>();
+
+        public void SaveForSession(CustomDataSetController ctrl, Session session)
+        {
+            _storage[session] = (ctrl.Input.Select(v => v).ToList(), ctrl.Target.Select(v => v).ToList());
+        }
+
+        public bool TryRestoreForSession(CustomDataSetController ctrl, Session session)
+        {
+            if (_storage.TryGetValue(session, out var data))
+            {
+                ctrl.Input = data.input;
+                ctrl.Target = data.target;
+                return true;
+            }
+
+            return false;
+        }
+    }
+
     internal class CustomDataSetController : ICustomDataSetService, ITransientController
     {
         private readonly AppState _appState;
-        private readonly List<double[]> _input = new List<double[]>();
-        private readonly List<double[]> _target = new List<double[]>();
+        private List<double[]> _input = new List<double[]>();
+        private List<double[]> _target = new List<double[]>();
         private readonly IRegionManager _rm;
         private readonly IEventAggregator _ea;
+        private readonly IViewModelAccessor _accessor;
+        private readonly CustomDataSetMemento _memento;
 
-        public CustomDataSetController(AppState appState, IRegionManager rm, IEventAggregator ea)
+        public CustomDataSetController(AppState appState, IRegionManager rm, IEventAggregator ea, IViewModelAccessor accessor, CustomDataSetMemento memento)
         {
             _appState = appState;
             _rm = rm;
             _ea = ea;
+            _accessor = accessor;
+            _memento = memento;
 
             PlotMouseDownCommand = new DelegateCommand<OxyMouseDownEventArgs>(PlotMouseDown);
             OpenDivisionViewCommand = new DelegateCommand(OpenDivisionView,
@@ -55,19 +83,80 @@ namespace Data.Application.Controllers
             SelectVariablesCommand = new DelegateCommand(SelectVariables,
                 () => _appState.ActiveSession.TrainingData != null);
 
-            CustomDataSetViewModel.Created += () =>
+            _accessor.OnCreated<CustomDataSetViewModel>(() =>
             {
-                //create session when navigated
-                _appState.CreateSession();
+                if(_appState.ActiveSession != null) AppStateOnActiveSessionChanged(this, (null, _appState.ActiveSession));
 
-                //TODO
-                //_actionMenuNavService.SetLeftMenu<ActionMenuLeftView>();
-            };
+                _appState.ActiveSessionChanged += AppStateOnActiveSessionChanged;
+            });
+        }
+
+        ///memento getters / setters
+        public IReadOnlyList<double[]> Input
+        {
+            get => _input;
+            set
+            {
+                _input = value.Select(v => v).ToList();
+                TryRestoreVmPoints();
+            }
+        }
+
+        public IReadOnlyList<double[]> Target
+        {
+            get => _target;
+            set
+            {
+                _target = value.Select(v => v).ToList();
+                TryRestoreVmPoints();
+            }
         }
 
         public DelegateCommand<OxyMouseDownEventArgs> PlotMouseDownCommand { get; set; }
         public DelegateCommand OpenDivisionViewCommand { get; set; }
         public DelegateCommand SelectVariablesCommand { get; set; }
+
+
+        private void AppStateOnActiveSessionChanged(object? sender, (Session? prev, Session next) args)
+        {
+            if (args.prev != null)
+            {
+                var vm = _accessor.Get<CustomDataSetViewModel>();
+
+                vm.Scatter.Points.Clear();
+                vm.Line.Points.Clear();
+
+                _memento.SaveForSession(this, args.prev);
+            }
+            
+            if (args.next.TrainingData != null && args.next.TrainingData.Source != TrainingDataSource.Memory)
+            {
+                _appState.ActiveSessionChanged -= AppStateOnActiveSessionChanged;
+                return;
+            }
+
+            _input.Clear();
+            _target.Clear();
+
+            _memento.TryRestoreForSession(this, args.next);
+        }
+
+        private void TryRestoreVmPoints()
+        {
+            if (_input.Count == _target.Count)
+            {
+                var vm = _accessor.Get<CustomDataSetViewModel>();
+
+                for (int i = 0; i < _input.Count; i++)
+                {
+                    vm.Scatter.Points.Add(new ScatterPoint(_input[i][0], _target[i][0]));
+                }
+
+                var sortedPoints = vm.Scatter.Points.Select(p => new DataPoint(p.X, p.Y)).OrderBy(p => p.X);
+                vm.Line.Points.AddRange(sortedPoints);
+                vm.PlotModel.InvalidatePlot(false);
+            }
+        }
 
         private void SelectVariables()
         {
@@ -75,7 +164,7 @@ namespace Data.Application.Controllers
             {
                 Title = "Select variables"
             });
-            _rm.Regions[AppRegions.FlyoutRegion].RequestNavigate(nameof(VariablesSelectionViewModel));
+            _rm.Regions[AppRegions.FlyoutRegion].RequestNavigate("VariablesSelectionView");
         }
 
         private void OpenDivisionView()
@@ -84,7 +173,7 @@ namespace Data.Application.Controllers
             {
                 Title = "Divide data set"
             });
-            _rm.Regions[AppRegions.FlyoutRegion].RequestNavigate(nameof(DataSetDivisionViewModel),
+            _rm.Regions[AppRegions.FlyoutRegion].RequestNavigate("DataSetDivisionView",
                 new InMemoryDataSetDivisionNavParams(_input, _target));
         }
 

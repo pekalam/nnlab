@@ -57,9 +57,20 @@ namespace Training.Application.Controllers
                 _service.SelectPanelsClickCommand.RaiseCanExecuteChanged();
             }
 
-            _moduleState.ActiveSessionChanged += (_, __) =>
+            _moduleState.ActiveSessionChanged += (_, args) =>
             {
                 CheckCommandsCanExec();
+
+                if (args.prev != null)
+                {
+                    //TODO epoch end consumer
+                    if (_rm.Regions.ContainsRegionWithName(TrainingViewRegions.PanelLayoutRegion))
+                    {
+                        _rm.Regions[TrainingViewRegions.PanelLayoutRegion].RemoveAll();
+                        _service.OnHidePanels();
+                    }
+    
+                }
 
                 Session.PropertyChanged += (a, b) => CheckCommandsCanExec();
             };
@@ -117,11 +128,11 @@ namespace Training.Application.Controllers
                     ("ParentRegion", TrainingViewRegions.PanelLayoutRegion)
                 });
                 _rm.Regions[TrainingViewRegions.PanelLayoutRegion].RequestNavigate("PanelLayoutView", param);
-                _service.ShowPanels();
+                _service.OnShowPanels();
             }
             else
             {
-                _service.HidePanels();
+                _service.OnHidePanels();
             }
         }
 

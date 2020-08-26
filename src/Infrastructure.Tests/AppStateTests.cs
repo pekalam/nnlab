@@ -4,6 +4,8 @@ using AutoFixture;
 using Common.Domain;
 using FakeItEasy;
 using FluentAssertions;
+using MathNet.Numerics.LinearAlgebra;
+using MathNet.Numerics.LinearAlgebra.Complex;
 using TestUtils;
 using Xunit;
 
@@ -20,7 +22,7 @@ namespace Common.Tests
         }
 
         [Fact]
-        public void When_created_session_manager_has_no_active_sessions()
+        public void When_created_there_is_no_active_sessions()
         {
             //assert
             appState.ActiveSession.Should().BeNull();
@@ -118,10 +120,6 @@ namespace Common.Tests
         {
             Assert.ThrowsAny<Exception>(() => appState.DuplicateActiveSession());
         }
-
-
-
-        
     }
 
 
@@ -150,7 +148,6 @@ namespace Common.Tests
 
             session.TrainingParameters.Should().NotBeNull();
         }
-
     }
 
 

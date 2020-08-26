@@ -16,4 +16,9 @@ namespace Shell.Presentation.__DesignData
     {
 
     }
+
+    class DesignDuplicateSessionDialogVm : DuplicateSessionDialogViewModel
+    {
+
+    }
 }

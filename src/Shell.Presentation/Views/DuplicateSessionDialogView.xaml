@@ -1,0 +1,27 @@
+﻿<UserControl x:Class="Shell.Presentation.Views.DuplicateSessionDialogView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:prism="http://prismlibrary.com/"             
+             prism:ViewModelLocator.AutoWireViewModel="True"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:designData="clr-namespace:Shell.Presentation.__DesignData"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance designData:DesignDuplicateSessionDialogVm, IsDesignTimeCreatable=True}"
+             Width="600" Height="300">
+    <DockPanel LastChildFill="False" Margin="20">
+        <StackPanel DockPanel.Dock="Top">
+            <TextBlock HorizontalAlignment="Center" FontSize="24" Text="{Binding AppState.ActiveSession.Name}"/>
+            <CheckBox Content="Include data" IsChecked="{Binding IncludeData}"/>
+            <CheckBox Content="Include network" IsChecked="{Binding IncludeNetwork}"/>
+            <CheckBox Content="Include training parameters" IsChecked="{Binding IncludeTrainingParameters}"/>
+        </StackPanel>
+
+
+        <UniformGrid Columns="2" Margin="0,24,0,0" DockPanel.Dock="Bottom">
+            <Button Width="70" Margin="0,0,14,0" HorizontalAlignment="Right" Command="{Binding CancelCommand}">Cancel</Button>
+            <Button Width="70" Margin="14,0,0,0" HorizontalAlignment="Left" Command="{Binding OkCommand}">OK</Button>
+        </UniformGrid>
+
+    </DockPanel>
+</UserControl>

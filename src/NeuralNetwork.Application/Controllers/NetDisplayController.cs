@@ -28,7 +28,7 @@ namespace NeuralNetwork.Application.Services
 
 namespace NeuralNetwork.Application.Controllers
 {
-    internal class NetDisplayController : ISingletonController, INetDisplayService
+    public class NetDisplayController : ISingletonController, INetDisplayService
     {
         private readonly ModuleState _moduleState;
         private readonly IEventAggregator _ea;
@@ -38,24 +38,11 @@ namespace NeuralNetwork.Application.Controllers
             _moduleState = moduleState;
             _ea = ea;
 
-            _moduleState.PropertyChanged += (sender, args) =>
-            {
-                if (NetDisplayViewModel.Instance != null && args.PropertyName == nameof(ModuleState.ModelAdapter))
-                {
-                    NetDisplayViewModel.Instance.ModelAdapter = _moduleState.ModelAdapter;
-                }
-            };
 
             NeuronClickCommand = new DelegateCommand<NeuronClickedEventArgs>(args =>
             {
                 _ea.GetEvent<IntNeuronClicked>().Publish((((NNLibLayerAdapter)args.LayerAdapter).Layer, args.NeuronIndex));
             });
-
-
-            NetDisplayViewModel.Created += () =>
-                {
-                    NetDisplayViewModel.Instance.ModelAdapter = _moduleState.ModelAdapter;
-                };
 
             _ea.GetEvent<IntLayerClicked>().Subscribe(arg =>
             {

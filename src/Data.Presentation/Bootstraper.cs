@@ -29,16 +29,16 @@ namespace Data.Presentation
         {
             cr.RegisterSingleton<IFileDialogService, FileDialogService>();
 
-            cr.RegisterForNavigation<MultiFileSourceView>(nameof(MultiFileSourceViewModel));
-            cr.RegisterForNavigation<SelectDataSourceView>(nameof(SelectDataSourceViewModel));
-            cr.RegisterForNavigation<SingleFileSourceView>(nameof(SingleFileSourceViewModel));
-            cr.RegisterForNavigation<MultiFileSourceView>(nameof(MultiFileSourceViewModel));
-            cr.RegisterForNavigation<CustomDataSetView>(nameof(CustomDataSetViewModel));
-            cr.RegisterForNavigation<DataSetDivisionView>(nameof(DataSetDivisionViewModel));
-            cr.RegisterForNavigation<DataSourcePreviewView>(nameof(DataSourcePreviewViewModel));
-            cr.RegisterForNavigation<FileDataSourceView>(nameof(FileDataSourceViewModel));
-            cr.RegisterForNavigation<NormalizationView>(nameof(NormalizationViewModel));
-            cr.RegisterForNavigation<VariablesSelectionView>(nameof(VariablesSelectionViewModel));
+            cr.RegisterForNavigation<MultiFileSourceView>();
+            cr.RegisterForNavigation<SelectDataSourceView>();
+            cr.RegisterForNavigation<SingleFileSourceView>();
+            cr.RegisterForNavigation<MultiFileSourceView>();
+            cr.RegisterForNavigation<CustomDataSetView>();
+            cr.RegisterForNavigation<DataSetDivisionView>();
+            cr.RegisterForNavigation<DataSourcePreviewView>();
+            cr.RegisterForNavigation<FileDataSourceView>();
+            cr.RegisterForNavigation<NormalizationView>();
+            cr.RegisterForNavigation<VariablesSelectionView>();
         }
     }
 }

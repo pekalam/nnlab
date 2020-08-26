@@ -1,24 +1,26 @@
 ﻿using Common.Framework;
 using NeuralNetwork.Application.Services;
 using NNLibAdapter;
+using Unity;
 
 namespace NeuralNetwork.Application.ViewModels
 {
     public class NetDisplayViewModel : ViewModelBase<NetDisplayViewModel>
     {
-        private NNLibModelAdapter _modelAdapter;
+        public NetDisplayViewModel()
+        {
+            
+        }
 
-        public NetDisplayViewModel(INetDisplayService service)
+        [InjectionConstructor]
+        public NetDisplayViewModel(INetDisplayService service, ModuleState moduleState)
         {
             Service = service;
+            ModuleState = moduleState;
         }
 
         public INetDisplayService Service { get; }
 
-        public NNLibModelAdapter ModelAdapter
-        {
-            get => _modelAdapter;
-            set => SetProperty(ref _modelAdapter, value);
-        }
+        public ModuleState ModuleState { get; }
     }
 }

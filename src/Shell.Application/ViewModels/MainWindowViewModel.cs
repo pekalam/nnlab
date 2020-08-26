@@ -44,17 +44,21 @@ namespace Shell.Application.ViewModels
         private readonly IContentRegionHistoryService _contentRegionHistory;
         private int _checkedNavItemId = -1;
 
+        private AppState _appState;
+
         public MainWindowViewModel()
         {
+            
         }
 
         [InjectionConstructor]
-        public MainWindowViewModel(IEventAggregator ea, IRegionManager rm, NavigationBreadcrumbsViewModel navigationBreadcrumbsVm, IContentRegionHistoryService contentRegionHistory)
+        public MainWindowViewModel(IEventAggregator ea, IRegionManager rm, NavigationBreadcrumbsViewModel navigationBreadcrumbsVm, IContentRegionHistoryService contentRegionHistory, AppState appState)
         {
             _ea = ea;
             _rm = rm;
             NavigationBreadcrumbsVm = navigationBreadcrumbsVm;
             _contentRegionHistory = contentRegionHistory;
+            _appState = appState;
 
             _ea.GetEvent<ShowFlyout>().Subscribe(args =>
             {
@@ -113,6 +117,25 @@ namespace Shell.Application.ViewModels
                 IsFlyoutOpen = false;
                 _rm.Regions[AppRegions.FlyoutRegion].RemoveAll();
             });
+
+
+            _appState.ActiveSessionChanged += AppStateOnActiveSessionChanged;
+        }
+
+        private void AppStateOnActiveSessionChanged(object? sender, (Session? prev, Session next) e)
+        {
+            if (e.prev != null)
+            {
+                _contentRegionHistory.ClearHistoryForModulesExcept(CheckedNavItemId);
+
+                //for data, network and training module ids
+                for (int i = 1; i <= 3; i++)
+                {
+                    if(i != CheckedNavItemId) _ea.GetEvent<SetupNewNavigationForSession>().Publish((i, e.prev,e.next));
+                }
+
+                _ea.GetEvent<ReloadContentForSession>().Publish((CheckedNavItemId, e.prev, e.next));
+            }
         }
 
         public NavigationBreadcrumbsViewModel NavigationBreadcrumbsVm { get; }

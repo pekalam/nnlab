@@ -1,4 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
+using Common.Domain;
 using CommonServiceLocator;
 using Prism.Events;
 using Prism.Ioc;
@@ -10,6 +11,10 @@ namespace Shell.Interface
     class Class1
     {
     }
+
+    public class SetupNewNavigationForSession : PubSubEvent<(int moduleId, Session prev, Session next)> { }
+
+    public class ReloadContentForSession : PubSubEvent<(int moduleId, Session prev, Session next)> { }
 
     public class ProgressAreaArgs
     {

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Common.Domain;
 using Common.Framework;
 using Data.Application.Controllers;
 using Data.Application.Interfaces;
@@ -18,6 +19,7 @@ namespace Data.Application.Tests.DataSourceSelection
     public class FileSelectTest
     {
         private readonly AutoMocker _mocker = new AutoMocker();
+        private AppState _appState;
         private SingleFileService _singleFileService;
         private MultiFileService _multiFileService;
         private Mock<FileService> _fileService;
@@ -30,6 +32,7 @@ namespace Data.Application.Tests.DataSourceSelection
         public FileSelectTest()
         {
             (_rm, _regions) = _mocker.UseTestRm();
+            _appState = _mocker.UseImpl<AppState>();
             _dialogService = _mocker.UseMock<IFileDialogService>();
             _fileService = _mocker.UseMock<IFileService, FileService>();
             _mocker.UseImpl<ITransientController<SingleFileService>, SingleFileSourceController>();
@@ -60,7 +63,7 @@ namespace Data.Application.Tests.DataSourceSelection
 
 
             //assert
-            _rm.VerifyContentNavigation(nameof(SingleFileSourceViewModel), Times.Exactly(1));
+            _rm.VerifyContentNavigation("SingleFileSourceView", Times.Exactly(1));
 
 
             sigVm.SelectedFilePath.Should().Be(successfulPath);
@@ -83,7 +86,7 @@ namespace Data.Application.Tests.DataSourceSelection
 
 
             //assert
-            _rm.VerifyContentNavigation(nameof(SingleFileSourceViewModel), Times.Never());
+            _rm.VerifyContentNavigation("SingleFileSourceView", Times.Never());
 
 
             sigVm.SelectedFilePath.Should().Be(default);
@@ -122,6 +125,16 @@ namespace Data.Application.Tests.DataSourceSelection
             _dialogService.Setup(f => f.OpenCsv()).Returns((true, testPath));
             _multiFileService.SelectTestFileCommand.Execute();
             mulVm.TestSetFilePath.Should().Be(testPath);
+        }
+
+
+        [Fact]
+        public void CreateDataSetCommand_creates_new_session()
+        {
+            _appState.Sessions.Should().BeEmpty();
+            _fileService.Object.CreateDataSetCommand.Execute();
+
+            _appState.Sessions.Should().HaveCount(1);
         }
     }
 }

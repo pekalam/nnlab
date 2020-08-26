@@ -1,6 +1,10 @@
-﻿using Common.Domain;
+﻿using System;
+using System.Linq;
+using System.Net.NetworkInformation;
+using Common.Domain;
 using Data.Application.Controllers;
 using Data.Application.Controllers.DataSource;
+using Data.Application.Services;
 using Data.Application.ViewModels.DataSourceSelection;
 using Prism.Events;
 using Prism.Regions;
@@ -15,13 +19,18 @@ namespace Data.Application
         private IEventAggregator _ea;
 
         //Instantiate singleton controllers
-        private readonly FileController _fileController;
-        private readonly DataSetDivisionController _dataSetDivisionController;
-        private readonly VariablesSelectionController _variablesSelectionController;
-        private readonly NormalizationController _normalizationController;
-        private readonly FileDataSourceController _fileDataSourceController;
+        private readonly IFileController _fileController;
+        private readonly IDataSetDivisionController _dataSetDivisionController;
+        private readonly IVariablesSelectionService _variablesSelectionController;
+        private readonly INormalizationService _normalizationController;
+        private readonly IFileDataSourceController _fileDataSourceController;
 
-        public ModuleController(IRegionManager rm, AppState appState, FileController fileController, DataSetDivisionController dataSetDivisionController, VariablesSelectionController variablesSelectionController, NormalizationController normalizationController, FileDataSourceController fileDataSourceController, IEventAggregator ea)
+        
+
+        public ModuleController(IRegionManager rm, AppState appState, IFileController fileController,
+            IDataSetDivisionController dataSetDivisionController,
+            IVariablesSelectionService variablesSelectionController, INormalizationService normalizationController,
+            IFileDataSourceController fileDataSourceController, IEventAggregator ea)
         {
             _rm = rm;
             _appState = appState;
@@ -31,6 +40,46 @@ namespace Data.Application
             _normalizationController = normalizationController;
             _fileDataSourceController = fileDataSourceController;
             _ea = ea;
+
+            _ea.GetEvent<SetupNewNavigationForSession>().Subscribe(OnSetupNewNavForSession);
+            _ea.GetEvent<ReloadContentForSession>().Subscribe(OnReloadContentForSession);
+        }
+
+        private void OnReloadContentForSession((int moduleId, Session prev, Session next) arg)
+        {
+            if (arg.moduleId == ModuleIds.Data)
+            {
+                var (view, breadcrumb) = GetViewToNavigateFromSession(arg);
+                _rm.NavigateContentRegion(view, breadcrumb);
+            }
+        }
+
+        private void OnSetupNewNavForSession((int moduleId, Session prev, Session next) arg)
+        {
+            if(arg.moduleId == ModuleIds.Data)
+            {
+                var (view , breadcrumb)= GetViewToNavigateFromSession(arg);
+                _ea.OnFirstNavigation(ModuleIds.Data, () => _rm.NavigateContentRegion(view, breadcrumb));
+            }
+        }
+
+        private (string view, string breadcrumb) GetViewToNavigateFromSession((int moduleId, Session prev, Session next) arg)
+        {
+            if (arg.next.TrainingData == null)
+            {
+                return ("SelectDataSourceView", "Select");
+            }
+            else if (arg.next.TrainingData.Source == TrainingDataSource.Csv)
+            {
+                return ("FileDataSourceView", "File");
+
+            }
+            else if (arg.next.TrainingData.Source == TrainingDataSource.Memory)
+            {
+                return ("CustomDataSetView", "Custom");
+            }
+
+            throw new Exception("Invalid arg");
         }
 
 
@@ -42,7 +91,7 @@ namespace Data.Application
 
             _ea.GetEvent<EnableNavMenuItem>().Publish(ModuleIds.Data);
             _ea.GetEvent<CheckNavMenuItem>().Publish(ModuleIds.Data);
-            _rm.NavigateContentRegion(nameof(SelectDataSourceViewModel), "Data source");
+            _rm.NavigateContentRegion("SelectDataSourceView", "Data source");
         }
     }
 }

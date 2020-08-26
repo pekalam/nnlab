@@ -74,6 +74,12 @@ namespace TestUtils
                 new[] {new VariableName("x"), new VariableName("y"), new VariableName("z"),}),
             TrainingDataSource.Memory);
 
+        public static TrainingData ValidFileData4 = new TrainingData(
+            new SupervisedTrainingSets(SupervisedSet.FromArrays(new[] { new[] { 0d } }, new[] { new[] { 0d, 1d } })),
+            new SupervisedSetVariables(new SupervisedSetVariableIndexes(new[] { 0 }, new[] { 1, 2 }),
+                new[] { new VariableName("x"), new VariableName("y"), new VariableName("z"), }),
+            TrainingDataSource.Csv);
+
 
         public static SupervisedSet AndGateSet()
         {

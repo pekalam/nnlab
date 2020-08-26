@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Windows.Controls.Ribbon;
 using Common.Domain;
 using Common.Framework;
 using NeuralNetwork.Application.Controllers;
@@ -33,6 +34,8 @@ namespace NeuralNetwork.Application.Controllers
         private readonly IRegionManager _rm;
         private readonly AppState _appState;
 
+        private bool _isEditorOpened;
+
         public NeuralNetworkShellController(IRegionManager rm, AppState appState)
         {
             _rm = rm;
@@ -46,15 +49,22 @@ namespace NeuralNetwork.Application.Controllers
                 NeuralNetworkShellViewModel.Instance.Navigated += () =>
                 _rm.Regions[NeuralNetworkRegions.NetworkDownRegion].RequestNavigate(nameof(LayersDisplayViewModel));
             };
+
+            _appState.ActiveSessionChanged += (_, __) =>
+            {
+                if (_isEditorOpened) CloseLayerEditor();
+            };
         }
 
         private void CloseLayerEditor()
         {
+            _isEditorOpened = false;
             _rm.Regions[NeuralNetworkRegions.NetworkDownRegion].RequestNavigate(nameof(LayersDisplayViewModel));
         }
 
         private void OpenLayerEditor(LayerEditorItemModel model)
         {
+            _isEditorOpened = true;
             var layer = _appState.ActiveSession.Network.Layers[model.LayerIndex];
             _rm.Regions[NeuralNetworkRegions.NetworkDownRegion].RequestNavigate(nameof(LayerEditorViewModel),new NavigationParameters()
             {

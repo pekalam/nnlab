@@ -40,7 +40,7 @@ namespace Data.Application.Controllers
             _singleFileService.ReturnCommand = new DelegateCommand(() =>
             {
                 _loadedTrainingData = null;
-                _rm.NavigateContentRegion(nameof(SelectDataSourceViewModel), "Data source");
+                _rm.NavigateContentRegion("SelectDataSourceView", "Data source");
             }, () => _canReturn);
         }
 
@@ -93,7 +93,7 @@ namespace Data.Application.Controllers
             session.SingleDataFile = SingleFileSourceViewModel.Instance.SelectedFilePath;
             _loadedTrainingData = null;
 
-            _rm.NavigateContentRegion(nameof(FileDataSourceViewModel), "Data");
+            _rm.NavigateContentRegion("FileDataSourceView", "Data");
         }
     }
 }

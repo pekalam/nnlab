@@ -4,5 +4,6 @@
     {
         void SaveContentForModule(int moduleNavId);
         void TryRestoreContentForModule(int moduleNavId);
+        void ClearHistoryForModulesExcept(int moduleNavId);
     }
 }

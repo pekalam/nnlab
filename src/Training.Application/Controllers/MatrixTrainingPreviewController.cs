@@ -70,7 +70,7 @@ namespace Training.Application.Controllers
                 AssignSession(_moduleState.ActiveSession);
             }
 
-            _moduleState.ActiveSessionChanged += (_, session) => AssignSession(session);
+            _moduleState.ActiveSessionChanged += (_, args) => AssignSession(args.next);
 
 
             _epochEndConsumer = new PlotEpochEndConsumer(_moduleState,(list, session) =>

@@ -1,15 +1,12 @@
 using System;
 using System.ComponentModel;
 using System.Reflection;
-using System.Threading.Tasks;
 using Common.Domain;
 using Common.Framework;
 using FluentAssertions;
 using Moq.AutoMock;
 using Shell.Interface;
 using TestUtils;
-using Training.Application.Controllers;
-using Training.Application.Services;
 using Training.Application.ViewModels;
 using Training.Domain;
 using Training.Interface;
@@ -17,6 +14,71 @@ using Xunit;
 
 namespace Training.Application.Tests
 {
+    internal static class SessionTestExtensions
+    {
+        public static void SetupValidAndGate(this Session session)
+        {
+            session.Network = MLPMocks.AndGateNet;
+            session.TrainingData = TrainingDataMocks.AndGateTrainingData();
+        }
+    }
+
+    public class TrainingParametersTests
+    {
+        private AutoMocker _mocker = new AutoMocker();
+        private AppState _appState;
+        private ModuleState _moduleState;
+        private TrainingParametersViewModel _vm;
+
+        public TrainingParametersTests()
+        {
+            _mocker.UseTestRm();
+            _mocker.UseTestVmAccessor();
+            _appState = _mocker.UseImpl<AppState>();
+            _moduleState = _mocker.UseImpl<ModuleState>();
+
+            _vm = new TrainingParametersViewModel(_appState);
+        }
+
+        [Fact]
+        public void f()
+        {
+            var session = _appState.CreateSession();
+            session.SetupValidAndGate();
+
+            _vm.TrainingParameters.Should().Be(session.TrainingParameters);
+
+            _vm.IsMaxLearningTimeChecked = false;
+            _vm.MaxLearningTime = Time.Now.AddMinutes(2);
+
+            var session2 = _appState.CreateSession();
+            session2.SetupValidAndGate();
+
+            _appState.ActiveSession = session2;
+
+            _vm.IsMaxLearningTimeChecked.Should().BeTrue();
+            _vm.MaxLearningTime.Should().Be(default);
+
+
+            _appState.ActiveSession = session;
+            _vm.IsMaxLearningTimeChecked.Should().BeFalse();
+            _vm.MaxLearningTime.Should().BeAtLeast(TimeSpan.FromMinutes(2));
+
+        }
+
+        [Fact]
+        public void Properties_are_set_when_changed_before_vm_created()
+        {
+            var session = _appState.CreateSession();
+            session.SetupValidAndGate();
+            session.TrainingParameters.MaxLearningTime = TimeSpan.FromMinutes(2);
+
+            var vm = new TrainingParametersViewModel(_appState);
+            vm.IsMaxLearningTimeChecked.Should().BeFalse();
+            vm.MaxLearningTime.Should().BeAtLeast(TimeSpan.FromMinutes(2));
+        }
+    }
+
     public class ModuleControllerTests
     {
         private AutoMocker _mocker = new AutoMocker();
@@ -65,74 +127,6 @@ namespace Training.Application.Tests
 
             await _moduleState.ActiveSession.Stop();
             _ea.VerifyTimesCalled<TrainingSessionStopped>(1);
-        }
-    }
-
-
-
-    public class TrainingControllerTests
-    {
-        private AutoMocker _mocker = new AutoMocker();
-        private TrainingController _ctrl;
-        private TrainingViewModel _vm;
-        private TrainingService _service;
-        private AppState _appState;
-        private ModuleState _moduleState;
-
-        public TrainingControllerTests()
-        {
-            _mocker.UseTestEa();
-            _mocker.UseTestRm();
-            _mocker.UseTestVmAccessor();
-
-            _appState = _mocker.UseImpl<AppState>();
-            _moduleState = _mocker.UseImpl<ModuleState>();
-
-
-            _service = _mocker.UseImpl<TrainingService>();
-
-            _ctrl = _mocker.UseImpl<TrainingController>();
-            _vm = _mocker.UseVm<TrainingViewModel>();
-
-            _appState.CreateSession();
-        }
-
-        [Fact]
-        public void ActiveSession_is_valid_commands_can_execute()
-        {
-            _appState.ActiveSession.TrainingData = TrainingDataMocks.ValidData1;
-            _appState.ActiveSession.Network = MLPMocks.ValidNet1;
-
-            _moduleState.ActiveSession.IsValid.Should().BeTrue();
-
-            _service.StartTrainingSessionCommand.CanExecute().Should().BeTrue();
-            _service.StopTrainingSessionCommand.CanExecute().Should().BeFalse();
-            _service.PauseTrainingSessionCommand.CanExecute().Should().BeFalse();
-
-            _service.OpenReportsCommand.CanExecute().Should().BeFalse();
-
-            _service.SelectPanelsClickCommand.CanExecute().Should().BeTrue();
-            _service.ResetParametersCommand.CanExecute().Should().BeTrue();
-
-            _service.OpenParametersCommand.CanExecute().Should().BeTrue();
-        }
-
-        [Fact]
-        public async void TrainingReport_is_created_after_training_is_stopped()
-        {
-            _appState.ActiveSession.TrainingData = TrainingDataMocks.AndGateTrainingData();
-            _appState.ActiveSession.Network = MLPMocks.AndGateNet;
-
-
-            _service.StartTrainingSessionCommand.Execute();
-
-            await Task.Delay(1000);
-
-            _service.StopTrainingSessionCommand.Execute();
-
-            await Task.Delay(500);
-
-            _moduleState.ActiveSession.CurrentReport.Should().NotBeNull();
         }
     }
 }

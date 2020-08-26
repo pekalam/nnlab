@@ -23,6 +23,10 @@ namespace Data.Application
                 ICustomDataSetService.Register(cr);
                 IVariablesSelectionService.Register(cr);
 
+                IFileController.Register(cr);
+                IFileDataSourceController.Register(cr);
+                IDataSetDivisionController.Register(cr);
+
                 cr.Register<ITransientController<SingleFileService>, SingleFileSourceController>()
                     .Register<ISingleFileService, SingleFileService>()
 

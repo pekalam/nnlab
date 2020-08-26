@@ -54,6 +54,8 @@ namespace NeuralNetwork.Application.Controllers
 
         private void LayerClicked(LayerEditorItemModel obj)
         {
+            if(obj == null) return;
+            //TODO fix
             _ea.GetEvent<IntLayerClicked>().Publish((_appState.ActiveSession.Network.Layers[obj.LayerIndex],obj.LayerIndex));
         }
 

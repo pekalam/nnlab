@@ -19,7 +19,7 @@ namespace Training.Domain.Tests
 
 
         [Fact]
-        public void Test1()
+        public void TrainingSession_is_created_and_changed_with_active_session()
         {
             var session = _appState.CreateSession();
 

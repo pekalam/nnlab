@@ -205,7 +205,7 @@ namespace ArchTests
         }
 
         [Fact]
-        public void Interfaces_that_reside_in_services_or_interfaces_namespace_are_registered_by_bootstraper()
+        public void Interfaces_that_reside_in_services_controllers_or_interfaces_namespace_are_registered_by_bootstraper()
         {
             var container = new UnityContainerExtension(new UnityContainer());
 
@@ -220,6 +220,9 @@ namespace ArchTests
                     .Or()
                     .AreInterfaces().And()
                     .ResideInNamespaceContaining("Services")
+                    .Or()
+                    .AreInterfaces().And()
+                    .ResideInNamespaceContaining("Controllers")
                     .GetTypes().ToList();
 
                 var bootstrapers = Types

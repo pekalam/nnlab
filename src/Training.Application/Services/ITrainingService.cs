@@ -47,14 +47,14 @@ namespace Training.Application.Services
         public DelegateCommand SelectPanelsClickCommand { get; set; }
         public DelegateCommand ResetParametersCommand { get; set; }
 
-        public void ShowPanels()
+        public void OnShowPanels()
         {
             var vm = _accessor.Get<TrainingViewModel>();
             vm.SelectPanelsButtonVisibility = Visibility.Collapsed;
             vm.PanelsContainerVisibility = vm.UpperSelectPanelsButtonVisibility = Visibility.Visible;
         }
 
-        public void HidePanels()
+        public void OnHidePanels()
         {
             var vm = _accessor.Get<TrainingViewModel>();
             vm.SelectPanelsButtonVisibility = Visibility.Visible;

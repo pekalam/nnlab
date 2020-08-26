@@ -8,10 +8,21 @@ using Prism.Regions;
 using Shell.Interface;
 using System.Windows;
 using Common.Domain;
+using Common.Framework;
+using Prism.Ioc;
 
 namespace Data.Application.Controllers.DataSource
 {
-    public class FileDataSourceController
+    public interface IFileDataSourceController : ISingletonController
+    {
+        public static void Register(IContainerRegistry cr)
+        {
+            cr.RegisterSingleton<IFileDataSourceController, FileDataSourceController>();
+
+        }
+    }
+
+    public class FileDataSourceController : IFileDataSourceController
     {
         private IRegionManager _rm;
         private IEventAggregator _ea;
@@ -45,7 +56,7 @@ namespace Data.Application.Controllers.DataSource
             {
                 Title = "Divide data set"
             });
-            _rm.Regions[AppRegions.FlyoutRegion].RequestNavigate(nameof(DataSetDivisionViewModel), new FileDataSetDivisionNavParams(session.SingleDataFile));
+            _rm.Regions[AppRegions.FlyoutRegion].RequestNavigate("DataSetDivisionView", new FileDataSetDivisionNavParams(session.SingleDataFile));
         }
 
         private void SelectVariables()
@@ -54,7 +65,12 @@ namespace Data.Application.Controllers.DataSource
             {
                 Title = "Select variables"
             });
-            _rm.Regions[AppRegions.FlyoutRegion].RequestNavigate(nameof(VariablesSelectionViewModel));
+            _rm.Regions[AppRegions.FlyoutRegion].RequestNavigate("VariablesSelectionView");
+        }
+
+        public void Initialize()
+        {
+            
         }
     }
 }

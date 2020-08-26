@@ -21,7 +21,7 @@ namespace Training.Domain
         private readonly Dictionary<Session, TrainingSession> _sessionToTraining = new Dictionary<Session, TrainingSession>();
         private TrainingSession? _activeSession;
 
-        public event EventHandler<TrainingSession> ActiveSessionChanged; 
+        public event EventHandler<(TrainingSession? prev, TrainingSession next)> ActiveSessionChanged; 
 
         public ModuleState(AppState appState)
         {
@@ -48,8 +48,10 @@ namespace Training.Domain
             get => _activeSession;
             set
             {
+                if(value == null) throw new NullReferenceException("Null training session");
+                var temp = _activeSession;
                 SetProperty(ref _activeSession, value);
-                ActiveSessionChanged?.Invoke(this, value);
+                ActiveSessionChanged?.Invoke(this, (temp, value));
             }
         }
     }

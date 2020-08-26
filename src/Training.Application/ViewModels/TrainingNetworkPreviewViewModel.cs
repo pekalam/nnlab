@@ -1,11 +1,26 @@
-﻿using Common.Framework;
+﻿using System;
+using Common.Framework;
 using NNLibAdapter;
+using Training.Domain;
 
 namespace Training.Application.ViewModels
 {
     public class TrainingNetworkPreviewViewModel : ViewModelBase<TrainingNetworkPreviewViewModel>
     {
-        private NNLibModelAdapter _modelAdapter = new NNLibModelAdapter();
+        private NNLibModelAdapter _modelAdapter;
+
+        public TrainingNetworkPreviewViewModel(ModuleState moduleState)
+        {
+            if (moduleState.ActiveSession?.Network != null)
+            {
+                _modelAdapter = new NNLibModelAdapter();
+                _modelAdapter.SetNeuralNetwork(moduleState.ActiveSession.Network);
+            }
+            else
+            {
+                throw new Exception();
+            }
+        }
 
         public NNLibModelAdapter ModelAdapter
         {

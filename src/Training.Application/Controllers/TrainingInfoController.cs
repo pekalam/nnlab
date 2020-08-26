@@ -45,9 +45,9 @@ namespace Training.Application.Controllers
                     _accessor.Get<TrainingInfoViewModel>().StopTimer();
                 });
 
-            moduleState.ActiveSessionChanged += (sender, session) =>
+            moduleState.ActiveSessionChanged += (sender, args) =>
             {
-                session.PropertyChanged += SessionOnPropertyChanged;
+                args.next.PropertyChanged += SessionOnPropertyChanged;
             };
 
             ea.GetEvent<TrainingValidationFinished>().Subscribe(d =>

@@ -88,5 +88,21 @@ namespace NeuralNetwork.Application.Tests
 
             _vm.Layers.Should().HaveCount(MLPMocks.ValidNet2.TotalLayers + 1);
         }
+
+        [Fact]
+        public void Layers_change_when_active_session_is_changed()
+        {
+            var session = _appState.CreateSession();
+            session.Network = MLPMocks.ValidNet1;
+
+            _vm = _mocker.UseVm<LayersDisplayViewModel>();
+            _vm.Layers.Should().HaveCount(_appState.ActiveSession.Network!.TotalLayers + 1);
+
+            var session2 = _appState.CreateSession();
+            session2.Network = MLPMocks.ValidNet1;
+            _appState.ActiveSession = session2;
+
+            _vm.Layers.Should().HaveCount(_appState.ActiveSession.Network!.TotalLayers + 1);
+        }
     }
 }

@@ -1,4 +1,6 @@
-﻿using Common.Domain;
+﻿using System;
+using System.Linq;
+using Common.Domain;
 using Data.Application.Controllers;
 using Data.Application.Services;
 using Data.Application.ViewModels.CustomDataSet;
@@ -22,20 +24,27 @@ namespace Data.Application.Tests.CustomDataSet
         public CustomDataSetCreationTests()
         {
             _mocker.UseTestRm();
+            _mocker.UseTestEa();
+            _mocker.UseTestVmAccessor();
             _appState = _mocker.UseImpl<AppState>();
+            _appState.CreateSession();
+
             _ctrl = _mocker.UseImpl<ICustomDataSetService,CustomDataSetController>();
-            _vm = _mocker.CreateInstance<CustomDataSetViewModel>();
+            _vm = _mocker.UseVm<CustomDataSetViewModel>();
+
 
             _dsService = _ctrl;
+
         }
 
-
-
-        [Fact]
-        public void New_session_is_created_after_viewmodel_is_created()
+        private void AddPoint(double x, double y)
         {
-            _appState.Sessions.Count.Should().Be(1);
-            _appState.ActiveSession.Should().NotBeNull();
+            _dsService.PlotMouseDownCommand.Execute(new OxyMouseDownEventArgs()
+            {
+                ClickCount = 2,
+                Position = new ScreenPoint(x, y),
+                ChangedButton = OxyMouseButton.Left,
+            });
         }
 
         [Fact]
@@ -69,5 +78,28 @@ namespace Data.Application.Tests.CustomDataSet
             _appState.ActiveSession.TrainingData.Sets.TrainingSet.Input.Count.Should().Be(3);
             _appState.ActiveSession.TrainingData.Sets.TrainingSet.Target.Count.Should().Be(3);
         }
+
+        [Fact]
+        public void VmPoints_when_new_session_created_and_active_are_cleared_and_restored()
+        {
+            AddPoint(0,1);
+            AddPoint(1, 0);
+
+
+            var previous = _appState.ActiveSession;
+            var previousScatter = _vm.Scatter.Points;
+            var previousLine = _vm.Line.Points;
+
+            _appState.ActiveSession = _appState.CreateSession();
+
+            _vm.Scatter.Points.Should().BeEmpty();
+            _vm.Line.Points.Should().BeEmpty();
+
+            _appState.ActiveSession = previous;
+
+            _vm.Scatter.Points.Should().BeEquivalentTo(previousScatter);
+            _vm.Line.Points.Should().BeEquivalentTo(previousLine);
+        }
+
     }
 }

@@ -8,6 +8,7 @@ using Prism.Mvvm;
 
 namespace Common.Domain
 {
+    [Flags]
     public enum DuplicateOptions
     {
         All, NoData, NoNetwork, NoTrainingParams
@@ -18,7 +19,7 @@ namespace Common.Domain
     {
         private Session? _activeSession;
 
-        public event EventHandler<Session> ActiveSessionChanged; 
+        public event EventHandler<(Session? prev,Session next)> ActiveSessionChanged;
 
         public Session? ActiveSession
         {
@@ -27,8 +28,9 @@ namespace Common.Domain
             {
                 if (value == null) throw new NullReferenceException("Null session");
                 if (!Sessions.Contains(value)) throw new ArgumentException("Session not found");
+                var tempPrevious = _activeSession;
                 SetProperty(ref _activeSession, value);
-                ActiveSessionChanged?.Invoke(this, value);
+                ActiveSessionChanged?.Invoke(this, (tempPrevious, value));
             }
         }
 
@@ -51,14 +53,7 @@ namespace Common.Domain
         {
             if (ActiveSession == null) throw new InvalidOperationException("Cannot duplicate - null active session");
 
-            var cpy = new Session("Unnamed" + (Sessions.Count > 0 ? " " + Sessions.Count : string.Empty));
-
-            cpy.Network = duplicateOptions != DuplicateOptions.NoNetwork ? ActiveSession.Network?.Clone() : null;
-            cpy.TrainingData = duplicateOptions != DuplicateOptions.NoData ? ActiveSession.TrainingData?.Clone() : null;
-            cpy.TrainingParameters = duplicateOptions != DuplicateOptions.NoTrainingParams
-                ? ActiveSession.TrainingParameters?.Clone()
-                : null;
-
+            var cpy = ActiveSession.CloneWithName("Unnamed" + (Sessions.Count > 0 ? " " + Sessions.Count : string.Empty), duplicateOptions);
 
             Sessions.Add(cpy);
             ActiveSession = cpy;
@@ -77,11 +72,33 @@ namespace Common.Domain
         private string? _validationDataFile;
         private string? _testDataFile;
 
-        public event Action<MLPNetwork> NetworkStructureChanged;
+        public event Action<MLPNetwork>? NetworkStructureChanged;
 
         public Session(string name)
         {
             Name = name;
+        }
+
+        private Session(string name, TrainingData? trainingData, MLPNetwork? network, TrainingParameters? trainingParameters, string? singleDataFile, string? trainingDataFile, string? validationDataFile, string? testDataFile)
+        {
+            Name = name;
+            _trainingData = trainingData;
+            _network = network;
+            _trainingParameters = trainingParameters;
+            _singleDataFile = singleDataFile;
+            _trainingDataFile = trainingDataFile;
+            _validationDataFile = validationDataFile;
+            _testDataFile = testDataFile;
+        }
+
+        internal Session CloneWithName(string name, DuplicateOptions opt)
+        {
+            return new Session(name, 
+                !opt.HasFlag(DuplicateOptions.NoData) ? TrainingData?.Clone() : null,
+                !opt.HasFlag(DuplicateOptions.NoNetwork) ? Network?.Clone() : null,
+                !opt.HasFlag(DuplicateOptions.NoTrainingParams) ? TrainingParameters?.Clone() : null,
+                SingleDataFile,TrainingDataFile, ValidationDataFile, TestDataFile
+                );
         }
 
         public string Name { get; }
@@ -110,17 +127,14 @@ namespace Common.Domain
             set => SetProperty(ref _testDataFile, value);
         }
 
-
         public TrainingData? TrainingData
         {
             get => _trainingData;
             set
             {
                 SetProperty(ref _trainingData, value);
-                if(value != null && _network != null)
-                {
-                    TrainingParameters = new TrainingParameters();
-                }
+                if (value == null || _network == null) return;
+                TrainingParameters = new TrainingParameters();
             }
         }
 
@@ -141,10 +155,8 @@ namespace Common.Domain
             set
             {
                 SetProperty(ref _network, value);
-                if (value != null && _trainingData != null)
-                {
-                    TrainingParameters = new TrainingParameters();
-                }
+                if (value == null || _trainingData == null) return;
+                TrainingParameters = new TrainingParameters();
             }
         }
 

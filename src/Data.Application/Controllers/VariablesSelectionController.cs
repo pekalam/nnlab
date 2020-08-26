@@ -28,7 +28,7 @@ namespace Data.Application.Services
 
 namespace Data.Application.Controllers
 {
-    internal class VariablesSelectionController : IVariablesSelectionService, ITransientController
+    internal class VariablesSelectionController : IVariablesSelectionService
     {
         private AppState _appState;
         private SupervisedSetVariableIndexes _currentIndexes;

@@ -9,6 +9,7 @@ using Common.Framework;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Ioc;
+using Prism.Services.Dialogs;
 using Shell.Application.Controllers;
 using Shell.Application.Services;
 using Shell.Application.ViewModels;
@@ -31,13 +32,15 @@ namespace Shell.Application.Services
 
 namespace Shell.Application.Controllers
 {
-    internal class StatusBarController : ISingletonController,IStatusBarService
+    internal class StatusBarController : IStatusBarService, ISingletonController
     {
         private readonly AppState _appState;
+        private readonly IDialogService _dialogService;
 
-        public StatusBarController(IEventAggregator ea, AppState appState)
+        public StatusBarController(IEventAggregator ea, AppState appState, IDialogService dialogService)
         {
             _appState = appState;
+            _dialogService = dialogService;
             ea.GetEvent<ShowErrorNotification>().Subscribe(OnShowErrorNotification);
             ea.GetEvent<HideErrorNotification>().Subscribe(OnHideErrorNotification);
 
@@ -58,7 +61,13 @@ namespace Shell.Application.Controllers
 
         private void DuplicateSession()
         {
-            
+            _dialogService.Show("DuplicateSessionDialogView", new DialogParameters(), result =>
+            {
+                if (result.Result == ButtonResult.OK)
+                {
+                    _appState.DuplicateActiveSession(result.Parameters.GetValue<DuplicateOptions>("options"));
+                }
+            });
         }
 
         private void AddSession()
@@ -70,18 +79,21 @@ namespace Shell.Application.Controllers
         private void TrainingPaused()
         {
             var vm = StatusBarViewModel.Instance;
+            vm.CanModifyActiveSession = true;
 
         }
 
         private void TrainingStopped()
         {
             var vm = StatusBarViewModel.Instance;
+            vm.CanModifyActiveSession = true;
 
         }
 
         private void TrainingStarted()
         {
             var vm = StatusBarViewModel.Instance;
+            vm.CanModifyActiveSession = false;
 
         }
 

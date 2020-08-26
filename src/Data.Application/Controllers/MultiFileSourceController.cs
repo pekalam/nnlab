@@ -60,7 +60,7 @@ namespace Data.Application.Controllers
             _multiFileService.ReturnCommand = new DelegateCommand(() =>
             {
                 _trainingData = null;
-                _rm.NavigateContentRegion(nameof(SelectDataSourceViewModel), "");
+                _rm.NavigateContentRegion("SelectDataSourceView", "");
             });
             _multiFileService.ContinueCommand = new DelegateCommand(Continue, () => _continueCanExec);
         }

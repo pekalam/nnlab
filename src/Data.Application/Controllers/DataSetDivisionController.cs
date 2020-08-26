@@ -8,10 +8,20 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using Common.Domain;
+using Common.Framework;
+using Prism.Ioc;
 
 namespace Data.Application.Controllers
 {
-    internal class DataSetDivisionController
+    internal interface IDataSetDivisionController : ISingletonController
+    {
+        public static void Register(IContainerRegistry cr)
+        {
+            cr.RegisterSingleton<IDataSetDivisionController, DataSetDivisionController>();
+        }
+    }
+
+    internal class DataSetDivisionController : IDataSetDivisionController
     {
         private readonly DataSetDivisionService _service;
         private readonly AppState _appState;
@@ -173,6 +183,11 @@ namespace Data.Application.Controllers
         {
             var existingData = _appState.ActiveSession.TrainingData;
             _appState.ActiveSession.TrainingData = _dataService.LoadSets(path, new LinearDataSetDivider(), ConstructDivOptions(), existingData.Variables.Indexes);
+        }
+
+        public void Initialize()
+        {
+            
         }
     }
 }
