@@ -29,6 +29,7 @@ namespace Assemlber
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
+            Common.Logging.Bootstraper.Configure();
             Common.Domain.Bootstraper.RegisterTypes(containerRegistry);
             Common.Framework.Bootstraper.RegisterTypes(containerRegistry);
 

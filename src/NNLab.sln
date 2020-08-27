@@ -101,11 +101,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NeuralNetwork.Application.T
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Training.Interface", "Training.Interface\Training.Interface.csproj", "{7B4C29ED-AFEA-49D5-83AA-7E294435CA39}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PanelLayoutTest", "PanelLayoutTest\PanelLayoutTest.csproj", "{98C821A0-5BCD-4C8B-B82A-E0CB1608809C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PanelLayoutTest", "PanelLayoutTest\PanelLayoutTest.csproj", "{98C821A0-5BCD-4C8B-B82A-E0CB1608809C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Training.Domain.Tests", "Training.Domain.Tests\Training.Domain.Tests.csproj", "{DC30F655-75C3-45FC-928A-FCFA364B29E2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Training.Domain.Tests", "Training.Domain.Tests\Training.Domain.Tests.csproj", "{DC30F655-75C3-45FC-928A-FCFA364B29E2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Training.Application.Tests", "Training.Application.Tests\Training.Application.Tests.csproj", "{E69B8F58-8A72-4F6D-BF9B-5B11462A4FBB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Training.Application.Tests", "Training.Application.Tests\Training.Application.Tests.csproj", "{E69B8F58-8A72-4F6D-BF9B-5B11462A4FBB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.Logging", "Common.Logging\Common.Logging.csproj", "{B0E312C4-CAD8-4711-B750-62F9F940F429}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -273,6 +275,10 @@ Global
 		{E69B8F58-8A72-4F6D-BF9B-5B11462A4FBB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E69B8F58-8A72-4F6D-BF9B-5B11462A4FBB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E69B8F58-8A72-4F6D-BF9B-5B11462A4FBB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B0E312C4-CAD8-4711-B750-62F9F940F429}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B0E312C4-CAD8-4711-B750-62F9F940F429}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B0E312C4-CAD8-4711-B750-62F9F940F429}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B0E312C4-CAD8-4711-B750-62F9F940F429}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -317,6 +323,7 @@ Global
 		{98C821A0-5BCD-4C8B-B82A-E0CB1608809C} = {152CB1FE-CCA9-452E-9150-017A3B6CDD4D}
 		{DC30F655-75C3-45FC-928A-FCFA364B29E2} = {152CB1FE-CCA9-452E-9150-017A3B6CDD4D}
 		{E69B8F58-8A72-4F6D-BF9B-5B11462A4FBB} = {152CB1FE-CCA9-452E-9150-017A3B6CDD4D}
+		{B0E312C4-CAD8-4711-B750-62F9F940F429} = {5444BEEC-50B2-4D40-915A-BF73E5775651}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2AD07BAC-B96F-4540-814D-B11B85EBB73C}

@@ -13,6 +13,7 @@
     <ProjectReference Include="..\..\..\NNLib\NNLib.Common\NNLib.Data.csproj" />
     <ProjectReference Include="..\..\..\NNLib\NNLib.Csv\NNLib.Csv.csproj" />
     <ProjectReference Include="..\..\..\NNLib\NNLib\NNLib.csproj" />
+    <ProjectReference Include="..\Common.Logging\Common.Logging.csproj" />
   </ItemGroup>
 
 </Project>

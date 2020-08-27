@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using Common.Logging;
 using NNLib;
 using Prism.Mvvm;
 
@@ -28,6 +29,7 @@ namespace Common.Domain
             {
                 if (value == null) throw new NullReferenceException("Null session");
                 if (!Sessions.Contains(value)) throw new ArgumentException("Session not found");
+                Log.Debug("Active session changed to " + value.Name);
                 var tempPrevious = _activeSession;
                 SetProperty(ref _activeSession, value);
                 ActiveSessionChanged?.Invoke(this, (tempPrevious, value));
@@ -40,6 +42,7 @@ namespace Common.Domain
         {
             var newSession = new Session("Unnamed" + (Sessions.Count > 0 ? " " + Sessions.Count : string.Empty));
             Sessions.Add(newSession);
+            Log.Debug($"Session {newSession.Name} created");
 
             if (Sessions.Count == 1)
             {
@@ -54,6 +57,7 @@ namespace Common.Domain
             if (ActiveSession == null) throw new InvalidOperationException("Cannot duplicate - null active session");
 
             var cpy = ActiveSession.CloneWithName("Unnamed" + (Sessions.Count > 0 ? " " + Sessions.Count : string.Empty), duplicateOptions);
+            Log.Debug($"Session {_activeSession.Name} duplicated. Duplicated name: {cpy.Name}");
 
             Sessions.Add(cpy);
             ActiveSession = cpy;
