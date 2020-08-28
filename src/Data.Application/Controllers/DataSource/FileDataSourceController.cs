@@ -18,17 +18,17 @@ namespace Data.Application.Controllers.DataSource
         public static void Register(IContainerRegistry cr)
         {
             cr.RegisterSingleton<IFileDataSourceController, FileDataSourceController>();
-
         }
     }
 
-    public class FileDataSourceController : IFileDataSourceController
+    internal class FileDataSourceController : IFileDataSourceController
     {
         private IRegionManager _rm;
         private IEventAggregator _ea;
         private AppState _appState;
 
-        public FileDataSourceController(IFileDataSourceService service, IRegionManager rm, IEventAggregator ea, AppState appState)
+        public FileDataSourceController(FileDataSourceService service, IRegionManager rm, IEventAggregator ea,
+            AppState appState)
         {
             _rm = rm;
             _ea = ea;
@@ -37,6 +37,8 @@ namespace Data.Application.Controllers.DataSource
 
             service.SelectVariablesCommand = new DelegateCommand(SelectVariables);
             service.DivideDatasetCommand = new DelegateCommand(DivideDataset);
+
+            service.Navigated = Navigated;
 
             service.Initialized += () =>
             {
@@ -49,6 +51,14 @@ namespace Data.Application.Controllers.DataSource
             };
         }
 
+        private void Navigated(NavigationContext ctx)
+        {
+            var vm = FileDataSourceViewModel.Instance;
+
+            ctx.Parameters.TryGetValue("Multi", out bool multiFile);
+            vm.IsDivideDataSetEnabled = !multiFile;
+        }
+
         private void DivideDataset()
         {
             var session = _appState.ActiveSession;
@@ -56,7 +66,8 @@ namespace Data.Application.Controllers.DataSource
             {
                 Title = "Divide data set"
             });
-            _rm.Regions[AppRegions.FlyoutRegion].RequestNavigate("DataSetDivisionView", new FileDataSetDivisionNavParams(session.SingleDataFile));
+            _rm.Regions[AppRegions.FlyoutRegion].RequestNavigate("DataSetDivisionView",
+                new FileDataSetDivisionNavParams(session.SingleDataFile));
         }
 
         private void SelectVariables()
@@ -70,7 +81,6 @@ namespace Data.Application.Controllers.DataSource
 
         public void Initialize()
         {
-            
         }
     }
 }

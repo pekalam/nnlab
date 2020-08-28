@@ -45,51 +45,6 @@ namespace NeuralNetwork.Application.Tests
         }
 
         [Fact]
-        public void Layers_when_no_neural_network_in_active_session_are_empty()
-        {
-            
-            _appState.CreateSession();
-
-            _vm = _mocker.UseVm<LayersDisplayViewModel>();
-
-            _vm.Layers.Should().BeNullOrEmpty();
-        }
-
-        [Fact]
-        public void Layers_change_when_network_in_active_session_is_changed_after_vm_is_created()
-        {
-            
-            var session = _appState.CreateSession();
-
-            _vm = _mocker.UseVm<LayersDisplayViewModel>();
-
-            session.Network = MLPMocks.ValidNet1;
-
-            _vm.Layers.Should().HaveCount(MLPMocks.ValidNet1.TotalLayers + 1);
-
-            session.Network = MLPMocks.ValidNet2;
-
-            _vm.Layers.Should().HaveCount(MLPMocks.ValidNet2.TotalLayers + 1);
-        }
-
-        [Fact]
-        public void Layers_change_when_network_in_active_session_is_changed_before_vm_is_created()
-        {
-            
-            var session = _appState.CreateSession();
-
-            session.Network = MLPMocks.ValidNet1;
-
-            _vm = _mocker.UseVm<LayersDisplayViewModel>();
-
-            _vm.Layers.Should().HaveCount(MLPMocks.ValidNet1.TotalLayers + 1);
-
-            session.Network = MLPMocks.ValidNet2;
-
-            _vm.Layers.Should().HaveCount(MLPMocks.ValidNet2.TotalLayers + 1);
-        }
-
-        [Fact]
         public void Layers_change_when_active_session_is_changed()
         {
             var session = _appState.CreateSession();

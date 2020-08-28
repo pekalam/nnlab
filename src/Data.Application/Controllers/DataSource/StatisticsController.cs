@@ -37,6 +37,7 @@ namespace Data.Application.Controllers.DataSource
             _appState = appState;
 
             _appState.ActiveSession.PropertyChanged += ActiveSessionOnPropertyChanged;
+            _appState.ActiveSessionChanged += AppStateOnActiveSessionChanged;
 
             Created = vm =>
             {
@@ -59,6 +60,16 @@ namespace Data.Application.Controllers.DataSource
                     SetTrainingData();
                     break;
             }
+        }
+
+        private void AppStateOnActiveSessionChanged(object? sender, (Session? prev, Session next) e)
+        {
+            if (e.next.TrainingData != null)
+            {
+                SetTrainingData();
+            }
+            e.next.PropertyChanged -= ActiveSessionOnPropertyChanged;
+            e.next.PropertyChanged += ActiveSessionOnPropertyChanged;
         }
 
 

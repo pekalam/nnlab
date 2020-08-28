@@ -2,6 +2,7 @@
 using NNLib.Common;
 using Prism.Commands;
 using System;
+using System.ComponentModel;
 using System.Data;
 using System.Windows;
 using System.Windows.Input;
@@ -43,8 +44,12 @@ namespace Data.Application.ViewModels.DataSource.Preview
 
         public Action Loaded;
 
+        private AppState _appState;
+
         public DataSourcePreviewViewModel(AppState appState)
         {
+            _appState = appState;
+            appState.ActiveSessionChanged += AppStateOnActiveSessionChanged;
             if (appState.ActiveSession?.TrainingData != null)
             {
                 SetTrainingData(appState.ActiveSession.TrainingData);
@@ -52,15 +57,27 @@ namespace Data.Application.ViewModels.DataSource.Preview
 
             if (appState.ActiveSession != null)
             {
-                appState.ActiveSession.PropertyChanged += (sender, args) =>
-                {
-                    if (args.PropertyName == nameof(Session.TrainingData))
-                    {
-                        SetTrainingData(appState.ActiveSession.TrainingData);
-                    }
-                };
+                appState.ActiveSession.PropertyChanged += ActiveSessionOnPropertyChanged;
             }
             
+        }
+
+        private void ActiveSessionOnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(Session.TrainingData))
+            {
+                SetTrainingData(_appState.ActiveSession.TrainingData);
+            }
+        }
+
+        private void AppStateOnActiveSessionChanged(object? sender, (Session? prev, Session next) e)
+        {
+            if (e.next.TrainingData == null)
+            {
+                _appState.ActiveSession.PropertyChanged -= ActiveSessionOnPropertyChanged;
+                _appState.ActiveSession.PropertyChanged += ActiveSessionOnPropertyChanged;
+            }
+            else SetTrainingData(e.next.TrainingData);
         }
 
         private void SetTrainingData(TrainingData trainingData)

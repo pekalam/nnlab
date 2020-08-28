@@ -74,9 +74,8 @@ namespace NeuralNetwork.Application
         {
             if (session.Network == null)
             {
-                var network = _networkService.CreateDefaultNetwork();
+                var network = _networkService.CreateNeuralNetwork(session.TrainingData);
                 session.Network = network;
-                _networkService.AdjustParametersToTrainingData(session.TrainingData);
             }
         }
 

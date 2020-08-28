@@ -47,7 +47,7 @@ namespace NeuralNetwork.Application.Controllers
 
             _accessor.OnCreated<LayersDisplayViewModel>(() =>
             {
-                SetLayers();
+                if(_appState.ActiveSession != null) SetLayers();
             });
 
         }

@@ -2,6 +2,7 @@
 using Data.Domain.Services;
 using Prism.Commands;
 using System;
+using Common.Domain;
 using Common.Framework;
 using Data.Application.Controllers.DataSource;
 using Prism.Ioc;
@@ -26,7 +27,7 @@ namespace Data.Application.Controllers.DataSource
 {
     internal class NormalizationController : INormalizationService
     {
-        private INormalizationDomainService _normalizationService;
+        private readonly INormalizationDomainService _normalizationService;
 
         public NormalizationController(INormalizationDomainService normalizationService)
         {
@@ -45,27 +46,29 @@ namespace Data.Application.Controllers.DataSource
 
         private void StdNormalization()
         {
-            throw new NotImplementedException();
+            _normalizationService.StdNormalization();
         }
 
         private void MeanNormalization()
         {
-            throw new NotImplementedException();
+            _normalizationService.MeanNormalization();
+
         }
 
         private void MinMaxNormalization()
         {
-            throw new NotImplementedException();
+            _normalizationService.MinMaxNormalization();
+
         }
 
         private void NoNormalization()
         {
-            throw new NotImplementedException();
+            _normalizationService.NoNormalization();
+
         }
 
         public void Initialize()
         {
-            throw new NotImplementedException();
         }
     }
 }

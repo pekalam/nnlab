@@ -2,6 +2,7 @@
 using Data.Application.Controllers;
 using Data.Application.Controllers.DataSource;
 using Data.Application.Services;
+using Data.Domain;
 using Prism.Ioc;
 using Prism.Unity;
 

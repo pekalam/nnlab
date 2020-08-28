@@ -80,6 +80,12 @@ namespace Data.Application.Controllers
             _appState.ActiveSession.ValidationDataFile = vm.ValidationSetFilePath;
 
             _trainingData = null;
+
+
+            _rm.NavigateContentRegion("FileDataSourceView", new ContentRegionNavigationParameters("Files")
+            {
+                {"Multi", true}
+            });
         }
 
 

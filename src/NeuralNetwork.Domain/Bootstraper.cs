@@ -21,8 +21,7 @@ namespace NeuralNetwork.Domain
         bool SetInputsCount(int inputsCount);
         void ResetWeights(Layer layer);
         void ResetNeuralNetworkWeights();
-        void AdjustParametersToTrainingData(TrainingData trainingData);
-        MLPNetwork CreateDefaultNetwork();
+        MLPNetwork CreateNeuralNetwork(TrainingData trainingData);
     }
 
     public class NeuralNetworkService : INeuralNetworkService
@@ -98,26 +97,30 @@ namespace NeuralNetwork.Domain
             NeuralNetwork.RebuildMatrices();
         }
 
-        public void AdjustParametersToTrainingData(TrainingData trainingData)
-        {
-            var newInputCount = trainingData.Sets.TrainingSet.Input[0].RowCount;
-            if (newInputCount != NeuralNetwork.Layers[0].InputsCount)
-            {
-                SetInputsCount(newInputCount);
-            }
+        // public void AdjustParametersToTrainingData(TrainingData trainingData)
+        // {
+        //     var newInputCount = trainingData.Sets.TrainingSet.Input[0].RowCount;
+        //     if (newInputCount != NeuralNetwork.Layers[0].InputsCount)
+        //     {
+        //         SetInputsCount(newInputCount);
+        //     }
+        //
+        //     var newOutputCount = trainingData.Sets.TrainingSet.Target[0].RowCount;
+        //     if (newOutputCount != NeuralNetwork.Layers[^1].NeuronsCount)
+        //     {
+        //         SetNeuronsCount(NeuralNetwork.Layers[^1], newOutputCount);
+        //     }
+        // }
 
-            var newOutputCount = trainingData.Sets.TrainingSet.Target[0].RowCount;
-            if (newOutputCount != NeuralNetwork.Layers[^1].NeuronsCount)
-            {
-                SetNeuronsCount(NeuralNetwork.Layers[^1], newOutputCount);
-            }
-        }
-
-        public MLPNetwork CreateDefaultNetwork()
+        public MLPNetwork CreateNeuralNetwork(TrainingData trainingData)
         {
-            return new MLPNetwork(new PerceptronLayer(1, 1, new LinearActivationFunction()),
-                new PerceptronLayer(1, 5, new SigmoidActivationFunction()),
-                new PerceptronLayer(5, 1, new SigmoidActivationFunction()));
+            var inputCount = trainingData.Sets.TrainingSet.Input[0].RowCount;
+            var outputCount = trainingData.Sets.TrainingSet.Target[0].RowCount;
+
+            return new MLPNetwork(
+                new PerceptronLayer(inputCount, inputCount, new LinearActivationFunction()),
+                new PerceptronLayer(inputCount, 5, new SigmoidActivationFunction()),
+                new PerceptronLayer(5, outputCount, new SigmoidActivationFunction()));
         }
     }
 

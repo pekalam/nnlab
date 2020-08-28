@@ -10,25 +10,31 @@ namespace Data.Domain.Services
 {
     public interface INormalizationDomainService
     {
-        Task MinMaxNormalization(TrainingData trainingData);
-        Task MeanNormalization(TrainingData trainingData);
-        Task StdNormalization(TrainingData trainingData);
+        Task MinMaxNormalization();
+        Task MeanNormalization();
+        Task StdNormalization();
+        void NoNormalization();
     }
 
     internal class NormalizationDomainService : INormalizationDomainService
     {
-        public TrainingData Copy(TrainingData trainingData)
-        {
-            if (trainingData.Source == TrainingDataSource.Csv)
-            {
-                return new TrainingData(CsvFacade.Copy(trainingData.Sets), trainingData.Variables, trainingData.Source);
-            }
+        private ModuleState _moduleState;
+        private AppState _appState;
 
-            throw new NotImplementedException("Not implemented for in-memory source");
+        public NormalizationDomainService(ModuleState moduleState, AppState appState)
+        {
+            _moduleState = moduleState;
+            _appState = appState;
         }
 
-        public Task MinMaxNormalization(TrainingData trainingData)
+        public Task MinMaxNormalization()
         {
+            if (_moduleState.OriginalTrainingData == null)
+            {
+                _moduleState.StoreOriginalTrainingData();
+            }
+
+
             void MinMax(SupervisedSet set)
             {
                 void MinMaxVec(IVectorSet vec)
@@ -69,14 +75,21 @@ namespace Data.Domain.Services
 
             return Task.Run(() =>
             {
+                var trainingData = _appState.ActiveSession.TrainingData.Clone();
                 MinMax(trainingData.Sets.TrainingSet);
                 if (trainingData.Sets.ValidationSet != null) MinMax(trainingData.Sets.ValidationSet);
                 if (trainingData.Sets.TestSet != null) MinMax(trainingData.Sets.TestSet);
+                _appState.ActiveSession.TrainingData = trainingData;
             });
         }
 
-        public Task MeanNormalization(TrainingData trainingData)
+        public Task MeanNormalization()
         {
+            if (_moduleState.OriginalTrainingData == null)
+            {
+                _moduleState.StoreOriginalTrainingData();
+            }
+
             void Mean(SupervisedSet set)
             {
                 void MeanVec(IVectorSet vec)
@@ -119,14 +132,21 @@ namespace Data.Domain.Services
 
             return Task.Run(() =>
             {
+                var trainingData = _appState.ActiveSession.TrainingData.Clone();
                 Mean(trainingData.Sets.TrainingSet);
                 if (trainingData.Sets.ValidationSet != null) Mean(trainingData.Sets.ValidationSet);
                 if (trainingData.Sets.TestSet != null) Mean(trainingData.Sets.TestSet);
+                _appState.ActiveSession.TrainingData = trainingData;
             });
         }
 
-        public Task StdNormalization(TrainingData trainingData)
+        public Task StdNormalization()
         {
+            if (_moduleState.OriginalTrainingData == null)
+            {
+                _moduleState.StoreOriginalTrainingData();
+            }
+
             void Std(SupervisedSet set)
             {
                 void StdVec(IVectorSet vec)
@@ -151,14 +171,14 @@ namespace Data.Domain.Services
 
                         for (int j = 0; j < vec.Count; j++)
                         {
-                            stddev += Math.Pow(vec[j][i, 0] - avg, 2.0d) / vec.Count - 1;
+                            stddev += Math.Pow(vec[j][i, 0] - avg, 2.0d) / (vec.Count - 1);
                         }
 
                         stddev = Math.Sqrt(stddev);
 
                         for (int j = 0; j < vec.Count; j++)
                         {
-                            vec[j][i, 0] = (vec[j][i, 0] - avg) / stddev;
+                            vec[j][i, 0] = (vec[j][i, 0] - avg) / (stddev == 0d ? 1 : stddev);
                         }
                     }
                 }
@@ -168,10 +188,17 @@ namespace Data.Domain.Services
 
             return Task.Run(() =>
             {
+                var trainingData = _appState.ActiveSession.TrainingData.Clone();
                 Std(trainingData.Sets.TrainingSet);
                 if (trainingData.Sets.ValidationSet != null) Std(trainingData.Sets.ValidationSet);
                 if (trainingData.Sets.TestSet != null) Std(trainingData.Sets.TestSet);
+                _appState.ActiveSession.TrainingData = trainingData;
             });
+        }
+
+        public void NoNormalization()
+        {
+            _appState.ActiveSession.TrainingData = _moduleState.OriginalTrainingData;
         }
     }
 }

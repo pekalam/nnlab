@@ -15,7 +15,16 @@
                 <TextBlock>Variables</TextBlock>
             </StackPanel>
         </Button>
-        <Button Style="{StaticResource ActionMenuButton}" Command="{Binding Service.DivideDatasetCommand}">
+        <Button Command="{Binding Service.DivideDatasetCommand}">
+            <Button.Style>
+                <Style TargetType="Button" BasedOn="{StaticResource ActionMenuButton}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsDivideDataSetEnabled}" Value="False">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
             <StackPanel>
                 <iconPacks:PackIconFontAwesome Kind="DivideSolid" Width="20" Height="20" HorizontalAlignment="Center"/>
                 <TextBlock>Divide</TextBlock>

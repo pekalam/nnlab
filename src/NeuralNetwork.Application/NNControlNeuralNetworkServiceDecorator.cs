@@ -69,22 +69,22 @@ namespace NeuralNetwork.Application
             _service.ResetNeuralNetworkWeights();
         }
 
-        public void AdjustParametersToTrainingData(TrainingData trainingData)
+        // public void AdjustParametersToTrainingData(TrainingData trainingData)
+        // {
+        //     _service.AdjustParametersToTrainingData(trainingData);
+        //
+        //     var network = _appState.ActiveSession?.Network;
+        //
+        //     ModelAdapter.LayerModelAdapters[0].SetNeuronsCount(network.Layers[0].InputsCount);
+        //     ModelAdapter.LayerModelAdapters[^1].SetNeuronsCount(network.Layers[^1].NeuronsCount);
+        //
+        //     ModelAdapter.SetInputLabels(trainingData.Variables.InputVariableNames);
+        //     ModelAdapter.SetOutputLabels(trainingData.Variables.TargetVariableNames);
+        // }
+
+        public MLPNetwork CreateNeuralNetwork(TrainingData trainingData)
         {
-            _service.AdjustParametersToTrainingData(trainingData);
-
-            var network = _appState.ActiveSession?.Network;
-
-            ModelAdapter.LayerModelAdapters[0].SetNeuronsCount(network.Layers[0].InputsCount);
-            ModelAdapter.LayerModelAdapters[^1].SetNeuronsCount(network.Layers[^1].NeuronsCount);
-
-            ModelAdapter.SetInputLabels(trainingData.Variables.InputVariableNames);
-            ModelAdapter.SetOutputLabels(trainingData.Variables.TargetVariableNames);
-        }
-
-        public MLPNetwork CreateDefaultNetwork()
-        {
-            return _service.CreateDefaultNetwork();
+            return _service.CreateNeuralNetwork(trainingData);
         }
     }
 }
