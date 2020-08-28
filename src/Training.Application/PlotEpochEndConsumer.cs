@@ -218,7 +218,16 @@ namespace Training.Application
         {
             if (_moduleState.ActiveSession != null) SetTrainingSessionHandlers(_moduleState.ActiveSession);
 
-            _moduleState.PropertyChanged += ModuleStateOnPropertyChanged;
+            _moduleState.ActiveSessionChanged += ModuleStateOnActiveSessionChanged;
+        }
+
+        private void ModuleStateOnActiveSessionChanged(object? sender, (TrainingSession? prev, TrainingSession next) e)
+        {
+            if (e.prev != null)
+            {
+                ForceStop();
+            }
+            SetTrainingSessionHandlers(e.next);
         }
 
         private void SetTrainingSessionHandlers(TrainingSession session)
@@ -265,14 +274,6 @@ namespace Training.Application
                         GlobalDistributingDispatcher.Unregister(this);
                     }
                     break;
-            }
-        }
-
-        private void ModuleStateOnPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(ModuleState.ActiveSession))
-            {
-                SetTrainingSessionHandlers((sender as ModuleState).ActiveSession);
             }
         }
 

@@ -102,11 +102,27 @@ namespace Training.Application.Controllers
                     }
                 };
             });
+
+            _moduleState.ActiveSessionChanged += ModuleStateOnActiveSessionChanged;
         }
 
         public void Initialize(ErrorPlotService service)
         {
             service.Navigated = Navigated;
+        }
+
+        private void ModuleStateOnActiveSessionChanged(object? sender, (TrainingSession? prev, TrainingSession next) e)
+        {
+            var vm = _accessor.Get<ErrorPlotViewModel>();
+            vm.Series.Points.Clear();
+
+            var points = e.next.EpochEndEvents.TakeLast(2000).Select(end => new DataPoint(end.Epoch, end.Error)).ToArray();
+
+            var newMin = e.next.EpochEndEvents.Count - 2000;
+            vm.BasicPlotModel.Model.Axes[0].AbsoluteMinimum = newMin;
+            vm.Series.Points.AddRange(points);
+
+            vm.BasicPlotModel.Model.InvalidatePlot(true);
         }
 
         private void InvalidatePlot()

@@ -68,8 +68,8 @@ namespace Training.Application.Controllers
                     //TODO epoch end consumer
                     if (_rm.Regions.ContainsRegionWithName(TrainingViewRegions.PanelLayoutRegion))
                     {
-                        _rm.Regions[TrainingViewRegions.PanelLayoutRegion].RemoveAll();
-                        _service.OnHidePanels();
+                        //_rm.Regions[TrainingViewRegions.PanelLayoutRegion].RemoveAll();
+                        // _service.OnHidePanels();
                     }
     
                 }
