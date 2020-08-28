@@ -69,11 +69,15 @@ namespace Data.Application.Controllers
         private void Continue()
         {
             var vm = MultiFileSourceViewModel.Instance;
-            var session = _appState.CreateSession();
-            session.TrainingData = _trainingData;
-            session.TrainingDataFile = vm.TrainingSetFilePath;
-            session.TestDataFile = vm.TestSetFilePath;
-            session.ValidationDataFile = vm.ValidationSetFilePath;
+            if (_appState.Sessions.Count == 0)
+            {
+                _appState.CreateSession();
+
+            }
+            _appState.ActiveSession.TrainingData = _trainingData;
+            _appState.ActiveSession.TrainingDataFile = vm.TrainingSetFilePath;
+            _appState.ActiveSession.TestDataFile = vm.TestSetFilePath;
+            _appState.ActiveSession.ValidationDataFile = vm.ValidationSetFilePath;
 
             _trainingData = null;
         }

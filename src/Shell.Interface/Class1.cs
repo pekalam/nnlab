@@ -26,7 +26,13 @@ namespace Shell.Interface
     {
     }
 
-    public class HideProgressArea : PubSubEvent { }
+    public class HideProgressAreaArgs
+    {
+        public bool Immediately { get; set; }
+        public string HideMessage { get; set; }
+    }
+
+    public class HideProgressArea : PubSubEvent<HideProgressAreaArgs> { }
 
     public class FlyoutArgs
     {

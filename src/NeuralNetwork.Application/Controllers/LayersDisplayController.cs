@@ -47,7 +47,7 @@ namespace NeuralNetwork.Application.Controllers
 
             _accessor.OnCreated<LayersDisplayViewModel>(() =>
             {
-                if (_appState.ActiveSession != null) InitializeLayersOrSetSessionListeners();
+                SetLayers();
             });
 
         }
@@ -84,25 +84,12 @@ namespace NeuralNetwork.Application.Controllers
             vm.SelectedLayer = selected;
         }
 
-        private void InitializeLayersOrSetSessionListeners()
-        {
-            if (_appState.ActiveSession.Network != null) SetLayers();
-            _appState.ActiveSession.PropertyChanged += ActiveSessionOnNetworkPropertyChanged;
-        }
-
-        private void ActiveSessionOnNetworkPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(Session.Network) && _appState.ActiveSession.Network != null)
-            {
-                SetLayers();
-            }
-        }
 
         private void AppStateOnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(AppState.ActiveSession))
             {
-                if(_accessor.Get<LayersDisplayViewModel>() != null) InitializeLayersOrSetSessionListeners();
+                if(_accessor.Get<LayersDisplayViewModel>() != null && _appState.ActiveSession.Network != null) SetLayers();
             }
         }
 

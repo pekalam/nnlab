@@ -111,6 +111,11 @@ namespace SharedUI.MatrixPreview
             _vm.SelectedMatrixType = type;
         }
 
+        public void InvalidateDisplayedMatrix()
+        {
+            CreateGrid();
+        }
+
         private void VmOnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(MatrixPreviewViewModel.SelectedMatrixType))

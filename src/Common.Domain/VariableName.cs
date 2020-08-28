@@ -47,6 +47,6 @@
         public const int Data = 1;
         public const int NeuralNetwork = 2;
         public const int Training = 3;
-        public const int Sell = 4;
+        public const int Shell = 4;
     }
 }

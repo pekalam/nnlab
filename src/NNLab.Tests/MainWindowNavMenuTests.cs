@@ -127,8 +127,15 @@ namespace Shell.Application.Tests
         [Fact]
         public void Reload_and_setup_navigation_events_are_published_when_active_session_is_changed()
         {
-            var reloadTimesCalled = new int[] {0, 0, 0, 0,0};
-            var startNewNavTimesCalled = new int[] {0, 0, 0, 0,0};
+            var reloadTimesCalled = new int[] { 0, 0, 0, 0, 0 };
+            var startNewNavTimesCalled = new int[] { 0, 0, 0, 0, 0 };
+
+            void ResetCounters()
+            {
+                reloadTimesCalled = new int[] { 0, 0, 0, 0, 0 };
+                startNewNavTimesCalled = new int[] { 0, 0, 0, 0, 0 };
+            }
+
 
             _ea.GetEvent<ReloadContentForSession>().Subscribe(args => reloadTimesCalled[args.moduleId]++);
             _ea.GetEvent<SetupNewNavigationForSession>().Subscribe(args => startNewNavTimesCalled[args.moduleId]++);
@@ -141,16 +148,31 @@ namespace Shell.Application.Tests
 
             reloadTimesCalled[ModuleIds.Data].Should().Be(0);
             startNewNavTimesCalled[ModuleIds.NeuralNetwork].Should().Be(0);
-            startNewNavTimesCalled[ModuleIds.Sell].Should().Be(0);
+            startNewNavTimesCalled[ModuleIds.Shell].Should().Be(0);
             startNewNavTimesCalled[ModuleIds.Training].Should().Be(0);
 
             _appState.ActiveSession = _appState.CreateSession();
 
             reloadTimesCalled[ModuleIds.Data].Should().Be(1);
+            startNewNavTimesCalled[ModuleIds.Data].Should().Be(0);
+
             startNewNavTimesCalled[ModuleIds.NeuralNetwork].Should().Be(1);
-            startNewNavTimesCalled[ModuleIds.Sell].Should().Be(0);
+            startNewNavTimesCalled[ModuleIds.Shell].Should().Be(0);
             startNewNavTimesCalled[ModuleIds.Training].Should().Be(1);
 
+            ResetCounters();
+
+            _vm.CheckedNavItemId = ModuleIds.Training;
+
+            _appState.ActiveSession = _appState.CreateSession();
+
+
+            startNewNavTimesCalled[ModuleIds.Data].Should().Be(1);
+            startNewNavTimesCalled[ModuleIds.NeuralNetwork].Should().Be(1);
+            startNewNavTimesCalled[ModuleIds.Shell].Should().Be(0);
+
+            startNewNavTimesCalled[ModuleIds.Training].Should().Be(0);
+            reloadTimesCalled[ModuleIds.Training].Should().Be(1);
         }
     }
 }

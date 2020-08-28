@@ -1,15 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Common.Domain;
+using Common.Framework;
+using Prism.Events;
+using Shell.Application.Services;
+using Shell.Interface;
+using System;
 using System.ComponentModel;
 using System.Globalization;
 using System.Text;
 using System.Windows;
 using System.Windows.Data;
-using Common.Domain;
-using Common.Framework;
-using Prism.Events;
-using Shell.Application.Services;
-using Shell.Interface;
 
 namespace Shell.Application.ViewModels
 {
@@ -23,6 +22,7 @@ namespace Shell.Application.ViewModels
         private string _progressTooltip;
         private string _progressMessage;
         private bool _canModifyActiveSession = true;
+        private AppState _appState;
 
         public StatusBarViewModel()
         {
@@ -31,6 +31,7 @@ namespace Shell.Application.ViewModels
         public StatusBarViewModel(AppState appState, IStatusBarService serivce, IEventAggregator ea)
         {
             AppState = appState;
+            _appState = appState;
             Serivce = serivce;
 
             ea.GetEvent<ShowProgressArea>().Subscribe(args =>
@@ -40,7 +41,7 @@ namespace Shell.Application.ViewModels
                 ProgressVisibility = Visibility.Visible;
             }, ThreadOption.UIThread);
 
-            ea.GetEvent<HideProgressArea>().Subscribe(() =>
+            ea.GetEvent<HideProgressArea>().Subscribe(args =>
             {
                 ProgressVisibility = Visibility.Hidden;
             }, ThreadOption.UIThread);
@@ -49,7 +50,9 @@ namespace Shell.Application.ViewModels
             {
                 if (args.PropertyName == nameof(AppState.ActiveSession))
                 {
-                    appState.ActiveSession.PropertyChanged += ActiveSessionOnPropertyChanged;
+                    if(_appState.ActiveSession.Network != null) UpdateNetworkInfo();
+                    _appState.ActiveSession.NetworkStructureChanged += _ => UpdateNetworkInfo();
+                    _appState.ActiveSession.PropertyChanged += ActiveSessionOnPropertyChanged;
                 }
             };
         }
@@ -87,7 +90,6 @@ namespace Shell.Application.ViewModels
             {
                 //todo remove handler
                 UpdateNetworkInfo();
-                session.NetworkStructureChanged += _ => UpdateNetworkInfo();
             }
         }
 
@@ -129,13 +131,13 @@ namespace Shell.Application.ViewModels
         public string ProgressTooltip
         {
             get => _progressTooltip;
-            set => _progressTooltip = value;
+            set => SetProperty(ref _progressTooltip, value);
         }
 
         public string ProgressMessage
         {
             get => _progressMessage;
-            set => _progressMessage = value;
+            set => SetProperty(ref _progressMessage, value);
         }
     }
 

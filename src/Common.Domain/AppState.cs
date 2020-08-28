@@ -38,9 +38,13 @@ namespace Common.Domain
 
         public ObservableCollection<Session> Sessions { get; } = new ObservableCollection<Session>();
 
-        public Session CreateSession()
+        public Session CreateSession(string? name = "")
         {
-            var newSession = new Session("Unnamed" + (Sessions.Count > 0 ? " " + Sessions.Count : string.Empty));
+            if (name == "")
+            {
+                name = "Unnamed" + (Sessions.Count > 0 ? " " + Sessions.Count : string.Empty);
+            }
+            var newSession = new Session(name);
             Sessions.Add(newSession);
             Log.Debug($"Session {newSession.Name} created");
 

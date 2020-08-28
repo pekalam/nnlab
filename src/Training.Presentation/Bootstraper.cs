@@ -27,6 +27,8 @@ namespace Training.Presentation
             cr.RegisterForNavigation<TrainingParametersView>();
             cr.RegisterForNavigation<ParametersEditView>();
 
+            cr.RegisterForNavigation<PlotEpochParametersView>();
+
             cr.RegisterDialog<PanelSelectView, PanelSelectViewModel>();
         }
     }

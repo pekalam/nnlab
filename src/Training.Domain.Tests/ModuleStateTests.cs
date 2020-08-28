@@ -48,6 +48,10 @@ namespace Training.Domain.Tests
             //should not be the same as previous
             _moduleState.ActiveSession.Should().NotBeNull();
             first.Should().NotBe(_moduleState.ActiveSession);
+
+            _appState.ActiveSession = session;
+
+            first.Should().Be(_moduleState.ActiveSession);
         }
     }
 }

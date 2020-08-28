@@ -1,0 +1,24 @@
+﻿<UserControl x:Class="Shell.Presentation.Views.CreateSessionDialogView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:prism="http://prismlibrary.com/"
+             xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+             prism:ViewModelLocator.AutoWireViewModel="True"
+             Background="White" MinHeight="250">
+    <Border Padding="18">
+        <DockPanel LastChildFill="False">
+            <StackPanel DockPanel.Dock="Top">
+                <TextBlock Text="Enter name of new session" FontSize="20" Margin="0,0,0,14"/>
+                <TextBox MinWidth="400" mah:TextBoxHelper.Watermark="Session name"  x:Name="SessionName" Text="{Binding Name, ValidatesOnDataErrors=True}"/>
+                <CheckBox Content="Switch to session" Margin="0,14,0,0"/>
+            </StackPanel>
+
+
+            <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Style="{StaticResource DialogCancelButton}" Command="{Binding CancelCommand}">Cancel</Button>
+                <Button Style="{StaticResource DialogOkButton}" Command="{Binding OkCommand}">OK</Button>
+            </StackPanel>
+        </DockPanel>
+    </Border>
+
+</UserControl>

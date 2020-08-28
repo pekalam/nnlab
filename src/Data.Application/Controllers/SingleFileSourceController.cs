@@ -87,10 +87,13 @@ namespace Data.Application.Controllers
 
         private void Continue()
         {
-            var session = _appState.CreateSession();
+            if (_appState.Sessions.Count == 0)
+            {
+                _appState.CreateSession();
+            }
 
-            session.TrainingData = _loadedTrainingData;
-            session.SingleDataFile = SingleFileSourceViewModel.Instance.SelectedFilePath;
+            _appState.ActiveSession!.TrainingData = _loadedTrainingData;
+            _appState.ActiveSession!.SingleDataFile = SingleFileSourceViewModel.Instance.SelectedFilePath;
             _loadedTrainingData = null;
 
             _rm.NavigateContentRegion("FileDataSourceView", "Data");

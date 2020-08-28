@@ -97,7 +97,7 @@ namespace Data.Application.Tests.DataSourceSelection
 
 
         [Fact]
-        public async void Continue_command_sets_app_state()
+        public async Task Continue_command_creates_new_session_if_0_sessions()
         {
             var file = "C:\\file.csv";
             //arrange
@@ -127,6 +127,14 @@ namespace Data.Application.Tests.DataSourceSelection
 
             session.TrainingData.Should().Be(trainingData);
             session.SingleDataFile.Should().Be(file);
+        }
+
+        [Fact]
+        public async void Continue_command_updates_data_of_active_session_with_null_data()
+        {
+            var session = _appState.CreateSession();
+            
+            await Continue_command_creates_new_session_if_0_sessions();
         }
     }
 }

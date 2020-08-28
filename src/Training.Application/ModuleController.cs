@@ -48,16 +48,27 @@ namespace Training.Application
             _trainingController = trainingController;
             _moduleState = moduleState;
 
-            appState.PropertyChanged += AppStateOnPropertyChanged;
-
             _moduleState.PropertyChanged += ModuleStateOnPropertyChanged;
         }
 
+        private void SendNavMenuItemEvents()
+        {
+            if (_moduleState.ActiveSession.IsValid)
+            {
+                _ea.GetEvent<EnableNavMenuItem>().Publish(ModuleIds.Training);
+            }
+            else
+            {
+                _ea.GetEvent<DisableNavMenuItem>().Publish(ModuleIds.Training);
+            }
+        }
 
         private void ModuleStateOnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(ModuleState.ActiveSession))
             {
+                SendNavMenuItemEvents();
+                _moduleState.ActiveSession.PropertyChanged -= ActiveTrainingSessionOnPropertyChanged;
                 _moduleState.ActiveSession.PropertyChanged += ActiveTrainingSessionOnPropertyChanged;
             }
         }
@@ -85,35 +96,16 @@ namespace Training.Application
                         _ea.GetEvent<TrainingSessionStopped>().Publish();
                     }
                     break;
+                case nameof(TrainingSession.IsValid):
+                    SendNavMenuItemEvents();
+                    break;
             }
 
-        }
-
-        private void AppStateOnPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(AppState.ActiveSession))
-            {
-                _appState.ActiveSession.PropertyChanged += ActiveSessionOnPropertyChanged;
-                
-            }
-        }
-
-        private void ActiveSessionOnPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            var session = sender as Session;
-            if (session.Network != null && session.TrainingData != null)
-            {
-                _ea.GetEvent<EnableNavMenuItem>().Publish(ModuleIds.Training);
-            }
         }
 
 
         public void Run()
         {
-
-            _ea.GetEvent<EnableNavMenuItem>().Publish(ModuleIds.Training);
-
-
             _ea.OnFirstNavigation(ModuleIds.Training, () =>
             {
                 _rm.NavigateContentRegion("TrainingView", "Training");

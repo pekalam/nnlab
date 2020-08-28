@@ -129,12 +129,18 @@ namespace Data.Application.Tests.DataSourceSelection
 
 
         [Fact]
-        public void CreateDataSetCommand_creates_new_session()
+        public void CreateDataSetCommand_creates_new_session_if_0_sessions()
         {
-            _appState.Sessions.Should().BeEmpty();
             _fileService.Object.CreateDataSetCommand.Execute();
 
             _appState.Sessions.Should().HaveCount(1);
+        }
+
+        [Fact]
+        public void CreateDataSetCommand_does_not_create_new_session_if_there_is_active()
+        {
+            _appState.CreateSession();
+            CreateDataSetCommand_creates_new_session_if_0_sessions();
         }
     }
 }

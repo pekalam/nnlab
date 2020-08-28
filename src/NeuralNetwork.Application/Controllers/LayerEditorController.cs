@@ -100,7 +100,8 @@ namespace NeuralNetwork.Application.Controllers
                 {
                     _ea.GetEvent<HideErrorNotification>().Publish();
                 }
-                vm.MatrixPreview.Controller.SelectMatrix(_layerNum, MatrixTypes.Weights);
+
+                vm.MatrixPreview.Controller.InvalidateDisplayedMatrix();
             }
             else if (e.PropertyName == nameof(model.InputsCount))
             {
@@ -115,7 +116,8 @@ namespace NeuralNetwork.Application.Controllers
                 {
                     _ea.GetEvent<HideErrorNotification>().Publish();
                 }
-                vm.MatrixPreview.Controller.SelectMatrix(_layerNum, MatrixTypes.Weights);
+                vm.MatrixPreview.Controller.InvalidateDisplayedMatrix();
+
             }
         }
     }

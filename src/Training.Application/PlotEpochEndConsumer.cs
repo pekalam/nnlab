@@ -175,8 +175,9 @@ namespace Training.Application
     internal class PlotEpochEndConsumer
     {
         private const int LOCATION_CHANGED_DELAY = 150;
-        private const int BUFFER_TIME_SPAN = 33;
-        private const int BUFFER_SIZE = 120;
+        private const int ONLINE_BUFFER_TIME_SPAN = 33;
+        private const int ONLINE_BUFFER_SIZE = 120;
+        public const int BUFFERING_BUFFER_SIZE = 10;
 
         private IDisposable? _subscription;
         private IDisposable? _bufSub;
@@ -195,7 +196,7 @@ namespace Training.Application
         private readonly DelegateCommand _locationChangedCmd;
         private TrainingSession? _session;
         private readonly ReplaySubject<int> _bufferSizeSub = new ReplaySubject<int>(1);
-        private int _bufferSize = 10;
+        private int _bufferSize = BUFFERING_BUFFER_SIZE;
         private PlotEpochEndConsumerType _consumerType;
         private readonly Action<TrainingSession>? _onTrainingStarting;
         private readonly Action<TrainingSession>? _onTrainingStopped;
@@ -386,8 +387,8 @@ namespace Training.Application
                 }
 
                 _onlineSub = _online
-                    .Buffer(timeSpan: TimeSpan.FromMilliseconds(BUFFER_TIME_SPAN), count: BUFFER_SIZE)
-                    .DelaySubscription(TimeSpan.FromMilliseconds(BUFFER_TIME_SPAN)).SubscribeOn(Scheduler.Default)
+                    .Buffer(timeSpan: TimeSpan.FromMilliseconds(ONLINE_BUFFER_TIME_SPAN), count: ONLINE_BUFFER_SIZE)
+                    .DelaySubscription(TimeSpan.FromMilliseconds(ONLINE_BUFFER_TIME_SPAN)).SubscribeOn(Scheduler.Default)
                     .Subscribe(list =>
                     {
                         //test
@@ -417,7 +418,7 @@ namespace Training.Application
 
         private void Subscribe()
         {
-            _sub = new ReplaySubject<EpochEndArgs>(BUFFER_SIZE);
+            _sub = new ReplaySubject<EpochEndArgs>(ONLINE_BUFFER_SIZE);
             _online = new Subject<EpochEndArgs>();
             _buffering = new Subject<EpochEndArgs>();
 

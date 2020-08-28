@@ -112,15 +112,24 @@ namespace NeuralNetwork.Application.Tests
             sesion.TrainingData = TrainingDataMocks.ValidData1;
 
             var network = _appState.ActiveSession.Network;
-
             network.Layers[0].InputsCount.Should().Be(TrainingDataMocks.ValidData1.Sets.TrainingSet.Input[0].RowCount);
             network.Layers[^1].NeuronsCount.Should().Be(TrainingDataMocks.ValidData1.Sets.TrainingSet.Target[0].RowCount);
+
+
+            var sesion2 = _appState.CreateSession();
+            _appState.ActiveSession = sesion2;
+            sesion2.TrainingData = TrainingDataMocks.ValidData4;
+
+            network = _appState.ActiveSession.Network;
+            network.Layers[0].InputsCount.Should().Be(TrainingDataMocks.ValidData4.Sets.TrainingSet.Input[0].RowCount);
+            network.Layers[^1].NeuronsCount.Should().Be(TrainingDataMocks.ValidData4.Sets.TrainingSet.Target[0].RowCount);
         }
 
         [Fact]
         public void When_session_is_created_before_run_sends_enabled_navitem()
         {
             var sesion = _appState.CreateSession();
+            sesion.TrainingData = TrainingDataMocks.ValidData1;
             _ctrl.Run();
             _ea.VerifyTimesCalled<EnableNavMenuItem>(1);            
         }
@@ -130,6 +139,34 @@ namespace NeuralNetwork.Application.Tests
         {
             _ctrl.Run();
             var sesion = _appState.CreateSession();
+            sesion.TrainingData = TrainingDataMocks.ValidData1;
+            _ea.VerifyTimesCalled<EnableNavMenuItem>(1);
+        }
+
+        [Fact]
+        public void When_new_session_without_data_is_created__sends_disabled()
+        {
+            _ctrl.Run();
+            _appState.CreateSession();
+            _ea.VerifyTimesCalled<DisableNavMenuItem>(1);
+
+            _appState.ActiveSession = _appState.CreateSession();
+            _ea.VerifyTimesCalled<DisableNavMenuItem>(2);
+        }
+
+        [Fact]
+        public void When_new_active_session_is_changed_sends_enabled_disabled()
+        {
+            _ctrl.Run();
+            var session = _appState.CreateSession();
+            _ea.VerifyTimesCalled<DisableNavMenuItem>(1);
+
+            _appState.ActiveSession = _appState.CreateSession();
+
+            _ea.VerifyTimesCalled<DisableNavMenuItem>(2);
+
+            _appState.ActiveSession = session;
+            session.TrainingData = TrainingDataMocks.ValidFileData4;
             _ea.VerifyTimesCalled<EnableNavMenuItem>(1);
         }
     }

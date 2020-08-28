@@ -40,6 +40,10 @@ namespace Training.Domain
                     ActiveSession = new TrainingSession(_appState);
                     _sessionToTraining[_appState.ActiveSession!] = _activeSession!;
                 }
+                else
+                {
+                    ActiveSession = trainingSession;
+                }
             }
         }
 

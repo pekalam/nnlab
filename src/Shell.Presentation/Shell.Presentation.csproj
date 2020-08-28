@@ -16,6 +16,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Page Update="Styles\Styles.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Views\NavigationBreadcrumbsView.xaml">
       <SubType>Designer</SubType>
     </Page>

@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using Accessibility;
 using Common.Framework;
+using NNLib;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Regions;
@@ -83,19 +85,47 @@ namespace Training.Application.Controllers
 
         private async void PauseTrainingSession()
         {
-            await Session.Pause();
+            try
+            {
+                await Session.Pause();
+            }
+            catch (OperationCanceledException ex) { }
+            catch (TrainingCanceledException ex) { }
         }
 
         private async void StopTrainingSession()
         {
-            await Session.Stop();
+            try
+            {
+                await Session.Stop();
+            }
+            catch (OperationCanceledException ex) { }
+            catch (TrainingCanceledException ex) { }
         }
 
         private TrainingSession Session => _moduleState.ActiveSession;
 
         private async void StartTrainingSession()
         {
-            await Session.Start();
+            try
+            {
+                _ea.GetEvent<ShowProgressArea>().Publish(new ProgressAreaArgs()
+                {
+                    Tooltip = "Training in progress",
+                    Message = "Training"
+                });
+                await Session.Start();
+            }
+            catch (OperationCanceledException ex)
+            {
+            }
+            catch (TrainingCanceledException ex)
+            {
+            }
+            finally
+            {
+                _ea.GetEvent<HideProgressArea>().Publish(null);
+            }
         }
 
         private void SelectPanels()

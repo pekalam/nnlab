@@ -56,14 +56,16 @@ namespace NeuralNetwork.Application
 
         private void SetupActiveSession()
         {
-            _ea.GetEvent<EnableNavMenuItem>().Publish(ModuleIds.NeuralNetwork);
 
             if (_appState.ActiveSession.TrainingData != null)
             {
+                _ea.GetEvent<EnableNavMenuItem>().Publish(ModuleIds.NeuralNetwork);
                 CreateNetworkForSession(_appState.ActiveSession);
             }
             else
             {
+                _ea.GetEvent<DisableNavMenuItem>().Publish(ModuleIds.NeuralNetwork);
+                _appState.ActiveSession.PropertyChanged -= ActiveSessionOnTrainingDataChanged;
                 _appState.ActiveSession.PropertyChanged += ActiveSessionOnTrainingDataChanged;
             }
         }
@@ -107,15 +109,8 @@ namespace NeuralNetwork.Application
         {
             if (arg.moduleId == ModuleIds.NeuralNetwork)
             {
-                if (arg.next.Network != null)
-                {
-                    if(!_firstNav) return;
-                    _ea.OnFirstNavigation(ModuleIds.NeuralNetwork, () => _rm.NavigateContentRegion(nameof(NeuralNetworkShellViewModel), "Neural network"));
-                }
-                else
-                {
-                    _ea.GetEvent<DisableNavMenuItem>().Publish(ModuleIds.NeuralNetwork);
-                }
+                if (!_firstNav) return;
+                _ea.OnFirstNavigation(ModuleIds.NeuralNetwork, () => _rm.NavigateContentRegion(nameof(NeuralNetworkShellViewModel), "Neural network"));
             }
         }
 
@@ -123,8 +118,16 @@ namespace NeuralNetwork.Application
         {
             if (e.PropertyName == nameof(Session.TrainingData))
             {
-                CreateNetworkForSession(_appState.ActiveSession);
-                _appState.ActiveSession.PropertyChanged -= ActiveSessionOnTrainingDataChanged;
+                if (_appState.ActiveSession.TrainingData != null)
+                {
+                    _ea.GetEvent<EnableNavMenuItem>().Publish(ModuleIds.NeuralNetwork);
+                    CreateNetworkForSession(_appState.ActiveSession);
+                    _appState.ActiveSession.PropertyChanged -= ActiveSessionOnTrainingDataChanged;
+                }
+                else
+                {
+                    _ea.GetEvent<DisableNavMenuItem>().Publish(ModuleIds.NeuralNetwork);
+                }
             }
         }
     }

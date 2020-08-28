@@ -124,6 +124,7 @@ namespace Shell.Application.ViewModels
 
         private void AppStateOnActiveSessionChanged(object? sender, (Session? prev, Session next) e)
         {
+            //if not changed to first created session
             if (e.prev != null)
             {
                 _contentRegionHistory.ClearHistoryForModulesExcept(CheckedNavItemId);

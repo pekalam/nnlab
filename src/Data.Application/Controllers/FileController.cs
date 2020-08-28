@@ -59,7 +59,10 @@ namespace Data.Application.Controllers
 
         private void CreateDataSet()
         {
-            _appState.CreateSession();
+            if (_appState.Sessions.Count == 0)
+            {
+                _appState.CreateSession();
+            }
             _rm.NavigateContentRegion("CustomDataSetView", "Custom data set");
         }
     }

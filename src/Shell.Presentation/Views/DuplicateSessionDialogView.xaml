@@ -18,10 +18,10 @@
         </StackPanel>
 
 
-        <UniformGrid Columns="2" Margin="0,24,0,0" DockPanel.Dock="Bottom">
-            <Button Width="70" Margin="0,0,14,0" HorizontalAlignment="Right" Command="{Binding CancelCommand}">Cancel</Button>
-            <Button Width="70" Margin="14,0,0,0" HorizontalAlignment="Left" Command="{Binding OkCommand}">OK</Button>
-        </UniformGrid>
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Style="{StaticResource DialogCancelButton}" Command="{Binding CancelCommand}">Cancel</Button>
+            <Button Style="{StaticResource DialogOkButton}" Command="{Binding OkCommand}">OK</Button>
+        </StackPanel>
 
     </DockPanel>
 </UserControl>

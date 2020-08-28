@@ -202,7 +202,7 @@ namespace Data.Application.Tests.DataSourceSelection
 
 
         [Fact]
-        public void Continue_command_sets_app_state()
+        public void Continue_command_creates_new_session_if_0_sessions()
         {
             var trainingFile = "C:\\t.csv";
             var testFile = "C:\\t.csv";
@@ -243,6 +243,14 @@ namespace Data.Application.Tests.DataSourceSelection
             session.ValidationDataFile.Should().Be(validationFile);
             session.TestDataFile.Should().Be(testFile);
 
+        }
+
+        [Fact]
+        public void Continue_command_updates_data_of_active_session_with_null_data()
+        {
+            var session = _appState.CreateSession();
+
+            Continue_command_creates_new_session_if_0_sessions();
         }
     }
 }
