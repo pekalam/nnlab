@@ -12,7 +12,6 @@ namespace Training.Presentation
         {
             cr.RegisterForNavigation<TrainingView>();
             cr.RegisterForNavigation<TrainingInfoView>();
-            cr.RegisterForNavigation<TrainingReportView>();
 
             cr.RegisterForNavigation<PanelLayoutView>();
             cr.RegisterForNavigation<SingleLayoutView>();
@@ -30,6 +29,9 @@ namespace Training.Presentation
             cr.RegisterForNavigation<PlotEpochParametersView>();
 
             cr.RegisterDialog<PanelSelectView, PanelSelectViewModel>();
+            cr.RegisterForNavigation<ReportsView>();
+            cr.RegisterForNavigation<ReportErrorPlotView>();
+
         }
     }
 }

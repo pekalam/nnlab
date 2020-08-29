@@ -16,6 +16,8 @@ namespace Training.Application
             IErrorPlotService.Register(cr);
             IOutputPlotService.Register(cr);
             IMatrixTrainingPreviewService.Register(cr);
+            IReportsService.Register(cr);
+            IReportErrorService.Register(cr);
         }
     }
 }

@@ -107,7 +107,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Training.Domain.Tests", "Tr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Training.Application.Tests", "Training.Application.Tests\Training.Application.Tests.csproj", "{E69B8F58-8A72-4F6D-BF9B-5B11462A4FBB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.Logging", "Common.Logging\Common.Logging.csproj", "{B0E312C4-CAD8-4711-B750-62F9F940F429}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.Logging", "Common.Logging\Common.Logging.csproj", "{B0E312C4-CAD8-4711-B750-62F9F940F429}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

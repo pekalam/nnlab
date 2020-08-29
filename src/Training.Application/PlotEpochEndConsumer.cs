@@ -119,12 +119,11 @@ namespace Training.Application
 
         public static void Register(PlotEpochEndConsumer consumer)
         {
-            if (_queues.ContainsKey(consumer))
+            if (!_queues.ContainsKey(consumer))
             {
-                throw new ArgumentException("Consumer already registered");
+                _queues.Add(consumer, new ConcurrentQueue<Action>());
             }
 
-            _queues.Add(consumer, new ConcurrentQueue<Action>());
         }
 
         public static void Unregister(PlotEpochEndConsumer consumer)

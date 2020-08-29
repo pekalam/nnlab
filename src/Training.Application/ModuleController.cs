@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Windows.Data;
 using Common.Domain;
 using Prism.Events;
 using Prism.Regions;
@@ -49,6 +50,30 @@ namespace Training.Application
             _moduleState = moduleState;
 
             _moduleState.PropertyChanged += ModuleStateOnPropertyChanged;
+
+            _appState.SessionCreated += AppStateOnSessionCreated;
+
+            _ea.GetEvent<ReloadContentForSession>().Subscribe(args =>
+            {
+                if (args.moduleId == ModuleIds.Training)
+                {
+                    _ea.GetEvent<ReloadContentForSession>().Subscribe(_ => _rm.NavigateContentRegion("TrainingView", "Training"));
+                }
+            });
+            _ea.GetEvent<SetupNewNavigationForSession>().Subscribe(args =>
+            {
+                if (args.moduleId == ModuleIds.Training)
+                {
+                    _ea.OnFirstNavigation(ModuleIds.Training, () => _rm.NavigateContentRegion("TrainingView", "Training"));
+                }
+            });
+
+        }
+
+
+        private void AppStateOnSessionCreated(object? sender, Session e)
+        {
+            BindingOperations.EnableCollectionSynchronization(e.TrainingReports, this);
         }
 
         private void SendNavMenuItemEvents()

@@ -89,7 +89,9 @@ namespace Common.Domain
         public double? ValidationError { get; set; }
         public double? TestError { get; set; }
 
-        public TrainingSessionReport(SessionEndType sessionEndType, int totalEpochs, double error, DateTime startDate, TimeSpan duration)
+        public EpochEndArgs[] EpochEndEventArgs { get; }
+
+        public TrainingSessionReport(SessionEndType sessionEndType, int totalEpochs, double error, DateTime startDate, TimeSpan duration, IEnumerable<EpochEndArgs> epochEndEventArgs)
         {
             if(totalEpochs < 0) throw new ArgumentException("totalEpochs < 0");
             if(error < 0d) throw new ArgumentException("error < 0");
@@ -99,27 +101,31 @@ namespace Common.Domain
             StartDate = startDate;
             Duration = duration;
             EndDate = startDate + duration;
+            EpochEndEventArgs = epochEndEventArgs.Select(e => new EpochEndArgs()
+            {
+                Epoch = e.Epoch, Error = e.Error, Iterations = e.Iterations,
+            }).ToArray();
         }
 
-        public static TrainingSessionReport CreateStoppedSessionReport(int totalEpochs, double error, DateTime startTime) =>
-            new TrainingSessionReport(SessionEndType.Stopped, totalEpochs, error, startTime, Time.Now - startTime);
+        public static TrainingSessionReport CreateStoppedSessionReport(int totalEpochs, double error, DateTime startTime, IEnumerable<EpochEndArgs> epochEndEventArgs) =>
+            new TrainingSessionReport(SessionEndType.Stopped, totalEpochs, error, startTime, Time.Now - startTime, epochEndEventArgs);
 
-        public static TrainingSessionReport CreatePausedSessionReport(int totalEpochs, double error, DateTime startTime) =>
-            new TrainingSessionReport(SessionEndType.Paused, totalEpochs, error, startTime, Time.Now - startTime);
+        public static TrainingSessionReport CreatePausedSessionReport(int totalEpochs, double error, DateTime startTime, IEnumerable<EpochEndArgs> epochEndEventArgs) =>
+            new TrainingSessionReport(SessionEndType.Paused, totalEpochs, error, startTime, Time.Now - startTime, epochEndEventArgs);
 
-        public static TrainingSessionReport CreateTargetReachedSessionReport(int totalEpochs, double error, DateTime startTime) =>
-            new TrainingSessionReport(SessionEndType.TargetReached, totalEpochs, error, startTime, Time.Now - startTime);
+        public static TrainingSessionReport CreateTargetReachedSessionReport(int totalEpochs, double error, DateTime startTime, IEnumerable<EpochEndArgs> epochEndEventArgs) =>
+            new TrainingSessionReport(SessionEndType.TargetReached, totalEpochs, error, startTime, Time.Now - startTime, epochEndEventArgs);
 
-        public static TrainingSessionReport CreateMaxEpochSessionReport(int totalEpochs, double error, DateTime startTime) =>
-            new TrainingSessionReport(SessionEndType.MaxEpoch, totalEpochs, error, startTime, Time.Now - startTime);
+        public static TrainingSessionReport CreateMaxEpochSessionReport(int totalEpochs, double error, DateTime startTime, IEnumerable<EpochEndArgs> epochEndEventArgs) =>
+            new TrainingSessionReport(SessionEndType.MaxEpoch, totalEpochs, error, startTime, Time.Now - startTime, epochEndEventArgs);
 
-        public static TrainingSessionReport CreateTimeoutSessionReport(int totalEpochs, double error, DateTime startTime) =>
-            new TrainingSessionReport(SessionEndType.Timeout, totalEpochs, error, startTime, Time.Now - startTime);
+        public static TrainingSessionReport CreateTimeoutSessionReport(int totalEpochs, double error, DateTime startTime, IEnumerable<EpochEndArgs> epochEndEventArgs) =>
+            new TrainingSessionReport(SessionEndType.Timeout, totalEpochs, error, startTime, Time.Now - startTime, epochEndEventArgs);
 
-        public static TrainingSessionReport CreateNaNSessionReport(int totalEpochs, double error, DateTime startTime) =>
-            new TrainingSessionReport(SessionEndType.NaNResult, totalEpochs, error, startTime, Time.Now - startTime);
+        public static TrainingSessionReport CreateNaNSessionReport(int totalEpochs, double error, DateTime startTime, IEnumerable<EpochEndArgs> epochEndEventArgs) =>
+            new TrainingSessionReport(SessionEndType.NaNResult, totalEpochs, error, startTime, Time.Now - startTime, epochEndEventArgs);
 
-        public static TrainingSessionReport CreateAlgorithmErrorSessionReport(int totalEpochs, double error, DateTime startTime) =>
-            new TrainingSessionReport(SessionEndType.AlgorithmError, totalEpochs, error, startTime, Time.Now - startTime);
+        public static TrainingSessionReport CreateAlgorithmErrorSessionReport(int totalEpochs, double error, DateTime startTime, IEnumerable<EpochEndArgs> epochEndEventArgs) =>
+            new TrainingSessionReport(SessionEndType.AlgorithmError, totalEpochs, error, startTime, Time.Now - startTime, epochEndEventArgs);
     }
 }

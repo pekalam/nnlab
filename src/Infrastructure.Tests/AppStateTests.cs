@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using AutoFixture;
 using Common.Domain;
@@ -158,9 +159,9 @@ namespace Common.Tests
         [Fact]
         public void Add_when_overlapping_added_throws()
         {
-            var paused = TrainingSessionReport.CreatePausedSessionReport(10, 0.1, Time.Now.Subtract(TimeSpan.FromHours(1)));
+            var paused = TrainingSessionReport.CreatePausedSessionReport(10, 0.1, Time.Now.Subtract(TimeSpan.FromHours(1)), new List<EpochEndArgs>());
             Time.TimeProvider = () => DateTime.Now.AddMinutes(5);
-            var stopped = TrainingSessionReport.CreateStoppedSessionReport(10, 0.1, Time.Now.Subtract(TimeSpan.FromHours(1)));
+            var stopped = TrainingSessionReport.CreateStoppedSessionReport(10, 0.1, Time.Now.Subtract(TimeSpan.FromHours(1)), new List<EpochEndArgs>());
             
             collection.Add(paused);
             
@@ -170,11 +171,11 @@ namespace Common.Tests
         [Fact]
         public void Add_when_last_is_of_terminating_type_throws()
         {
-            var paused = TrainingSessionReport.CreatePausedSessionReport(10, 0.1, Time.Now.Subtract(TimeSpan.FromHours(1)));
+            var paused = TrainingSessionReport.CreatePausedSessionReport(10, 0.1, Time.Now.Subtract(TimeSpan.FromHours(1)), new List<EpochEndArgs>());
             Time.TimeProvider = () => DateTime.Now.AddHours(1);
-            var stopped = TrainingSessionReport.CreateStoppedSessionReport(10, 0.1, Time.Now.Subtract(TimeSpan.FromHours(1)));
+            var stopped = TrainingSessionReport.CreateStoppedSessionReport(10, 0.1, Time.Now.Subtract(TimeSpan.FromHours(1)), new List<EpochEndArgs>());
             Time.TimeProvider = () => DateTime.Now.AddHours(1);
-            var timeout = TrainingSessionReport.CreateTimeoutSessionReport(10, 0.1, Time.Now.Subtract(TimeSpan.FromHours(1)));
+            var timeout = TrainingSessionReport.CreateTimeoutSessionReport(10, 0.1, Time.Now.Subtract(TimeSpan.FromHours(1)), new List<EpochEndArgs>());
             
             collection.Add(paused);
             collection.Add(stopped);

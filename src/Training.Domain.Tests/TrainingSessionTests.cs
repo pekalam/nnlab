@@ -62,6 +62,8 @@ namespace Training.Domain.Tests
             report.SessionEndType.Should().Be(SessionEndType.MaxEpoch);
             report.TotalEpochs.Should().Be(10);
             report.Error.Should().Be(lastErr);
+            report.EpochEndEventArgs.Should().HaveCount(10);
+
             _appState.ActiveSession!.TrainingReports.Count.Should().Be(1);
             _appState.ActiveSession!.TrainingReports.First().Should().Be(report);
         }
@@ -71,7 +73,7 @@ namespace Training.Domain.Tests
         {
             var param = new TrainingParameters()
             {
-                TargetError = 10000
+                TargetError = 10000000,
             };
 
             _appState.ActiveSession.TrainingParameters = param;
@@ -86,7 +88,8 @@ namespace Training.Domain.Tests
             report.SessionEndType.Should().Be(SessionEndType.TargetReached);
             report.TotalEpochs.Should().BeGreaterThan(0);
             report.Error.Should().Be(lastErr);
-    
+            report.EpochEndEventArgs.Should().HaveCount(report.TotalEpochs);
+
             lastErr.Should().BeLessOrEqualTo(param.TargetError);
         }
     
@@ -273,8 +276,8 @@ namespace Training.Domain.Tests
             var report = await task;
     
             report.SessionEndType.Should().Be(SessionEndType.Timeout);
-            session.Stopped.Should().BeTrue();
-            session.Paused.Should().BeFalse();
+            session.Stopped.Should().BeFalse();
+            session.Paused.Should().BeTrue();
             session.Started.Should().BeFalse();
         }
     }

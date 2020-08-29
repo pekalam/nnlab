@@ -202,7 +202,7 @@ namespace Training.Domain
             Paused = false;
             if (!Started)
             {
-                CurrentReport = TrainingSessionReport.CreateStoppedSessionReport(Trainer.Epochs, Trainer.Error, StartTime);
+                CurrentReport = TrainingSessionReport.CreateStoppedSessionReport(Trainer.Epochs, Trainer.Error, StartTime, EpochEndEvents);
                 Stopped = true;
                 return Task.CompletedTask;
             }
@@ -229,23 +229,22 @@ namespace Training.Domain
                 if (_stopRequested)
                 {
                     Stopped = true;
-                    return TrainingSessionReport.CreateStoppedSessionReport(Trainer.Epochs, Trainer.Error, StartTime);
+                    return TrainingSessionReport.CreateStoppedSessionReport(Trainer.Epochs, Trainer.Error, StartTime, EpochEndEvents);
                 }
 
                 if ((DateTime.Now - StartTime) + _elapsed > Parameters.MaxLearningTime)
                 {
-                    Stopped = true;
-                    return TrainingSessionReport.CreateTimeoutSessionReport(Trainer.Epochs, Trainer.Error, StartTime);
+                    return TrainingSessionReport.CreateTimeoutSessionReport(Trainer.Epochs, Trainer.Error, StartTime, EpochEndEvents);
                 }
 
-                return TrainingSessionReport.CreatePausedSessionReport(Trainer.Epochs, Trainer.Error, StartTime);
+                return TrainingSessionReport.CreatePausedSessionReport(Trainer.Epochs, Trainer.Error, StartTime, EpochEndEvents);
             }
 
             CheckCanStart();
 
             if (double.IsNaN(Trainer.Error) && !_reseted)
             {
-                return TrainingSessionReport.CreateNaNSessionReport(Trainer.Epochs, Trainer.Error, StartTime);
+                return TrainingSessionReport.CreateNaNSessionReport(Trainer.Epochs, Trainer.Error, StartTime, EpochEndEvents);
             }
 
             if (Parameters.MaxLearningTime != TimeSpan.MaxValue)
@@ -275,7 +274,7 @@ namespace Training.Domain
                 }
                 catch (AlgorithmFailed)
                 {
-                    return TrainingSessionReport.CreateAlgorithmErrorSessionReport(Trainer.Epochs, error, StartTime);
+                    return TrainingSessionReport.CreateAlgorithmErrorSessionReport(Trainer.Epochs, error, StartTime, EpochEndEvents);
                 }
 
                 var arg = new EpochEndArgs()
@@ -294,18 +293,18 @@ namespace Training.Domain
                 if (Trainer.Epochs == Parameters.MaxEpochs)
                 {
                     Stopped = true;
-                    return TrainingSessionReport.CreateMaxEpochSessionReport(Trainer.Epochs, error, StartTime);
+                    return TrainingSessionReport.CreateMaxEpochSessionReport(Trainer.Epochs, error, StartTime, EpochEndEvents);
                 }
 
                 if (double.IsNaN(error))
                 {
-                    return TrainingSessionReport.CreateNaNSessionReport(Trainer.Epochs, error, StartTime);
+                    return TrainingSessionReport.CreateNaNSessionReport(Trainer.Epochs, error, StartTime, EpochEndEvents);
                 }
 
             } while (error > Parameters.TargetError);
 
             Stopped = true;
-            return TrainingSessionReport.CreateTargetReachedSessionReport(Trainer.Epochs, error, StartTime);
+            return TrainingSessionReport.CreateTargetReachedSessionReport(Trainer.Epochs, error, StartTime, EpochEndEvents);
         }
 
         public Task<TrainingSessionReport> Start()
@@ -325,6 +324,7 @@ namespace Training.Domain
                 {
                     Trainer.ResetEpochs();
                 }
+                else Paused = true;
                 CurrentReport = t.Result;
                 _session.TrainingReports.Add(CurrentReport);
                 return CurrentReport;

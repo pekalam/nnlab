@@ -10,11 +10,11 @@ namespace Common.Framework
     /// Base class of view models.
     /// </summary>
     /// <typeparam name="T">Inheriting class type</typeparam>
-    public class ViewModelBase<T> : BindableBase, INavigationAware, IRegionMemberLifetime, IActiveAware
+    public class ViewModelBase<T> : BindableBase, INavigationAware, IRegionMemberLifetime, IActiveAware, IJournalAware
         where T : ViewModelBase<T>
     {
         private bool _isActive;
-        public static T Instance { get; private set; }
+        public static T? Instance { get; private set; }
         public static event Action Created;
 
         public ViewModelBase()
@@ -31,7 +31,15 @@ namespace Common.Framework
             set
             {
                 _isActive = value;
-                IsActiveChanged?.Invoke(this, null);
+                // if (!value)
+                // {
+                //     Instance = null;
+                // }
+                // else
+                // {
+                //     Instance = this as T;
+                // }
+                IsActiveChanged?.Invoke(this, null!);
             }
         }
 
@@ -45,6 +53,11 @@ namespace Common.Framework
 
         public virtual void OnNavigatedFrom(NavigationContext navigationContext)
         {
+        }
+
+        public bool PersistInHistory()
+        {
+            return false;
         }
     }
 

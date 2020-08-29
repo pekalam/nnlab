@@ -20,7 +20,8 @@ namespace Common.Domain
     {
         private Session? _activeSession;
 
-        public event EventHandler<(Session? prev,Session next)> ActiveSessionChanged;
+        public event EventHandler<(Session? prev,Session next)>? ActiveSessionChanged;
+        public event EventHandler<Session>? SessionCreated; 
 
         public Session? ActiveSession
         {
@@ -47,6 +48,7 @@ namespace Common.Domain
             var newSession = new Session(name);
             Sessions.Add(newSession);
             Log.Debug($"Session {newSession.Name} created");
+            SessionCreated?.Invoke(this, newSession);
 
             if (Sessions.Count == 1)
             {

@@ -168,7 +168,7 @@ namespace Training.Application.Controllers
 
         private void OpenReports()
         {
-            _rm.NavigateContentRegion("TrainingReportView", "Reports");
+            _rm.NavigateContentRegion("ReportsView", "Reports");
         }
 
         private void OpenParameters()

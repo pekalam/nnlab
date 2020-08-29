@@ -18,7 +18,7 @@ using Training.Domain;
 
 namespace Training.Application.Services
 {
-    public interface IErrorPlotService
+    public interface IErrorPlotService : IService
     {
         Action<NavigationContext> Navigated { get; }
 
@@ -29,7 +29,7 @@ namespace Training.Application.Services
         }
     }
 
-    internal class ErrorPlotService : IErrorPlotService, IService
+    internal class ErrorPlotService : IErrorPlotService
     {
         public Action<NavigationContext> Navigated { get; set; }
 
@@ -113,6 +113,9 @@ namespace Training.Application.Controllers
 
         private void ModuleStateOnActiveSessionChanged(object? sender, (TrainingSession? prev, TrainingSession next) e)
         {
+            //do not change for report view
+            if(_epochEndConsumer == null) return;
+
             var vm = _accessor.Get<ErrorPlotViewModel>();
             vm.Series.Points.Clear();
 
