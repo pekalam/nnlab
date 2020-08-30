@@ -35,7 +35,7 @@ namespace Training.Presentation
                     return "Session paused";
             }
     
-            return string.Empty;
+            return "";
         }
     
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

@@ -1,4 +1,4 @@
-﻿using Prism.Ioc;
+using Prism.Ioc;
 using Training.Application.Controllers;
 using Training.Application.Services;
 
@@ -18,6 +18,7 @@ namespace Training.Application
             IMatrixTrainingPreviewService.Register(cr);
             IReportsService.Register(cr);
             IReportErrorService.Register(cr);
+            ITrainingParametersService.Register(cr);
         }
     }
 }

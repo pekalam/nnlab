@@ -1,19 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 using System.Timers;
 using System.Windows;
 using Common.Domain;
 using Common.Framework;
+using Training.Application.Views;
 using Training.Domain;
 using Unity;
 
 namespace Training.Application.ViewModels
 {
-    public class TrainingInfoViewModel : ViewModelBase<TrainingInfoViewModel>
+    public class TrainingInfoViewModel : ViewModelBase<TrainingInfoViewModel, ITrainingInfoView>
     {
-        private int _iterationsPerEpoch;
-        private Timer _timer = new Timer(1000);
+        private readonly Timer _timer = new Timer(1000);
         private DateTime _timerDate;
         private double? _validationError;
         private double? _testError;
@@ -27,24 +28,36 @@ namespace Training.Application.ViewModels
         {
             ModuleState = moduleState;
             AppState = appState;
-            _timer.Elapsed += TimerOnElapsed;
+            _timer.Elapsed += (_,__) => View.UpdateTimer(Time.Now - _timerDate);
+
+            if (ModuleState.ActiveSession != null)
+            {
+                ModuleState.ActiveSession.PropertyChanged += OnTraininerChanged;
+                if (ModuleState.ActiveSession.Trainer != null)
+                {
+                    RaisePropertyChanged(nameof(IterationsPerEpoch));
+                }
+            }
+
+            ModuleState.ActiveSessionChanged += (sender, args) => args.next.PropertyChanged += OnTraininerChanged;
+
         }
 
-        private void TimerOnElapsed(object sender, ElapsedEventArgs e)
+        private void OnTraininerChanged(object sender, PropertyChangedEventArgs e)
         {
-            UpdateTimer(DateTime.Now - _timerDate);
+            if (e.PropertyName == nameof(TrainingSession.Trainer))
+            {
+                RaisePropertyChanged(nameof(IterationsPerEpoch));
+            }
         }
 
-        //TODO view abstr
-
-        public Action<TimeSpan> UpdateTimer { get; set; }
-        public Action<double, int, int> UpdateTraining { get; set; }
-
-
+        /// <summary>
+        /// Starts view timer from 0
+        /// </summary>
         public void StartTimer()
         {
-            _timerDate = DateTime.Now;
-            UpdateTimer(TimeSpan.Zero);
+            _timerDate = Time.Now;
+            View.UpdateTimer(TimeSpan.Zero);
             _timer.Start();
         }
 
@@ -56,11 +69,7 @@ namespace Training.Application.ViewModels
         public ModuleState ModuleState { get; }
         public AppState AppState { get; }
 
-        public int IterationsPerEpoch
-        {
-            get => _iterationsPerEpoch;
-            set => SetProperty(ref _iterationsPerEpoch, value);
-        }
+        public int? IterationsPerEpoch => ModuleState.ActiveSession.Trainer.Algorithm.BatchTrainer?.IterationsPerEpoch;
 
         public double? ValidationError
         {

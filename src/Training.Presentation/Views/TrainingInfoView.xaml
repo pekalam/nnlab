@@ -64,7 +64,7 @@
         <TextBlock Text="Training Time" Style="{StaticResource StatsTitle}"/>
         <UniformGrid Columns="2">
             <TextBlock Text="Start time:" Style="{StaticResource StatsText}"/>
-            <TextBlock Text="{Binding ModuleState.ActiveSession.StartTime}" Style="{StaticResource StatsText}"/>
+            <TextBlock Text="{Binding ModuleState.ActiveSession.StartTime, StringFormat=HH:mm:ss}" Style="{StaticResource StatsText}"/>
             <TextBlock Text="Elapsed time:" Style="{StaticResource StatsText}"/>
             <TextBlock x:Name="TimerText" Style="{StaticResource StatsText}"/>
         </UniformGrid>

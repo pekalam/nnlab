@@ -18,8 +18,8 @@ namespace Training.Application.Controllers
 
     class TrainingInfoController : ITrainingInfoController
     {
-        private PlotEpochEndConsumer _epochEndConsumer;
-        private IViewModelAccessor _accessor;
+        private readonly PlotEpochEndConsumer _epochEndConsumer;
+        private readonly IViewModelAccessor _accessor;
 
         public TrainingInfoController(IEventAggregator ea, IViewModelAccessor accessor, ModuleState moduleState)
         {
@@ -27,8 +27,10 @@ namespace Training.Application.Controllers
             _epochEndConsumer = new PlotEpochEndConsumer(moduleState,
                 (args, session) =>
                 {
+                    var vm = _accessor.Get<TrainingInfoViewModel>();
+
                     var last = args.Last();
-                    _accessor.Get<TrainingInfoViewModel>().UpdateTraining(last.Error, last.Epoch, last.Iterations);
+                    vm.View.UpdateTraining(last.Error, last.Epoch, last.Iterations);
                 },
                 trainingSession =>
                 {
@@ -69,8 +71,14 @@ namespace Training.Application.Controllers
             if (e.PropertyName == nameof(TrainingSession.Started))
             {
                 var session = sender as TrainingSession;
+                var vm = _accessor.Get<TrainingInfoViewModel>();
                 if (session.Started)
                 {
+                    vm.StartTimer();
+                }
+                else
+                {
+                    vm.StopTimer();
                 }
             }
         }

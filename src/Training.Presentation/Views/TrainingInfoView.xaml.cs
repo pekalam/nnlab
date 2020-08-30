@@ -4,17 +4,30 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
 using Training.Application.ViewModels;
+using Training.Application.Views;
 
 namespace Training.Presentation.Views
 {
     /// <summary>
     /// Interaction logic for TrainingInfoView
     /// </summary>
-    public partial class TrainingInfoView : UserControl
+    public partial class TrainingInfoView : UserControl, ITrainingInfoView
     {
         public TrainingInfoView()
         {
             InitializeComponent();
+        }
+
+        protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
+        {
+            base.OnPropertyChanged(e);
+            if (e.Property.Name == nameof(DataContext))
+            {
+                if (DataContext is TrainingInfoViewModel vm)
+                {
+                    vm.SetView(this);
+                }
+            }
         }
 
         private string ToTimerString(in TimeSpan date)
@@ -35,34 +48,23 @@ namespace Training.Presentation.Views
             return str.ToString();
         }
 
-        protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
+        public void UpdateTimer(in TimeSpan timeSpan)
         {
-            base.OnPropertyChanged(e);
-            switch (e.Property.Name)
+            var txt = ToTimerString(timeSpan);
+            Dispatcher.InvokeAsync(() => TimerText.Text = txt, DispatcherPriority.Normal);
+        }
+
+        public void UpdateTraining(double error, int epochs, int iterations)
+        {
+            var e = error.ToString();
+            var ep = epochs.ToString();
+            var it = iterations.ToString();
+            Dispatcher.InvokeAsync(() =>
             {
-                case nameof(DataContext):
-                    if (DataContext is TrainingInfoViewModel vm)
-                    {
-                        vm.UpdateTimer = span =>
-                        {
-                            var txt = ToTimerString(span);
-                            Dispatcher.InvokeAsync(() => TimerText.Text = txt, DispatcherPriority.Normal);
-                        };
-                        vm.UpdateTraining = (error, epoch, iterations) =>
-                        {
-                            var e = error.ToString();
-                            var ep = epoch.ToString();
-                            var it = iterations.ToString();
-                            Dispatcher.InvokeAsync(() =>
-                            {
-                                Error.Text = e;
-                                Epoch.Text = ep;
-                                Iterations.Text = it;
-                            }, DispatcherPriority.Normal);
-                        };
-                    }
-                    break;
-            }
+                Error.Text = e;
+                Epoch.Text = ep;
+                Iterations.Text = it;
+            }, DispatcherPriority.Normal);
         }
     }
 }

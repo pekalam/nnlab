@@ -19,7 +19,7 @@ namespace Training.Presentation.Converters
             switch (param.Algorithm)
             {
                 case TrainingAlgorithm.GradientDescent:
-                    return "Gradient descent" + (param.GDParams.BatchParams.BatchSize == 1 ? " (online)" : "");
+                    return "Gradient descent" + (param.GDParams.BatchSize == 1 ? " (online)" : "");
                 case TrainingAlgorithm.LevenbergMarquardt:
                     return "Levenberg-Marquardt";
             }

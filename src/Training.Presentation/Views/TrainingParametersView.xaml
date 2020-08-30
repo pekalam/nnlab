@@ -136,23 +136,24 @@
                                             HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" />
                 </Grid>
 
-                <TextBlock Text="Stop criteria" Margin="10,10,0,0" FontSize="20" />
-                <Grid Margin="20">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition />
-                        <ColumnDefinition />
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="8" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="8" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-                    <TextBlock Grid.Row="0" Text="Target error" HorizontalAlignment="Left" VerticalAlignment="Center"
+                <StackPanel>
+                    <TextBlock Text="Stop criteria" Margin="10,10,0,0" FontSize="20" />
+                    <Grid Margin="20">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="8" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="8" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0" Text="Target error" HorizontalAlignment="Left" VerticalAlignment="Center"
                            Margin="0,10,0,10" />
-                    <mah:NumericUpDown MinWidth="120"
+                        <mah:NumericUpDown MinWidth="120"
                                    Grid.Row="0"
                                    Grid.Column="1"
                                    Minimum="0"
@@ -160,35 +161,44 @@
                                    StringFormat="###0.###################"
                                    Value="{Binding TrainingParameters.TargetError, Mode=TwoWay, ValidatesOnDataErrors=True}"
                                    HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" />
-                    <TextBlock Grid.Column="0" Grid.Row="2" Text="Max learning time" HorizontalAlignment="Left"
+                        <TextBlock Grid.Column="0" Grid.Row="2" Text="Max learning time" HorizontalAlignment="Left"
                            VerticalAlignment="Center" Margin="0,10,0,10" />
-                    <Grid Grid.Row="2" Grid.Column="1">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition />
-                            <ColumnDefinition />
-                        </Grid.ColumnDefinitions>
-                        <CheckBox Content="Undefined" IsChecked="{Binding IsMaxLearningTimeChecked}" x:Name="maxLearningTimeCheckbox"
+                        <Grid Grid.Row="2" Grid.Column="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <CheckBox Content="Undefined" IsChecked="{Binding IsMaxLearningTimeChecked}" x:Name="maxLearningTimeCheckbox"
                               Margin="0,0,10,0" />
-                        <mah:TimePicker Grid.Column="1"
+                            <mah:TimePicker Grid.Column="1"
                                     PickerVisibility="HourMinute"
                                     SelectedDateTime="{Binding MaxLearningTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                                     SelectedTimeFormat="Short"
                                     IsEnabled="{Binding ElementName=maxLearningTimeCheckbox, Path=IsChecked, Converter={StaticResource boolNegConverter}}" />
-                    </Grid>
+                        </Grid>
 
-                    <TextBlock Grid.Column="0" Grid.Row="4" Text="Max epochs" HorizontalAlignment="Left" VerticalAlignment="Center"
+                        <TextBlock Grid.Column="0" Grid.Row="4" Text="Max epochs" HorizontalAlignment="Left" VerticalAlignment="Center"
                            Margin="0,10,0,10" />
-                    <Grid Grid.Row="4" Grid.Column="1">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition />
-                            <ColumnDefinition />
-                        </Grid.ColumnDefinitions>
-                        <CheckBox Content="Undefined" IsChecked="True" x:Name="maxEpochsCheckbox" Margin="0,0,10,0" />
-                        <mah:NumericUpDown Grid.Column="1"
+                        <Grid Grid.Row="4" Grid.Column="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <CheckBox Content="Undefined" IsChecked="True" x:Name="maxEpochsCheckbox" Margin="0,0,10,0" />
+                            <mah:NumericUpDown Grid.Column="1"
                                        IsEnabled="{Binding Path=IsChecked, ElementName=maxLearningTimeCheckbox, Converter={StaticResource boolNegConverter}}" />
+                        </Grid>
                     </Grid>
-                </Grid>
+                </StackPanel>
+
             </StackPanel>
+
+            <DockPanel Grid.Column="1" LastChildFill="False" Margin="0">
+                <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,20,10">
+                    <Button DockPanel.Dock="Bottom" Command="{Binding Service.ResetCommand}" Style="{StaticResource MenuButton}" HorizontalAlignment="Right" Width="70" Margin="0,0,16,0">Reset</Button>
+                    <Button DockPanel.Dock="Bottom" Command="{Binding Service.OkCommand}" Style="{StaticResource MenuButton}" HorizontalAlignment="Right" Width="70">OK</Button>
+                </StackPanel>
+            </DockPanel>
         </Grid>
     </ContentControl>
 </UserControl>

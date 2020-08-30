@@ -43,7 +43,7 @@ namespace Common.Domain
         {
             if (name == "")
             {
-                name = "Unnamed" + (Sessions.Count > 0 ? " " + Sessions.Count : string.Empty);
+                name = "Unnamed" + (Sessions.Count > 0 ? " " + Sessions.Count : "");
             }
             var newSession = new Session(name);
             Sessions.Add(newSession);
@@ -62,7 +62,7 @@ namespace Common.Domain
         {
             if (ActiveSession == null) throw new InvalidOperationException("Cannot duplicate - null active session");
 
-            var cpy = ActiveSession.CloneWithName("Unnamed" + (Sessions.Count > 0 ? " " + Sessions.Count : string.Empty), duplicateOptions);
+            var cpy = ActiveSession.CloneWithName("Unnamed" + (Sessions.Count > 0 ? " " + Sessions.Count : ""), duplicateOptions);
             Log.Debug($"Session {_activeSession.Name} duplicated. Duplicated name: {cpy.Name}");
 
             Sessions.Add(cpy);

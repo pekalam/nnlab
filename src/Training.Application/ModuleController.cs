@@ -57,7 +57,14 @@ namespace Training.Application
             {
                 if (args.moduleId == ModuleIds.Training)
                 {
-                    _ea.GetEvent<ReloadContentForSession>().Subscribe(_ => _rm.NavigateContentRegion("TrainingView", "Training"));
+                    if (args.next.TrainingParameters == null)
+                    {
+                        _ea.GetEvent<CheckNavMenuItem>().Publish(ModuleIds.Data);
+                    }
+                    else
+                    {
+                        _rm.NavigateContentRegion("TrainingView", "Training");
+                    }
                 }
             });
             _ea.GetEvent<SetupNewNavigationForSession>().Subscribe(args =>
