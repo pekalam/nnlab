@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Common.Framework;
 using Prism.Regions;
+using Training.Application.Plots;
 
 namespace Training.Application.ViewModels
 {
@@ -28,7 +29,7 @@ namespace Training.Application.ViewModels
 
     public class PlotEpochParametersViewModel : ViewModelBase<PlotEpochParametersViewModel>
     {
-        private int _epochDelay = PlotEpochEndConsumer.BUFFERING_BUFFER_SIZE;
+        private int _epochDelay;
         private bool _onlineMode;
         private bool _bufferingMode;
 
@@ -74,8 +75,12 @@ namespace Training.Application.ViewModels
                 new PlotEpochParametersNavParams.RecNavParams(navigationContext.Parameters);
 
             _epochEndConsumer = parameters.PlotEpochEndConsumer;
-            OnlineMode = _epochEndConsumer.ConsumerType == PlotEpochEndConsumerType.Online;
-            BufferingMode = _epochEndConsumer.ConsumerType == PlotEpochEndConsumerType.Buffering;
+            _epochDelay = _epochEndConsumer.BufferSize;
+            RaisePropertyChanged(nameof(EpochDelay));
+            _onlineMode = _epochEndConsumer.ConsumerType == PlotEpochEndConsumerType.Online;
+            _bufferingMode = _epochEndConsumer.ConsumerType == PlotEpochEndConsumerType.Buffering;
+            RaisePropertyChanged(nameof(OnlineMode));
+            RaisePropertyChanged(nameof(BufferingMode));
         }
     }
 }

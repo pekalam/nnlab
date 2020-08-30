@@ -7,6 +7,7 @@ using Common.Domain;
 using FluentAssertions;
 using Moq.AutoMock;
 using TestUtils;
+using Training.Application.Plots;
 using Training.Domain;
 using Xunit;
 

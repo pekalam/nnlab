@@ -13,7 +13,6 @@ namespace Training.Application
             cr.RegisterSingleton<ITrainingController, TrainingController>()
                 .RegisterSingleton<ITrainingInfoController, TrainingInfoController>();
 
-
             IPanelSelectService.Register(cr);
             ITrainingService.Register(cr);
             IErrorPlotService.Register(cr);

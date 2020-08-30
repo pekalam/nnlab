@@ -6,6 +6,7 @@ using CommonServiceLocator;
 using Prism.Ioc;
 using Prism.Regions;
 using Training.Application.Controllers;
+using Training.Application.Plots;
 using Training.Application.Services;
 using Training.Application.ViewModels;
 using Training.Domain;
@@ -78,10 +79,7 @@ namespace Training.Application.Controllers
                 vm.MatVm.Controller.Update();
                 GlobalDistributingDispatcher.Call(() =>
                 {
-                    System.Windows.Application.Current?.Dispatcher.InvokeAsync(() =>
-                    {
-                        vm.MatVm.Controller.ApplyUpdate();
-                    });
+                    vm.MatVm.Controller.ApplyUpdate();
                 }, _epochEndConsumer);
             });
 

@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Threading.Tasks;
 using Common.Domain;
 using Prism.Mvvm;
+using Training.Application.Plots;
 using Training.Domain;
 
 namespace Training.Application

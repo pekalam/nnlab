@@ -113,7 +113,7 @@ namespace Common.Tests
 
 
             dup.TrainingData.Should().NotBe(session.TrainingData).And.Should().NotBeNull();
-            dup.TrainingParameters.Should().NotBe(session.TrainingParameters).And.Should().NotBeNull();
+            dup.TrainingParameters.Should().NotBeSameAs(session.TrainingParameters).And.Should().NotBeNull();
         }
 
         [Fact]

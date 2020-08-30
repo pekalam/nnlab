@@ -8,6 +8,7 @@ using Common.Domain;
 using Common.Framework;
 using Prism.Events;
 using Prism.Regions;
+using Training.Application.Plots;
 using Training.Application.ViewModels;
 using Training.Domain;
 using Training.Interface;
@@ -16,35 +17,31 @@ namespace Training.Application.Controllers
 {
     internal interface ITrainingInfoController : ISingletonController { }
 
-    class TrainingInfoController : ITrainingInfoController
+    class TrainingInfoController : ControllerBase<TrainingInfoViewModel>,ITrainingInfoController
     {
         private readonly PlotEpochEndConsumer _epochEndConsumer;
-        private readonly IViewModelAccessor _accessor;
 
-        public TrainingInfoController(IEventAggregator ea, IViewModelAccessor accessor, ModuleState moduleState)
+        public TrainingInfoController(IEventAggregator ea, IViewModelAccessor accessor, ModuleState moduleState) : base(accessor)
         {
-            _accessor = accessor;
             _epochEndConsumer = new PlotEpochEndConsumer(moduleState,
                 (args, session) =>
                 {
-                    var vm = _accessor.Get<TrainingInfoViewModel>();
 
                     var last = args.Last();
-                    vm.View.UpdateTraining(last.Error, last.Epoch, last.Iterations);
+                    Vm.View.UpdateTraining(last.Error, last.Epoch, last.Iterations);
                 },
                 trainingSession =>
                 {
-                    var vm = _accessor.Get<TrainingInfoViewModel>();
-                    vm.StartTimer();
-                    vm.TestError = null;
-                    vm.ValidationError = null;
+                    Vm.StartTimer();
+                    Vm.TestError = null;
+                    Vm.ValidationError = null;
                 },
                 trainingSession =>
                 {
-                    _accessor.Get<TrainingInfoViewModel>().StopTimer();
+                    Vm.StopTimer();
                 }, session =>
                 {
-                    _accessor.Get<TrainingInfoViewModel>().StopTimer();
+                    Vm.StopTimer();
                 });
 
             moduleState.ActiveSessionChanged += (sender, args) =>
@@ -54,12 +51,12 @@ namespace Training.Application.Controllers
 
             ea.GetEvent<TrainingValidationFinished>().Subscribe(d =>
             {
-                _accessor.Get<TrainingInfoViewModel>().ValidationError = d;
+                Vm.ValidationError = d;
             });
 
             ea.GetEvent<TrainingTestFinished>().Subscribe(d =>
             {
-                _accessor.Get<TrainingInfoViewModel>().TestError = d;
+                Vm.TestError = d;
             });
 
 
@@ -71,14 +68,13 @@ namespace Training.Application.Controllers
             if (e.PropertyName == nameof(TrainingSession.Started))
             {
                 var session = sender as TrainingSession;
-                var vm = _accessor.Get<TrainingInfoViewModel>();
                 if (session.Started)
                 {
-                    vm.StartTimer();
+                    Vm.StartTimer();
                 }
                 else
                 {
-                    vm.StopTimer();
+                    Vm.StopTimer();
                 }
             }
         }

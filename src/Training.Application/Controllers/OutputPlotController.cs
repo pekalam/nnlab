@@ -16,6 +16,7 @@ using Prism.Ioc;
 using Prism.Regions;
 using Shell.Interface;
 using Training.Application.Controllers;
+using Training.Application.Plots;
 using Training.Application.Services;
 using Training.Application.ViewModels;
 using Training.Domain;
@@ -29,7 +30,8 @@ namespace Training.Application.Services
 
         public static void Register(IContainerRegistry cr)
         {
-            cr.Register<ITransientController<OutputPlotService>,OutputPlotController>().Register<IOutputPlotService, OutputPlotService>();
+            cr.Register<ITransientController<OutputPlotService>, OutputPlotController>()
+                .Register<IOutputPlotService, OutputPlotService>();
         }
     }
 
@@ -65,38 +67,33 @@ namespace Training.Application.Controllers
         public IOutputPlot? OutputPlot { get; private set; }
     }
 
-    class OutputPlotController : ITransientController<OutputPlotService>
+    class OutputPlotController : ControllerBase<OutputPlotViewModel>, ITransientController<OutputPlotService>
     {
-        private string OutputPlotSettingsRegion;
+        private string _outputPlotSettingsRegion;
 
         private PlotEpochEndConsumer? _epochEndConsumer;
         private readonly OutputPlotSelector _plotSelector = new OutputPlotSelector();
         private CancellationTokenSource _cts;
         private readonly List<DispatcherOperation> _ops = new List<DispatcherOperation>();
-        private IRegionManager _rm;
-        private IEventAggregator _ea;
-        private IViewModelAccessor _accessor;
+        private readonly IRegionManager _rm;
         private readonly ModuleState _moduleState;
 
-        public OutputPlotController(IRegionManager rm, IEventAggregator ea, IViewModelAccessor accessor, ModuleState moduleState)
+        public OutputPlotController(IRegionManager rm, IViewModelAccessor accessor, ModuleState moduleState) :
+            base(accessor)
         {
             _rm = rm;
-            _ea = ea;
-            _accessor = accessor;
             _moduleState = moduleState;
+        }
 
-            _accessor.OnCreated<OutputPlotViewModel>(() =>
+        protected override void VmCreated()
+        {
+            Vm.IsActiveChanged += (sender, args) =>
             {
-                var vm = _accessor.Get<OutputPlotViewModel>();
-
-                vm.IsActiveChanged += (sender, args) =>
+                if (!(sender as OutputPlotViewModel).IsActive)
                 {
-                    if (!(sender as OutputPlotViewModel).IsActive)
-                    {
-                        _epochEndConsumer?.ForceStop();
-                    }
-                };
-            });
+                    _epochEndConsumer?.ForceStop();
+                }
+            };
         }
 
         public void Initialize(OutputPlotService service)
@@ -106,62 +103,33 @@ namespace Training.Application.Controllers
 
         private void InvalidatePlot()
         {
-            GlobalDistributingDispatcher.Call(() =>
-            {
-                var vm = _accessor.Get<OutputPlotViewModel>();
-
-                // if (System.Windows.Application.Current == null) return;
-                //
-                // var op = System.Windows.Application.Current.Dispatcher.InvokeAsync(() =>
-                //     {
-                        vm.PlotModel.InvalidatePlot(true);
-                    // },
-                    // DispatcherPriority.Background, _cts.Token);
-                //_ops.Add(op);
-
-            }, _epochEndConsumer);
+            GlobalDistributingDispatcher.Call(() => { Vm.PlotModel.InvalidatePlot(true); }, _epochEndConsumer);
         }
 
         private void InitPlotEpochEndConsumer()
         {
-            var vm = _accessor.Get<OutputPlotViewModel>();
-
-            _epochEndConsumer = new PlotEpochEndConsumer(_moduleState,(epochEnds, session) =>
+            _epochEndConsumer = new PlotEpochEndConsumer(_moduleState, (epochEnds, session) =>
             {
                 if (_cts.IsCancellationRequested)
                 {
                     return;
                 }
 
-                _plotSelector.OutputPlot?.OnEpochEnd(epochEnds, vm, _cts.Token);
-
-                if (System.Windows.Application.Current == null) return;
+                _plotSelector.OutputPlot?.OnEpochEnd(epochEnds, Vm, _cts.Token);
 
                 InvalidatePlot();
             }, session =>
             {
                 _cts = new CancellationTokenSource();
                 _plotSelector.SelectPlot(session);
-                _plotSelector.OutputPlot?.OnSessionStarting(vm, session, _cts.Token);
+                _plotSelector.OutputPlot?.OnSessionStarting(Vm, session, _cts.Token);
                 InvalidatePlot();
             }, s =>
             {
-                // foreach (var op in _ops)
-                // {
-                //     if (Application.Current != null)
-                //         op.Abort();
-                // }
-                // _ops.Clear();
                 _cts?.Cancel();
                 _plotSelector.OutputPlot?.OnSessionStopped(s);
             }, s =>
             {
-                // foreach (var op in _ops)
-                // {
-                //     if (Application.Current != null)
-                //         op.Abort();
-                // }
-                // _ops.Clear();
                 _cts?.Cancel();
                 _plotSelector.OutputPlot?.OnSessionPaused(s);
             });
@@ -171,35 +139,33 @@ namespace Training.Application.Controllers
 
             var p = new NavigationParameters();
             p.Add(nameof(PlotEpochEndConsumer), _epochEndConsumer);
-            _rm.Regions[OutputPlotSettingsRegion].RemoveAll();
-            _rm.Regions[OutputPlotSettingsRegion].RequestNavigate("PlotEpochParametersView", p);
+            _rm.Regions[_outputPlotSettingsRegion].RemoveAll();
+            _rm.Regions[_outputPlotSettingsRegion].RequestNavigate("PlotEpochParametersView", p);
 
             _epochEndConsumer.Initialize();
         }
 
         private async void OnNavigated(NavigationContext navigationContext)
         {
-            var vm = _accessor.Get<OutputPlotViewModel>();
             var navParams = OutputPlotNavParams.FromNavParams(navigationContext.Parameters);
 
-            OutputPlotSettingsRegion = navParams.ParentRegion + nameof(OutputPlotSettingsRegion);
-            vm.BasicPlotModel.SetSettingsRegion(OutputPlotSettingsRegion);
+            _outputPlotSettingsRegion = navParams.ParentRegion + nameof(_outputPlotSettingsRegion);
+            Vm.BasicPlotModel.SetSettingsRegion(_outputPlotSettingsRegion);
 
             if (navParams.EpochEnd)
             {
                 InitPlotEpochEndConsumer();
             }
             else
-            { 
-             
-
+            {
                 _plotSelector.SelectPlot(navParams.Network);
-                await Task.Run(() =>
-                {
-                    _plotSelector.OutputPlot.GeneratrePlot(navParams.Set, navParams.Data, navParams.Network, vm);
-                }, navParams.Cts.Token);
+                await Task.Run(
+                    () =>
+                    {
+                        _plotSelector.OutputPlot.GeneratrePlot(navParams.Set, navParams.Data, navParams.Network, Vm);
+                    }, navParams.Cts.Token);
 
-                System.Windows.Application.Current.Dispatcher.Invoke(() => vm.PlotModel.InvalidatePlot(true),
+                System.Windows.Application.Current.Dispatcher.Invoke(() => Vm.PlotModel.InvalidatePlot(true),
                     DispatcherPriority.Background, navParams.Cts.Token);
             }
         }
@@ -207,7 +173,8 @@ namespace Training.Application.Controllers
 
     public class OutputPlotNavParams : NavigationParameters
     {
-        public OutputPlotNavParams(string parentRegion, bool epochEnd, DataSetType dataSet, MLPNetwork network, TrainingData data, CancellationTokenSource cts)
+        public OutputPlotNavParams(string parentRegion, bool epochEnd, DataSetType dataSet, MLPNetwork network,
+            TrainingData data, CancellationTokenSource cts)
         {
             Add(nameof(OutputPlotRecNavParams.ParentRegion), parentRegion);
             Add(nameof(OutputPlotRecNavParams.EpochEnd), epochEnd);
@@ -215,14 +182,14 @@ namespace Training.Application.Controllers
             Add(nameof(OutputPlotRecNavParams.Data), data);
             Add(nameof(OutputPlotRecNavParams.Cts), cts);
             Add(nameof(OutputPlotRecNavParams.Set), dataSet);
-
         }
 
-        public static OutputPlotRecNavParams FromNavParams(NavigationParameters navParams) => new OutputPlotRecNavParams(navParams);
+        public static OutputPlotRecNavParams FromNavParams(NavigationParameters navParams) =>
+            new OutputPlotRecNavParams(navParams);
 
         public class OutputPlotRecNavParams
         {
-            private NavigationParameters _parameters;
+            private readonly NavigationParameters _parameters;
 
             public OutputPlotRecNavParams(NavigationParameters parameters)
             {
