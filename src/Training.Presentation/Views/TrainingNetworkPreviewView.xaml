@@ -5,6 +5,13 @@
              xmlns:nnControl="clr-namespace:NNControl;assembly=NNControl"
              prism:ViewModelLocator.AutoWireViewModel="True">
     <Grid>
-        <nnControl:NeuralNetworkControl ModelAdapter="{Binding Path=ModelAdapter}"/>
+        <nnControl:NeuralNetworkControl ModelAdapter="{Binding ModelAdapter}">
+            <nnControl:NeuralNetworkControl.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Toggle animation" Command="{Binding Service.ToggleAnimationCommand}"/>
+                    <MenuItem Header="Clear colors" Command="{Binding Service.ClearColorsCommand}"/>
+                </ContextMenu>
+            </nnControl:NeuralNetworkControl.ContextMenu>
+        </nnControl:NeuralNetworkControl>
     </Grid>
 </UserControl>

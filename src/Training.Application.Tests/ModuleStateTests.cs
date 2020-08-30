@@ -1,10 +1,9 @@
 using Common.Domain;
 using FluentAssertions;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using TestUtils;
 using Xunit;
 
-namespace Training.Domain.Tests
+namespace Training.Application.Tests
 {
     public class ModuleStateTests
     {

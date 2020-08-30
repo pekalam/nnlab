@@ -110,10 +110,13 @@ namespace Training.Application.Controllers
             {
                 var vm = _accessor.Get<OutputPlotViewModel>();
 
-                if (System.Windows.Application.Current == null) return;
-
-                var op = System.Windows.Application.Current.Dispatcher.InvokeAsync(() => vm.PlotModel.InvalidatePlot(true),
-                    DispatcherPriority.Background, _cts.Token);
+                // if (System.Windows.Application.Current == null) return;
+                //
+                // var op = System.Windows.Application.Current.Dispatcher.InvokeAsync(() =>
+                //     {
+                        vm.PlotModel.InvalidatePlot(true);
+                    // },
+                    // DispatcherPriority.Background, _cts.Token);
                 //_ops.Add(op);
 
             }, _epochEndConsumer);

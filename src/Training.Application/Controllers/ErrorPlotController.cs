@@ -134,16 +134,16 @@ namespace Training.Application.Controllers
 
             GlobalDistributingDispatcher.Call(() =>
             {
-                if (System.Windows.Application.Current == null) return;
+                // if (System.Windows.Application.Current == null) return;
 
 
-                System.Windows.Application.Current.Dispatcher.InvokeAsync(() =>
-                {
+                // System.Windows.Application.Current.Dispatcher.InvokeAsync(() =>
+                // {
                     lock (_ptsLock)
                     {
                         vm.BasicPlotModel.Model.InvalidatePlot(true);
                     }
-                }, DispatcherPriority.Background, _cts.Token);
+                // }, DispatcherPriority.Background, _cts.Token);
 
 
             }, _epochEndConsumer);

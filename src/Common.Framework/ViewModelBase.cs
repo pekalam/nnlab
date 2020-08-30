@@ -75,7 +75,7 @@ namespace Common.Framework
         /// <remarks>
         /// This property is set in <see cref="OnNavigatedTo"/> method.
         /// </remarks>
-        protected TV View { get; private set; }
+        public TV View { get; private set; }
 
         /// <summary>
         /// Called after <see cref="View"/> property is set.
@@ -84,6 +84,8 @@ namespace Common.Framework
         protected virtual void ViewChanged(TV view)
         {
         }
+
+        public void SetView(TV view) => View = view;
 
         public override void OnNavigatedTo(NavigationContext navigationContext)
         {

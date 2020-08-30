@@ -106,7 +106,7 @@ namespace SharedUI.BasicPlot
                 var rm = ServiceLocator.Current.GetInstance<IRegionManager>();
                 if (rm.Regions.ContainsRegionWithName(name))
                 {
-                    return;
+                    rm.Regions.Remove(name);
                 }
 
                 RegionManager.SetRegionName(SettingsContent, name);

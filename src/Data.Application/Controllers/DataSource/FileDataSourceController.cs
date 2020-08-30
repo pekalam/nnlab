@@ -45,9 +45,6 @@ namespace Data.Application.Controllers.DataSource
                 var vm = FileDataSourceViewModel.Instance;
 
                 vm.DataSourcePreviewVm.Loaded += () => vm.ShowLoadingVisibility = Visibility.Collapsed;
-
-                //TODO
-                //_actionMenuNavService.SetLeftMenu<ActionMenuLeftView>();
             };
         }
 

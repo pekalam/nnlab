@@ -19,4 +19,24 @@
     public interface ITransientController
     {
     }
+
+
+    public class ControllerBase<TVm> where TVm : ViewModelBase<TVm>
+    {
+        protected IViewModelAccessor viewModelAccessor;
+        protected TVm? Vm;
+
+        public ControllerBase(IViewModelAccessor viewModelAccessor)
+        {
+            this.viewModelAccessor = viewModelAccessor;
+
+            viewModelAccessor.OnCreated<TVm>(() =>
+            {
+                Vm = viewModelAccessor.Get<TVm>()!;
+                VmCreated();
+            });
+        }
+
+        protected virtual void VmCreated() { }
+    }
 }

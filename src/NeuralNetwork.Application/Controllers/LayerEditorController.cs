@@ -82,42 +82,41 @@ namespace NeuralNetwork.Application.Controllers
             var vm = _accessor.Get<LayerEditorViewModel>();
             var model = (LayerDetailsModel)sender;
 
-            if (e.PropertyName == nameof(model.ActivationFunction))
+            switch (e.PropertyName)
             {
-                _networkService.SetActivationFunction(model.Layer,
-                    ActivationFunctionNameAssembler.FromActivationFunctionName(model.ActivationFunction));
-            }
-            else if (e.PropertyName == nameof(model.NeuronsCount))
-            {
-                if (!_networkService.SetNeuronsCount(model.Layer, model.NeuronsCount))
-                {
-                    _ea.GetEvent<ShowErrorNotification>().Publish(new ErrorNotificationArgs()
+                case nameof(model.ActivationFunction):
+                    _networkService.SetActivationFunction(model.Layer,
+                        ActivationFunctionNameAssembler.FromActivationFunctionName(model.ActivationFunction));
+                    break;
+                case nameof(model.NeuronsCount):
+                    if (!_networkService.SetNeuronsCount(model.Layer, model.NeuronsCount))
                     {
-                        Message = "Invalid network architecture"
-                    });
-                }
-                else
-                {
-                    _ea.GetEvent<HideErrorNotification>().Publish();
-                }
-
-                vm.MatrixPreview.Controller.InvalidateDisplayedMatrix();
-            }
-            else if (e.PropertyName == nameof(model.InputsCount))
-            {
-                if (!_networkService.SetInputsCount(model.InputsCount))
-                {
-                    _ea.GetEvent<ShowErrorNotification>().Publish(new ErrorNotificationArgs()
+                        _ea.GetEvent<ShowErrorNotification>().Publish(new ErrorNotificationArgs()
+                        {
+                            Message = "Invalid network architecture"
+                        });
+                    }
+                    else
                     {
-                        Message = "Invalid network architecture"
-                    });
-                }
-                else
-                {
-                    _ea.GetEvent<HideErrorNotification>().Publish();
-                }
-                vm.MatrixPreview.Controller.InvalidateDisplayedMatrix();
+                        _ea.GetEvent<HideErrorNotification>().Publish();
+                    }
 
+                    vm.MatrixPreview.Controller.InvalidateDisplayedMatrix();
+                    break;
+                case nameof(model.InputsCount):
+                    if (!_networkService.SetInputsCount(model.InputsCount))
+                    {
+                        _ea.GetEvent<ShowErrorNotification>().Publish(new ErrorNotificationArgs()
+                        {
+                            Message = "Invalid network architecture"
+                        });
+                    }
+                    else
+                    {
+                        _ea.GetEvent<HideErrorNotification>().Publish();
+                    }
+                    vm.MatrixPreview.Controller.InvalidateDisplayedMatrix();
+                    break;
             }
         }
     }

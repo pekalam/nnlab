@@ -11,55 +11,6 @@ using Prism.Mvvm;
 
 namespace Training.Domain
 {
-    public class Class1
-    {
-    }
-
-    public class ModuleState : BindableBase
-    {
-        private readonly AppState _appState;
-        private readonly Dictionary<Session, TrainingSession> _sessionToTraining = new Dictionary<Session, TrainingSession>();
-        private TrainingSession? _activeSession;
-
-        public event EventHandler<(TrainingSession? prev, TrainingSession next)> ActiveSessionChanged; 
-
-        public ModuleState(AppState appState)
-        {
-            _appState = appState;
-
-            _appState.PropertyChanged += AppStateOnPropertyChanged;
-        }
-
-        private void AppStateOnPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(AppState.ActiveSession))
-            {
-                _sessionToTraining.TryGetValue(_appState.ActiveSession!, out var trainingSession);
-                if (trainingSession == null)
-                {
-                    ActiveSession = new TrainingSession(_appState);
-                    _sessionToTraining[_appState.ActiveSession!] = _activeSession!;
-                }
-                else
-                {
-                    ActiveSession = trainingSession;
-                }
-            }
-        }
-
-        public TrainingSession? ActiveSession
-        {
-            get => _activeSession;
-            set
-            {
-                if(value == null) throw new NullReferenceException("Null training session");
-                var temp = _activeSession;
-                SetProperty(ref _activeSession, value);
-                ActiveSessionChanged?.Invoke(this, (temp, value));
-            }
-        }
-    }
-
     public class TrainingSession : BindableBase, INotifyDataErrorInfo
     {
         private bool _isValid;
@@ -70,24 +21,35 @@ namespace Training.Domain
         private bool _reseted;
         private bool _stopRequested;
 
-        private LevenbergMarquardtAlgorithm? _lmAlgorithm;
-        private GradientDescentAlgorithm? _gdAlgorithm;
+        private TimeSpan _elapsed = TimeSpan.Zero;
+        private MLPTrainer? _trainer;
+        private TrainingSessionReport? _currentReport;
+        private bool _started;
+        private bool _stopped;
+        private bool _paused;
+        private DateTime? _startTime;
 
         private readonly Session _session;
-        private AppState _appState;
 
-        public List<EpochEndArgs> EpochEndEvents { get; } = new List<EpochEndArgs>();
         public event EventHandler<EpochEndArgs> EpochEnd;
 
         public TrainingSession(AppState appState)
         {
             _session = appState.ActiveSession!;
-            _appState = appState;
 
             if(appState.ActiveSession!.TrainingData != null && appState.ActiveSession.TrainingParameters != null && appState.ActiveSession.Network != null)
                 ConstructTrainer();
             else
                 _session.PropertyChanged += SessionOnPropertyChanged;
+        }
+
+
+        /// <summary>
+        /// Test method
+        /// </summary>
+        protected void RaiseEpochEnd(EpochEndArgs args)
+        {
+            EpochEnd?.Invoke(this,args);
         }
 
         private void ConstructTrainer()
@@ -121,26 +83,22 @@ namespace Training.Domain
             }
         }
 
+
+        public List<EpochEndArgs> EpochEndEvents { get; } = new List<EpochEndArgs>();
         public MLPNetwork? Network => _session.Network;
         public TrainingParameters? Parameters => _session.TrainingParameters;
-        public TrainingData TrainingData => _session.TrainingData;
+        public TrainingData? TrainingData => _session.TrainingData;
 
         private AlgorithmBase SelectAlgorithm(TrainingParameters trainingParameters)
         {
             return trainingParameters.Algorithm switch
             {
-                TrainingAlgorithm.GradientDescent => (_gdAlgorithm = new GradientDescentAlgorithm(trainingParameters.GDParams)),
-                TrainingAlgorithm.LevenbergMarquardt => (_lmAlgorithm = new LevenbergMarquardtAlgorithm(trainingParameters.LMParams))
+                TrainingAlgorithm.GradientDescent => new GradientDescentAlgorithm(trainingParameters.GDParams.Params),
+                TrainingAlgorithm.LevenbergMarquardt => new LevenbergMarquardtAlgorithm(trainingParameters.LMParams.Params)
             };
         }
 
-        private TimeSpan _elapsed = TimeSpan.Zero;
-        private MLPTrainer _trainer;
-        private TrainingSessionReport? _currentReport;
-        private bool _started;
-        private bool _stopped;
-        private bool _paused;
-
+        
         public bool IsValid
         {
             get => _isValid;
@@ -152,7 +110,7 @@ namespace Training.Domain
             }
         }
 
-        public MLPTrainer Trainer
+        public MLPTrainer? Trainer
         {
             get => _trainer;
             set => SetProperty(ref _trainer, value);
@@ -164,25 +122,29 @@ namespace Training.Domain
             set => SetProperty(ref _currentReport, value);
         }
 
-        public bool Started
+        public virtual bool Started
         {
             get => _started;
             private set => SetProperty(ref _started, value);
         }
 
-        public bool Stopped
+        public virtual bool Stopped
         {
             get => _stopped;
             private set => SetProperty(ref _stopped, value);
         }
 
-        public bool Paused
+        public virtual bool Paused
         {
             get => _paused;
             set => SetProperty(ref _paused, value);
         }
 
-        public DateTime StartTime { get; set; }
+        public DateTime? StartTime
+        {
+            get => _startTime;
+            set => SetProperty(ref _startTime, value);
+        }
 
         private void CheckCanStart()
         {
@@ -202,7 +164,7 @@ namespace Training.Domain
             Paused = false;
             if (!Started)
             {
-                CurrentReport = TrainingSessionReport.CreateStoppedSessionReport(Trainer.Epochs, Trainer.Error, StartTime, EpochEndEvents);
+                CurrentReport = TrainingSessionReport.CreateStoppedSessionReport(Trainer.Epochs, Trainer.Error, StartTime ?? Time.Now, EpochEndEvents);
                 Stopped = true;
                 return Task.CompletedTask;
             }
@@ -222,32 +184,32 @@ namespace Training.Domain
             return _sessionTask;
         }
 
-        private async Task<TrainingSessionReport> InternalStart()
+        protected virtual async Task<TrainingSessionReport> InternalStart()
         {
             TrainingSessionReport StoppedPausedOrMaxTime()
             {
                 if (_stopRequested)
                 {
                     Stopped = true;
-                    return TrainingSessionReport.CreateStoppedSessionReport(Trainer.Epochs, Trainer.Error, StartTime, EpochEndEvents);
+                    return TrainingSessionReport.CreateStoppedSessionReport(Trainer.Epochs, Trainer.Error, StartTime.Value, EpochEndEvents);
                 }
 
-                if ((DateTime.Now - StartTime) + _elapsed > Parameters.MaxLearningTime)
+                if ((Time.Now - StartTime) + _elapsed > Parameters.MaxLearningTime)
                 {
-                    return TrainingSessionReport.CreateTimeoutSessionReport(Trainer.Epochs, Trainer.Error, StartTime, EpochEndEvents);
+                    return TrainingSessionReport.CreateTimeoutSessionReport(Trainer.Epochs, Trainer.Error, StartTime.Value, EpochEndEvents);
                 }
 
-                return TrainingSessionReport.CreatePausedSessionReport(Trainer.Epochs, Trainer.Error, StartTime, EpochEndEvents);
+                return TrainingSessionReport.CreatePausedSessionReport(Trainer.Epochs, Trainer.Error, StartTime.Value, EpochEndEvents);
             }
 
             CheckCanStart();
 
-            if (double.IsNaN(Trainer.Error) && !_reseted)
+            if (double.IsNaN(Trainer!.Error) && !_reseted)
             {
-                return TrainingSessionReport.CreateNaNSessionReport(Trainer.Epochs, Trainer.Error, StartTime, EpochEndEvents);
+                return TrainingSessionReport.CreateNaNSessionReport(Trainer.Epochs, Trainer.Error, StartTime.Value, EpochEndEvents);
             }
 
-            if (Parameters.MaxLearningTime != TimeSpan.MaxValue)
+            if (Parameters!.MaxLearningTime != TimeSpan.MaxValue)
             {
                 _epochCts = new CancellationTokenSource(Parameters.MaxLearningTime);
             }
@@ -274,7 +236,7 @@ namespace Training.Domain
                 }
                 catch (AlgorithmFailed)
                 {
-                    return TrainingSessionReport.CreateAlgorithmErrorSessionReport(Trainer.Epochs, error, StartTime, EpochEndEvents);
+                    return TrainingSessionReport.CreateAlgorithmErrorSessionReport(Trainer.Epochs, error, StartTime.Value, EpochEndEvents);
                 }
 
                 var arg = new EpochEndArgs()
@@ -285,6 +247,7 @@ namespace Training.Domain
                 };
                 EpochEnd?.Invoke(this, arg);
                 EpochEndEvents.Add(arg);
+
                 if (_epochCts.IsCancellationRequested)
                 {
                     return StoppedPausedOrMaxTime();
@@ -293,18 +256,18 @@ namespace Training.Domain
                 if (Trainer.Epochs == Parameters.MaxEpochs)
                 {
                     Stopped = true;
-                    return TrainingSessionReport.CreateMaxEpochSessionReport(Trainer.Epochs, error, StartTime, EpochEndEvents);
+                    return TrainingSessionReport.CreateMaxEpochSessionReport(Trainer.Epochs, error, StartTime.Value, EpochEndEvents);
                 }
 
                 if (double.IsNaN(error))
                 {
-                    return TrainingSessionReport.CreateNaNSessionReport(Trainer.Epochs, error, StartTime, EpochEndEvents);
+                    return TrainingSessionReport.CreateNaNSessionReport(Trainer.Epochs, error, StartTime.Value, EpochEndEvents);
                 }
 
             } while (error > Parameters.TargetError);
 
             Stopped = true;
-            return TrainingSessionReport.CreateTargetReachedSessionReport(Trainer.Epochs, error, StartTime, EpochEndEvents);
+            return TrainingSessionReport.CreateTargetReachedSessionReport(Trainer.Epochs, error, StartTime.Value, EpochEndEvents);
         }
 
         public Task<TrainingSessionReport> Start()
@@ -312,17 +275,17 @@ namespace Training.Domain
             if(!IsValid) throw new InvalidOperationException("Session is in invalid state");
 
             if (CurrentReport != null) CurrentReport.ValidationError = null;
-            StartTime = DateTime.Now;
+            StartTime = Time.Now;
             var task = InternalStart();
             Started = true;
             Paused = false;
             var sessionTask = task.ContinueWith(t =>
             {
-                _elapsed += DateTime.Now - StartTime;
+                _elapsed += Time.Now - StartTime.Value;
                 Started = _stopRequested = false;
                 if (Stopped)
                 {
-                    Trainer.ResetEpochs();
+                    Trainer!.ResetEpochs();
                 }
                 else Paused = true;
                 CurrentReport = t.Result;

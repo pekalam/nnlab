@@ -9,6 +9,7 @@ using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Threading;
 using Common.Domain;
 using Prism.Commands;
 using Prism.Events;
@@ -107,11 +108,13 @@ namespace Training.Application
 
     internal static class GlobalDistributingDispatcher
     {
-        private static readonly Dictionary<PlotEpochEndConsumer, ConcurrentQueue<Action>> _queues =
-            new Dictionary<PlotEpochEndConsumer, ConcurrentQueue<Action>>();
+        private static readonly ConcurrentDictionary<PlotEpochEndConsumer, ConcurrentQueue<Action>> _queues =
+            new ConcurrentDictionary<PlotEpochEndConsumer, ConcurrentQueue<Action>>();
 
         private static Task? _task;
         private static object _lck = new object();
+        private static int _toInvoke;
+        private static SemaphoreSlim _sem = new SemaphoreSlim(1, 1);
 
         static GlobalDistributingDispatcher()
         {
@@ -121,14 +124,27 @@ namespace Training.Application
         {
             if (!_queues.ContainsKey(consumer))
             {
-                _queues.Add(consumer, new ConcurrentQueue<Action>());
+                _queues[consumer] =  new ConcurrentQueue<Action>();
             }
+        }
 
+        public static async ValueTask WaitForQueued()
+        {
+            if (_toInvoke > 0)
+            {
+                await _sem.WaitAsync();
+                _sem.Release();
+            }
         }
 
         public static void Unregister(PlotEpochEndConsumer consumer)
         {
-            _queues.Remove(consumer);
+            if (_queues.Remove(consumer, out var queue))
+            {
+                Interlocked.Add(ref _toInvoke, -queue.Count);
+                if (_toInvoke == 0 && _sem.CurrentCount == 0) _sem.Release();
+                queue.Clear();
+            }
         }
 
         private static void TryStartBgTask()
@@ -153,6 +169,8 @@ namespace Training.Application
                                 if (queue.TryDequeue(out var action))
                                 {
                                     action?.Invoke();
+                                    Interlocked.Decrement(ref _toInvoke);
+                                    if (_toInvoke == 0 && _sem.CurrentCount == 0) _sem.Release();
                                     stop = false;
                                 }
                             }
@@ -166,7 +184,14 @@ namespace Training.Application
 
         public static void Call(Action action, PlotEpochEndConsumer consumer)
         {
-            _queues[consumer].Enqueue(action);
+            _queues[consumer].Enqueue(() =>
+            {
+                if (System.Windows.Application.Current == null) return;
+
+                System.Windows.Application.Current.Dispatcher.Invoke(action, DispatcherPriority.Background);
+            });
+            Interlocked.Increment(ref _toInvoke);
+            if (_sem.CurrentCount == 1) _sem.Wait();
             TryStartBgTask();
         }
     }
@@ -202,7 +227,8 @@ namespace Training.Application
         private readonly Action<TrainingSession>? _onTrainingPaused;
         private readonly ModuleState _moduleState;
 
-        public PlotEpochEndConsumer(ModuleState moduleState, Action<IList<EpochEndArgs>, TrainingSession> callback, Action<TrainingSession>? onTrainingStarting = null,
+        public PlotEpochEndConsumer(ModuleState moduleState, Action<IList<EpochEndArgs>, TrainingSession> callback,
+            Action<TrainingSession>? onTrainingStarting = null,
             Action<TrainingSession>? onTrainingStopped = null, Action<TrainingSession>? onTrainingPaused = null)
         {
             _moduleState = moduleState;
@@ -226,6 +252,7 @@ namespace Training.Application
             {
                 ForceStop();
             }
+
             SetTrainingSessionHandlers(e.next);
         }
 
@@ -236,6 +263,7 @@ namespace Training.Application
             {
                 SubscribeSession(session);
             }
+
             session.PropertyChanged += TrainingSessionOnPropertyChanged;
         }
 
@@ -249,6 +277,7 @@ namespace Training.Application
                     {
                         SubscribeSession(session);
                     }
+
                     break;
                 case nameof(TrainingSession.Stopped):
                     if (session.Stopped)
@@ -272,6 +301,7 @@ namespace Training.Application
                         _onTrainingPaused?.Invoke(session);
                         GlobalDistributingDispatcher.Unregister(this);
                     }
+
                     break;
             }
         }
@@ -304,9 +334,7 @@ namespace Training.Application
         {
             if (_session != null) _session.EpochEnd -= Session_EpochEnd;
             EndSubscriptions();
-
-            //TODO
-            //_appCommands.LocationChanged.UnregisterCommand(_locationChangedCmd);
+            ;
             GlobalDistributingDispatcher.Unregister(this);
         }
 
@@ -388,7 +416,8 @@ namespace Training.Application
 
                 _onlineSub = _online
                     .Buffer(timeSpan: TimeSpan.FromMilliseconds(ONLINE_BUFFER_TIME_SPAN), count: ONLINE_BUFFER_SIZE)
-                    .DelaySubscription(TimeSpan.FromMilliseconds(ONLINE_BUFFER_TIME_SPAN)).SubscribeOn(Scheduler.Default)
+                    .DelaySubscription(TimeSpan.FromMilliseconds(ONLINE_BUFFER_TIME_SPAN))
+                    .SubscribeOn(Scheduler.Default)
                     .Subscribe(list =>
                     {
                         //test

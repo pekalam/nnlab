@@ -18,13 +18,13 @@ namespace Training.Domain.Tests
         private double lastErr;
 
         private AppState _appState;
-        private ModuleState _moduleState;
+        private TrainingSession _session;
 
         public TrainingSessionTests()
         {
             _appState = new AppState();
-            _moduleState = new ModuleState(_appState);
             var session=_appState.CreateSession();
+            _session = new TrainingSession(_appState);
 
             session.TrainingData = data;
             session.Network = net;
@@ -51,11 +51,10 @@ namespace Training.Domain.Tests
             };
 
             _appState.ActiveSession.TrainingParameters = param;
-            var session = _moduleState.ActiveSession;
-            SetupEpochEndHandler(session);
+            SetupEpochEndHandler(_session);
     
-            var report = await session.Start();
-            session.StartTime.Should().BeWithin(TimeSpan.FromMinutes(1));
+            var report = await _session.Start();
+            _session.StartTime.Should().BeWithin(TimeSpan.FromMinutes(1));
 
             epochs.Should().Be(10);
     
@@ -77,11 +76,10 @@ namespace Training.Domain.Tests
             };
 
             _appState.ActiveSession.TrainingParameters = param;
-            var session = _moduleState.ActiveSession;
 
-            SetupEpochEndHandler(session);
+            SetupEpochEndHandler(_session);
     
-            var report = await session.Start();
+            var report = await _session.Start();
     
             epochs.Should().BeGreaterThan(0);
     
@@ -102,15 +100,14 @@ namespace Training.Domain.Tests
             };
 
             _appState.ActiveSession.TrainingParameters = param;
-            var session = _moduleState.ActiveSession;
 
-            SetupEpochEndHandler(session);
+            SetupEpochEndHandler(_session);
     
-            var t = session.Start();
+            var t = _session.Start();
     
             try
             {
-                await session.Stop();
+                await _session.Stop();
             }
             catch (TrainingCanceledException)
             {
@@ -118,11 +115,11 @@ namespace Training.Domain.Tests
     
             var report = t.GetAwaiter().GetResult();
             report.SessionEndType.Should().Be(SessionEndType.Stopped);
-            session.Started.Should().BeFalse();
-            session.Stopped.Should().BeTrue();
-            session.Trainer.Epochs.Should().Be(0);
-            session.Trainer.Iterations.Should().Be(0);
-            session.CurrentReport.Should().Be(report);
+            _session.Started.Should().BeFalse();
+            _session.Stopped.Should().BeTrue();
+            _session.Trainer.Epochs.Should().Be(0);
+            _session.Trainer.Iterations.Should().Be(0);
+            _session.CurrentReport.Should().Be(report);
 
             
         }
@@ -136,19 +133,18 @@ namespace Training.Domain.Tests
             };
 
             _appState.ActiveSession.TrainingParameters = param;
-            var session = _moduleState.ActiveSession;
 
-            SetupEpochEndHandler(session);
-            var t = session.Start();
+            SetupEpochEndHandler(_session);
+            var t = _session.Start();
             try
             {
-                await session.Stop();
+                await _session.Stop();
             }
             catch (TrainingCanceledException)
             {
             }
     
-            await Assert.ThrowsAsync<AggregateException>(() => session.Start());
+            await Assert.ThrowsAsync<AggregateException>(() => _session.Start());
         }
     
     
@@ -161,27 +157,26 @@ namespace Training.Domain.Tests
             };
 
             _appState.ActiveSession.TrainingParameters = param;
-            var session = _moduleState.ActiveSession;
 
-            SetupEpochEndHandler(session);
+            SetupEpochEndHandler(_session);
     
-            var t = session.Start();
+            var t = _session.Start();
     
             await Task.Delay(1000);
     
             try
             {
-                await session.Pause();
+                await _session.Pause();
             }
             catch (TrainingCanceledException)
             {
             }
 
-            session.Paused.Should().BeTrue();
-            session.Stopped.Should().BeFalse();
-            session.Started.Should().BeFalse();
-            session.Trainer.Epochs.Should().NotBe(0);
-            session.CurrentReport.SessionEndType.Should().Be(SessionEndType.Paused);
+            _session.Paused.Should().BeTrue();
+            _session.Stopped.Should().BeFalse();
+            _session.Started.Should().BeFalse();
+            _session.Trainer.Epochs.Should().NotBe(0);
+            _session.CurrentReport.SessionEndType.Should().Be(SessionEndType.Paused);
         }
     
     
@@ -194,24 +189,23 @@ namespace Training.Domain.Tests
             };
 
             _appState.ActiveSession.TrainingParameters = param;
-            var session = _moduleState.ActiveSession;
 
-            SetupEpochEndHandler(session);
-            var t = session.Start();
+            SetupEpochEndHandler(_session);
+            var t = _session.Start();
             try
             {
-                await session.Pause();
+                await _session.Pause();
             }
             catch (TrainingCanceledException)
             {
             }
     
-            await session.Stop();
+            await _session.Stop();
 
-            session.Paused.Should().BeFalse();
-            session.Stopped.Should().BeTrue();
-            session.Started.Should().BeFalse();
-            session.CurrentReport.SessionEndType.Should().Be(SessionEndType.Stopped);
+            _session.Paused.Should().BeFalse();
+            _session.Stopped.Should().BeTrue();
+            _session.Started.Should().BeFalse();
+            _session.CurrentReport.SessionEndType.Should().Be(SessionEndType.Stopped);
         }
     
     
@@ -224,16 +218,14 @@ namespace Training.Domain.Tests
             };
 
             _appState.ActiveSession.TrainingParameters = param;
-            var session = _moduleState.ActiveSession;
 
     
-    
-            await session.Stop();
+            await _session.Stop();
 
-            session.Paused.Should().BeFalse();
-            session.Stopped.Should().BeTrue();
-            session.Started.Should().BeFalse();
-            session.CurrentReport.SessionEndType.Should().Be(SessionEndType.Stopped);
+            _session.Paused.Should().BeFalse();
+            _session.Stopped.Should().BeTrue();
+            _session.Started.Should().BeFalse();
+            _session.CurrentReport.SessionEndType.Should().Be(SessionEndType.Stopped);
         }
     
     
@@ -246,15 +238,13 @@ namespace Training.Domain.Tests
             };
 
             _appState.ActiveSession.TrainingParameters = param;
-            var session = _moduleState.ActiveSession;
 
-    
-            var report = await session.Start();
+            var report = await _session.Start();
     
             report.SessionEndType.Should().Be(SessionEndType.MaxEpoch);
-            session.Paused.Should().BeFalse();
-            session.Stopped.Should().BeTrue();
-            session.Started.Should().BeFalse();
+            _session.Paused.Should().BeFalse();
+            _session.Stopped.Should().BeTrue();
+            _session.Started.Should().BeFalse();
         }
 
         [Fact]
@@ -267,18 +257,17 @@ namespace Training.Domain.Tests
             };
 
             _appState.ActiveSession.TrainingParameters = param;
-            var session = _moduleState.ActiveSession;
 
-            var task = session.Start();
+            var task = _session.Start();
     
             await Task.Delay(3000);
     
             var report = await task;
     
             report.SessionEndType.Should().Be(SessionEndType.Timeout);
-            session.Stopped.Should().BeFalse();
-            session.Paused.Should().BeTrue();
-            session.Started.Should().BeFalse();
+            _session.Stopped.Should().BeFalse();
+            _session.Paused.Should().BeTrue();
+            _session.Started.Should().BeFalse();
         }
     }
 }

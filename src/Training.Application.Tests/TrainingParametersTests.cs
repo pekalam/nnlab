@@ -1,8 +1,11 @@
 using System;
 using Common.Domain;
+using Common.Framework;
 using FluentAssertions;
 using Moq.AutoMock;
 using TestUtils;
+using Training.Application.Controllers;
+using Training.Application.Services;
 using Training.Application.ViewModels;
 using Training.Domain;
 using Xunit;
@@ -15,15 +18,20 @@ namespace Training.Application.Tests
         private AppState _appState;
         private ModuleState _moduleState;
         private TrainingParametersViewModel _vm;
-
+        private TrainingParametersController _ctrl;
+        private TrainingParametersService _service;
+        
         public TrainingParametersTests()
         {
             _mocker.UseTestRm();
             _mocker.UseTestVmAccessor();
             _appState = _mocker.UseImpl<AppState>();
             _moduleState = _mocker.UseImpl<ModuleState>();
+            _ctrl = _mocker.UseImpl<ITransientController<TrainingParametersService>,TrainingParametersController>();
+            _service = _mocker.UseImpl<ITrainingParametersService, TrainingParametersService>();
 
-            _vm = new TrainingParametersViewModel(_appState);
+
+            _vm = _mocker.UseVm<TrainingParametersViewModel>();
         }
 
         [Fact]
@@ -59,7 +67,7 @@ namespace Training.Application.Tests
             session.SetupValidAndGate();
             session.TrainingParameters.MaxLearningTime = TimeSpan.FromMinutes(2);
 
-            var vm = new TrainingParametersViewModel(_appState);
+            var vm = _mocker.UseVm<TrainingParametersViewModel>();
             vm.IsMaxLearningTimeChecked.Should().BeFalse();
             vm.MaxLearningTime.Should().BeAtLeast(TimeSpan.FromMinutes(2));
         }

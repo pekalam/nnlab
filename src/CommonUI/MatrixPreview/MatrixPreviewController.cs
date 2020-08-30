@@ -242,7 +242,7 @@ namespace SharedUI.MatrixPreview
 
         private void CreateGrid()
         {
-            string columnTitle = string.Empty;
+            string columnTitle = "";
             switch (_selectedType)
             {
                 case MatrixTypes.Biases:

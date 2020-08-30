@@ -13,6 +13,7 @@ using NeuralNetwork.Domain;
 using NNLib;
 using Prism.Commands;
 using Prism.Events;
+using Shell.Interface;
 
 namespace NeuralNetwork.Application.Controllers
 {
@@ -54,7 +55,7 @@ namespace NeuralNetwork.Application.Controllers
 
         private void LayerClicked(LayerEditorItemModel obj)
         {
-            if(obj == null) return;
+            if(obj == null || obj.IsAddLayerItem) return;
             //TODO fix
             _ea.GetEvent<IntLayerClicked>().Publish((_appState.ActiveSession.Network.Layers[obj.LayerIndex],obj.LayerIndex));
         }
@@ -96,7 +97,14 @@ namespace NeuralNetwork.Application.Controllers
 
         private void RemoveLayer(LayerEditorItemModel model)
         {
-            _networkService.RemoveLayer(model.LayerIndex);
+            var removed = _networkService.RemoveLayer(model.LayerIndex);
+            if (removed.HasValue && !removed.Value)
+            {
+                _ea.GetEvent<ShowErrorNotification>().Publish(new ErrorNotificationArgs()
+                {
+                    Message = "Invalid network architecture"
+                });
+            }
             //TODO remove
             SetLayers();
         }
@@ -110,7 +118,13 @@ namespace NeuralNetwork.Application.Controllers
         private void AddLayer()
         {
             var neuralNetwork = _appState.ActiveSession.Network;
-            _networkService.AddLayer();
+            if (!_networkService.AddLayer())
+            {
+                _ea.GetEvent<ShowErrorNotification>().Publish(new ErrorNotificationArgs()
+                {
+                    Message = "Invalid network architecture"
+                });
+            }
             _service.AddLayer(neuralNetwork.BaseLayers[^1], neuralNetwork.TotalLayers - 1);
         }
     }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Common.Domain;
+using Training.Application;
 using Training.Application.ViewModels;
 using Training.Domain;
 

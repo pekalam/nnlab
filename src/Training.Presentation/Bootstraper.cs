@@ -1,5 +1,6 @@
 ﻿using Prism.Ioc;
 using Training.Application.ViewModels;
+using Training.Application.Views;
 using Training.Presentation.Views;
 using Training.Presentation.Views.PanelLayout;
 using Training.Presentation.Views.PanelLayout.Layouts;
@@ -10,6 +11,9 @@ namespace Training.Presentation
     {
         public static void RegisterTypes(IContainerRegistry cr)
         {
+            cr.Register<ITrainingInfoView, TrainingInfoView>();
+
+
             cr.RegisterForNavigation<TrainingView>();
             cr.RegisterForNavigation<TrainingInfoView>();
 

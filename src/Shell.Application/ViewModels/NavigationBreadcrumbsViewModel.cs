@@ -157,7 +157,7 @@ namespace Shell.Application.ViewModels
                 return val[ind].Breadcrumb;
             }
 
-            return string.Empty;
+            return "";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
