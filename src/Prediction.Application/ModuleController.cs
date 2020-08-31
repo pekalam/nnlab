@@ -48,7 +48,15 @@ namespace Prediction.Application
             {
                 if (args.moduleId == ModuleIds.Prediction)
                 {
-                    _rm.NavigateContentRegion("PredictView", "Predict");
+                    if (_appState.ActiveSession.TrainingData == null || _appState.ActiveSession.Network == null)
+                    {
+                        _ea.GetEvent<CheckNavMenuItem>().Publish(ModuleIds.Data);
+                    }
+                    else
+                    {
+                        _rm.NavigateContentRegion("PredictView", "Predict");
+                    }
+
                 }
             });
 

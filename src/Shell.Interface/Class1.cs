@@ -1,6 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
 using Common.Domain;
 using CommonServiceLocator;
+using Prism.Commands;
 using Prism.Events;
 using Prism.Ioc;
 using Prism.Mvvm;
@@ -10,6 +11,16 @@ namespace Shell.Interface
 {
     class Class1
     {
+    }
+
+    public class EnableModalNavigation : PubSubEvent<DelegateCommand>
+    {
+
+    }
+
+    public class DisableModalNavigation : PubSubEvent
+    {
+
     }
 
     public class SetupNewNavigationForSession : PubSubEvent<(int moduleId, Session prev, Session next)> { }

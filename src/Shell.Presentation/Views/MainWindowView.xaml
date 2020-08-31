@@ -38,40 +38,55 @@
             <ColumnDefinition Width="66" />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
-        <StackPanel Background="{StaticResource MenuColor}">
-            <Button Style="{StaticResource NavButton}" Height="61">
-                <iconPacks:PackIconFontAwesome Kind="BarsSolid" Width="28" Height="19"
+
+        <Grid>
+            <StackPanel Background="{StaticResource MenuColor}">
+                <Button Style="{StaticResource NavButton}" Height="61">
+                    <iconPacks:PackIconFontAwesome Kind="BarsSolid" Width="28" Height="19"
                                                VerticalAlignment="Center" HorizontalAlignment="Center" />
-            </Button>
-            <RadioButton Style="{StaticResource NavButton2}" Height="60"
+                </Button>
+                <RadioButton Style="{StaticResource NavButton2}" Height="60"
                          IsChecked="{Binding CheckedNavItemId, Converter={StaticResource NavItemIdConverter},ConverterParameter={x:Static domain:ModuleIds.Data}}"
                          IsEnabled="{Binding IsDataItemEnabled}">
-                <iconPacks:PackIconFontAwesome Kind="DatabaseSolid" Width="25" Height="19"
+                    <iconPacks:PackIconFontAwesome Kind="DatabaseSolid" Width="25" Height="19"
                                                VerticalAlignment="Center" HorizontalAlignment="Center"
                                                Margin="12,0,0,0" />
-            </RadioButton>
-            <RadioButton Style="{StaticResource NavButton2}" Height="60"
+                </RadioButton>
+                <RadioButton Style="{StaticResource NavButton2}" Height="60"
                          IsChecked="{Binding CheckedNavItemId, Converter={StaticResource NavItemIdConverter},ConverterParameter={x:Static  domain:ModuleIds.NeuralNetwork}}"
                          IsEnabled="{Binding IsNetworkItemEnabled}">
-                <iconPacks:PackIconFontAwesome Kind="ProjectDiagramSolid" Width="24" Height="17"
+                    <iconPacks:PackIconFontAwesome Kind="ProjectDiagramSolid" Width="24" Height="17"
                                                VerticalAlignment="Center" HorizontalAlignment="Center"
                                                Margin="13,2,0,0" />
-            </RadioButton>
-            <RadioButton Style="{StaticResource NavButton2}" Height="60"
+                </RadioButton>
+                <RadioButton Style="{StaticResource NavButton2}" Height="60"
                          IsChecked="{Binding CheckedNavItemId, Converter={StaticResource NavItemIdConverter},ConverterParameter={x:Static  domain:ModuleIds.Training}}"
                          IsEnabled="{Binding IsTrainingItemEnabled}">
-                <iconPacks:PackIconFontAwesome Kind="CaretRightSolid" Width="26" Height="20"
+                    <iconPacks:PackIconFontAwesome Kind="CaretRightSolid" Width="26" Height="20"
                                                VerticalAlignment="Center" HorizontalAlignment="Center"
                                                Margin="12,0,0,0" />
-            </RadioButton>
-            <RadioButton Style="{StaticResource NavButton2}" Height="60"
+                </RadioButton>
+                <RadioButton Style="{StaticResource NavButton2}" Height="60"
                          IsChecked="{Binding CheckedNavItemId, Converter={StaticResource NavItemIdConverter},ConverterParameter={x:Static  domain:ModuleIds.Prediction}}"
                          IsEnabled="{Binding IsPredictionItemEnabled}">
-                <iconPacks:PackIconFontAwesome Kind="ChartLineSolid" Width="22" Height="16"
+                    <iconPacks:PackIconFontAwesome Kind="ChartLineSolid" Width="22" Height="16"
                                                VerticalAlignment="Center" HorizontalAlignment="Center"
                                                Margin="14,2,0,0" />
-            </RadioButton>
-        </StackPanel>
+                </RadioButton>
+            </StackPanel>
+
+            <StackPanel Visibility="{Binding ModalNavigationVisibility}" Background="{StaticResource MenuColor}">
+                <Button Style="{StaticResource NavButton}" Height="61" Command="{Binding ModalNavigationCommand}">
+                    <iconPacks:PackIconFontAwesome Kind="ArrowLeftSolid" Width="28" Height="19"
+                                                   VerticalAlignment="Center" HorizontalAlignment="Center" />
+                </Button>
+            </StackPanel>
+        </Grid>
+
+
+
+
+
         <Grid Grid.Column="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
@@ -148,7 +163,7 @@
             </Grid>
 
 
-            <views:StatusBarView Grid.Row="2" />
+            <views:StatusBarView DataContext="{Binding StatusBarViewModel}" Grid.Row="2" />
 
         </Grid>
     </Grid>

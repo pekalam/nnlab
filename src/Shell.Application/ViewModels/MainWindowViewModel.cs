@@ -46,20 +46,27 @@ namespace Shell.Application.ViewModels
         private int _checkedNavItemId = -1;
 
         private AppState _appState;
+        private Visibility _modalNavigationVisibility = Visibility.Collapsed;
+        private DelegateCommand _modalNavigationCommand;
 
         public MainWindowViewModel()
         {
-            
         }
 
         [InjectionConstructor]
-        public MainWindowViewModel(IEventAggregator ea, IRegionManager rm, NavigationBreadcrumbsViewModel navigationBreadcrumbsVm, IContentRegionHistoryService contentRegionHistory, AppState appState)
+        public MainWindowViewModel(IEventAggregator ea, IRegionManager rm, NavigationBreadcrumbsViewModel navigationBreadcrumbsVm, IContentRegionHistoryService contentRegionHistory, AppState appState, StatusBarViewModel statusBarViewModel)
         {
             _ea = ea;
             _rm = rm;
             NavigationBreadcrumbsVm = navigationBreadcrumbsVm;
             _contentRegionHistory = contentRegionHistory;
             _appState = appState;
+            StatusBarViewModel = statusBarViewModel;
+            ModalNavigationCommand = new DelegateCommand(() =>
+            {
+                _modalNavigationCommand.Execute();
+                ModalNavigationVisibility = Visibility.Collapsed;
+            });
 
             _ea.GetEvent<ShowFlyout>().Subscribe(args =>
             {
@@ -132,6 +139,18 @@ namespace Shell.Application.ViewModels
                 IsDataItemEnabled = IsNetworkItemEnabled = IsPredictionItemEnabled = true;
             });
 
+            _ea.GetEvent<EnableModalNavigation>().Subscribe(command =>
+                {
+                    ModalNavigationVisibility = Visibility.Visible;
+                    _modalNavigationCommand = command;
+                });
+
+            _ea.GetEvent<DisableModalNavigation>().Subscribe(() =>
+            {
+                _modalNavigationCommand = null;
+                ModalNavigationVisibility = Visibility.Collapsed;
+            });
+
             CloseFlyoutCommand = new DelegateCommand(() =>
             {
                 IsFlyoutOpen = false;
@@ -148,9 +167,10 @@ namespace Shell.Application.ViewModels
             if (e.prev != null)
             {
                 _contentRegionHistory.ClearHistoryForModulesExcept(CheckedNavItemId);
+                NavigationBreadcrumbsVm.ClearPreviousBreadcrumbsExcept(CheckedNavItemId);
 
                 //for data, network and training module ids
-                for (int i = 1; i <= 3; i++)
+                for (int i = 1; i <= 4; i++)
                 {
                     if(i != CheckedNavItemId) _ea.GetEvent<SetupNewNavigationForSession>().Publish((i, e.prev,e.next));
                 }
@@ -160,6 +180,7 @@ namespace Shell.Application.ViewModels
         }
 
         public NavigationBreadcrumbsViewModel NavigationBreadcrumbsVm { get; }
+        public StatusBarViewModel StatusBarViewModel { get; }
 
         private void Navigate(int identifier)
         {
@@ -232,5 +253,26 @@ namespace Shell.Application.ViewModels
             get => _isPredictionItemEnabled;
             set => SetProperty(ref _isPredictionItemEnabled, value);
         }
+
+        public Visibility ModalNavigationVisibility
+        {
+            get => _modalNavigationVisibility;
+            set
+            {
+                SetProperty(ref _modalNavigationVisibility, value);
+                if (value == Visibility.Visible)
+                {
+                    NavigationBreadcrumbsVm.IsEnabled = false;
+                    StatusBarViewModel.CanModifyActiveSession = false;
+                }
+                else
+                {
+                    NavigationBreadcrumbsVm.IsEnabled = true;
+                    StatusBarViewModel.CanModifyActiveSession = true;
+                }
+            }
+        }
+
+        public DelegateCommand ModalNavigationCommand { get; }
     }
 }

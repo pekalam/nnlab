@@ -55,6 +55,12 @@ namespace Prediction.Application.Services
             vm.OutputMatrixVm.Controller.AssignMatrix(network.Layers[^1].Output);
         }
 
+        public void UpdateNetwork(MLPNetwork network)
+        {
+            var vm = _accessor.Get<PredictViewModel>();
+
+        }
+
         public void UpdateMatrix(MLPNetwork network, Matrix<double> inputMatrix)
         {
             var vm = _accessor.Get<PredictViewModel>();

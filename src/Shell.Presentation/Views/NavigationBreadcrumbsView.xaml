@@ -34,7 +34,7 @@
         <converters:NotNullStrToBooleanConverter x:Key="notNullConverter"/>
     </UserControl.Resources>
 
-    <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="10,0,0,0" TextBlock.FontSize="24">
+    <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="10,0,0,0" TextBlock.FontSize="24" IsEnabled="{Binding IsEnabled}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="40" />

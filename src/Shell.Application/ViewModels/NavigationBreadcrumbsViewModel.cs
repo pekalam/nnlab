@@ -21,6 +21,8 @@ namespace Shell.Application.ViewModels
         private readonly Dictionary<int, BreadcrumbModel[]> _previousBreadcrumbs =
             new Dictionary<int, BreadcrumbModel[]>();
 
+        private bool _isEnabled;
+
         public NavigationBreadcrumbsViewModel(IEventAggregator ea, IRegionManager rm)
         {
             _ea = ea;
@@ -34,6 +36,12 @@ namespace Shell.Application.ViewModels
         public ObservableCollection<BreadcrumbModel> Breadcrumbs { get; } = new ObservableCollection<BreadcrumbModel>();
 
         public DelegateCommand<BreadcrumbModel> NavigateCommand { get; }
+
+        public bool IsEnabled
+        {
+            get => _isEnabled;
+            set => SetProperty(ref _isEnabled, value);
+        }
 
         public bool Show
         {
@@ -88,6 +96,16 @@ namespace Shell.Application.ViewModels
             RaisePropertyChanged(nameof(Breadcrumbs));
         }
 
+        public void ClearPreviousBreadcrumbsExcept(int moduleNavId)
+        {
+            foreach (var key in _previousBreadcrumbs.Keys)
+            {
+                if (key != moduleNavId)
+                {
+                    _previousBreadcrumbs.Remove(key);
+                }
+            }
+        }
 
         public void SaveBreadcrumbsForModule(int moduleNavId)
         {

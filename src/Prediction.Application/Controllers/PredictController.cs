@@ -17,9 +17,8 @@ namespace Prediction.Application.Controllers
 {
     public class ModuleState : BindableBase
     {
-        private Dictionary<Session, Matrix<double>> _sessionMatrices = new Dictionary<Session, Matrix<double>>();
-        private Matrix<double> _currentInputMatrix;
-        private AppState _appState;
+        private readonly Dictionary<Session, Matrix<double>> _sessionMatrices = new Dictionary<Session, Matrix<double>>();
+        private readonly AppState _appState;
 
         public ModuleState(AppState appState)
         {
@@ -28,21 +27,33 @@ namespace Prediction.Application.Controllers
             if (appState.ActiveSession != null)
             {
                 AssignNewMatrix(appState.ActiveSession);
+                appState.ActiveSession.NetworkStructureChanged +=ActiveSessionOnNetworkStructureChanged;
             }
+        }
+
+        private void ActiveSessionOnNetworkStructureChanged(MLPNetwork obj)
+        {
+            AssignNewMatrix(_appState.ActiveSession);
         }
 
         public Matrix<double> CurrentInputMatrix
         {
-            get => _currentInputMatrix;
-            set => SetProperty(ref _currentInputMatrix, value);
+            get
+            {
+                if (!_sessionMatrices.ContainsKey(_appState.ActiveSession))
+                {
+                    AssignNewMatrix(_appState.ActiveSession);
+                }
+                return _sessionMatrices[_appState.ActiveSession];
+            }
         }
 
         private void AssignNewMatrix(Session session)
         {
             if(session?.TrainingData != null && session.Network != null)
             {
-                CurrentInputMatrix = Matrix<double>.Build.Dense(session.Network.Layers[0].InputsCount, 1);
-                _sessionMatrices[session] = _currentInputMatrix;
+                _sessionMatrices[session] = Matrix<double>.Build.Dense(session.Network.Layers[0].InputsCount, 1);
+                RaisePropertyChanged(nameof(CurrentInputMatrix));
             }
         }
 
@@ -62,8 +73,8 @@ namespace Prediction.Application.Controllers
 
     class PredictController : ControllerBase<PredictViewModel>,ITransientController<PredictService>
     {
-        private readonly AppState _appState;
         private PredictService _service;
+        private readonly AppState _appState;
         private readonly ModuleState _moduleState;
 
         public PredictController(IViewModelAccessor accessor,AppState appState, ModuleState moduleState) : base(accessor)
@@ -79,6 +90,8 @@ namespace Prediction.Application.Controllers
                 _service.UpdateNetworkAndMatrix(e.next.Network, e.next.TrainingData, _moduleState.CurrentInputMatrix);
             }
 
+            e.next.NetworkStructureChanged -= ActiveSessionOnNetworkStructureChanged;
+            e.next.NetworkStructureChanged += ActiveSessionOnNetworkStructureChanged;
             e.next.PropertyChanged -= ActiveSessionPropertyChanged;
             e.next.PropertyChanged += ActiveSessionPropertyChanged;
         }
@@ -93,7 +106,7 @@ namespace Prediction.Application.Controllers
 
         private void ActiveSessionOnNetworkStructureChanged(MLPNetwork obj)
         {
-            _service.UpdateMatrix(obj, _moduleState.CurrentInputMatrix);
+            _service.UpdateNetworkAndMatrix(_appState.ActiveSession.Network, _appState.ActiveSession.TrainingData, _moduleState.CurrentInputMatrix);
         }
 
         public void Initialize(PredictService service)
@@ -106,9 +119,9 @@ namespace Prediction.Application.Controllers
         private void Navigated(NavigationContext obj)
         {
             _appState.ActiveSessionChanged += AppStateOnActiveSessionChanged;
-            _appState.ActiveSession.NetworkStructureChanged += ActiveSessionOnNetworkStructureChanged;
             if (_appState.ActiveSession?.TrainingData != null && _appState.ActiveSession.Network != null)
             {
+                _appState.ActiveSession.NetworkStructureChanged += ActiveSessionOnNetworkStructureChanged;
                 _service.UpdateNetworkAndMatrix(_appState.ActiveSession.Network, _appState.ActiveSession.TrainingData, _moduleState.CurrentInputMatrix);
             }
         }
