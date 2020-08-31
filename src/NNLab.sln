@@ -17,17 +17,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Training", "Training\Traini
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NeuralNetwork", "NeuralNetwork\NeuralNetwork.csproj", "{A6677DF8-2602-4C31-95BE-6722461DF0B9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NNLib", "..\..\NNLib\NNLib\NNLib.csproj", "{1174FD82-00B2-4C18-8ECA-436011E94BFD}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NNLib.Csv", "..\..\NNLib\NNLib.Csv\NNLib.Csv.csproj", "{42B52161-802D-4A70-A2D5-17BBB70E82B7}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Data.Application.Tests", "Data.Tests\Data.Application.Tests.csproj", "{9F95F312-EEBA-4BC0-92D6-8AA1F320C304}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestUtils", "TestUtils\TestUtils.csproj", "{9C07672C-834B-4EB4-BC8F-AFF158B29C26}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.Tests", "Infrastructure.Tests\Common.Tests.csproj", "{95CE5DA9-1BF4-4F83-9FBE-59C690582A44}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NNLib.Data", "..\..\NNLib\NNLib.Common\NNLib.Data.csproj", "{295E51BF-1041-4CDA-B0DD-FD222639933C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharedUI", "CommonUI\SharedUI.csproj", "{0D0A072E-1DBC-49B2-AB66-B7F7F5CA1933}"
 EndProject
@@ -92,10 +86,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{B965F54C-6C2B-4425-8D47-8ECDC47AA308}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Data.Domain.Tests", "Data.Domain.Tests\Data.Domain.Tests.csproj", "{8963D48D-2863-415C-AB59-03D05A0EBF3A}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NNControl", "..\..\..\..\Marek Pękala\source\repos\NNControl\NNControl\NNControl.csproj", "{AADC9003-D0B4-40BA-A7DF-ADFDDD49DE70}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NNLibAdapter", "..\..\..\..\Marek Pękala\source\repos\NNControl\NNLibAdapter\NNLibAdapter.csproj", "{DFD639C1-1826-48F3-8D71-FA6623DB1083}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NeuralNetwork.Application.Tests", "NeuralNetwork.Application.Tests\NeuralNetwork.Application.Tests.csproj", "{5D2584F3-132C-474F-BE09-655C12A44D4B}"
 EndProject
