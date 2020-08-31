@@ -21,12 +21,14 @@ namespace NeuralNetwork.Domain
         bool SetInputsCount(int inputsCount);
         void ResetWeights(Layer layer);
         void ResetNeuralNetworkWeights();
+        Layer InsertAfter(int layerIndex);
+        Layer InsertBefore(int layerIndex);
         MLPNetwork CreateNeuralNetwork(TrainingData trainingData);
     }
 
     public class NeuralNetworkService : INeuralNetworkService
     {
-        private AppState _appState;
+        private readonly AppState _appState;
 
         public NeuralNetworkService(AppState appState)
         {
@@ -97,20 +99,19 @@ namespace NeuralNetwork.Domain
             NeuralNetwork.RebuildMatrices();
         }
 
-        // public void AdjustParametersToTrainingData(TrainingData trainingData)
-        // {
-        //     var newInputCount = trainingData.Sets.TrainingSet.Input[0].RowCount;
-        //     if (newInputCount != NeuralNetwork.Layers[0].InputsCount)
-        //     {
-        //         SetInputsCount(newInputCount);
-        //     }
-        //
-        //     var newOutputCount = trainingData.Sets.TrainingSet.Target[0].RowCount;
-        //     if (newOutputCount != NeuralNetwork.Layers[^1].NeuronsCount)
-        //     {
-        //         SetNeuronsCount(NeuralNetwork.Layers[^1], newOutputCount);
-        //     }
-        // }
+        public Layer InsertAfter(int layerIndex)
+        {
+            var layer = NeuralNetwork.InsertAfter(layerIndex);
+            _appState.ActiveSession?.RaiseNetworkStructureChanged();
+            return layer;
+        }
+
+        public Layer InsertBefore(int layerIndex)
+        {
+            var layer = NeuralNetwork.InsertBefore(layerIndex);
+            _appState.ActiveSession?.RaiseNetworkStructureChanged();
+            return layer;
+        }
 
         public MLPNetwork CreateNeuralNetwork(TrainingData trainingData)
         {

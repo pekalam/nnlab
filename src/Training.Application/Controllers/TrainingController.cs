@@ -90,8 +90,8 @@ namespace Training.Application.Controllers
             {
                 await Session.Pause();
             }
-            catch (OperationCanceledException ex) { }
-            catch (TrainingCanceledException ex) { }
+            catch (OperationCanceledException) { }
+            catch (TrainingCanceledException) { }
         }
 
         private async void StopTrainingSession()
@@ -100,8 +100,8 @@ namespace Training.Application.Controllers
             {
                 await Session.Stop();
             }
-            catch (OperationCanceledException ex) { }
-            catch (TrainingCanceledException ex) { }
+            catch (OperationCanceledException) { }
+            catch (TrainingCanceledException) { }
         }
 
         private TrainingSession Session => _moduleState.ActiveSession;
@@ -117,10 +117,10 @@ namespace Training.Application.Controllers
                 });
                 await Session.Start();
             }
-            catch (OperationCanceledException ex)
+            catch (OperationCanceledException)
             {
             }
-            catch (TrainingCanceledException ex)
+            catch (TrainingCanceledException)
             {
             }
             finally

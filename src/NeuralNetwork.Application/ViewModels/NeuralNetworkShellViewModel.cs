@@ -6,25 +6,35 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Common.Framework;
+using NeuralNetwork.Application.Services;
 using Prism.Regions;
+using Unity;
 
 namespace NeuralNetwork.Application.ViewModels
 {
     public class NeuralNetworkShellViewModel : ViewModelBase<NeuralNetworkShellViewModel>
     {
-        public event Action Navigated;
         private bool _navigatedInvoked;
 
         public NeuralNetworkShellViewModel()
         {
+            
         }
+
+        [InjectionConstructor]
+        public NeuralNetworkShellViewModel(INeuralNetworkShellService service)
+        {
+            Service = service;
+        }
+
+        private INeuralNetworkShellService Service { get; }
 
         public override void OnNavigatedTo(NavigationContext navigationContext)
         {
             if (!_navigatedInvoked)
             {
                 _navigatedInvoked = true;
-                Navigated?.Invoke();
+                Service.Navigated(navigationContext);
             }
         }
     }

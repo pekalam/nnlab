@@ -202,8 +202,11 @@
 
                                     </StackPanel>
                                     <StackPanel x:Name="EditPanel" VerticalAlignment="Center" Style="{StaticResource ResourceKey=EditorPanelStyle}">
-                                        <mah:DropDownButton
-                                            ArrowVisibility="Collapsed" Content="Insert" ItemsSource="{Binding InsertModesList}">
+                                        <mah:DropDownButton ArrowVisibility="Collapsed" Content="Insert">
+                                            <mah:DropDownButton.Items>
+                                                <MenuItem Header="Insert after" Command="{Binding InsertAfter}" CommandParameter="{Binding}"/>
+                                                <MenuItem Header="Insert before" Command="{Binding InsertBefore}" CommandParameter="{Binding}"/>
+                                            </mah:DropDownButton.Items>
                                         </mah:DropDownButton>
                                         <Button x:Name="EditBtn" Command="{Binding Path=EditLayer}" CommandParameter="{Binding}">Edit</Button>
                                         <Button Command="{Binding Path=RemoveLayer}" CommandParameter="{Binding}">Remove</Button>

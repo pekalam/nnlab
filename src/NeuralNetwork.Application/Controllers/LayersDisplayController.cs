@@ -23,16 +23,18 @@ namespace NeuralNetwork.Application.Controllers
         private readonly INeuralNetworkShellService _shellService;
         private readonly INeuralNetworkService _networkService;
         private readonly AppState _appState;
+        private readonly ModuleState _moduleState;
         private readonly IViewModelAccessor _accessor;
         private readonly IEventAggregator _ea;
 
-        public LayersDisplayController(INeuralNetworkShellService shellService, INeuralNetworkService networkService, AppState appState, IViewModelAccessor accessor, IEventAggregator ea)
+        public LayersDisplayController(INeuralNetworkShellService shellService, INeuralNetworkService networkService, AppState appState, IViewModelAccessor accessor, IEventAggregator ea, ModuleState moduleState)
         {
             _shellService = shellService;
             _networkService = networkService;
             _appState = appState;
             _accessor = accessor;
             _ea = ea;
+            _moduleState = moduleState;
         }
 
         public void Initialize(LayersDisplayService service)
@@ -43,6 +45,8 @@ namespace NeuralNetwork.Application.Controllers
             service.EditLayerCommand = _shellService.OpenLayerEditorCommand;
             service.SelectLayerCommand = new DelegateCommand<Layer>(SelectLayer);
             service.LayerClickedCommand = new DelegateCommand<LayerEditorItemModel>(LayerClicked);
+            service.InsertAfterCommand = new DelegateCommand<LayerEditorItemModel>(InsertAfter);
+            service.InsertBeforeCommand = new DelegateCommand<LayerEditorItemModel>(InsertBefore);
 
             _appState.PropertyChanged += AppStateOnPropertyChanged;
 
@@ -50,6 +54,26 @@ namespace NeuralNetwork.Application.Controllers
             {
                 if(_appState.ActiveSession != null) SetLayers();
             });
+
+        }
+
+        private void InsertBefore(LayerEditorItemModel obj)
+        {
+            _networkService.InsertBefore(obj.LayerIndex);   
+            SetLayers();
+        }
+
+        private void InsertAfter(LayerEditorItemModel obj)
+        {
+            if (obj.LayerIndex == _appState.ActiveSession.Network.TotalLayers - 1)
+            {
+                AddLayer();
+            }
+            else
+            {
+                _networkService.InsertAfter(obj.LayerIndex);
+                SetLayers();
+            }
 
         }
 
@@ -113,6 +137,7 @@ namespace NeuralNetwork.Application.Controllers
         {
             var neuralNetwork = _appState.ActiveSession.Network;
             _service.CreateLayers(neuralNetwork.Layers);
+            _moduleState.ModelAdapter.Controller.ClearHighlight();
         }
 
         private void AddLayer()

@@ -37,18 +37,23 @@ namespace Training.Application.Services
 
 namespace Training.Application.Controllers
 {
-    class MatrixTrainingPreviewController : ITransientController<MatrixTrainingPreviewService>
+    class MatrixTrainingPreviewController : ControllerBase<MatrixTrainingPreviewViewModel>,ITransientController<MatrixTrainingPreviewService>
     {
         private PlotEpochEndConsumer? _epochEndConsumer;
         private readonly ModuleState _moduleState;
-        private IViewModelAccessor _accessor;
 
-        public MatrixTrainingPreviewController(ModuleState moduleState, IViewModelAccessor accessor)
+        public MatrixTrainingPreviewController(ModuleState moduleState, IViewModelAccessor accessor) : base(accessor)
         {
             _moduleState = moduleState;
-            _accessor = accessor;
         }
 
+        protected override void VmCreated()
+        {
+            Vm.IsActiveChanged += (_, __) =>
+            {
+                if (!Vm.IsActive) _epochEndConsumer.ForceStop();
+            };
+        }
 
         public void Initialize(MatrixTrainingPreviewService service)
         {
@@ -57,13 +62,11 @@ namespace Training.Application.Controllers
 
         private void AssignSession(TrainingSession session)
         {
-            var vm = _accessor.Get<MatrixTrainingPreviewViewModel>();
-            vm.MatVm.Controller.AssignNetwork(session.Network);
+            Vm.MatVm.Controller.AssignNetwork(session.Network);
         }
 
         private void Navigated(NavigationContext parameters)
         {
-            var vm = _accessor.Get<MatrixTrainingPreviewViewModel>();
 
 
             if (_moduleState.ActiveSession != null)
@@ -76,10 +79,10 @@ namespace Training.Application.Controllers
 
             _epochEndConsumer = new PlotEpochEndConsumer(_moduleState,(list, session) =>
             {
-                vm.MatVm.Controller.Update();
+                Vm.MatVm.Controller.Update();
                 GlobalDistributingDispatcher.Call(() =>
                 {
-                    vm.MatVm.Controller.ApplyUpdate();
+                    Vm.MatVm.Controller.ApplyUpdate();
                 }, _epochEndConsumer);
             });
 

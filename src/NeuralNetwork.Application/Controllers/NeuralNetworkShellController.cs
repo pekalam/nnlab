@@ -10,8 +10,10 @@ using NeuralNetwork.Application.View;
 using NeuralNetwork.Application.ViewModels;
 using NeuralNetwork.Domain;
 using Prism.Commands;
+using Prism.Events;
 using Prism.Ioc;
 using Prism.Regions;
+using Shell.Interface;
 
 namespace NeuralNetwork.Application.Services
 {
@@ -19,6 +21,7 @@ namespace NeuralNetwork.Application.Services
     {
         DelegateCommand<LayerEditorItemModel> OpenLayerEditorCommand { get; set; }
         DelegateCommand CloseLayerEditorCommand { get; set; }
+        Action<NavigationContext> Navigated { get; }
 
         public static void Register(IContainerRegistry cr)
         {
@@ -33,20 +36,22 @@ namespace NeuralNetwork.Application.Controllers
     {
         private readonly IRegionManager _rm;
         private readonly AppState _appState;
+        private readonly IEventAggregator _ea;
 
         private bool _isEditorOpened;
 
-        public NeuralNetworkShellController(IRegionManager rm, AppState appState)
+        public NeuralNetworkShellController(IRegionManager rm, AppState appState, IEventAggregator ea)
         {
             _rm = rm;
             _appState = appState;
+            _ea = ea;
 
             OpenLayerEditorCommand = new DelegateCommand<LayerEditorItemModel>(OpenLayerEditor);
             CloseLayerEditorCommand = new DelegateCommand(CloseLayerEditor);
 
-            NeuralNetworkShellViewModel.Created += () =>
+
+            Navigated = (_) =>
             {
-                NeuralNetworkShellViewModel.Instance.Navigated += () =>
                 _rm.Regions[NeuralNetworkRegions.NetworkDownRegion].RequestNavigate(nameof(LayersDisplayViewModel));
             };
 
@@ -67,6 +72,7 @@ namespace NeuralNetwork.Application.Controllers
 
         private void OpenLayerEditor(LayerEditorItemModel model)
         {
+            _ea.GetEvent<EnableModalNavigation>().Publish(CloseLayerEditorCommand);
             _isEditorOpened = true;
             var layer = _appState.ActiveSession.Network.Layers[model.LayerIndex];
             _rm.Regions[NeuralNetworkRegions.NetworkDownRegion].RequestNavigate(nameof(LayerEditorViewModel),new NavigationParameters()
@@ -82,5 +88,6 @@ namespace NeuralNetwork.Application.Controllers
 
         public DelegateCommand<LayerEditorItemModel> OpenLayerEditorCommand { get; set; }
         public DelegateCommand CloseLayerEditorCommand { get; set; }
+        public Action<NavigationContext> Navigated { get; private set; }
     }
 }

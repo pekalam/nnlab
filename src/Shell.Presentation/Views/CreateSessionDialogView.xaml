@@ -10,7 +10,7 @@
             <StackPanel DockPanel.Dock="Top">
                 <TextBlock Text="Enter name of new session" FontSize="20" Margin="0,0,0,14"/>
                 <TextBox MinWidth="400" mah:TextBoxHelper.Watermark="Session name"  x:Name="SessionName" Text="{Binding Name, ValidatesOnDataErrors=True}"/>
-                <CheckBox Content="Switch to session" Margin="0,14,0,0"/>
+                <CheckBox Content="Switch to session" Margin="0,14,0,0" IsChecked="{Binding IsSwitchToSessionChecked}"/>
             </StackPanel>
 
 

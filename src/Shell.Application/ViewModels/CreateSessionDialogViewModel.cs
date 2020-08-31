@@ -13,12 +13,14 @@ namespace Shell.Application.ViewModels
     public class CreateSessionDialogViewModel : ViewModelBase<CreateSessionDialogViewModel>, IDialogAware
     {
         private string _name;
+        private bool _isSwitchToSessionChecked = true;
 
         public CreateSessionDialogViewModel()
         {
             OkCommand = new DelegateCommand(() => RequestClose(new DialogResult(ButtonResult.OK, new DialogParameters()
             {
                 {nameof(Name), Name ?? ""},
+                {"Switch", IsSwitchToSessionChecked}
             })));
             CancelCommand = new DelegateCommand(() => RequestClose(new DialogResult(ButtonResult.Cancel)));
         }
@@ -31,6 +33,12 @@ namespace Shell.Application.ViewModels
         {
             get => _name;
             set => SetProperty(ref _name, value);
+        }
+
+        public bool IsSwitchToSessionChecked
+        {
+            get => _isSwitchToSessionChecked;
+            set => SetProperty(ref _isSwitchToSessionChecked, value);
         }
 
         public bool CanCloseDialog()

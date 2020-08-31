@@ -8,9 +8,9 @@ namespace NeuralNetwork.Application
 {
     internal class NNControlNeuralNetworkServiceDecorator : INeuralNetworkService
     {
-        private INeuralNetworkService _service;
-        private AppState _appState;
-        private ModuleState _moduleState;
+        private readonly INeuralNetworkService _service;
+        private readonly AppState _appState;
+        private readonly ModuleState _moduleState;
 
         public NNControlNeuralNetworkServiceDecorator(NeuralNetworkService service, AppState appState, ModuleState moduleState)
         {
@@ -69,18 +69,19 @@ namespace NeuralNetwork.Application
             _service.ResetNeuralNetworkWeights();
         }
 
-        // public void AdjustParametersToTrainingData(TrainingData trainingData)
-        // {
-        //     _service.AdjustParametersToTrainingData(trainingData);
-        //
-        //     var network = _appState.ActiveSession?.Network;
-        //
-        //     ModelAdapter.LayerModelAdapters[0].SetNeuronsCount(network.Layers[0].InputsCount);
-        //     ModelAdapter.LayerModelAdapters[^1].SetNeuronsCount(network.Layers[^1].NeuronsCount);
-        //
-        //     ModelAdapter.SetInputLabels(trainingData.Variables.InputVariableNames);
-        //     ModelAdapter.SetOutputLabels(trainingData.Variables.TargetVariableNames);
-        // }
+        public Layer InsertAfter(int layerIndex)
+        {
+            var layer = _service.InsertAfter(layerIndex);
+            ModelAdapter.InsertAfter(layerIndex, layer);
+            return layer;
+        }
+
+        public Layer InsertBefore(int layerIndex)
+        {
+            var layer = _service.InsertBefore(layerIndex);
+            ModelAdapter.InsertBefore(layerIndex, layer);
+            return layer;
+        }
 
         public MLPNetwork CreateNeuralNetwork(TrainingData trainingData)
         {

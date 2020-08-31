@@ -76,7 +76,11 @@ namespace Shell.Application.Controllers
             {
                 if (result.Result == ButtonResult.OK)
                 {
-                    _appState.CreateSession(result.Parameters.GetValue<string>("Name"));
+                    var session=_appState.CreateSession(result.Parameters.GetValue<string>("Name"));
+                    if (result.Parameters.GetValue<bool>("Switch"))
+                    {
+                        _appState.ActiveSession = session;
+                    }
                 }
             });
         }

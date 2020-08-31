@@ -7,6 +7,7 @@ using System.Windows.Threading;
 using Common.Framework;
 using Prism.Commands;
 using Prism.Ioc;
+using Prism.Regions;
 using Training.Application.Controllers;
 using Training.Application.Plots;
 using Training.Application.Services;
@@ -19,6 +20,7 @@ namespace Training.Application.Services
     {
         DelegateCommand ToggleAnimationCommand { get; }
         DelegateCommand ClearColorsCommand { get; }
+        Action<NavigationContext> Navigated { get; }
 
         public static void Register(IContainerRegistry cr)
         {
@@ -36,6 +38,7 @@ namespace Training.Application.Services
 
         public DelegateCommand ToggleAnimationCommand { get; set; }
         public DelegateCommand ClearColorsCommand { get; set; }
+        public Action<NavigationContext> Navigated { get; set; }
     }
 }
 
@@ -43,40 +46,21 @@ namespace Training.Application.Controllers
 {
     class TrainingNetworkPreviewController : ControllerBase<TrainingNetworkPreviewViewModel>,ITransientController<TrainingNetworkPreviewService>
     {
-        private readonly PlotEpochEndConsumer _epochEndConsumer;
+        private PlotEpochEndConsumer _epochEndConsumer;
         private Action _epochEndCallback = () => { };
         private readonly ModuleState _moduleState;
 
         public TrainingNetworkPreviewController(IViewModelAccessor accessor, ModuleState moduleState) : base(accessor)
         {
             _moduleState = moduleState;
+        }
 
-            _epochEndConsumer = new PlotEpochEndConsumer(moduleState, (_, __) => _epochEndCallback(),
-                session =>
-                {
-                    SetupAnimation();
-                },
-                session =>
-                {
-                    Vm.ModelAdapter.ColorAnimation.StopAnimation(false);
-                    System.Windows.Application.Current.Dispatcher.InvokeAsync(() => Vm.ModelAdapter.Controller.Color.ApplyColors(), DispatcherPriority.Background);
-                },
-                session =>
-                {
-                    System.Windows.Application.Current.Dispatcher.InvokeAsync(() => Vm.ModelAdapter.Controller.Color.ApplyColors(), DispatcherPriority.Background);
-                });
-            _epochEndConsumer.Initialize();
-
-            moduleState.ActiveSessionChanged += ModuleStateOnActiveSessionChanged;
-
-            accessor.OnCreated<TrainingNetworkPreviewViewModel>(() =>
+        protected override void VmCreated()
+        {
+            Vm.IsActiveChanged += (sender, args) =>
             {
-                
-                Vm.IsActiveChanged += (sender, args) =>
-                {
-                    if(!Vm.IsActive) _epochEndConsumer.ForceStop();
-                };
-            });
+                if (!Vm.IsActive) _epochEndConsumer.ForceStop();
+            };
         }
 
 
@@ -97,6 +81,28 @@ namespace Training.Application.Controllers
         {
             service.ToggleAnimationCommand = new DelegateCommand(ToggleAnimation);
             service.ClearColorsCommand = new DelegateCommand(ClearColors);
+            service.Navigated = Navigated;
+        }
+
+        private void Navigated(NavigationContext obj)
+        {
+            _epochEndConsumer = new PlotEpochEndConsumer(_moduleState, (_, __) => _epochEndCallback(),
+                session =>
+                {
+                    SetupAnimation();
+                },
+                session =>
+                {
+                    Vm.ModelAdapter.ColorAnimation.StopAnimation(false);
+                    System.Windows.Application.Current.Dispatcher.InvokeAsync(() => Vm.ModelAdapter.Controller.Color.ApplyColors(), DispatcherPriority.Background);
+                },
+                session =>
+                {
+                    System.Windows.Application.Current.Dispatcher.InvokeAsync(() => Vm.ModelAdapter.Controller.Color.ApplyColors(), DispatcherPriority.Background);
+                });
+            _epochEndConsumer.Initialize();
+
+            _moduleState.ActiveSessionChanged += ModuleStateOnActiveSessionChanged;
         }
 
         private void ClearColors()

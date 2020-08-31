@@ -21,12 +21,9 @@ namespace NeuralNetwork.Application.ViewModels
         public ICommand? AddLayer { get; set; }
         public ICommand? RemoveLayer { get; set; }
         public ICommand? EditLayer { get; set; }
+        public ICommand? InsertBefore { get; set; }
+        public ICommand? InsertAfter { get; set; }
         public string LayerText => $"Layer {LayerIndex + 1}";
-
-        public InsertModes[] InsertModesList { get; set; } = new InsertModes[]
-        {
-            InsertModes.InsertBefore, InsertModes.InsertAfter
-        };
 
         public string LayerSecondText
         {

@@ -19,6 +19,8 @@ namespace NeuralNetwork.Application.Services
         DelegateCommand<LayerEditorItemModel> EditLayerCommand { get; set; }
         DelegateCommand<Layer> SelectLayerCommand { get; set; }
         DelegateCommand<LayerEditorItemModel> LayerClickedCommand { get; set; }
+        DelegateCommand<LayerEditorItemModel> InsertAfterCommand { get; set; }
+        DelegateCommand<LayerEditorItemModel> InsertBeforeCommand { get; set; }
 
         public static void Register(IContainerRegistry cr)
         {
@@ -42,6 +44,8 @@ namespace NeuralNetwork.Application.Services
         public DelegateCommand<LayerEditorItemModel> EditLayerCommand { get; set; }
         public DelegateCommand<Layer> SelectLayerCommand { get; set; }
         public DelegateCommand<LayerEditorItemModel> LayerClickedCommand { get; set; }
+        public DelegateCommand<LayerEditorItemModel> InsertAfterCommand { get; set; }
+        public DelegateCommand<LayerEditorItemModel> InsertBeforeCommand { get; set; }
 
 
         public void AddLayer(Layer layer, int ind)
@@ -88,6 +92,8 @@ namespace NeuralNetwork.Application.Services
                 TotalNeurons = layer.NeuronsCount,
                 RemoveLayer = RemoveLayerCommand,
                 EditLayer = EditLayerCommand,
+                InsertAfter = InsertAfterCommand,
+                InsertBefore = InsertBeforeCommand
             };
         }
     }
