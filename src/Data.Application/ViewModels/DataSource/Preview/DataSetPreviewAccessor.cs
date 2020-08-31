@@ -14,7 +14,7 @@ namespace Data.Application.ViewModels.DataSource.Preview
             DataSetType defaultDataSetType = DataSetType.Training)
         {
             _trainingData = trainingData;
-            _set = trainingData.GetSet(defaultDataSetType);
+            _set = trainingData.GetSet(defaultDataSetType)!;
             _dataTable = new DataTable();
 
 
@@ -32,7 +32,7 @@ namespace Data.Application.ViewModels.DataSource.Preview
 
         public void ChangeDataSet(DataSetType type)
         {
-            _set = _trainingData.GetSet(type);
+            _set = _trainingData.GetSet(type)!;
         }
 
         public DataTable GetPreview(int instancesCount)

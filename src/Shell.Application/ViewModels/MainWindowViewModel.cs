@@ -36,7 +36,7 @@ namespace Shell.Application.ViewModels
         private readonly IEventAggregator _ea;
         private readonly IRegionManager _rm;
         private bool _isFlyoutOpen;
-        private string _flyoutTitle;
+        private string? _flyoutTitle;
         private string _title = "NNLab";
         private bool _isDataItemEnabled;
         private bool _isNetworkItemEnabled;
@@ -47,9 +47,11 @@ namespace Shell.Application.ViewModels
 
         private AppState _appState;
         private Visibility _modalNavigationVisibility = Visibility.Collapsed;
-        private DelegateCommand _modalNavigationCommand;
+        private DelegateCommand? _modalNavigationCommand;
 
+#pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
         public MainWindowViewModel()
+#pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
         {
         }
 
@@ -64,7 +66,7 @@ namespace Shell.Application.ViewModels
             StatusBarViewModel = statusBarViewModel;
             ModalNavigationCommand = new DelegateCommand(() =>
             {
-                _modalNavigationCommand.Execute();
+                _modalNavigationCommand?.Execute();
                 ModalNavigationVisibility = Visibility.Collapsed;
             });
 
@@ -204,7 +206,7 @@ namespace Shell.Application.ViewModels
             set => SetProperty(ref _isFlyoutOpen, value);
         }
 
-        public string FlyoutTitle
+        public string? FlyoutTitle
         {
             get => _flyoutTitle;
             set => SetProperty(ref _flyoutTitle, value);

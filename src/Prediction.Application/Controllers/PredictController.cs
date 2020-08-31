@@ -33,18 +33,18 @@ namespace Prediction.Application.Controllers
 
         private void ActiveSessionOnNetworkStructureChanged(MLPNetwork obj)
         {
-            AssignNewMatrix(_appState.ActiveSession);
+            AssignNewMatrix(_appState.ActiveSession!);
         }
 
         public Matrix<double> CurrentInputMatrix
         {
             get
             {
-                if (!_sessionMatrices.ContainsKey(_appState.ActiveSession))
+                if (!_sessionMatrices.ContainsKey(_appState.ActiveSession!))
                 {
-                    AssignNewMatrix(_appState.ActiveSession);
+                    AssignNewMatrix(_appState.ActiveSession!);
                 }
-                return _sessionMatrices[_appState.ActiveSession];
+                return _sessionMatrices[_appState.ActiveSession!];
             }
         }
 
@@ -67,13 +67,13 @@ namespace Prediction.Application.Controllers
 
         private void NextOnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            AssignNewMatrix(_appState.ActiveSession);
+            AssignNewMatrix(_appState.ActiveSession!);
         }
     }
 
     class PredictController : ControllerBase<PredictViewModel>,ITransientController<PredictService>
     {
-        private PredictService _service;
+        private PredictService _service = null!;
         private readonly AppState _appState;
         private readonly ModuleState _moduleState;
 
@@ -106,7 +106,7 @@ namespace Prediction.Application.Controllers
 
         private void ActiveSessionOnNetworkStructureChanged(MLPNetwork obj)
         {
-            _service.UpdateNetworkAndMatrix(_appState.ActiveSession.Network, _appState.ActiveSession.TrainingData, _moduleState.CurrentInputMatrix);
+            _service.UpdateNetworkAndMatrix(_appState.ActiveSession!.Network!, _appState.ActiveSession!.TrainingData!, _moduleState.CurrentInputMatrix);
         }
 
         public void Initialize(PredictService service)
@@ -128,7 +128,7 @@ namespace Prediction.Application.Controllers
 
         private void Predict()
         {
-            var network = _appState.ActiveSession.Network;
+            var network = _appState.ActiveSession!.Network!;
 
             network.CalculateOutput(_moduleState.CurrentInputMatrix);
             _service.UpdateMatrix(network, _moduleState.CurrentInputMatrix);

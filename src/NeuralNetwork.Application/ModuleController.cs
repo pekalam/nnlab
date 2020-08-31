@@ -14,10 +14,10 @@ namespace NeuralNetwork.Application
     {
         private IEventAggregator _ea;
         private IRegionManager _rm;
-        private INeuralNetworkService _networkService;
-        private NeuralNetworkShellController _shellController;
+        private readonly INeuralNetworkService _networkService;
+        private readonly NeuralNetworkShellController _shellController;
         private NetDisplayController _netDisplayController;
-        private AppState _appState;
+        private readonly AppState _appState;
         private bool _firstNav;
 
         public ModuleController(IEventAggregator ea, IRegionManager rm, NeuralNetworkShellController shellController, AppState appState, INeuralNetworkService networkService, NetDisplayController netDisplayController)
@@ -57,7 +57,7 @@ namespace NeuralNetwork.Application
         private void SetupActiveSession()
         {
 
-            if (_appState.ActiveSession.TrainingData != null)
+            if (_appState.ActiveSession!.TrainingData != null)
             {
                 _ea.GetEvent<EnableNavMenuItem>().Publish(ModuleIds.NeuralNetwork);
                 CreateNetworkForSession(_appState.ActiveSession);
@@ -74,7 +74,7 @@ namespace NeuralNetwork.Application
         {
             if (session.Network == null)
             {
-                var network = _networkService.CreateNeuralNetwork(session.TrainingData);
+                var network = _networkService.CreateNeuralNetwork(session.TrainingData!);
                 session.Network = network;
             }
         }
@@ -117,7 +117,7 @@ namespace NeuralNetwork.Application
         {
             if (e.PropertyName == nameof(Session.TrainingData))
             {
-                if (_appState.ActiveSession.TrainingData != null)
+                if (_appState.ActiveSession!.TrainingData != null)
                 {
                     _ea.GetEvent<EnableNavMenuItem>().Publish(ModuleIds.NeuralNetwork);
                     CreateNetworkForSession(_appState.ActiveSession);

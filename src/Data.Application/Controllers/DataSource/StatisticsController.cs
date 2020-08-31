@@ -28,15 +28,15 @@ namespace Data.Application.Controllers.DataSource
 {
     internal class StatisticsController : IStatisticsService
     {
-        private HistogramController _histogramCtrl;
-        private VariablesPlotController _variablesPlotCtrl;
-        private AppState _appState;
+        private HistogramController _histogramCtrl = null!;
+        private VariablesPlotController _variablesPlotCtrl = null!;
+        private readonly AppState _appState;
 
         public StatisticsController(AppState appState)
         {
             _appState = appState;
 
-            _appState.ActiveSession.PropertyChanged += ActiveSessionOnPropertyChanged;
+            _appState.ActiveSession!.PropertyChanged += ActiveSessionOnPropertyChanged;
             _appState.ActiveSessionChanged += AppStateOnActiveSessionChanged;
 
             Created = vm =>
@@ -49,7 +49,7 @@ namespace Data.Application.Controllers.DataSource
             };
         }
 
-        public DelegateCommand<DataSetType?> SelectDataSet { get; set; }
+        public DelegateCommand<DataSetType?> SelectDataSet { get; set; } = null!;
         public Action<StatisticsViewModel> Created { get; set; }
 
         private void ActiveSessionOnPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -75,19 +75,19 @@ namespace Data.Application.Controllers.DataSource
 
         private void SetTrainingData()
         {
-            var trainingData = _appState.ActiveSession.TrainingData;
+            var trainingData = _appState.ActiveSession!.TrainingData!;
 
             var setTypes = new List<DataSetType>() {DataSetType.Training};
             if (trainingData.Sets.TestSet != null) setTypes.Add(DataSetType.Test);
             if (trainingData.Sets.ValidationSet != null) setTypes.Add(DataSetType.Validation);
-            StatisticsViewModel.Instance.DataSetTypes = setTypes.ToArray();
+            StatisticsViewModel.Instance!.DataSetTypes = setTypes.ToArray();
 
             _variablesPlotCtrl.Plot(trainingData, DataSetType.Training);
         }
 
         private void SelectDataSetExecute(DataSetType? set)
         {
-            _variablesPlotCtrl.Plot(_appState.ActiveSession.TrainingData, set.Value);
+            _variablesPlotCtrl.Plot(_appState.ActiveSession!.TrainingData!, set!.Value);
         }
     }
 }

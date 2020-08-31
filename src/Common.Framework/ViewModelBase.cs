@@ -15,7 +15,7 @@ namespace Common.Framework
     {
         private bool _isActive;
         public static T? Instance { get; private set; }
-        public static event Action Created;
+        public static event Action? Created;
 
         public ViewModelBase()
         {
@@ -43,7 +43,7 @@ namespace Common.Framework
             }
         }
 
-        public event EventHandler IsActiveChanged;
+        public event EventHandler? IsActiveChanged;
 
         public virtual void OnNavigatedTo(NavigationContext navigationContext)
         {
@@ -75,7 +75,7 @@ namespace Common.Framework
         /// <remarks>
         /// This property is set in <see cref="OnNavigatedTo"/> method.
         /// </remarks>
-        public TV View { get; private set; }
+        public TV? View { get; private set; }
 
         /// <summary>
         /// Called after <see cref="View"/> property is set.
@@ -94,7 +94,7 @@ namespace Common.Framework
         public override void OnNavigatedTo(NavigationContext navigationContext)
         {
             View = navigationContext.Parameters["view"] as TV;
-            ViewChanged(View);
+            ViewChanged(View!);
         }
 
         public override bool IsNavigationTarget(NavigationContext navigationContext) => true;

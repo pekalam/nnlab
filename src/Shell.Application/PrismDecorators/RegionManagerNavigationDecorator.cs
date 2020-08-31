@@ -109,7 +109,7 @@ namespace Shell.Application.PrismDecorators
             Debug.Assert(regionName != AppRegions.ContentRegion || navigationParameters is ContentRegionNavigationParameters);
 
             _regionManager.RequestNavigate(regionName, target, navigationCallback, navigationParameters);
-            TrySendNavigationEventForRegion(regionName, target, navigationParameters as ContentRegionNavigationParameters);
+            TrySendNavigationEventForRegion(regionName, target, (navigationParameters as ContentRegionNavigationParameters)!);
         }
 
         public void RequestNavigate(string regionName, string target, Action<NavigationResult> navigationCallback,
@@ -119,7 +119,7 @@ namespace Shell.Application.PrismDecorators
 
             _regionManager.RequestNavigate(regionName, target, navigationCallback, navigationParameters);
             TrySendNavigationEventForRegion(regionName, new Uri(target, UriKind.RelativeOrAbsolute),
-                navigationParameters as ContentRegionNavigationParameters);
+                (navigationParameters as ContentRegionNavigationParameters)!);
         }
 
         public void RequestNavigate(string regionName, Uri target, NavigationParameters navigationParameters)
@@ -127,7 +127,8 @@ namespace Shell.Application.PrismDecorators
             Debug.Assert(regionName != AppRegions.ContentRegion || navigationParameters is ContentRegionNavigationParameters);
 
             _regionManager.RequestNavigate(regionName, target, navigationParameters);
-            TrySendNavigationEventForRegion(regionName, target, navigationParameters as ContentRegionNavigationParameters);
+            TrySendNavigationEventForRegion(regionName, target,
+                (navigationParameters as ContentRegionNavigationParameters)!);
         }
 
         public void RequestNavigate(string regionName, string target, NavigationParameters navigationParameters)
@@ -136,7 +137,7 @@ namespace Shell.Application.PrismDecorators
 
             _regionManager.RequestNavigate(regionName, target, navigationParameters);
             TrySendNavigationEventForRegion(regionName, new Uri(target, UriKind.RelativeOrAbsolute),
-                navigationParameters as ContentRegionNavigationParameters);
+                (navigationParameters as ContentRegionNavigationParameters)!);
         }
 
         public IRegionCollection Regions => GetDecoratedRegionCollection(_regionManager.Regions);

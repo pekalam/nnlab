@@ -30,31 +30,31 @@ namespace Training.Application.Controllers
                 {
 
                     var last = args.Last();
-                    Vm.View.UpdateTraining(last.Error, last.Epoch, last.Iterations);
+                    Vm!.View!.UpdateTraining(last.Error, last.Epoch, last.Iterations);
                 },
                 trainingSession =>
                 {
-                    Vm.StartTimer();
-                    Vm.TestError = null;
-                    Vm.ValidationError = null;
+                    Vm!.StartTimer();
+                    Vm!.TestError = null;
+                    Vm!.ValidationError = null;
                 },
                 trainingSession =>
                 {
-                    Vm.StopTimer();
+                    Vm!.StopTimer();
                 }, session =>
                 {
-                    Vm.StopTimer();
+                    Vm!.StopTimer();
                 });
 
             
             ea.GetEvent<TrainingValidationFinished>().Subscribe(d =>
             {
-                Vm.ValidationError = d;
+                Vm!.ValidationError = d;
             });
 
             ea.GetEvent<TrainingTestFinished>().Subscribe(d =>
             {
-                Vm.TestError = d;
+                Vm!.TestError = d;
             });
 
 
@@ -65,12 +65,12 @@ namespace Training.Application.Controllers
         {
             _moduleState.ActiveSessionChanged += (sender, args) =>
             {
-                if (!args.next.StartTime.HasValue) Vm.View.ResetProgress();
+                if (!args.next.StartTime.HasValue) Vm!.View!.ResetProgress();
                 else
                 {
                     var last = args.next.EpochEndEvents.Last();
-                    Vm.View.UpdateTimer(args.next.CurrentReport.Duration);
-                    Vm.View.UpdateTraining(last.Error, last.Epoch, last.Iterations);
+                    Vm!.View!.UpdateTimer(args.next.CurrentReport!.Duration);
+                    Vm!.View!.UpdateTraining(last.Error, last.Epoch, last.Iterations);
                 }
 
                 args.next.PropertyChanged -= SessionOnPropertyChanged;
@@ -83,14 +83,14 @@ namespace Training.Application.Controllers
         {
             if (e.PropertyName == nameof(TrainingSession.Started))
             {
-                var session = sender as TrainingSession;
+                var session = (sender as TrainingSession)!;
                 if (session.Started)
                 {
-                    Vm.StartTimer();
+                    Vm!.StartTimer();
                 }
                 else
                 {
-                    Vm.StopTimer();
+                    Vm!.StopTimer();
                 }
             }
         }

@@ -42,7 +42,7 @@ namespace Training.Application.Services
             ctrl.Initialize(this);
         }
 
-        public Action<NavigationContext> Navigated { get; set; }
+        public Action<NavigationContext> Navigated { get; set; } = null!;
     }
 }
 
@@ -50,7 +50,7 @@ namespace Training.Application.Controllers
 {
     class OutputPlotSelector
     {
-        public void SelectPlot(TrainingSession session) => SelectPlot(session.Network);
+        public void SelectPlot(TrainingSession session) => SelectPlot(session.Network ?? throw new NullReferenceException("Null network"));
 
         public void SelectPlot(MLPNetwork network)
         {
@@ -69,11 +69,11 @@ namespace Training.Application.Controllers
 
     class OutputPlotController : ControllerBase<OutputPlotViewModel>, ITransientController<OutputPlotService>
     {
-        private string _outputPlotSettingsRegion;
+        private string _outputPlotSettingsRegion = null!;
 
         private PlotEpochEndConsumer? _epochEndConsumer;
         private readonly OutputPlotSelector _plotSelector = new OutputPlotSelector();
-        private CancellationTokenSource _cts;
+        private CancellationTokenSource? _cts;
         private readonly List<DispatcherOperation> _ops = new List<DispatcherOperation>();
         private readonly IRegionManager _rm;
         private readonly ModuleState _moduleState;
@@ -87,9 +87,9 @@ namespace Training.Application.Controllers
 
         protected override void VmCreated()
         {
-            Vm.IsActiveChanged += (sender, args) =>
+            Vm!.IsActiveChanged += (sender, args) =>
             {
-                if (!(sender as OutputPlotViewModel).IsActive)
+                if (!(sender as OutputPlotViewModel)!.IsActive)
                 {
                     _epochEndConsumer?.ForceStop();
                 }
@@ -103,34 +103,34 @@ namespace Training.Application.Controllers
 
         private void InvalidatePlot()
         {
-            GlobalDistributingDispatcher.Call(() => { Vm.PlotModel.InvalidatePlot(true); }, _epochEndConsumer);
+            GlobalDistributingDispatcher.Call(() => { Vm!.PlotModel.InvalidatePlot(true); }, _epochEndConsumer);
         }
 
         private void InitPlotEpochEndConsumer()
         {
             _epochEndConsumer = new PlotEpochEndConsumer(_moduleState, (epochEnds, session) =>
             {
-                if (_cts.IsCancellationRequested)
+                if (_cts!.IsCancellationRequested)
                 {
                     return;
                 }
 
-                _plotSelector.OutputPlot?.OnEpochEnd(epochEnds, Vm, _cts.Token);
+                _plotSelector.OutputPlot?.OnEpochEnd(epochEnds, Vm!, _cts.Token);
 
                 InvalidatePlot();
             }, session =>
             {
                 _cts = new CancellationTokenSource();
                 _plotSelector.SelectPlot(session);
-                _plotSelector.OutputPlot?.OnSessionStarting(Vm, session, _cts.Token);
+                _plotSelector.OutputPlot?.OnSessionStarting(Vm!, session, _cts.Token);
                 InvalidatePlot();
             }, s =>
             {
-                _cts?.Cancel();
+                _cts!.Cancel();
                 _plotSelector.OutputPlot?.OnSessionStopped(s);
             }, s =>
             {
-                _cts?.Cancel();
+                _cts!.Cancel();
                 _plotSelector.OutputPlot?.OnSessionPaused(s);
             });
 
@@ -150,7 +150,7 @@ namespace Training.Application.Controllers
             var navParams = OutputPlotNavParams.FromNavParams(navigationContext.Parameters);
 
             _outputPlotSettingsRegion = navParams.ParentRegion + nameof(_outputPlotSettingsRegion);
-            Vm.BasicPlotModel.SetSettingsRegion(_outputPlotSettingsRegion);
+            Vm!.BasicPlotModel.SetSettingsRegion(_outputPlotSettingsRegion);
 
             if (navParams.EpochEnd)
             {
@@ -162,10 +162,10 @@ namespace Training.Application.Controllers
                 await Task.Run(
                     () =>
                     {
-                        _plotSelector.OutputPlot.GeneratrePlot(navParams.Set, navParams.Data, navParams.Network, Vm);
+                        _plotSelector.OutputPlot!.GeneratrePlot(navParams.Set, navParams.Data, navParams.Network, Vm!);
                     }, navParams.Cts.Token);
 
-                System.Windows.Application.Current.Dispatcher.Invoke(() => Vm.PlotModel.InvalidatePlot(true),
+                System.Windows.Application.Current.Dispatcher.Invoke(() => Vm!.PlotModel.InvalidatePlot(true),
                     DispatcherPriority.Background, navParams.Cts.Token);
             }
         }

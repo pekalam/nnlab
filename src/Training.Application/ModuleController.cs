@@ -85,7 +85,7 @@ namespace Training.Application
 
         private void SendNavMenuItemEvents()
         {
-            if (_moduleState.ActiveSession.IsValid)
+            if (_moduleState.ActiveSession!.IsValid)
             {
                 _ea.GetEvent<EnableNavMenuItem>().Publish(ModuleIds.Training);
             }
@@ -100,14 +100,14 @@ namespace Training.Application
             if (e.PropertyName == nameof(ModuleState.ActiveSession))
             {
                 SendNavMenuItemEvents();
-                _moduleState.ActiveSession.PropertyChanged -= ActiveTrainingSessionOnPropertyChanged;
+                _moduleState.ActiveSession!.PropertyChanged -= ActiveTrainingSessionOnPropertyChanged;
                 _moduleState.ActiveSession.PropertyChanged += ActiveTrainingSessionOnPropertyChanged;
             }
         }
 
         private void ActiveTrainingSessionOnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            var session = sender as TrainingSession;
+            var session = (sender as TrainingSession)!;
             switch (e.PropertyName)
             {
                 case nameof(TrainingSession.Started):

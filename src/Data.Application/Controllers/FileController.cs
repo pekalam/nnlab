@@ -53,7 +53,7 @@ namespace Data.Application.Controllers
             if (dialog.result == true)
             {
                 _rm.NavigateContentRegion("SingleFileSourceView", "File");
-                SingleFileSourceViewModel.Instance.SelectedFilePath = dialog.filePath;
+                SingleFileSourceViewModel.Instance!.SelectedFilePath = dialog.filePath;
             }
         }
 

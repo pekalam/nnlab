@@ -107,7 +107,7 @@ namespace Data.Application.ViewModels.DataSource.Statistics
             {
                 if (trainingData.Variables.Names[i] == columnName)
                 {
-                    IVectorSet vectorSet = null;
+                    IVectorSet? vectorSet = null;
                     var varInd = -1;
                     if ((varInd = trainingData.Variables.Indexes.InputVarIndexes.IndexOf(i)) != -1)
                     {

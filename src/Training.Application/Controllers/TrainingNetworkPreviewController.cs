@@ -36,9 +36,9 @@ namespace Training.Application.Services
             ctrl.Initialize(this);
         }
 
-        public DelegateCommand ToggleAnimationCommand { get; set; }
-        public DelegateCommand ClearColorsCommand { get; set; }
-        public Action<NavigationContext> Navigated { get; set; }
+        public DelegateCommand ToggleAnimationCommand { get; set; } = null!;
+        public DelegateCommand ClearColorsCommand { get; set; } = null!;
+        public Action<NavigationContext> Navigated { get; set; } = null!;
     }
 }
 
@@ -46,7 +46,7 @@ namespace Training.Application.Controllers
 {
     class TrainingNetworkPreviewController : ControllerBase<TrainingNetworkPreviewViewModel>,ITransientController<TrainingNetworkPreviewService>
     {
-        private PlotEpochEndConsumer _epochEndConsumer;
+        private PlotEpochEndConsumer? _epochEndConsumer;
         private Action _epochEndCallback = () => { };
         private readonly ModuleState _moduleState;
 
@@ -57,24 +57,24 @@ namespace Training.Application.Controllers
 
         protected override void VmCreated()
         {
-            Vm.IsActiveChanged += (sender, args) =>
+            Vm!.IsActiveChanged += (sender, args) =>
             {
-                if (!Vm.IsActive) _epochEndConsumer.ForceStop();
+                if (!Vm!.IsActive) _epochEndConsumer!.ForceStop();
             };
         }
 
 
         private void SetupAnimation()
         {
-            Vm.ModelAdapter.ColorAnimation.SetupTrainer(_moduleState.ActiveSession.Trainer, ref _epochEndCallback, action =>
+            Vm!.ModelAdapter.ColorAnimation.SetupTrainer(_moduleState.ActiveSession!.Trainer!, ref _epochEndCallback, action =>
             {
-                GlobalDistributingDispatcher.Call(action, _epochEndConsumer);
+                GlobalDistributingDispatcher.Call(action, _epochEndConsumer!);
             });
         }
 
         private void ModuleStateOnActiveSessionChanged(object? sender, (TrainingSession? prev, TrainingSession next) e)
         {
-            Vm.ModelAdapter.ColorAnimation.StopAnimation(true);
+            Vm!.ModelAdapter.ColorAnimation.StopAnimation(true);
         }
 
         public void Initialize(TrainingNetworkPreviewService service)
@@ -93,12 +93,12 @@ namespace Training.Application.Controllers
                 },
                 session =>
                 {
-                    Vm.ModelAdapter.ColorAnimation.StopAnimation(false);
-                    System.Windows.Application.Current.Dispatcher.InvokeAsync(() => Vm.ModelAdapter.Controller.Color.ApplyColors(), DispatcherPriority.Background);
+                    Vm!.ModelAdapter.ColorAnimation.StopAnimation(false);
+                    System.Windows.Application.Current.Dispatcher.InvokeAsync(() => Vm!.ModelAdapter.Controller.Color.ApplyColors(), DispatcherPriority.Background);
                 },
                 session =>
                 {
-                    System.Windows.Application.Current.Dispatcher.InvokeAsync(() => Vm.ModelAdapter.Controller.Color.ApplyColors(), DispatcherPriority.Background);
+                    System.Windows.Application.Current.Dispatcher.InvokeAsync(() => Vm!.ModelAdapter.Controller.Color.ApplyColors(), DispatcherPriority.Background);
                 });
             _epochEndConsumer.Initialize();
 
@@ -107,14 +107,14 @@ namespace Training.Application.Controllers
 
         private void ClearColors()
         {
-            Vm.ModelAdapter.Controller.Color.ResetColorsToDefault();
+            Vm!.ModelAdapter.Controller.Color.ResetColorsToDefault();
         }
 
         private void ToggleAnimation()
         {
-            if (Vm.ModelAdapter.ColorAnimation.IsAnimating)
+            if (Vm!.ModelAdapter.ColorAnimation.IsAnimating)
             {
-                Vm.ModelAdapter.ColorAnimation.StopAnimation(false);
+                Vm!.ModelAdapter.ColorAnimation.StopAnimation(false);
             }
             else
             {

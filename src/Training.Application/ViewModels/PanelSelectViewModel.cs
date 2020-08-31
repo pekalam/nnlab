@@ -107,6 +107,6 @@ namespace Training.Application.ViewModels
         public void CloseDialog(ButtonResult result) => RequestClose?.Invoke(new DialogResult(result));
 
         public string Title { get; } = "Select panels";
-        public event Action<IDialogResult> RequestClose;
+        public event Action<IDialogResult>? RequestClose;
     }
 }

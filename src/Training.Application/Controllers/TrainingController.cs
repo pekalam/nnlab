@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using Accessibility;
 using Common.Framework;
@@ -81,7 +82,8 @@ namespace Training.Application.Controllers
 
         private void ResetParameters()
         {
-            _moduleState.ActiveSession.Network.RebuildMatrices();
+            Debug.Assert(_moduleState.ActiveSession?.Network != null);
+            _moduleState.ActiveSession!.Network.RebuildMatrices();
         }
 
         private async void PauseTrainingSession()
@@ -104,7 +106,7 @@ namespace Training.Application.Controllers
             catch (TrainingCanceledException) { }
         }
 
-        private TrainingSession Session => _moduleState.ActiveSession;
+        private TrainingSession Session => _moduleState.ActiveSession!;
 
         private async void StartTrainingSession()
         {

@@ -42,7 +42,7 @@ namespace Training.Presentation.Views.PanelLayout
 
         private static void PropertyChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            (d as PanelContainer).region.SetValue(RegionManager.RegionNameProperty, e.NewValue);
+            (d as PanelContainer)!.region.SetValue(RegionManager.RegionNameProperty, e.NewValue);
         }
 
         public string Region

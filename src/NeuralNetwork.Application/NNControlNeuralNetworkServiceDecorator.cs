@@ -19,9 +19,9 @@ namespace NeuralNetwork.Application
             _moduleState = moduleState;
         }
 
-        private NNLibModelAdapter ModelAdapter => _moduleState.ModelAdapter;
+        private NNLibModelAdapter ModelAdapter => _moduleState.ModelAdapter!;
 
-        private MLPNetwork NeuralNetwork => _appState.ActiveSession?.Network;
+        private MLPNetwork NeuralNetwork => _appState.ActiveSession?.Network!;
 
         public bool AddLayer()
         {

@@ -1,4 +1,6 @@
-﻿using System;
+﻿#pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
+#pragma warning disable CS8625
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Data.Application.Services;
@@ -12,6 +14,7 @@ using Data.Application.ViewModels.DataSource.Statistics;
 using Data.Application.ViewModels.DataSource.VariablesSelection;
 using Data.Application.ViewModels.DataSourceSelection;
 using Data.Presentation.Views.DataSource.FileDataSource;
+
 
 namespace Data.Presentation.__DesignData
 {

@@ -48,7 +48,7 @@ namespace Prediction.Application
             {
                 if (args.moduleId == ModuleIds.Prediction)
                 {
-                    if (_appState.ActiveSession.TrainingData == null || _appState.ActiveSession.Network == null)
+                    if (_appState.ActiveSession!.TrainingData == null || _appState.ActiveSession.Network == null)
                     {
                         _ea.GetEvent<CheckNavMenuItem>().Publish(ModuleIds.Data);
                     }

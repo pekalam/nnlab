@@ -8,13 +8,14 @@ namespace Training.Application.ViewModels
 {
     public class TrainingParametersViewModel : ViewModelBase<TrainingParametersViewModel>
     {
-        private TrainingParameters _trainingParameters;
+        private TrainingParameters? _trainingParameters;
         private bool _isMaxLearningTimeChecked;
         private DateTime _maxLearningTime;
 
+#pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
         public TrainingParametersViewModel()
         {
-            
+#pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
         }
 
         [InjectionConstructor]
@@ -26,7 +27,7 @@ namespace Training.Application.ViewModels
         public ITrainingParametersService Service { get; }
 
 
-        public TrainingParameters TrainingParameters
+        public TrainingParameters? TrainingParameters
         {
             get => _trainingParameters;
             set => SetProperty(ref _trainingParameters, value);

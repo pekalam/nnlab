@@ -12,25 +12,25 @@ namespace Data.Application.ViewModels.DataSource.Preview
 {
     public class HeaderValueModel
     {
-        public string Header { get; set; }
-        public string Value { get; set; }
+        public string? Header { get; set; }
+        public string? Value { get; set; }
     }
 
     public class DataSourcePreviewViewModel : ViewModelBase<DataSourcePreviewViewModel>
     {
         private const int MaxPreviewCount = 100;
 
-        private DataTable _fileDataPreview;
-        private DataTable _dataSourceInstance;
-        private HeaderValueModel _stat1;
-        private HeaderValueModel _stat2;
+        private DataTable? _fileDataPreview;
+        private DataTable? _dataSourceInstance;
+        private HeaderValueModel? _stat1;
+        private HeaderValueModel? _stat2;
         private int _instanceNumber;
-        private DataSetInstanceAccessor _dataSetInstanceAccessor;
-        private DataSetPreviewAccessor _dataSetPreviewAccessor;
+        private DataSetInstanceAccessor? _dataSetInstanceAccessor;
+        private DataSetPreviewAccessor? _dataSetPreviewAccessor;
         private DataSetType _instanceDataSetType;
         private DataSetType _previewDataSetType;
         private DataSetType[] _dataSetTypes = new DataSetType[0];
-        private TrainingDataStats _trainingDataStats;
+        private TrainingDataStats? _trainingDataStats;
         private bool _showLoading;
         private int _totalInstances = 1;
         private Visibility _previewErrorVisibility = Visibility.Collapsed;
@@ -40,11 +40,11 @@ namespace Data.Application.ViewModels.DataSource.Preview
         //TODO
         public ICommand PreviewColumnClicked { get; } = new DelegateCommand(() => {});
         public ICommand FirstItem => new DelegateCommand(() => InstanceNumber = 1);
-        public ICommand LastItem => new DelegateCommand(() => InstanceNumber = _dataSetInstanceAccessor.Count);
+        public ICommand LastItem => new DelegateCommand(() => InstanceNumber = _dataSetInstanceAccessor?.Count ?? throw new NullReferenceException("Null data instance accessor"));
 
-        public Action Loaded;
+        public Action? Loaded;
 
-        private AppState _appState;
+        private readonly AppState _appState;
 
         public DataSourcePreviewViewModel(AppState appState)
         {
@@ -66,7 +66,7 @@ namespace Data.Application.ViewModels.DataSource.Preview
         {
             if (e.PropertyName == nameof(Session.TrainingData))
             {
-                SetTrainingData(_appState.ActiveSession.TrainingData);
+                SetTrainingData(_appState.ActiveSession!.TrainingData!);
             }
         }
 
@@ -74,7 +74,7 @@ namespace Data.Application.ViewModels.DataSource.Preview
         {
             if (e.next.TrainingData == null)
             {
-                _appState.ActiveSession.PropertyChanged -= ActiveSessionOnPropertyChanged;
+                _appState.ActiveSession!.PropertyChanged -= ActiveSessionOnPropertyChanged;
                 _appState.ActiveSession.PropertyChanged += ActiveSessionOnPropertyChanged;
             }
             else SetTrainingData(e.next.TrainingData);
@@ -116,12 +116,12 @@ namespace Data.Application.ViewModels.DataSource.Preview
             }
         }
 
-        public DataSetInstanceAccessor DataSetInstanceAccessor
+        public DataSetInstanceAccessor? DataSetInstanceAccessor
         {
             get => _dataSetInstanceAccessor;
             set
             {
-                _dataSetInstanceAccessor = value;
+                _dataSetInstanceAccessor = value!;
                 InstanceNumber = 1;
                 TotalInstances = _dataSetInstanceAccessor.Count;
             }
@@ -129,7 +129,7 @@ namespace Data.Application.ViewModels.DataSource.Preview
 
         public DataSetPreviewAccessor DataSetPreviewAccessor
         {
-            get => _dataSetPreviewAccessor;
+            get => _dataSetPreviewAccessor!;
             set
             {
                 _dataSetPreviewAccessor = value;
@@ -173,7 +173,7 @@ namespace Data.Application.ViewModels.DataSource.Preview
             set
             {
                 SetProperty(ref _instanceDataSetType, value);
-                _dataSetInstanceAccessor.ChangeDataSet(value);
+                _dataSetInstanceAccessor!.ChangeDataSet(value);
                 InstanceNumber = 1;
             }
         }
@@ -184,7 +184,7 @@ namespace Data.Application.ViewModels.DataSource.Preview
             set
             {
                 SetProperty(ref _previewDataSetType, value);
-                _dataSetPreviewAccessor.ChangeDataSet(value);
+                _dataSetPreviewAccessor!.ChangeDataSet(value);
                 FileDataPreview = _dataSetPreviewAccessor.GetPreview(MaxPreviewCount);
                 SetStats();
             }
@@ -204,7 +204,7 @@ namespace Data.Application.ViewModels.DataSource.Preview
             Stat1 = new HeaderValueModel()
             {
                 Header = "Rows",
-                Value = _trainingDataStats.GetRowsForSet(_previewDataSetType).ToString(),
+                Value = _trainingDataStats!.GetRowsForSet(_previewDataSetType).ToString(),
             };
             Stat2 = new HeaderValueModel()
             {
@@ -213,13 +213,13 @@ namespace Data.Application.ViewModels.DataSource.Preview
             };
         }
 
-        public DataTable FileDataPreview
+        public DataTable? FileDataPreview
         {
             get => _fileDataPreview;
             set => SetProperty(ref _fileDataPreview, value);
         }
 
-        public DataTable DataSourceInstance
+        public DataTable? DataSourceInstance
         {
             get => _dataSourceInstance;
             set => SetProperty(ref _dataSourceInstance, value);
@@ -231,7 +231,7 @@ namespace Data.Application.ViewModels.DataSource.Preview
             set
             {
                 SetProperty(ref _instanceNumber, value);
-                DataSourceInstance = _dataSetInstanceAccessor[value - 1];
+                DataSourceInstance = _dataSetInstanceAccessor![value - 1];
             }
         }
 
@@ -241,13 +241,13 @@ namespace Data.Application.ViewModels.DataSource.Preview
             set => SetProperty(ref _totalInstances, value);
         }
 
-        public HeaderValueModel Stat1
+        public HeaderValueModel? Stat1
         {
             get => _stat1;
             set => SetProperty(ref _stat1, value);
         }
 
-        public HeaderValueModel Stat2
+        public HeaderValueModel? Stat2
         {
             get => _stat2;
             set => SetProperty(ref _stat2, value);

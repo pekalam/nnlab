@@ -48,8 +48,8 @@ namespace Shell.Application.Controllers
             ea.GetEvent<TrainingSessionStopped>().Subscribe(TrainingStopped, ThreadOption.UIThread);
             ea.GetEvent<TrainingSessionPaused>().Subscribe(TrainingPaused, ThreadOption.UIThread);
 
-            AddSessionCommand = new DelegateCommand(AddSession, () => StatusBarViewModel.Instance.CanModifyActiveSession);
-            DuplicateSessionCommand = new DelegateCommand(DuplicateSession, () => StatusBarViewModel.Instance.CanModifyActiveSession);
+            AddSessionCommand = new DelegateCommand(AddSession, () => StatusBarViewModel.Instance!.CanModifyActiveSession);
+            DuplicateSessionCommand = new DelegateCommand(DuplicateSession, () => StatusBarViewModel.Instance!.CanModifyActiveSession);
         }
 
         public DelegateCommand AddSessionCommand { get; set; }
@@ -94,7 +94,7 @@ namespace Shell.Application.Controllers
 
         private void TrainingPaused()
         {
-            var vm = StatusBarViewModel.Instance;
+            var vm = StatusBarViewModel.Instance!;
             vm.CanModifyActiveSession = true;
             RaiseCommandsCanExec();
         }
@@ -102,27 +102,27 @@ namespace Shell.Application.Controllers
 
         private void TrainingStopped()
         {
-            var vm = StatusBarViewModel.Instance;
+            var vm = StatusBarViewModel.Instance!;
             vm.CanModifyActiveSession = true;
             RaiseCommandsCanExec();
         }
 
         private void TrainingStarted()
         {
-            var vm = StatusBarViewModel.Instance;
+            var vm = StatusBarViewModel.Instance!;
             vm.CanModifyActiveSession = false;
             RaiseCommandsCanExec();
         }
 
         private void OnHideErrorNotification()
         {
-            var vm = StatusBarViewModel.Instance;
+            var vm = StatusBarViewModel.Instance!;
             vm.ErrorNotificationVisibility = Visibility.Collapsed;
         }
 
         private void OnShowErrorNotification(ErrorNotificationArgs args)
         {
-            var vm = StatusBarViewModel.Instance;
+            var vm = StatusBarViewModel.Instance!;
 
             vm.ErrorNotificationVisibility = Visibility.Visible;
             vm.ErrorMessage = args.Message;

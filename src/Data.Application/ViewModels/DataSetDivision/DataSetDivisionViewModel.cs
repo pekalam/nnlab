@@ -5,6 +5,7 @@ using Prism.Regions;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Windows.Input;
 using Common.Domain;
 
@@ -36,10 +37,10 @@ namespace Data.Application.ViewModels.DataSetDivision
         private int _testSetPercent;
         private bool _modifiesFileData;
         private DivisionMethod _divisionMethod;
-        private ICommand _divideCommand;
-        private object _divideCommandParam;
-        private string _ratio;
-        private string _insufficientSizeMsg;
+        private ICommand _divideCommand = null!;
+        private object? _divideCommandParam;
+        private string? _ratio;
+        private string? _insufficientSizeMsg;
 
 
         public DataSetDivisionViewModel(IDataSetDivisionService service, AppState appState)
@@ -73,7 +74,7 @@ namespace Data.Application.ViewModels.DataSetDivision
 
         public IDataSetDivisionService Service { get; set; }
 
-        public string Ratio
+        public string? Ratio
         {
             get => _ratio;
             set => SetProperty(ref _ratio, value);
@@ -85,7 +86,7 @@ namespace Data.Application.ViewModels.DataSetDivision
             set => SetProperty(ref _divisionMethod, value);
         }
 
-        public string InsufficientSizeMsg
+        public string? InsufficientSizeMsg
         {
             get => _insufficientSizeMsg;
             set => SetProperty(ref _insufficientSizeMsg, value);
@@ -141,7 +142,7 @@ namespace Data.Application.ViewModels.DataSetDivision
 
         public object DivideCommandParam
         {
-            get => _divideCommandParam;
+            get => _divideCommandParam!;
             set => SetProperty(ref _divideCommandParam, value);
         }
 
@@ -152,7 +153,7 @@ namespace Data.Application.ViewModels.DataSetDivision
 
             if (ModifiesFileData)
             {
-                DivideCommandParam = navigationContext.Parameters["filePath"] as string;
+                DivideCommandParam = (string)navigationContext.Parameters["filePath"];
                 DivideCommand = Service.DivideFileDataCommand;
             }
             else
@@ -160,11 +161,12 @@ namespace Data.Application.ViewModels.DataSetDivision
                 DivideCommandParam = (navigationContext.Parameters["input"] as List<double[]>, navigationContext.Parameters["target"] as List<double[]>);
                 DivideCommand = Service.DivideMemoryDataCommand;
             }
+            Debug.Assert(DivideCommand != null);
         }
 
-        public string Error => null;
+        public string? Error => null;
 
-        public string this[string columnName]
+        public string? this[string columnName]
         {
             get
             {

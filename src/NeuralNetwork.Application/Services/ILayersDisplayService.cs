@@ -31,7 +31,7 @@ namespace NeuralNetwork.Application.Services
 
     public class LayersDisplayService : ILayersDisplayService
     {
-        private IViewModelAccessor _accessor;
+        private readonly IViewModelAccessor _accessor;
 
         public LayersDisplayService(ITransientController<LayersDisplayService> ctrl, IViewModelAccessor accessor)
         {
@@ -39,18 +39,18 @@ namespace NeuralNetwork.Application.Services
             ctrl.Initialize(this);
         }
 
-        public DelegateCommand AddLayerCommand { get; set; }
-        public DelegateCommand<LayerEditorItemModel> RemoveLayerCommand { get; set; }
-        public DelegateCommand<LayerEditorItemModel> EditLayerCommand { get; set; }
-        public DelegateCommand<Layer> SelectLayerCommand { get; set; }
-        public DelegateCommand<LayerEditorItemModel> LayerClickedCommand { get; set; }
-        public DelegateCommand<LayerEditorItemModel> InsertAfterCommand { get; set; }
-        public DelegateCommand<LayerEditorItemModel> InsertBeforeCommand { get; set; }
+        public DelegateCommand AddLayerCommand { get; set; } = null!;
+        public DelegateCommand<LayerEditorItemModel> RemoveLayerCommand { get; set; } = null!;
+        public DelegateCommand<LayerEditorItemModel> EditLayerCommand { get; set; } = null!;
+        public DelegateCommand<Layer> SelectLayerCommand { get; set; } = null!;
+        public DelegateCommand<LayerEditorItemModel> LayerClickedCommand { get; set; } = null!;
+        public DelegateCommand<LayerEditorItemModel> InsertAfterCommand { get; set; } = null!;
+        public DelegateCommand<LayerEditorItemModel> InsertBeforeCommand { get; set; } = null!;
 
 
         public void AddLayer(Layer layer, int ind)
         {
-            var layers = _accessor.Get<LayersDisplayViewModel>().Layers;
+            var layers = _accessor.Get<LayersDisplayViewModel>()!.Layers;
             var layerItem = CreateLayerModel(layer, ind);
 
             layers.RemoveAt(layers.Count - 1);
@@ -79,7 +79,7 @@ namespace NeuralNetwork.Application.Services
                  TotalNeurons = 0,
                  AddLayer = AddLayerCommand
              });
-             _accessor.Get<LayersDisplayViewModel>().Layers = collection;
+             _accessor.Get<LayersDisplayViewModel>()!.Layers = collection;
         }
 
         private LayerEditorItemModel CreateLayerModel(Layer layer, int ind)

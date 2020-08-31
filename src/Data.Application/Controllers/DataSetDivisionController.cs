@@ -23,24 +23,22 @@ namespace Data.Application.Controllers
 
     internal class DataSetDivisionController : IDataSetDivisionController
     {
-        private readonly DataSetDivisionService _service;
         private readonly AppState _appState;
         private readonly ITrainingDataService _dataService;
 
         public DataSetDivisionController(DataSetDivisionService service, ITrainingDataService dataService, AppState appState)
         {
-            _service = service;
             _dataService = dataService;
             _appState = appState;
 
-            _service.DivideFileDataCommand =
+            service.DivideFileDataCommand =
                 new DelegateCommand<string>(DivideFileData, _ => CanDivide());
 
-            _service.DivideMemoryDataCommand = new DelegateCommand<(List<double[]> input, List<double[]> target)?>(DivideMemoryData, _ => CanDivide());
+            service.DivideMemoryDataCommand = new DelegateCommand<(List<double[]> input, List<double[]> target)?>(DivideMemoryData, _ => CanDivide());
 
             DataSetDivisionViewModel.Created += () =>
             {
-                var vm = DataSetDivisionViewModel.Instance;
+                var vm = DataSetDivisionViewModel.Instance!;
                 vm.PropertyChanged += VmOnPropertyChanged;
             };
         }
@@ -60,7 +58,7 @@ namespace Data.Application.Controllers
 
         private void CalcHasSufficientSize()
         {
-            var vm = DataSetDivisionViewModel.Instance;
+            var vm = DataSetDivisionViewModel.Instance!;
             if (!CanDivide()) return;
 
             if (_appState.ActiveSession?.TrainingData != null)
@@ -101,13 +99,13 @@ namespace Data.Application.Controllers
 
         private bool CanDivide()
         {
-            var vm = DataSetDivisionViewModel.Instance;
+            var vm = DataSetDivisionViewModel.Instance!;
             return vm.TrainingSetPercent > 0 && vm.TrainingSetPercent + vm.ValidationSetPercent + vm.TestSetPercent == 100;
         }
 
         private DataSetDivisionOptions ConstructDivOptions()
         {
-            var vm = DataSetDivisionViewModel.Instance;
+            var vm = DataSetDivisionViewModel.Instance!;
             return new DataSetDivisionOptions()
             {
                 TrainingSetPercent = vm.TrainingSetPercent,
@@ -118,10 +116,10 @@ namespace Data.Application.Controllers
 
         private void DivideMemoryData((List<double[]> input, List<double[]> target)? args)
         {
-            var vm = DataSetDivisionViewModel.Instance;
+            var vm = DataSetDivisionViewModel.Instance!;
             var method = new LinearDataSetDivider();
 
-            var pos = args.Value.input.Select((doubles, i) => (long)i).ToList();
+            var pos = args!.Value!.input.Select((doubles, i) => (long)i).ToList();
 
             var opt = ConstructDivOptions();
             var divs = method.Divide(pos, opt);
@@ -159,7 +157,7 @@ namespace Data.Application.Controllers
                 ValidationSet = validation
             };
 
-            var existing = _appState.ActiveSession.TrainingData;
+            var existing = _appState.ActiveSession!.TrainingData!;
 
 
             var total = sets.TrainingSet.Input.Count + (sets.ValidationSet?.Input.Count ?? 0) +
@@ -181,7 +179,7 @@ namespace Data.Application.Controllers
 
         private void DivideFileData(string path)
         {
-            var existingData = _appState.ActiveSession.TrainingData;
+            var existingData = _appState.ActiveSession!.TrainingData!;
             _appState.ActiveSession.TrainingData = _dataService.LoadSets(path, new LinearDataSetDivider(), ConstructDivOptions(), existingData.Variables.Indexes);
         }
 

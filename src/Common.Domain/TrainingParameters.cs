@@ -66,7 +66,7 @@ namespace Common.Domain
 
         public object Clone()
         {
-            return new GradientDescentParamsModel(_params.Clone() as GradientDescentParams);
+            return new GradientDescentParamsModel((_params.Clone() as GradientDescentParams)!);
         }
     }
 
@@ -113,7 +113,7 @@ namespace Common.Domain
 
         public object Clone()
         {
-            return new LevenbergMarquardtParamsModel(_params.Clone() as LevenbergMarquardtParams);
+            return new LevenbergMarquardtParamsModel((_params.Clone() as LevenbergMarquardtParams)!);
         }
     }
 
@@ -178,9 +178,9 @@ namespace Common.Domain
             };
         }
 
-        public string Error { get; }
+        public string? Error { get; }
 
-        public string this[string columnName]
+        public string? this[string columnName]
         {
             get
             {

@@ -123,7 +123,7 @@ namespace Shell.Application.ViewModels
         {
         }
 
-        public string Title { get; }
-        public event Action<IDialogResult> RequestClose;
+        public string Title { get; } = "Duplicate session";
+        public event Action<IDialogResult>? RequestClose;
     }
 }

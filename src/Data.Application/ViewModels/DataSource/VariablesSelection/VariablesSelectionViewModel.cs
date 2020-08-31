@@ -1,12 +1,13 @@
-﻿using Common.Framework;
+﻿using System.Diagnostics;
+using Common.Framework;
 using Data.Domain;
 
 namespace Data.Application.ViewModels.DataSource.VariablesSelection
 {
     public class VariablesSelectionViewModel : ViewModelBase<VariablesSelectionViewModel>
     {
-        private VariableTableModel[] _variables;
-        private string _error;
+        private VariableTableModel[] _variables = null!;
+        private string? _error;
 
 
         public VariableTableModel[] Variables
@@ -22,7 +23,7 @@ namespace Data.Application.ViewModels.DataSource.VariablesSelection
             }
         }
 
-        public string Error
+        public string? Error
         {
             get => _error;
             set => SetProperty(ref _error, value);

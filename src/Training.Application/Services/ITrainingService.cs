@@ -32,31 +32,31 @@ namespace Training.Application.Services
 
     public class TrainingService : ITrainingService
     {
-        private IViewModelAccessor _accessor;
+        private readonly IViewModelAccessor _accessor;
 
         public TrainingService(IViewModelAccessor accessor)
         {
             _accessor = accessor;
         }
 
-        public DelegateCommand StartTrainingSessionCommand { get; set; }
-        public DelegateCommand StopTrainingSessionCommand { get; set; }
-        public DelegateCommand PauseTrainingSessionCommand { get; set; }
-        public DelegateCommand OpenReportsCommand { get; set; }
-        public DelegateCommand OpenParametersCommand { get; set; }
-        public DelegateCommand SelectPanelsClickCommand { get; set; }
-        public DelegateCommand ResetParametersCommand { get; set; }
+        public DelegateCommand StartTrainingSessionCommand { get; set; } = null!;
+        public DelegateCommand StopTrainingSessionCommand { get; set; } = null!;
+        public DelegateCommand PauseTrainingSessionCommand { get; set; } = null!;
+        public DelegateCommand OpenReportsCommand { get; set; } = null!;
+        public DelegateCommand OpenParametersCommand { get; set; } = null!;
+        public DelegateCommand SelectPanelsClickCommand { get; set; } = null!;
+        public DelegateCommand ResetParametersCommand { get; set; } = null!;
 
         public void OnShowPanels()
         {
-            var vm = _accessor.Get<TrainingViewModel>();
+            var vm = _accessor.Get<TrainingViewModel>()!;
             vm.SelectPanelsButtonVisibility = Visibility.Collapsed;
             vm.PanelsContainerVisibility = vm.UpperSelectPanelsButtonVisibility = Visibility.Visible;
         }
 
         public void OnHidePanels()
         {
-            var vm = _accessor.Get<TrainingViewModel>();
+            var vm = _accessor.Get<TrainingViewModel>()!;
             vm.SelectPanelsButtonVisibility = Visibility.Visible;
             vm.PanelsContainerVisibility = Visibility.Hidden;
             vm.UpperSelectPanelsButtonVisibility = Visibility.Collapsed;

@@ -17,7 +17,7 @@ namespace Data.Presentation.Services
 {
     internal class FileDialogService : IFileDialogService {
 
-        public (bool? result, string filePath) OpenCsv()
+        public (bool? result, string? filePath) OpenCsv()
         {
             var dialog = new OpenFileDialog()
             {

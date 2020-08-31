@@ -50,7 +50,7 @@ namespace NeuralNetwork.Application
             if (e.PropertyName == nameof(Session.Network))
             {
                 var session = sender as Session;
-                SetAdapterIfNetworkNotNull(session);
+                SetAdapterIfNetworkNotNull(session!);
             }
         }
 

@@ -22,9 +22,9 @@ namespace Training.Application.ViewModels
     {
         private Visibility _testVisibility;
         private Visibility _validationVisibility;
-        private string _testHyperlinkText;
-        private string _validationHyperlinkText;
-        private TrainingSessionReport _selectedReport;
+        private string? _testHyperlinkText;
+        private string? _validationHyperlinkText;
+        private TrainingSessionReport? _selectedReport;
 
         public ReportsViewModel()
         {
@@ -43,7 +43,7 @@ namespace Training.Application.ViewModels
         public ModuleState ModuleState { get; }
         public IReportsService Service { get; private set; }
 
-        public TrainingSessionReport SelectedReport
+        public TrainingSessionReport? SelectedReport
         {
             get => _selectedReport;
             set => SetProperty(ref _selectedReport, value);
@@ -61,13 +61,13 @@ namespace Training.Application.ViewModels
             set => SetProperty(ref _validationVisibility, value);
         }
 
-        public string TestHyperlinkText
+        public string? TestHyperlinkText
         {
             get => _testHyperlinkText;
             set => SetProperty(ref _testHyperlinkText, value);
         }
 
-        public string ValidationHyperlinkText
+        public string? ValidationHyperlinkText
         {
             get => _validationHyperlinkText;
             set => SetProperty(ref _validationHyperlinkText, value);

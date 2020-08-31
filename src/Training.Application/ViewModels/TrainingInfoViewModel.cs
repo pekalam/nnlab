@@ -28,7 +28,7 @@ namespace Training.Application.ViewModels
         {
             ModuleState = moduleState;
             AppState = appState;
-            _timer.Elapsed += (_,__) => View.UpdateTimer(Time.Now - _timerDate);
+            _timer.Elapsed += (_,__) => View!.UpdateTimer(Time.Now - _timerDate);
 
             if (ModuleState.ActiveSession != null)
             {
@@ -62,7 +62,7 @@ namespace Training.Application.ViewModels
         public void StartTimer()
         {
             _timerDate = Time.Now;
-            View.UpdateTimer(TimeSpan.Zero);
+            View!.UpdateTimer(TimeSpan.Zero);
             _timer.Start();
         }
 
@@ -74,7 +74,7 @@ namespace Training.Application.ViewModels
         public ModuleState ModuleState { get; }
         public AppState AppState { get; }
 
-        public int? IterationsPerEpoch => ModuleState.ActiveSession.Trainer.Algorithm.BatchTrainer?.IterationsPerEpoch;
+        public int? IterationsPerEpoch => ModuleState.ActiveSession!.Trainer!.Algorithm.BatchTrainer?.IterationsPerEpoch;
 
         public double? ValidationError
         {

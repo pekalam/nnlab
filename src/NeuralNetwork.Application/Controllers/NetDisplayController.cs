@@ -46,7 +46,7 @@ namespace NeuralNetwork.Application.Controllers
 
             _ea.GetEvent<IntLayerClicked>().Subscribe(arg =>
             {
-                _moduleState.ModelAdapter.Controller.ClearHighlight();
+                _moduleState.ModelAdapter!.Controller.ClearHighlight();
                 _moduleState.ModelAdapter.Controller.HighlightLayer(arg.layerIndex + 1);
             });
         }

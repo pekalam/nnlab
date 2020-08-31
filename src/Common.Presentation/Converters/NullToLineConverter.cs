@@ -10,7 +10,7 @@ namespace Common.Presentation.Converters
         {
             if (value == null) return "-";
 
-            return value.ToString();
+            return value.ToString()!;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

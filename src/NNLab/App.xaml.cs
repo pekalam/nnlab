@@ -45,8 +45,8 @@ namespace Assemlber
 
             ViewModelLocationProvider.SetDefaultViewTypeToViewModelTypeResolver((viewType) =>
             {
-                string viewName = null;
-                if (viewType.FullName.Contains(".Presentation"))
+                string? viewName = null;
+                if (viewType.FullName!.Contains(".Presentation"))
                 {
                     viewName = viewType.FullName.Replace(".Presentation.Views.", ".Application.ViewModels.");
                 }
@@ -54,7 +54,7 @@ namespace Assemlber
                 {
                     viewName = viewType.FullName.Replace(".Views.", ".ViewModels.");
                 }
-                var viewAssemblyName = viewType.GetTypeInfo().Assembly.FullName.Replace(".Presentation", ".Application");
+                var viewAssemblyName = viewType.GetTypeInfo().Assembly.FullName!.Replace(".Presentation", ".Application");
                 var viewModelName = viewName + "Model, " + viewAssemblyName;
                 return Type.GetType(viewModelName);
             });

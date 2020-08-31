@@ -34,7 +34,7 @@ namespace Training.Application.Controllers
     {
         private IViewModelAccessor _accessor;
 
-        private PanelSelectionResult _selectionResult;
+        private PanelSelectionResult _selectionResult = null!;
         private Panels? _startSelected;
         private bool _single;
 
@@ -49,7 +49,7 @@ namespace Training.Application.Controllers
 
         private void OnNavigated(IDialogParameters parameters)
         {
-            var vm = _accessor.Get<PanelSelectViewModel>();
+            var vm = _accessor.Get<PanelSelectViewModel>()!;
 
             _selectionResult = parameters.GetValue<PanelSelectionResult>(nameof(PanelSelectionResult));
             if (parameters.GetValue<bool>("single"))
@@ -74,14 +74,14 @@ namespace Training.Application.Controllers
                 if (parameters.ContainsKey("selected"))
                 {
                     var panels = parameters.GetValue<Panels[]>("selected");
-                    vm.SetSelectedItems(vm.Panels.Where(v => panels.Contains(v.PanelType)).ToList());
+                    vm.SetSelectedItems?.Invoke(vm.Panels.Where(v => panels.Contains(v.PanelType)).ToList()!);
                 }
             }
         }
 
         private void ApplySelection()
         {
-            var vm = _accessor.Get<PanelSelectViewModel>();
+            var vm = _accessor.Get<PanelSelectViewModel>()!;
 
             if (_single && vm.Selected?[0].PanelType == _startSelected)
             {

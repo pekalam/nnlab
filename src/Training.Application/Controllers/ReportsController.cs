@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -38,10 +39,10 @@ namespace Training.Application.Services
             ctrl.Initialize(this);
         }
 
-        public DelegateCommand<TrainingSessionReport> SelectionChangedCommand { get; set; }
-        public Action<NavigationContext> Navigated { get; set; }
-        public DelegateCommand GenerateValidationPlotCommand { get; set; }
-        public DelegateCommand GenerateTestPlotCommand { get; set; }
+        public DelegateCommand<TrainingSessionReport> SelectionChangedCommand { get; set; } = null!;
+        public Action<NavigationContext> Navigated { get; set; } = null!;
+        public DelegateCommand GenerateValidationPlotCommand { get; set; } = null!;
+        public DelegateCommand GenerateTestPlotCommand { get; set; } = null!;
     }
 }
 
@@ -49,10 +50,10 @@ namespace Training.Application.Controllers
 {
     class ReportsController : ITransientController<ReportsService>
     {
-        private IViewModelAccessor _accessor;
-        private IRegionManager _rm;
-        private AppState _appState;
-        private ModuleState _moduleState;
+        private readonly IViewModelAccessor _accessor;
+        private readonly IRegionManager _rm;
+        private readonly AppState _appState;
+        private readonly ModuleState _moduleState;
 
         public ReportsController(IViewModelAccessor accessor, IRegionManager rm, AppState appState, ModuleState moduleState)
         {
@@ -76,20 +77,20 @@ namespace Training.Application.Controllers
 
         private async void DisplayTVOutputPlot(DataSetType setType)
         {
-            var vm = _accessor.Get<ReportsViewModel>();
+            var vm = _accessor.Get<ReportsViewModel>()!;
 
             if (setType == DataSetType.Validation)
             {
-                if (vm.SelectedReport.ValidationError == null)
+                if (vm.SelectedReport!.ValidationError == null)
                 {
-                    vm.SelectedReport.ValidationError = await _moduleState.ActiveSession.RunValidation();
+                    vm.SelectedReport.ValidationError = await _moduleState.ActiveSession!.RunValidation();
                 }
             }
             else if (setType == DataSetType.Test)
             {
-                if (vm.SelectedReport.TestError == null)
+                if (vm.SelectedReport!.TestError == null)
                 {
-                    vm.SelectedReport.TestError = await _moduleState.ActiveSession.RunTest();
+                    vm.SelectedReport.TestError = await _moduleState.ActiveSession!.RunTest();
                 }
             }
 
@@ -104,8 +105,8 @@ namespace Training.Application.Controllers
                 region,
                 false,
                 setType,
-                _appState.ActiveSession.Network,
-                _appState.ActiveSession.TrainingData,
+                _appState.ActiveSession!.Network!,
+                _appState.ActiveSession.TrainingData!,
                 new CancellationTokenSource()
                 );
             
@@ -122,19 +123,20 @@ namespace Training.Application.Controllers
 
         private void InitHyperlinksText()
         {
-            var vm = _accessor.Get<ReportsViewModel>();
-            vm.TestHyperlinkText = vm.SelectedReport.TestError != null ? "Generate output plot" : "Calculate error and generate output plot";
+            var vm = _accessor.Get<ReportsViewModel>()!;
+            vm.TestHyperlinkText = vm.SelectedReport!.TestError != null ? "Generate output plot" : "Calculate error and generate output plot";
             vm.ValidationHyperlinkText = vm.SelectedReport.ValidationError != null ? "Generate output plot" : "Calculate error and generate output plot";
         }
 
 
         private void Navigated(NavigationContext ctx)
         {
-            ShowErrorPlot(_appState.ActiveSession.TrainingReports[0]);
+            ShowErrorPlot(_appState.ActiveSession!.TrainingReports[0]);
         }
 
         private void SelectionChanged(TrainingSessionReport item)
         {
+            Debug.Assert(item != null);
             ShowErrorPlot(item);
             InitHyperlinksText();
         }

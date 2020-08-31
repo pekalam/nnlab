@@ -1,4 +1,5 @@
-﻿using Common.Framework;
+﻿#pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
+using Common.Framework;
 using Data.Application.ViewModels.DataSourceSelection;
 using Prism.Commands;
 using Prism.Mvvm;
@@ -27,8 +28,6 @@ namespace Data.Application.Services
 
     public class MultiFileService : BindableBase, IMultiFileService
     {
-        private VariablesTableModel[] _variables;
-
         public MultiFileService(ITransientController<MultiFileService> controller)
         {
             controller.Initialize(this);
@@ -45,12 +44,12 @@ namespace Data.Application.Services
         public DelegateCommand<(string trainingFile, string validationFile, string testFile)?> LoadFiles { get; set; }
 
 
-        public FileValidationResult TrainingValidationResult => MultiFileSourceViewModel.Instance.MultiFileValidationResult[0];
-        public FileValidationResult ValidationValidationResult => MultiFileSourceViewModel.Instance.MultiFileValidationResult[1];
-        public FileValidationResult TestValidationResult => MultiFileSourceViewModel.Instance.MultiFileValidationResult[2];
+        public FileValidationResult TrainingValidationResult => MultiFileSourceViewModel.Instance!.MultiFileValidationResult[0];
+        public FileValidationResult ValidationValidationResult => MultiFileSourceViewModel.Instance!.MultiFileValidationResult[1];
+        public FileValidationResult TestValidationResult => MultiFileSourceViewModel.Instance!.MultiFileValidationResult[2];
 
 
-        public void SetTrainingValidationResult(bool isValid, string error = null, bool hasContentError = false,
+        public void SetTrainingValidationResult(bool isValid, string? error = null, bool hasContentError = false,
             int r = 0, int c = 0)
         {
             TrainingValidationResult.Rows = r;
@@ -64,7 +63,7 @@ namespace Data.Application.Services
         public void SetTrainingValidating(bool isValidating) =>
             TrainingValidationResult.IsValidatingFile = isValidating;
 
-        public void SetValidationValidationResult(bool isValid, string error = null, bool hasContentError = false,
+        public void SetValidationValidationResult(bool isValid, string? error = null, bool hasContentError = false,
             int r = 0, int c = 0)
         {
             ValidationValidationResult.Rows = r;
@@ -79,7 +78,7 @@ namespace Data.Application.Services
             ValidationValidationResult.IsValidatingFile = isValidating;
 
 
-        public void SetTestValidationResult(bool isValid, string error = null, bool hasContentError = false, int r = 0,
+        public void SetTestValidationResult(bool isValid, string? error = null, bool hasContentError = false, int r = 0,
             int c = 0)
         {
             TestValidationResult.Rows = r;
@@ -103,7 +102,7 @@ namespace Data.Application.Services
                 ValidationValidationResult.IsLoadingFile = TestValidationResult.IsLoadingFile = false;
             TrainingValidationResult.IsLoaded =
                 ValidationValidationResult.IsLoaded = TestValidationResult.IsLoaded = true;
-            MultiFileSourceViewModel.Instance.Variables = trainingData.Variables.InputVariableNames.Union(trainingData.Variables.TargetVariableNames)
+            MultiFileSourceViewModel.Instance!.Variables = trainingData.Variables.InputVariableNames.Union(trainingData.Variables.TargetVariableNames)
                 .Select((s, i) => new VariablesTableModel()
                 {
                     Column = i + 1,

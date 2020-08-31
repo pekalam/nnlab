@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using System.Threading;
 using Common.Domain;
@@ -64,23 +65,23 @@ namespace Training.Application.ViewModels
 
     internal class VecNumPlot : IOutputPlot
     {
-        private TrainingSession _session;
-        private ScatterSeries _output;
+        private TrainingSession _session = null!;
+        private ScatterSeries _output = null!;
 
         public void OnEpochEnd(IList<EpochEndArgs> args, OutputPlotViewModel vm, CancellationToken ct)
         {
             _output.Points.Clear();
-            var input = _session.TrainingData.Sets.TrainingSet.Input;
+            var input = _session.TrainingData!.Sets.TrainingSet.Input;
 
 
             var dataPoints = new List<ScatterPoint>();
             for (int i = 0; i < input.Count; i++)
             {
-                _session.Network.CalculateOutput(input[i]);
+                _session.Network!.CalculateOutput(input[i]);
 
                 var netOutput = _session.Network.Output;
 
-                dataPoints.Add(new ScatterPoint(i, netOutput[0, 0]));
+                dataPoints.Add(new ScatterPoint(i, netOutput![0, 0]));
             }
             _output.Points.AddRange(dataPoints);
         }
@@ -93,8 +94,8 @@ namespace Training.Application.ViewModels
             vm.PlotModel.Series.Clear();
             vm.PlotModel.Title = "Accuracy";
 
-            var input = _session.TrainingData.Sets.TrainingSet.Input;
-            var target = session.TrainingData.Sets.TrainingSet.Target;
+            var input = _session.TrainingData!.Sets.TrainingSet.Input;
+            var target = session.TrainingData!.Sets.TrainingSet.Target;
             var inputVarInd = session.TrainingData.Variables.Indexes.InputVarIndexes;
             var targetVarInd = session.TrainingData.Variables.Indexes.TargetVarIndexes;
 
@@ -179,29 +180,29 @@ namespace Training.Application.ViewModels
 
     internal class ApproximationOutputPlot : IOutputPlot
     {
-        private LineSeries _output;
-        private TrainingSession _session;
+        private LineSeries? _output;
+        private TrainingSession? _session;
 
         public void OnEpochEnd(IList<EpochEndArgs> args, OutputPlotViewModel vm, CancellationToken ct)
         {
-            var network = _session.Network.Clone();
+            var network = _session!.Network!.Clone();
 
             var dataPoints = new List<DataPoint>();
-            var input = _session.TrainingData.Sets.TrainingSet.Input;
+            var input = _session.TrainingData!.Sets.TrainingSet.Input;
 
             for (int i = 0; i < input.Count; i++)
             {
                 network.CalculateOutput(input[i]);
-                dataPoints.Add(new DataPoint(input[i][0, 0], network.Output[0, 0]));
+                dataPoints.Add(new DataPoint(input[i][0, 0], network.Output![0, 0]));
             }
-            _output.Points.Clear();
+            _output!.Points.Clear();
             _output.Points.AddRange(dataPoints);
         }
 
         public void OnSessionStarting(OutputPlotViewModel vm, TrainingSession session, CancellationToken ct)
         {
             _session = session;
-            InitPlot(session.TrainingData, DataSetType.Training, vm);
+            InitPlot(session.TrainingData!, DataSetType.Training, vm);
         }
 
         private void InitPlot(TrainingData trainingData, DataSetType setType, OutputPlotViewModel vm)
@@ -244,8 +245,8 @@ namespace Training.Application.ViewModels
                 Color = OxyColor.FromRgb(255, 0, 0),
             };
 
-            var input = trainingData.GetSet(setType).Input;
-            var target = trainingData.GetSet(setType).Target;
+            var input = trainingData.GetSet(setType)!.Input;
+            var target = trainingData.GetSet(setType)!.Target;
 
             for (int i = 0; i < input.Count; i++)
             {
@@ -266,15 +267,18 @@ namespace Training.Application.ViewModels
 
         public void GeneratrePlot(DataSetType set, TrainingData trainingData, MLPNetwork net, OutputPlotViewModel vm)
         {
+            Debug.Assert(_output != null);
+            Debug.Assert(trainingData.GetSet(set) != null);
+
             InitPlot(trainingData, set, vm);
 
             var dataPoints = new List<DataPoint>();
-            var input = trainingData.GetSet(set).Input;
+            var input = trainingData.GetSet(set)!.Input;
 
             for (int i = 0; i < input.Count; i++)
             {
                 net.CalculateOutput(input[i]);
-                dataPoints.Add(new DataPoint(input[i][0, 0], net.Output[0, 0]));
+                dataPoints.Add(new DataPoint(input[i][0, 0], net.Output![0, 0]));
             }
             _output.Points.Clear();
             _output.Points.AddRange(dataPoints);

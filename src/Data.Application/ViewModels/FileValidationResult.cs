@@ -9,7 +9,7 @@ namespace Data.Application.ViewModels
         private int _rows;
         private int _cols;
         private bool? _isFileValid;
-        private string _fileValidationError;
+        private string? _fileValidationError;
         private bool _isLoaded;
 
         public bool HasContentError { get; set; }
@@ -38,7 +38,7 @@ namespace Data.Application.ViewModels
             set => SetProperty(ref _isFileValid, value);
         }
 
-        public string FileValidationError
+        public string? FileValidationError
         {
             get => _fileValidationError;
             set => SetProperty(ref _fileValidationError, value);

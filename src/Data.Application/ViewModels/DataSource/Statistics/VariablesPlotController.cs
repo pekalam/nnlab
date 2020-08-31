@@ -1,4 +1,5 @@
-﻿using Common.Domain;
+﻿using System.Diagnostics;
+using Common.Domain;
 using NNLib.Common;
 using OxyPlot;
 using OxyPlot.Series;
@@ -32,8 +33,8 @@ namespace Data.Application.ViewModels.DataSource.Statistics
 
 
             _vm.PlotModel.Series.Clear();
-
-            if (args.GetSet(dataSetType).Input.Count > 5000)
+            
+            if (args.GetSet(dataSetType)!.Input.Count > 5000)
             {
                 //Log.Logger.Debug("Ignoring loading plot for more than 5000 items (actual count: {count})", args.GetSet(dataSetType).Input.Count);
                 return;
@@ -43,9 +44,9 @@ namespace Data.Application.ViewModels.DataSource.Statistics
             {
                 var s = createLineSeries(args.Variables.Indexes.InputVarIndexes[i]);
 
-                for (int j = 0; j < args.GetSet(dataSetType).Input.Count; j++)
+                for (int j = 0; j < args.GetSet(dataSetType)!.Input.Count; j++)
                 {
-                    s.Points.Add(new DataPoint(j, args.GetSet(dataSetType).Input[j][i, 0]));
+                    s.Points.Add(new DataPoint(j, args.GetSet(dataSetType)!.Input[j][i, 0]));
                 }
 
                 _vm.PlotModel.Series.Add(s);
@@ -55,9 +56,9 @@ namespace Data.Application.ViewModels.DataSource.Statistics
             {
                 var s = createLineSeries(args.Variables.Indexes.TargetVarIndexes[i]);
 
-                for (int j = 0; j < args.GetSet(dataSetType).Target.Count; j++)
+                for (int j = 0; j < args.GetSet(dataSetType)!.Target.Count; j++)
                 {
-                    s.Points.Add(new DataPoint(j, args.GetSet(dataSetType).Target[j][i, 0]));
+                    s.Points.Add(new DataPoint(j, args.GetSet(dataSetType)!.Target[j][i, 0]));
                 }
 
                 _vm.PlotModel.Series.Add(s);

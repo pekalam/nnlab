@@ -75,17 +75,17 @@ namespace Shell.Application.ViewModels
 
         private void OnContentRegionViewChanged(ContentRegionViewChangedEventArgs args)
         {
-            Show = args.NavigationParameters.ShowBreadcrumbs;
+            Show = args.NavigationParameters!.ShowBreadcrumbs;
             if (Breadcrumbs.FirstOrDefault(b => b.ViewName == args.ViewName) != null)
             {
-                RemoveUntilExisting(args.ViewName);
+                RemoveUntilExisting(args.ViewName!);
             }
             else
             {
                 if (Breadcrumbs.Count < 3)
                 {
                     Breadcrumbs.Add(new BreadcrumbModel()
-                        { ViewName = args.ViewName, Breadcrumb = args.NavigationParameters.Breadcrumb, NavParams=args.NavigationParameters });
+                        { ViewName = args.ViewName!, Breadcrumb = args.NavigationParameters.Breadcrumb, NavParams=args.NavigationParameters });
                 }
                 else
                 {
@@ -133,7 +133,7 @@ namespace Shell.Application.ViewModels
         {
             if (breadcrumb.IsCustom)
             {
-                breadcrumb.CustomNavigationAction(breadcrumb);
+                breadcrumb.CustomNavigationAction!(breadcrumb);
             }
             else
             {
@@ -144,9 +144,9 @@ namespace Shell.Application.ViewModels
 
     public class BreadcrumbConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object? Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var val = value as ObservableCollection<BreadcrumbModel>;
+            var val = (value as ObservableCollection<BreadcrumbModel>)!;
             var ind = System.Convert.ToInt32(parameter);
 
             if (ind < val.Count)
@@ -167,7 +167,7 @@ namespace Shell.Application.ViewModels
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var val = value as ObservableCollection<BreadcrumbModel>;
+            var val = (value as ObservableCollection<BreadcrumbModel>)!;
             var ind = System.Convert.ToInt32(parameter);
 
             if (ind < val.Count)
@@ -186,10 +186,10 @@ namespace Shell.Application.ViewModels
 
     public class BreadcrumbModel
     {
-        public string Breadcrumb { get; set; }
-        public string ViewName { get; set; }
-        public ContentRegionNavigationParameters NavParams { get; set; }
-        public Action<BreadcrumbModel> CustomNavigationAction { get; set; }
+        public string Breadcrumb { get; set; } = null!;
+        public string ViewName { get; set; } = null!;
+        public ContentRegionNavigationParameters NavParams { get; set; } = null!;
+        public Action<BreadcrumbModel>? CustomNavigationAction { get; set; }
         public bool IsCustom => CustomNavigationAction != null;
 
         public BreadcrumbModel Clone()

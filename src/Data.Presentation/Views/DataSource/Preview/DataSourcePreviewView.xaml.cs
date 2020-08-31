@@ -67,12 +67,12 @@ namespace Data.Presentation.Views.DataSource.Preview
 
         private void PreviewGrid_Loaded(object sender, RoutedEventArgs e)
         {
-            (DataContext as DataSourcePreviewViewModel).PreviewLoaded = true;
+            (DataContext as DataSourcePreviewViewModel)!.PreviewLoaded = true;
         }
 
         private void InstancePreviewGrid_Loaded(object sender, RoutedEventArgs e)
         {
-            (DataContext as DataSourcePreviewViewModel).InstancePreviewLoaded = true;
+            (DataContext as DataSourcePreviewViewModel)!.InstancePreviewLoaded = true;
         }
     }
 }

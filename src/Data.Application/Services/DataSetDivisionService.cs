@@ -11,7 +11,7 @@ namespace Data.Application.Services
 
     internal class DataSetDivisionService : IDataSetDivisionService
     {
-        public DelegateCommand<string> DivideFileDataCommand { get; set; }
-        public DelegateCommand<(List<double[]> input, List<double[]> target)?> DivideMemoryDataCommand { get; set; }
+        public DelegateCommand<string> DivideFileDataCommand { get; set; } = null!;
+        public DelegateCommand<(List<double[]> input, List<double[]> target)?> DivideMemoryDataCommand { get; set; }= null!;
     }
 }

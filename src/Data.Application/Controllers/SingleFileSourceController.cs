@@ -1,4 +1,5 @@
-﻿using Common.Framework;
+﻿using System.Diagnostics;
+using Common.Framework;
 using Data.Application.Services;
 using Data.Application.ViewModels.DataSource.FileDataSource;
 using Data.Application.ViewModels.DataSourceSelection;
@@ -13,10 +14,10 @@ namespace Data.Application.Controllers
 {
     internal class SingleFileSourceController : ITransientController<SingleFileService>
     {
-        private SingleFileService _singleFileService;
+        private SingleFileService _singleFileService = null!;
         private bool _canLoad;
         private bool _canReturn = true;
-        private TrainingData _loadedTrainingData;
+        private TrainingData? _loadedTrainingData;
         private readonly ITrainingDataService _dataService;
         private readonly ICsvValidationService _csvValidationService;
         private readonly IRegionManager _rm;
@@ -57,6 +58,7 @@ namespace Data.Application.Controllers
             SetCanReturn(false);
             _singleFileService.SetLoading();
             await Task.Run(() => _loadedTrainingData = _dataService.LoadDefaultSet(path));
+            Debug.Assert(_loadedTrainingData != null);
             _singleFileService.SetLoaded(_loadedTrainingData);
             SetCanReturn(true);
             _singleFileService.ContinueCommand.RaiseCanExecuteChanged();
@@ -68,7 +70,7 @@ namespace Data.Application.Controllers
             _singleFileService.SetValidating();
 
             bool result = false;
-            string error = null;
+            string? error = null;
             int r=0,c = 0;
             await Task.Run(() => (result, error, r, c) = _csvValidationService.Validate(path));
 
@@ -93,7 +95,7 @@ namespace Data.Application.Controllers
             }
 
             _appState.ActiveSession!.TrainingData = _loadedTrainingData;
-            _appState.ActiveSession!.SingleDataFile = SingleFileSourceViewModel.Instance.SelectedFilePath;
+            _appState.ActiveSession!.SingleDataFile = SingleFileSourceViewModel.Instance!.SelectedFilePath;
             _loadedTrainingData = null;
 
             _rm.NavigateContentRegion("FileDataSourceView", "Data");

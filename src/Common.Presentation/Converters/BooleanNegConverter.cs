@@ -45,7 +45,7 @@ namespace Common.Presentation.Converters
 
             var textblock = value as TextBlock;
 
-            textblock.Measure(new Size(Double.PositiveInfinity, Double.PositiveInfinity));
+            textblock!.Measure(new Size(Double.PositiveInfinity, Double.PositiveInfinity));
 
             if (textblock.ActualWidth <= textblock.DesiredSize.Width)
             {

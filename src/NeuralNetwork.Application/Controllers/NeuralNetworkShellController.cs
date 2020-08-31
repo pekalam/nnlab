@@ -74,7 +74,7 @@ namespace NeuralNetwork.Application.Controllers
         {
             _ea.GetEvent<EnableModalNavigation>().Publish(CloseLayerEditorCommand);
             _isEditorOpened = true;
-            var layer = _appState.ActiveSession.Network.Layers[model.LayerIndex];
+            var layer = _appState.ActiveSession!.Network!.Layers[model.LayerIndex];
             _rm.Regions[NeuralNetworkRegions.NetworkDownRegion].RequestNavigate(nameof(LayerEditorViewModel),new NavigationParameters()
             {
                 {"params", new LayerEditorNavParams(_appState.ActiveSession.Network, layer, model.LayerIndex)}

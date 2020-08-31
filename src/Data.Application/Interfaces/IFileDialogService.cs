@@ -2,6 +2,6 @@
 {
     public interface IFileDialogService
     {
-        (bool? result, string filePath) OpenCsv();
+        (bool? result, string? filePath) OpenCsv();
     }
 }

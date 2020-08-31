@@ -1,4 +1,5 @@
-﻿using Data.Application.Services;
+﻿using System.Diagnostics;
+using Data.Application.Services;
 using Data.Application.ViewModels.DataSetDivision;
 using Data.Application.ViewModels.DataSource.FileDataSource;
 using Data.Application.ViewModels.DataSource.VariablesSelection;
@@ -42,7 +43,7 @@ namespace Data.Application.Controllers.DataSource
 
             service.Initialized += () =>
             {
-                var vm = FileDataSourceViewModel.Instance;
+                var vm = FileDataSourceViewModel.Instance!;
 
                 vm.DataSourcePreviewVm.Loaded += () => vm.ShowLoadingVisibility = Visibility.Collapsed;
             };
@@ -50,7 +51,7 @@ namespace Data.Application.Controllers.DataSource
 
         private void Navigated(NavigationContext ctx)
         {
-            var vm = FileDataSourceViewModel.Instance;
+            var vm = FileDataSourceViewModel.Instance!;
 
             ctx.Parameters.TryGetValue("Multi", out bool multiFile);
             vm.IsDivideDataSetEnabled = !multiFile;
@@ -58,7 +59,8 @@ namespace Data.Application.Controllers.DataSource
 
         private void DivideDataset()
         {
-            var session = _appState.ActiveSession;
+            var session = _appState.ActiveSession!;
+            Debug.Assert(session.SingleDataFile != null);
             _ea.GetEvent<ShowFlyout>().Publish(new FlyoutArgs()
             {
                 Title = "Divide data set"

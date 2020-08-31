@@ -37,12 +37,12 @@ namespace Prediction.Application.Services
             ctrl.Initialize(this);
         }
 
-        public DelegateCommand PredictCommand { get; set; }
-        public Action<NavigationContext> Navigated { get; set; }
+        public DelegateCommand PredictCommand { get; set; } = null!;
+        public Action<NavigationContext> Navigated { get; set; } = null!;
 
         public void UpdateNetworkAndMatrix(MLPNetwork network, TrainingData data, Matrix<double> inputMatrix)
         {
-            var vm = _accessor.Get<PredictViewModel>();
+            var vm = _accessor.Get<PredictViewModel>()!;
 
             var adapter = new NNLibModelAdapter();
             adapter.SetNeuralNetwork(network);
@@ -55,15 +55,9 @@ namespace Prediction.Application.Services
             vm.OutputMatrixVm.Controller.AssignMatrix(network.Layers[^1].Output);
         }
 
-        public void UpdateNetwork(MLPNetwork network)
-        {
-            var vm = _accessor.Get<PredictViewModel>();
-
-        }
-
         public void UpdateMatrix(MLPNetwork network, Matrix<double> inputMatrix)
         {
-            var vm = _accessor.Get<PredictViewModel>();
+            var vm = _accessor.Get<PredictViewModel>()!;
             vm.InputMatrixVm.Controller.AssignMatrix(inputMatrix);
             vm.OutputMatrixVm.Controller.AssignMatrix(network.Layers[^1].Output);
         }

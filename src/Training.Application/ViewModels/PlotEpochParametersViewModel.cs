@@ -23,7 +23,8 @@ namespace Training.Application.ViewModels
                 _parameters = parameters;
             }
 
-            public PlotEpochEndConsumer PlotEpochEndConsumer => _parameters[nameof(PlotEpochEndConsumer)] as PlotEpochEndConsumer;
+            public PlotEpochEndConsumer PlotEpochEndConsumer =>
+                (_parameters[nameof(PlotEpochEndConsumer)] as PlotEpochEndConsumer)!;
         }
     }
 
@@ -33,7 +34,7 @@ namespace Training.Application.ViewModels
         private bool _onlineMode;
         private bool _bufferingMode;
 
-        private PlotEpochEndConsumer _epochEndConsumer;
+        private PlotEpochEndConsumer _epochEndConsumer = null!;
 
         public int EpochDelay
         {
@@ -73,7 +74,7 @@ namespace Training.Application.ViewModels
         {
             var parameters =
                 new PlotEpochParametersNavParams.RecNavParams(navigationContext.Parameters);
-
+            
             _epochEndConsumer = parameters.PlotEpochEndConsumer;
             _epochDelay = _epochEndConsumer.BufferSize;
             RaisePropertyChanged(nameof(EpochDelay));

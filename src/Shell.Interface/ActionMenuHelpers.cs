@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Diagnostics;
+using System.Windows;
 using System.Windows.Controls;
 using Prism;
 using Prism.Regions;
@@ -7,7 +8,7 @@ namespace Shell.Interface
 {
     public class ActionMenuHelpers
     {
-        internal static IRegionManager RegionManager { get; set; }
+        internal static IRegionManager? RegionManager { get; set; }
 
         public static readonly DependencyProperty LeftMenuViewProperty = DependencyProperty.RegisterAttached(
             "LeftMenuView", typeof(object), typeof(ActionMenuHelpers), new FrameworkPropertyMetadata(default(object), FrameworkPropertyMetadataOptions.AffectsRender, LeftMenuChangedCallback));
@@ -16,14 +17,16 @@ namespace Shell.Interface
         private static void ChangeActionMenu(string regionName, DependencyObject d,
             DependencyPropertyChangedEventArgs e)
         {
-            var rm = RegionManager;
-            var ctx = (d as FrameworkElement).DataContext;
-            var activeAware = ctx as IActiveAware;
-            (e.NewValue as FrameworkElement).DataContext = ctx;
+            Debug.Assert(RegionManager != null);
 
-            activeAware.IsActiveChanged += (sender, args) =>
+            var rm = RegionManager;
+            var ctx = (d as FrameworkElement)!.DataContext;
+            var activeAware = ctx as IActiveAware;
+            (e.NewValue as FrameworkElement)!.DataContext = ctx;
+
+            activeAware!.IsActiveChanged += (sender, args) =>
             {
-                if (!activeAware.IsActive)
+                if (!activeAware!.IsActive)
                 {
                     rm.Regions[regionName].RemoveAll();
                 }

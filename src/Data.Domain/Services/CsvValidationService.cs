@@ -10,13 +10,13 @@ namespace Data.Domain.Services
     public interface ICsvValidationService
     {
         //TODO return type
-        (bool result, string error, int rows, int cols) Validate(string path);
-        string[] ReadHeaders(string path);
+        (bool result, string? error, int rows, int cols) Validate(string path);
+        string[]? ReadHeaders(string path);
     }
 
     internal class CsvValidationService : ICsvValidationService
     {
-        public (bool result, string error, int rows, int cols) Validate(string path)
+        public (bool result, string? error, int rows, int cols) Validate(string path)
         {
             if (!File.Exists(path)) return (false, "File not found", 0,0);
 
@@ -31,7 +31,7 @@ namespace Data.Domain.Services
 
             foreach (var str in csv.Context.HeaderRecord)
             {
-                if (Double.TryParse(str, out var _))
+                if (double.TryParse(str, out _))
                 {
                     return (false, "Numeric value in csv header", 0, 0);
                 }
@@ -43,7 +43,7 @@ namespace Data.Domain.Services
             {
                 for (int i = 0; i < csv.Context.HeaderRecord.Length; i++)
                 {
-                    if (!Double.TryParse(csv[i], out var _))
+                    if (!double.TryParse(csv[i], out _))
                     {
                         return (false, $"Invalid field value at line: {lines} column: {i + 1}", 0, 0);
                     }
@@ -55,7 +55,7 @@ namespace Data.Domain.Services
             return (true, null, lines-1, csv.Context.HeaderRecord.Length);
         }
 
-        public string[] ReadHeaders(string path)
+        public string[]? ReadHeaders(string path)
         {
             if (!File.Exists(path)) return null;
 
@@ -68,7 +68,7 @@ namespace Data.Domain.Services
 
             foreach (var str in csv.Context.HeaderRecord)
             {
-                if (Double.TryParse(str, out var _))
+                if (double.TryParse(str, out _))
                 {
                     return null;
                 }

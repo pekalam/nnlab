@@ -30,7 +30,7 @@ namespace Training.Presentation.__DesignData
         {
 
             a.CreateSession();
-            a.ActiveSession.TrainingReports.Add(TrainingSessionReport.CreateTimeoutSessionReport(50, .2, DateTime.Now, new List<EpochEndArgs>()));
+            a.ActiveSession!.TrainingReports.Add(TrainingSessionReport.CreateTimeoutSessionReport(50, .2, DateTime.Now, new List<EpochEndArgs>()));
             a.ActiveSession.TrainingReports.Add(TrainingSessionReport.CreatePausedSessionReport(100, .06, DateTime.Now, new List<EpochEndArgs>()));
             a.ActiveSession.TrainingReports.Add(TrainingSessionReport.CreateStoppedSessionReport(2100, .12, DateTime.Now, new List<EpochEndArgs>()));
         }

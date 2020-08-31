@@ -14,9 +14,9 @@ namespace Data.Application.Services
 
     internal class FileDataSourceService : IFileDataSourceService
     {
-        public Action Initialized { get; set; }
-        public DelegateCommand SelectVariablesCommand { get; set; }
-        public DelegateCommand DivideDatasetCommand { get; set; }
-        public Action<NavigationContext> Navigated { get; set; }
+        public Action Initialized { get; set; } = null!;
+        public DelegateCommand SelectVariablesCommand { get; set; } = null!;
+        public DelegateCommand DivideDatasetCommand { get; set; } = null!;
+        public Action<NavigationContext> Navigated { get; set; } = null!;
     }
 }

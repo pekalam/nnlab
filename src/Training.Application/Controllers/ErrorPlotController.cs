@@ -33,7 +33,7 @@ namespace Training.Application.Services
 
     internal class ErrorPlotService : IErrorPlotService
     {
-        public Action<NavigationContext> Navigated { get; set; }
+        public Action<NavigationContext> Navigated { get; set; } = null!;
 
         public ErrorPlotService(ITransientController<ErrorPlotService> ctrl)
         {
@@ -75,9 +75,9 @@ namespace Training.Application.Controllers
 
     class ErrorPlotController : ControllerBase<ErrorPlotViewModel>,ITransientController<ErrorPlotService>
     {
-        private string _errorPlotSettingsRegion;
+        private string _errorPlotSettingsRegion = null!;
         private readonly object _ptsLock = new object();
-        private CancellationTokenSource _cts;
+        private CancellationTokenSource? _cts;
         private PlotEpochEndConsumer? _epochEndConsumer;
 
         private readonly IRegionManager _rm;
@@ -92,9 +92,9 @@ namespace Training.Application.Controllers
 
         protected override void VmCreated()
         {
-            Vm.IsActiveChanged += (sender, args) =>
+            Vm!.IsActiveChanged += (sender, args) =>
             {
-                if (!(sender as ErrorPlotViewModel).IsActive)
+                if (!(sender as ErrorPlotViewModel)!.IsActive)
                 {
                     _epochEndConsumer?.ForceStop();
                 }
@@ -111,28 +111,27 @@ namespace Training.Application.Controllers
             //do not change for report view
             if (_epochEndConsumer == null) return;
 
-            Vm.Series.Points.Clear();
+            Vm!.Series.Points.Clear();
 
             var points = e.next.EpochEndEvents.TakeLast(2000).Select(end => new DataPoint(end.Epoch, end.Error))
                 .ToArray();
 
             var newMin = e.next.EpochEndEvents.Count - 2000;
-            Vm.BasicPlotModel.Model.Axes[0].AbsoluteMinimum = newMin;
-            Vm.Series.Points.AddRange(points);
+            Vm!.BasicPlotModel.Model.Axes[0].AbsoluteMinimum = newMin;
+            Vm!.Series.Points.AddRange(points);
 
-            Vm.BasicPlotModel.Model.InvalidatePlot(true);
+            Vm!.BasicPlotModel.Model.InvalidatePlot(true);
         }
 
         private void InvalidatePlot()
         {
-
             GlobalDistributingDispatcher.Call(() =>
             {
                 lock (_ptsLock)
                 {
-                    Vm.BasicPlotModel.Model.InvalidatePlot(true);
+                    Vm!.BasicPlotModel.Model.InvalidatePlot(true);
                 }
-            }, _epochEndConsumer);
+            }, _epochEndConsumer!);
         }
 
         private void InitPlotEpochEndConsumer()
@@ -140,7 +139,7 @@ namespace Training.Application.Controllers
 
             _epochEndConsumer = new PlotEpochEndConsumer(_moduleState, (endsObs, session) =>
                 {
-                    if (_cts.IsCancellationRequested)
+                    if (_cts!.IsCancellationRequested)
                     {
                         return;
                     }
@@ -149,24 +148,24 @@ namespace Training.Application.Controllers
 
                     lock (_ptsLock)
                     {
-                        if (Vm.Series.Points.Count + endsObs.Count > 2000)
+                        if (Vm!.Series.Points.Count + endsObs.Count > 2000)
                         {
-                            var newMin = Vm.Series.Points.Count + endsObs.Count;
-                            Vm.Series.Points.Clear();
-                            Vm.BasicPlotModel.Model.Axes[0].AbsoluteMinimum = newMin;
+                            var newMin = Vm!.Series.Points.Count + endsObs.Count;
+                            Vm!.Series.Points.Clear();
+                            Vm!.BasicPlotModel.Model.Axes[0].AbsoluteMinimum = newMin;
                         }
 
-                        Vm.Series.Points.AddRange(points);
+                        Vm!.Series.Points.AddRange(points);
                     }
 
                     InvalidatePlot();
-                }, onTrainingStopped: _ => { _cts.Cancel(); }, onTrainingStarting:
+                }, onTrainingStopped: _ => { _cts!.Cancel(); }, onTrainingStarting:
                 _ =>
                 {
                     _cts = new CancellationTokenSource();
 
                     InvalidatePlot();
-                }, onTrainingPaused: _ => { _cts.Cancel(); }, options: new PlotEpochEndConsumerOptions()
+                }, onTrainingPaused: _ => { _cts!.Cancel(); }, options: new PlotEpochEndConsumerOptions()
                 {
                     DefaultConsumerType = PlotEpochEndConsumerType.Online,
                 });
@@ -186,7 +185,7 @@ namespace Training.Application.Controllers
             var navParams = ErrorPlotNavParams.FromParams(ctx.Parameters);
 
             _errorPlotSettingsRegion = nameof(_errorPlotSettingsRegion) + navParams.ParentRegion;
-            Vm.BasicPlotModel.SetSettingsRegion(_errorPlotSettingsRegion);
+            Vm!.BasicPlotModel.SetSettingsRegion(_errorPlotSettingsRegion);
 
             if (navParams.EpochEnd)
             {
@@ -194,9 +193,9 @@ namespace Training.Application.Controllers
             }
             else
             {
-                Vm.Series.Points.Clear();
-                Vm.Series.Points.AddRange(navParams.Points);
-                Vm.BasicPlotModel.Model.InvalidatePlot(true);
+                Vm!.Series.Points.Clear();
+                Vm!.Series.Points.AddRange(navParams.Points);
+                Vm!.BasicPlotModel.Model.InvalidatePlot(true);
             }
         }
     }

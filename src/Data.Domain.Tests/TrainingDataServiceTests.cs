@@ -23,8 +23,6 @@ namespace Data.Domain.Tests
 
         [Theory]
         [InlineData(100, 99)]
-        [InlineData(100, 99)]
-        [InlineData(33, 33)]
         [InlineData(33, 33)]
         public void LoadSets_when_valid_params_returns_valid_trainingData(int trainingSetPercentage, int setCount)
         {
@@ -80,8 +78,8 @@ namespace Data.Domain.Tests
 
 
             var trainingSet = trainingData.Sets.TrainingSet;
-            var validationSet = trainingData.Sets.ValidationSet;
-            var testSet = trainingData.Sets.TestSet;
+            var validationSet = trainingData.Sets.ValidationSet!;
+            var testSet = trainingData.Sets.TestSet!;
             trainingSet.Should().NotBeNull();
             trainingSet.Input.Count.Should().Be(trainingSetCount);
             trainingSet.Target.Count.Should().Be(trainingSetCount);

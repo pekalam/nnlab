@@ -17,12 +17,12 @@ namespace Common.Logging
         public static void TaskSchedulerOnUnobservedTaskException(object? sender, UnobservedTaskExceptionEventArgs e)
         {
             //todo
-            Log.Fatal<string>(e.Exception, "Unhandled exception");
+            Log.Fatal<string>(e.Exception!, "Unhandled exception");
         }
 
         public static void CurrentDomainOnUnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            Log.Fatal<string>(e.ExceptionObject as Exception, "Unhandled exception");
+            Log.Fatal<string>((Exception)e.ExceptionObject, "Unhandled exception");
         }
     }
 

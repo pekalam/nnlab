@@ -79,9 +79,9 @@ namespace Data.Application.Controllers
 
             PlotMouseDownCommand = new DelegateCommand<OxyMouseDownEventArgs>(PlotMouseDown);
             OpenDivisionViewCommand = new DelegateCommand(OpenDivisionView,
-                () => _appState.ActiveSession.TrainingData != null);
+                () => _appState.ActiveSession!.TrainingData != null);
             SelectVariablesCommand = new DelegateCommand(SelectVariables,
-                () => _appState.ActiveSession.TrainingData != null);
+                () => _appState.ActiveSession!.TrainingData != null);
 
             _accessor.OnCreated<CustomDataSetViewModel>(() =>
             {
@@ -121,7 +121,7 @@ namespace Data.Application.Controllers
         {
             if (args.prev != null)
             {
-                var vm = _accessor.Get<CustomDataSetViewModel>();
+                var vm = _accessor.Get<CustomDataSetViewModel>()!;
 
                 vm.Scatter.Points.Clear();
                 vm.Line.Points.Clear();
@@ -145,7 +145,7 @@ namespace Data.Application.Controllers
         {
             if (_input.Count == _target.Count)
             {
-                var vm = _accessor.Get<CustomDataSetViewModel>();
+                var vm = _accessor.Get<CustomDataSetViewModel>()!;
 
                 for (int i = 0; i < _input.Count; i++)
                 {
@@ -181,7 +181,7 @@ namespace Data.Application.Controllers
         {
             if (args.ChangedButton == OxyMouseButton.Left && args.ClickCount == 2)
             {
-                var vm = CustomDataSetViewModel.Instance;
+                var vm = CustomDataSetViewModel.Instance!;
 
                 var p = Axis.InverseTransform(args.Position, vm.PlotModel.Axes[0], vm.PlotModel.Axes[1]);
 
@@ -232,7 +232,7 @@ namespace Data.Application.Controllers
                     new SupervisedSetVariables(new SupervisedSetVariableIndexes(new[] {0}, new[] {1}),
                         new[] {new VariableName("x"), new VariableName("y"),}), TrainingDataSource.Memory);
 
-                _appState.ActiveSession.TrainingData = trainingData;
+                _appState.ActiveSession!.TrainingData = trainingData;
 
                 OpenDivisionViewCommand.RaiseCanExecuteChanged();
                 SelectVariablesCommand.RaiseCanExecuteChanged();

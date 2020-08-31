@@ -2,6 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,7 +18,7 @@ namespace Training.Domain
         private bool _isValid;
         private string? _error;
 
-        private CancellationTokenSource _epochCts;
+        private CancellationTokenSource? _epochCts;
         private Task _sessionTask = Task.CompletedTask;
         private bool _reseted;
         private bool _stopRequested;
@@ -31,7 +33,7 @@ namespace Training.Domain
 
         private readonly Session _session;
 
-        public event EventHandler<EpochEndArgs> EpochEnd;
+        public event EventHandler<EpochEndArgs>? EpochEnd;
 
         public TrainingSession(AppState appState)
         {
@@ -94,7 +96,8 @@ namespace Training.Domain
             return trainingParameters.Algorithm switch
             {
                 TrainingAlgorithm.GradientDescent => new GradientDescentAlgorithm(trainingParameters.GDParams.Params),
-                TrainingAlgorithm.LevenbergMarquardt => new LevenbergMarquardtAlgorithm(trainingParameters.LMParams.Params)
+                TrainingAlgorithm.LevenbergMarquardt => new LevenbergMarquardtAlgorithm(trainingParameters.LMParams.Params),
+                _ => throw new NotImplementedException()
             };
         }
 
@@ -161,6 +164,8 @@ namespace Training.Domain
 
         public Task Stop()
         {
+            Debug.Assert(Trainer != null);
+            
             Paused = false;
             if (!Started)
             {
@@ -169,7 +174,7 @@ namespace Training.Domain
                 return Task.CompletedTask;
             }
             _stopRequested = true;
-            _epochCts.Cancel();
+            _epochCts!.Cancel();
             return _sessionTask;
         }
 
@@ -191,22 +196,22 @@ namespace Training.Domain
                 if (_stopRequested)
                 {
                     Stopped = true;
-                    return TrainingSessionReport.CreateStoppedSessionReport(Trainer.Epochs, Trainer.Error, StartTime.Value, EpochEndEvents);
+                    return TrainingSessionReport.CreateStoppedSessionReport(Trainer.Epochs, Trainer.Error, StartTime!.Value, EpochEndEvents);
                 }
 
                 if ((Time.Now - StartTime) + _elapsed > Parameters.MaxLearningTime)
                 {
-                    return TrainingSessionReport.CreateTimeoutSessionReport(Trainer.Epochs, Trainer.Error, StartTime.Value, EpochEndEvents);
+                    return TrainingSessionReport.CreateTimeoutSessionReport(Trainer.Epochs, Trainer.Error, StartTime!.Value, EpochEndEvents);
                 }
 
-                return TrainingSessionReport.CreatePausedSessionReport(Trainer.Epochs, Trainer.Error, StartTime.Value, EpochEndEvents);
+                return TrainingSessionReport.CreatePausedSessionReport(Trainer.Epochs, Trainer.Error, StartTime!.Value, EpochEndEvents);
             }
 
             CheckCanStart();
 
             if (double.IsNaN(Trainer!.Error) && !_reseted)
             {
-                return TrainingSessionReport.CreateNaNSessionReport(Trainer.Epochs, Trainer.Error, StartTime.Value, EpochEndEvents);
+                return TrainingSessionReport.CreateNaNSessionReport(Trainer.Epochs, Trainer.Error, StartTime!.Value, EpochEndEvents);
             }
 
             if (Parameters!.MaxLearningTime != TimeSpan.MaxValue)
@@ -236,7 +241,7 @@ namespace Training.Domain
                 }
                 catch (AlgorithmFailed)
                 {
-                    return TrainingSessionReport.CreateAlgorithmErrorSessionReport(Trainer.Epochs, error, StartTime.Value, EpochEndEvents);
+                    return TrainingSessionReport.CreateAlgorithmErrorSessionReport(Trainer.Epochs, error, StartTime!.Value, EpochEndEvents);
                 }
 
                 var arg = new EpochEndArgs()
@@ -256,18 +261,18 @@ namespace Training.Domain
                 if (Trainer.Epochs == Parameters.MaxEpochs)
                 {
                     Stopped = true;
-                    return TrainingSessionReport.CreateMaxEpochSessionReport(Trainer.Epochs, error, StartTime.Value, EpochEndEvents);
+                    return TrainingSessionReport.CreateMaxEpochSessionReport(Trainer.Epochs, error, StartTime!.Value, EpochEndEvents);
                 }
 
                 if (double.IsNaN(error))
                 {
-                    return TrainingSessionReport.CreateNaNSessionReport(Trainer.Epochs, error, StartTime.Value, EpochEndEvents);
+                    return TrainingSessionReport.CreateNaNSessionReport(Trainer.Epochs, error, StartTime!.Value, EpochEndEvents);
                 }
 
             } while (error > Parameters.TargetError);
 
             Stopped = true;
-            return TrainingSessionReport.CreateTargetReachedSessionReport(Trainer.Epochs, error, StartTime.Value, EpochEndEvents);
+            return TrainingSessionReport.CreateTargetReachedSessionReport(Trainer.Epochs, error, StartTime!.Value, EpochEndEvents);
         }
 
         public Task<TrainingSessionReport> Start()
@@ -298,6 +303,8 @@ namespace Training.Domain
 
         public Task<double> RunValidation()
         {
+            Debug.Assert(Trainer != null);
+            
             return Task.Run(() => Trainer.RunValidation()).ContinueWith(t =>
             {
                 if (CurrentReport != null) CurrentReport.ValidationError = t.Result;
@@ -307,6 +314,8 @@ namespace Training.Domain
 
         public Task<double> RunTest()
         {
+            Debug.Assert(Trainer != null);
+
             return Task.Run(() => Trainer.RunTest()).ContinueWith(t =>
             {
                 if (CurrentReport != null) CurrentReport.TestError = t.Result;
@@ -316,6 +325,8 @@ namespace Training.Domain
 
         public void ResetParameters()
         {
+            Debug.Assert(Network != null);
+            
             Network.RebuildMatrices();
             _reseted = true;
         }
@@ -331,7 +342,7 @@ namespace Training.Domain
         }
 
         public bool HasErrors => _error != null;
-        public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
+        public event EventHandler<DataErrorsChangedEventArgs>? ErrorsChanged;
 
         private void RaiseErrorsChanged([CallerMemberName] string prop = "")
         {

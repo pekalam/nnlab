@@ -1,4 +1,5 @@
-﻿using Common.Framework;
+﻿using System;
+using Common.Framework;
 using Data.Application.Services;
 using Data.Application.ViewModels.DataSourceSelection;
 using Data.Domain.Services;
@@ -11,27 +12,27 @@ using Data.Application.Interfaces;
 
 namespace Data.Application.Controllers
 {
-    internal class MultiFileSourceController : ITransientController<MultiFileService>
+    internal class MultiFileSourceController : ControllerBase<MultiFileSourceViewModel>,ITransientController<MultiFileService>
     {
-        private MultiFileService _multiFileService;
+        private MultiFileService? _multiFileService;
         private readonly IRegionManager _rm;
         private readonly ICsvValidationService _csvValidationService;
         private readonly ITrainingDataService _dataService;
         private readonly IFileDialogService _fileDialogService;
         private readonly AppState _appState;
 
-        private TrainingData _trainingData;
+        private TrainingData? _trainingData;
 
-        private string[] _trainingHeaders;
-        private string[] _validationHeaders;
-        private string[] _testHeaders;
+        private string[]? _trainingHeaders;
+        private string[]? _validationHeaders;
+        private string[]? _testHeaders;
 
         private bool _loadCanExec;
         private bool _continueCanExec;
 
 
         public MultiFileSourceController(IRegionManager rm, ICsvValidationService csvValidationService,
-            ITrainingDataService dataService, AppState appState, IFileDialogService fileDialogService)
+            ITrainingDataService dataService, AppState appState, IFileDialogService fileDialogService, IViewModelAccessor accessor) : base(accessor)
         {
             _rm = rm;
             _csvValidationService = csvValidationService;
@@ -46,38 +47,36 @@ namespace Data.Application.Controllers
             _multiFileService = service;
 
 
-            _multiFileService.ValidateTrainingFile = new DelegateCommand<string>(ValidateTrainingFile);
-            _multiFileService.ValidateValidationFile = new DelegateCommand<string>(ValidateValidationFile);
-            _multiFileService.ValidateTestFile = new DelegateCommand<string>(ValidateTestFile);
+            _multiFileService!.ValidateTrainingFile = new DelegateCommand<string>(ValidateTrainingFile);
+            _multiFileService!.ValidateValidationFile = new DelegateCommand<string>(ValidateValidationFile);
+            _multiFileService!.ValidateTestFile = new DelegateCommand<string>(ValidateTestFile);
 
-            _multiFileService.SelectTrainingFileCommand = new DelegateCommand(() => SelectMultiSetFile(0));
-            _multiFileService.SelectValidationFileCommand = new DelegateCommand(() => SelectMultiSetFile(1));
-            _multiFileService.SelectTestFileCommand = new DelegateCommand(() => SelectMultiSetFile(2));
+            _multiFileService!.SelectTrainingFileCommand = new DelegateCommand(() => SelectMultiSetFile(0));
+            _multiFileService!.SelectValidationFileCommand = new DelegateCommand(() => SelectMultiSetFile(1));
+            _multiFileService!.SelectTestFileCommand = new DelegateCommand(() => SelectMultiSetFile(2));
 
-            _multiFileService.LoadFiles =
+            _multiFileService!.LoadFiles =
                 new DelegateCommand<(string trainingFile, string validationFile, string testFile)?>(LoadFiles,
                     _ => _loadCanExec);
-            _multiFileService.ReturnCommand = new DelegateCommand(() =>
+            _multiFileService!.ReturnCommand = new DelegateCommand(() =>
             {
                 _trainingData = null;
                 _rm.NavigateContentRegion("SelectDataSourceView", "");
             });
-            _multiFileService.ContinueCommand = new DelegateCommand(Continue, () => _continueCanExec);
+            _multiFileService!.ContinueCommand = new DelegateCommand(Continue, () => _continueCanExec);
         }
 
 
         private void Continue()
         {
-            var vm = MultiFileSourceViewModel.Instance;
             if (_appState.Sessions.Count == 0)
             {
                 _appState.CreateSession();
-
             }
-            _appState.ActiveSession.TrainingData = _trainingData;
-            _appState.ActiveSession.TrainingDataFile = vm.TrainingSetFilePath;
-            _appState.ActiveSession.TestDataFile = vm.TestSetFilePath;
-            _appState.ActiveSession.ValidationDataFile = vm.ValidationSetFilePath;
+            _appState.ActiveSession!.TrainingData = _trainingData;
+            _appState.ActiveSession.TrainingDataFile = Vm!.TrainingSetFilePath;
+            _appState.ActiveSession.TestDataFile = Vm!.TestSetFilePath;
+            _appState.ActiveSession.ValidationDataFile = Vm!.ValidationSetFilePath;
 
             _trainingData = null;
 
@@ -96,15 +95,15 @@ namespace Data.Application.Controllers
             {
                 if (file == 0)
                 {
-                    MultiFileSourceViewModel.Instance.TrainingSetFilePath = dialog.filePath;
+                    Vm!.TrainingSetFilePath = dialog.filePath!;
                 }
                 else if (file == 1)
                 {
-                    MultiFileSourceViewModel.Instance.ValidationSetFilePath = dialog.filePath;
+                    Vm!.ValidationSetFilePath = dialog.filePath!;
                 }
                 else if (file == 2)
                 {
-                    MultiFileSourceViewModel.Instance.TestSetFilePath = dialog.filePath;
+                    Vm!.TestSetFilePath = dialog.filePath!;
                 }
             }
         }
@@ -112,14 +111,14 @@ namespace Data.Application.Controllers
 
         private void LoadFiles((string trainingFile, string validationFile, string testFile)? arg)
         {
-            _multiFileService.SetIsLoading();
+            _multiFileService!.SetIsLoading();
 
-            _trainingData = _dataService.LoadDefaultSetsFromFiles(arg.Value.trainingFile, arg.Value.validationFile,
+            _trainingData = _dataService.LoadDefaultSetsFromFiles(arg!.Value.trainingFile, arg.Value.validationFile,
                 arg.Value.testFile);
             _continueCanExec = true;
-            _multiFileService.ContinueCommand.RaiseCanExecuteChanged();
+            _multiFileService!.ContinueCommand.RaiseCanExecuteChanged();
 
-            _multiFileService.SetLoaded(_trainingData);
+            _multiFileService!.SetLoaded(_trainingData);
         }
 
         private void ValidateFile(int set, string path)
@@ -128,31 +127,34 @@ namespace Data.Application.Controllers
 
             if (!valid)
             {
-                if (set == 0) _multiFileService.SetTrainingValidationResult(false, error, true);
-                if (set == 1) _multiFileService.SetValidationValidationResult(false, error, true);
-                if (set == 2) _multiFileService.SetTestValidationResult(false, error, true);
+                if (set == 0) _multiFileService!.SetTrainingValidationResult(false, error, true);
+                if (set == 1) _multiFileService!.SetValidationValidationResult(false, error, true);
+                if (set == 2) _multiFileService!.SetTestValidationResult(false, error!, true);
                 _loadCanExec = false;
-                _multiFileService.LoadFiles.RaiseCanExecuteChanged();
+                _multiFileService!.LoadFiles.RaiseCanExecuteChanged();
                 return;
             }
 
             string[] headers = set switch
             {
-                0 => _trainingHeaders,
-                1 => _validationHeaders,
-                2 => _testHeaders,
+                0 => _trainingHeaders!,
+                1 => _validationHeaders!,
+                2 => _testHeaders!,
+                _ => throw new NotImplementedException()
             };
-            string[] headers1 = set switch
+            string[]? headers1 = set switch
             {
                 0 => _validationHeaders,
                 1 => _trainingHeaders,
                 2 => _trainingHeaders,
+                _ => throw new NotImplementedException()
             };
-            string[] headers2 = set switch
+            string[]? headers2 = set switch
             {
                 0 => _testHeaders,
                 1 => _testHeaders,
                 2 => _validationHeaders,
+                _ => throw new NotImplementedException()
             };
 
             if (headers1 != null)
@@ -161,15 +163,15 @@ namespace Data.Application.Controllers
                 if (!validCount)
                 {
                     if (set == 0)
-                        _multiFileService.SetTrainingValidationResult(false, "Files differ in variables count", r: r,
+                        _multiFileService!.SetTrainingValidationResult(false, "Files differ in variables count", r: r,
                             c: c);
                     if (set == 1)
-                        _multiFileService.SetValidationValidationResult(false, "Files differ in variables count", r: r,
+                        _multiFileService!.SetValidationValidationResult(false, "Files differ in variables count", r: r,
                             c: c);
                     if (set == 2)
-                        _multiFileService.SetTestValidationResult(false, "Files differ in variables count", r: r, c: c);
+                        _multiFileService!.SetTestValidationResult(false, "Files differ in variables count", r: r, c: c);
                     _loadCanExec = false;
-                    _multiFileService.LoadFiles.RaiseCanExecuteChanged();
+                    _multiFileService!.LoadFiles.RaiseCanExecuteChanged();
                     return;
                 }
 
@@ -177,28 +179,28 @@ namespace Data.Application.Controllers
                 if (!validContent)
                 {
                     if (set == 0)
-                        _multiFileService.SetTrainingValidationResult(false, "Files differ in names of variables", r: r,
+                        _multiFileService!.SetTrainingValidationResult(false, "Files differ in names of variables", r: r,
                             c: c);
                     if (set == 1)
-                        _multiFileService.SetValidationValidationResult(false, "Files differ in names of variables",
+                        _multiFileService!.SetValidationValidationResult(false, "Files differ in names of variables",
                             r: r, c: c);
                     if (set == 2)
-                        _multiFileService.SetTestValidationResult(false, "Files differ in names of variables", r: r,
+                        _multiFileService!.SetTestValidationResult(false, "Files differ in names of variables", r: r,
                             c: c);
                     _loadCanExec = false;
-                    _multiFileService.LoadFiles.RaiseCanExecuteChanged();
+                    _multiFileService!.LoadFiles.RaiseCanExecuteChanged();
                     return;
                 }
 
-                if (set == 0 && !_multiFileService.ValidationValidationResult.HasContentError)
-                    _multiFileService.SetValidationValidationResult(true,
-                        r: _multiFileService.ValidationValidationResult.Rows,
-                        c: _multiFileService.ValidationValidationResult.Cols);
+                if (set == 0 && !_multiFileService!.ValidationValidationResult.HasContentError)
+                    _multiFileService!.SetValidationValidationResult(true,
+                        r: _multiFileService!.ValidationValidationResult.Rows,
+                        c: _multiFileService!.ValidationValidationResult.Cols);
 
-                if ((set == 1 || set == 2) && !_multiFileService.TrainingValidationResult.HasContentError)
-                    _multiFileService.SetTrainingValidationResult(true,
-                        r: _multiFileService.TrainingValidationResult.Rows,
-                        c: _multiFileService.TrainingValidationResult.Cols);
+                if ((set == 1 || set == 2) && !_multiFileService!.TrainingValidationResult.HasContentError)
+                    _multiFileService!.SetTrainingValidationResult(true,
+                        r: _multiFileService!.TrainingValidationResult.Rows,
+                        c: _multiFileService!.TrainingValidationResult.Cols);
             }
 
             if (headers2 != null)
@@ -207,15 +209,15 @@ namespace Data.Application.Controllers
                 if (!validCount)
                 {
                     if (set == 0)
-                        _multiFileService.SetTrainingValidationResult(false, "Files differ in variables count", r: r,
+                        _multiFileService!.SetTrainingValidationResult(false, "Files differ in variables count", r: r,
                             c: c);
                     if (set == 1)
-                        _multiFileService.SetValidationValidationResult(false, "Files differ in variables count", r: r,
+                        _multiFileService!.SetValidationValidationResult(false, "Files differ in variables count", r: r,
                             c: c);
                     if (set == 2)
-                        _multiFileService.SetTestValidationResult(false, "Files differ in variables count", r: r, c: c);
+                        _multiFileService!.SetTestValidationResult(false, "Files differ in variables count", r: r, c: c);
                     _loadCanExec = false;
-                    _multiFileService.LoadFiles.RaiseCanExecuteChanged();
+                    _multiFileService!.LoadFiles.RaiseCanExecuteChanged();
                     return;
                 }
 
@@ -223,45 +225,45 @@ namespace Data.Application.Controllers
                 if (!validContent)
                 {
                     if (set == 0)
-                        _multiFileService.SetTrainingValidationResult(false, "Files differ in names of variables", r: r,
+                        _multiFileService!.SetTrainingValidationResult(false, "Files differ in names of variables", r: r,
                             c: c);
                     if (set == 1)
-                        _multiFileService.SetValidationValidationResult(false, "Files differ in names of variables",
+                        _multiFileService!.SetValidationValidationResult(false, "Files differ in names of variables",
                             r: r, c: c);
                     if (set == 2)
-                        _multiFileService.SetTestValidationResult(false, "Files differ in names of variables", r: r,
+                        _multiFileService!.SetTestValidationResult(false, "Files differ in names of variables", r: r,
                             c: c);
                     _loadCanExec = false;
-                    _multiFileService.LoadFiles.RaiseCanExecuteChanged();
+                    _multiFileService!.LoadFiles.RaiseCanExecuteChanged();
                     return;
                 }
 
-                if ((set == 0 || set == 1) && !_multiFileService.TestValidationResult.HasContentError)
-                    _multiFileService.SetTestValidationResult(true, r: _multiFileService.TestValidationResult.Rows,
-                        c: _multiFileService.TestValidationResult.Cols);
-                if (set == 2 && !_multiFileService.ValidationValidationResult.HasContentError)
-                    _multiFileService.SetValidationValidationResult(true,
-                        r: _multiFileService.ValidationValidationResult.Rows,
-                        c: _multiFileService.ValidationValidationResult.Cols);
+                if ((set == 0 || set == 1) && !_multiFileService!.TestValidationResult.HasContentError)
+                    _multiFileService!.SetTestValidationResult(true, r: _multiFileService!.TestValidationResult.Rows,
+                        c: _multiFileService!.TestValidationResult.Cols);
+                if (set == 2 && !_multiFileService!.ValidationValidationResult.HasContentError)
+                    _multiFileService!.SetValidationValidationResult(true,
+                        r: _multiFileService!.ValidationValidationResult.Rows,
+                        c: _multiFileService!.ValidationValidationResult.Cols);
             }
 
 
-            if (set == 0) _multiFileService.SetTrainingValidationResult(true, r: r, c: c);
-            if (set == 1) _multiFileService.SetValidationValidationResult(true, r: r, c: c);
-            if (set == 2) _multiFileService.SetTestValidationResult(true, r: r, c: c);
+            if (set == 0) _multiFileService!.SetTrainingValidationResult(true, r: r, c: c);
+            if (set == 1) _multiFileService!.SetValidationValidationResult(true, r: r, c: c);
+            if (set == 2) _multiFileService!.SetTestValidationResult(true, r: r, c: c);
 
-            if (_multiFileService.TrainingValidationResult.IsFileValid.GetValueOrDefault() &&
-                _multiFileService.ValidationValidationResult.IsFileValid.GetValueOrDefault() &&
-                _multiFileService.TestValidationResult.IsFileValid.GetValueOrDefault())
+            if (_multiFileService!.TrainingValidationResult.IsFileValid.GetValueOrDefault() &&
+                _multiFileService!.ValidationValidationResult.IsFileValid.GetValueOrDefault() &&
+                _multiFileService!.TestValidationResult.IsFileValid.GetValueOrDefault())
             {
                 _loadCanExec = true;
-                _multiFileService.LoadFiles.RaiseCanExecuteChanged();
+                _multiFileService!.LoadFiles.RaiseCanExecuteChanged();
             }
         }
 
         private void ValidateTestFile(string path)
         {
-            _multiFileService.SetTestValidating(true);
+            _multiFileService!.SetTestValidating(true);
 
             _testHeaders = _csvValidationService.ReadHeaders(path);
             ValidateFile(2, path);
@@ -270,7 +272,7 @@ namespace Data.Application.Controllers
 
         private void ValidateValidationFile(string path)
         {
-            _multiFileService.SetValidationValidating(true);
+            _multiFileService!.SetValidationValidating(true);
 
             _validationHeaders = _csvValidationService.ReadHeaders(path);
             ValidateFile(1, path);
@@ -278,7 +280,7 @@ namespace Data.Application.Controllers
 
         private void ValidateTrainingFile(string path)
         {
-            _multiFileService.SetTrainingValidating(true);
+            _multiFileService!.SetTrainingValidating(true);
 
             _trainingHeaders = _csvValidationService.ReadHeaders(path);
             ValidateFile(0, path);

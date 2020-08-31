@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 using Common.Domain;
 using CommonServiceLocator;
 using Prism.Commands;
@@ -9,10 +10,6 @@ using Prism.Unity;
 
 namespace Shell.Interface
 {
-    class Class1
-    {
-    }
-
     public class EnableModalNavigation : PubSubEvent<DelegateCommand>
     {
 
@@ -29,8 +26,8 @@ namespace Shell.Interface
 
     public class ProgressAreaArgs
     {
-        public string Message { get; set; }
-        public string Tooltip { get; set; }
+        public string Message { get; set; } = null!;
+        public string Tooltip { get; set; } = null!;
     }
 
     public class ShowProgressArea : PubSubEvent<ProgressAreaArgs>
@@ -40,14 +37,14 @@ namespace Shell.Interface
     public class HideProgressAreaArgs
     {
         public bool Immediately { get; set; }
-        public string HideMessage { get; set; }
+        public string? HideMessage { get; set; }
     }
 
-    public class HideProgressArea : PubSubEvent<HideProgressAreaArgs> { }
+    public class HideProgressArea : PubSubEvent<HideProgressAreaArgs?> { }
 
     public class FlyoutArgs
     {
-        public string Title { get; set; }
+        public string? Title { get; set; }
     }
 
     public class ShowFlyout : PubSubEvent<FlyoutArgs>
@@ -60,8 +57,8 @@ namespace Shell.Interface
 
     public class ContentRegionViewChangedEventArgs
     {
-        public string ViewName { get; set; }
-        public ContentRegionNavigationParameters NavigationParameters { get; set; }
+        public string ViewName { get; set; } = null!;
+        public ContentRegionNavigationParameters NavigationParameters { get; set; } = null!;
     }
 
     public class ContentRegionViewChanged : PubSubEvent<ContentRegionViewChangedEventArgs>
@@ -100,7 +97,7 @@ namespace Shell.Interface
 
     public class ErrorNotificationArgs
     {
-        public string Message { get; set; }
+        public string? Message { get; set; }
     }
 
     public class ShowErrorNotification : PubSubEvent<ErrorNotificationArgs> { }

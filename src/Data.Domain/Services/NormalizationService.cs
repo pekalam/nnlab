@@ -75,7 +75,7 @@ namespace Data.Domain.Services
 
             return Task.Run(() =>
             {
-                var trainingData = _appState.ActiveSession.TrainingData.Clone();
+                var trainingData = _appState.ActiveSession!.TrainingData!.Clone();
                 MinMax(trainingData.Sets.TrainingSet);
                 if (trainingData.Sets.ValidationSet != null) MinMax(trainingData.Sets.ValidationSet);
                 if (trainingData.Sets.TestSet != null) MinMax(trainingData.Sets.TestSet);
@@ -132,7 +132,7 @@ namespace Data.Domain.Services
 
             return Task.Run(() =>
             {
-                var trainingData = _appState.ActiveSession.TrainingData.Clone();
+                var trainingData = _appState.ActiveSession!.TrainingData!.Clone();
                 Mean(trainingData.Sets.TrainingSet);
                 if (trainingData.Sets.ValidationSet != null) Mean(trainingData.Sets.ValidationSet);
                 if (trainingData.Sets.TestSet != null) Mean(trainingData.Sets.TestSet);
@@ -188,7 +188,7 @@ namespace Data.Domain.Services
 
             return Task.Run(() =>
             {
-                var trainingData = _appState.ActiveSession.TrainingData.Clone();
+                var trainingData = _appState.ActiveSession!.TrainingData!.Clone();
                 Std(trainingData.Sets.TrainingSet);
                 if (trainingData.Sets.ValidationSet != null) Std(trainingData.Sets.ValidationSet);
                 if (trainingData.Sets.TestSet != null) Std(trainingData.Sets.TestSet);
@@ -198,7 +198,7 @@ namespace Data.Domain.Services
 
         public void NoNormalization()
         {
-            _appState.ActiveSession.TrainingData = _moduleState.OriginalTrainingData;
+            _appState.ActiveSession!.TrainingData = _moduleState.OriginalTrainingData;
         }
     }
 }

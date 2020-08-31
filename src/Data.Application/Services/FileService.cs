@@ -19,8 +19,8 @@ namespace Data.Application.Services
 
     public class FileService : IFileService
     {
-        public DelegateCommand CreateDataSetCommand { get; set; }
-        public DelegateCommand SelectFileCommand { get; set; }
-        public DelegateCommand LoadFilesCommand { get; set; }
+        public DelegateCommand CreateDataSetCommand { get; set; } = null!;
+        public DelegateCommand SelectFileCommand { get; set; } = null!;
+        public DelegateCommand LoadFilesCommand { get; set; } = null!;
     }
 }

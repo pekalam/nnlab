@@ -61,16 +61,19 @@ namespace NeuralNetwork.Application.ViewModels
         }
 
         public int LayerNum => (int) this[nameof(LayerNum)];
-        public Layer Layer => this[nameof(Layer)] as Layer;
-        public MLPNetwork Network => this[nameof(Network)] as MLPNetwork;
+        public Layer Layer => (this[nameof(Layer)] as Layer)!;
+        public MLPNetwork Network => (this[nameof(Network)] as MLPNetwork)!;
     }
 
     public class LayerEditorViewModel : ViewModelBase<LayerEditorViewModel>
     {
-        private LayerDetailsModel _layer;
+        private LayerDetailsModel? _layer;
 
+        
+#pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
         public LayerEditorViewModel()
         {
+#pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
         }
 
         [InjectionConstructor]
@@ -83,7 +86,7 @@ namespace NeuralNetwork.Application.ViewModels
 
         public MatrixPreviewViewModel MatrixPreview { get; set; } = new MatrixPreviewViewModel();
 
-        public LayerDetailsModel Layer
+        public LayerDetailsModel? Layer
         {
             get => _layer;
             set => SetProperty(ref _layer, value);
@@ -91,7 +94,7 @@ namespace NeuralNetwork.Application.ViewModels
 
         public override void OnNavigatedTo(NavigationContext navigationContext)
         {
-            Service.Navigated(navigationContext.Parameters["params"] as LayerEditorNavParams);
+            Service.Navigated((LayerEditorNavParams)navigationContext.Parameters["params"]);
         }
     }
 }

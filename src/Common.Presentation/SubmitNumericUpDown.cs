@@ -10,8 +10,8 @@ namespace Common.Presentation
 {
     public class SubmitNumericUpDown : NumericUpDown
     {
-        private RepeatButton repeatUp;
-        private RepeatButton repeatDown;
+        private RepeatButton? _repeatUp;
+        private RepeatButton? _repeatDown;
 
         public SubmitNumericUpDown()
         {
@@ -38,11 +38,11 @@ namespace Common.Presentation
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
-            this.repeatUp = this.GetTemplateChild("PART_NumericUp") as RepeatButton;
-            this.repeatDown = this.GetTemplateChild("PART_NumericDown") as RepeatButton;
+            _repeatUp = GetTemplateChild("PART_NumericUp") as RepeatButton;
+            _repeatDown = GetTemplateChild("PART_NumericDown") as RepeatButton;
 
-            this.repeatUp.Click += (sender, args) => UpdateSource();
-            this.repeatDown.Click += (sender, args) => UpdateSource();
+            _repeatUp!.Click += (sender, args) => UpdateSource();
+            _repeatDown!.Click += (sender, args) => UpdateSource();
         }
     }
 }

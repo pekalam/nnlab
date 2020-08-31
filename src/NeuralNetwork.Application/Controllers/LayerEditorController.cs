@@ -52,13 +52,13 @@ namespace NeuralNetwork.Application.Controllers
         }
 
         public DelegateCommand ExitCommand { get; set; }
-        public DelegateCommand InitializeParametersCommand { get; set; }
+        public DelegateCommand InitializeParametersCommand { get; set; } = null!;
         public Action<LayerEditorNavParams> Navigated { get; set; }
 
 
         private void OnNavigated(LayerEditorNavParams navParams)
         {
-            var vm = _accessor.Get<LayerEditorViewModel>();
+            var vm = _accessor.Get<LayerEditorViewModel>()!;
             var layer = navParams.Layer;
             _layerNum = navParams.LayerNum;
             var model = new LayerDetailsModel(layer)
@@ -79,7 +79,7 @@ namespace NeuralNetwork.Application.Controllers
 
         private void OnLayerDetailsModelPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            var vm = _accessor.Get<LayerEditorViewModel>();
+            var vm = _accessor.Get<LayerEditorViewModel>()!;
             var model = (LayerDetailsModel)sender;
 
             switch (e.PropertyName)

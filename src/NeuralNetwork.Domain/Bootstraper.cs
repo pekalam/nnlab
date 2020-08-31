@@ -35,11 +35,11 @@ namespace NeuralNetwork.Domain
             _appState = appState;
         }
 
-        private MLPNetwork NeuralNetwork => _appState.ActiveSession?.Network;
+        private MLPNetwork NeuralNetwork => _appState.ActiveSession?.Network!;
 
         private bool Validate()
         {
-            var trainingData = _appState.ActiveSession.TrainingData;
+            var trainingData = _appState.ActiveSession!.TrainingData!;
             if (NeuralNetwork.BaseLayers[0].InputsCount != trainingData.Variables.Indexes.InputVarIndexes.Length ||
                 NeuralNetwork.BaseLayers[^1].NeuronsCount != trainingData.Variables.Indexes.TargetVarIndexes.Length)
             {

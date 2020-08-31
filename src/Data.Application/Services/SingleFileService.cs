@@ -12,7 +12,7 @@ namespace Data.Application.Services
     public class VariablesTableModel
     {
         public int Column { get; set; }
-        public string Name { get; set; }
+        public string Name { get; set; } = null!;
     }
 
     public interface ISingleFileService : INotifyPropertyChanged, IService
@@ -30,12 +30,12 @@ namespace Data.Application.Services
             controller.Initialize(this);
         }
 
-        public DelegateCommand ReturnCommand { get; set; }
-        public DelegateCommand ContinueCommand { get; set; }
-        public DelegateCommand<string> ValidateCommand { get; set; }
-        public DelegateCommand<string> LoadCommand { get; set; }
+        public DelegateCommand ReturnCommand { get; set; } = null!;
+        public DelegateCommand ContinueCommand { get; set; } = null!;
+        public DelegateCommand<string> ValidateCommand { get; set; } = null!;
+        public DelegateCommand<string> LoadCommand { get; set; } = null!;
 
-        public FileValidationResult FileValidationResult => SingleFileSourceViewModel.Instance.FileValidationResult;
+        public FileValidationResult FileValidationResult => SingleFileSourceViewModel.Instance!.FileValidationResult;
 
         public void SetLoading()
         {
@@ -53,14 +53,14 @@ namespace Data.Application.Services
         {
             FileValidationResult.IsValidatingFile = FileValidationResult.IsLoadingFile = false;
             FileValidationResult.IsLoaded = true;
-            SingleFileSourceViewModel.Instance.Variables = trainingData.Variables.InputVariableNames.Union(trainingData.Variables.TargetVariableNames)
+            SingleFileSourceViewModel.Instance!.Variables = trainingData.Variables.InputVariableNames.Union(trainingData.Variables.TargetVariableNames)
                 .Select((s, i) => new VariablesTableModel()
                 {
                     Column = i+1, Name = s
                 }).ToArray();
         }
 
-        public void SetValidated(bool result, int rows, int cols, string error)
+        public void SetValidated(bool result, int rows, int cols, string? error)
         {
             FileValidationResult.IsValidatingFile = FileValidationResult.IsLoadingFile = false;
             FileValidationResult.FileValidationError = error;

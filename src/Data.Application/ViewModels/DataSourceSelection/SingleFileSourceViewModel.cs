@@ -2,16 +2,17 @@
 using Data.Application.Services;
 using System;
 using System.ComponentModel;
+using System.Diagnostics;
 
 namespace Data.Application.ViewModels.DataSourceSelection
 {
     public class SingleFileSourceViewModel : ViewModelBase<SingleFileSourceViewModel>
     {
-        private string _selectedFilePath;
-        private string _selectedFileName;
-        private VariablesTableModel[] _variables;
+        private string? _selectedFilePath;
+        private string? _selectedFileName;
+        private VariablesTableModel[]? _variables;
 
-        public SingleFileSourceViewModel(ISingleFileService singleFileService)
+        protected SingleFileSourceViewModel(ISingleFileService singleFileService)
         {
             SingleFileService = singleFileService;
             KeepAlive = false;
@@ -25,7 +26,7 @@ namespace Data.Application.ViewModels.DataSourceSelection
                 case nameof(FileValidationResult.IsFileValid):
                     if (FileValidationResult.IsFileValid == true)
                     {
-                        SingleFileService.LoadCommand.Execute(_selectedFilePath);
+                        SingleFileService.LoadCommand.Execute(_selectedFilePath ?? throw new NullReferenceException("Null selected file path"));
                     }
                     break;
             }
@@ -34,7 +35,7 @@ namespace Data.Application.ViewModels.DataSourceSelection
         public ISingleFileService SingleFileService { get; }
 
         public FileValidationResult FileValidationResult { get; set; } = new FileValidationResult();
-        public VariablesTableModel[] Variables
+        public VariablesTableModel[]? Variables
         {
             get => _variables;
             set
@@ -44,18 +45,19 @@ namespace Data.Application.ViewModels.DataSourceSelection
             }
         }
 
-        public string SelectedFilePath
+        public string? SelectedFilePath
         {
             get => _selectedFilePath;
             set
             {
+                Debug.Assert(value != null);
                 SetProperty(ref _selectedFilePath, value);
                 SelectedFileName = value.Split('\\', StringSplitOptions.RemoveEmptyEntries)[^1];
                 SingleFileService.ValidateCommand.Execute(value);
             }
         }
 
-        public string SelectedFileName
+        public string? SelectedFileName
         {
             get => _selectedFileName;
             set => SetProperty(ref _selectedFileName, value);

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using Common.Logging;
 using NNLib;
@@ -39,7 +40,7 @@ namespace Common.Domain
 
         public ObservableCollection<Session> Sessions { get; } = new ObservableCollection<Session>();
 
-        public Session CreateSession(string? name = "")
+        public Session CreateSession(string name = "")
         {
             if (name == "")
             {
@@ -60,10 +61,10 @@ namespace Common.Domain
 
         public Session DuplicateActiveSession(DuplicateOptions duplicateOptions = DuplicateOptions.All)
         {
-            if (ActiveSession == null) throw new InvalidOperationException("Cannot duplicate - null active session");
+            if (_activeSession == null) throw new InvalidOperationException("Cannot duplicate - null active session");
 
-            var cpy = ActiveSession.CloneWithName("Unnamed" + (Sessions.Count > 0 ? " " + Sessions.Count : ""), duplicateOptions);
-            Log.Debug($"Session {_activeSession.Name} duplicated. Duplicated name: {cpy.Name}");
+            var cpy = _activeSession.CloneWithName("Unnamed" + (Sessions.Count > 0 ? " " + Sessions.Count : ""), duplicateOptions);
+            Log.Debug($"Session {_activeSession!.Name} duplicated. Duplicated name: {cpy.Name}");
 
             Sessions.Add(cpy);
             ActiveSession = cpy;
@@ -172,6 +173,7 @@ namespace Common.Domain
 
         public void RaiseNetworkStructureChanged()
         {
+            Debug.Assert(Network != null);
             NetworkStructureChanged?.Invoke(Network);
         }
 

@@ -12,7 +12,7 @@ namespace Common.Domain
     }
     public class TrainingData : BindableBase
     {
-        private SupervisedSetVariables _variables;
+        private SupervisedSetVariables _variables = null!;
         public SupervisedTrainingSets Sets { get; }
         public TrainingDataSource Source { get; }
 
@@ -81,13 +81,13 @@ namespace Common.Domain
 
         private SupervisedSet CloneMemorySet(SupervisedSet set)
         {
-            return new SupervisedSet((set.Input as DefaultVectorSet).Clone(),
-                (set.Target as DefaultVectorSet).Clone());
+            return new SupervisedSet((set.Input as DefaultVectorSet)!.Clone(),
+                (set.Target as DefaultVectorSet)!.Clone());
         }
 
         public TrainingData Clone()
         {
-            SupervisedTrainingSets setsCpy = null;
+            SupervisedTrainingSets? setsCpy = null;
 
             if (Source == TrainingDataSource.Csv)
             {

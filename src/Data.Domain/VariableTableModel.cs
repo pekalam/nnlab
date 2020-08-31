@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using Common.Domain;
 using NNLib.Common;
@@ -11,7 +12,7 @@ namespace Data.Domain
     {
         private VariableUses _variableUse;
 
-        public VariableTableModel(VariableUses initialVariableUse)
+        private VariableTableModel(VariableUses initialVariableUse)
         {
             _variableUse = initialVariableUse;
         }
@@ -50,16 +51,17 @@ namespace Data.Domain
             return variables;
         }
 
-        public VariableTableModel[] ContainingArray { get; set; }
+        public VariableTableModel[] ContainingArray { get; private set; } = null!;
 
-        public int Index { get; set; }
-        public string Name { get; set; }
+        public int Index { get; private set; }
+        public string Name { get; set; } = null!;
 
         public VariableUses VariableUse
         {
             get => _variableUse;
             set
             {
+                Debug.Assert(ContainingArray != null);
                 SetProperty(ref _variableUse, value);
                 foreach (var model in ContainingArray)
                 {
@@ -75,8 +77,8 @@ namespace Data.Domain
         private bool CheckHasNoTargetVars() => VariableUse != VariableUses.Target &&
                                              ContainingArray.All(v => v.VariableUse != VariableUses.Target);
 
-        public string Error { get; private set; }
-        public string this[string columnName]
+        public string? Error { get; private set; }
+        public string? this[string columnName]
         {
             get
             {
@@ -96,7 +98,7 @@ namespace Data.Domain
             }
         }
 
-        public Action<string> OnError;
-        public Action<VariableTableModel> OnVariableUseSet;
+        public Action<string?>? OnError;
+        public Action<VariableTableModel>? OnVariableUseSet;
     }
 }

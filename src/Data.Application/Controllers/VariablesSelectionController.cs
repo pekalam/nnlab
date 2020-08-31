@@ -7,6 +7,7 @@ using NNLib.Common;
 using Prism.Commands;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows.Input;
 using Common.Domain;
@@ -30,8 +31,8 @@ namespace Data.Application.Controllers
 {
     internal class VariablesSelectionController : IVariablesSelectionService
     {
-        private AppState _appState;
-        private SupervisedSetVariableIndexes _currentIndexes;
+        private readonly AppState _appState;
+        private SupervisedSetVariableIndexes _currentIndexes = null!;
         private readonly ITrainingDataService _dsService;
 
         public VariablesSelectionController(AppState appState, ITrainingDataService dsService)
@@ -43,7 +44,9 @@ namespace Data.Application.Controllers
 
             VariablesSelectionViewModel.Created += () =>
             {
-                _currentIndexes = _appState.ActiveSession.TrainingData.Variables.Indexes;
+                Debug.Assert(_appState.ActiveSession?.TrainingData != null);
+
+                _currentIndexes = _appState.ActiveSession!.TrainingData!.Variables.Indexes;
 
                 InitVmWithData();
             };
@@ -53,7 +56,7 @@ namespace Data.Application.Controllers
 
         private void InitVmWithData()
         {
-            var trainingData = _appState.ActiveSession.TrainingData;
+            var trainingData = _appState.ActiveSession!.TrainingData!;
             var vm = VariablesSelectionViewModel.Instance;
 
             var variables = VariableTableModel.FromTrainingData(trainingData);
@@ -63,7 +66,7 @@ namespace Data.Application.Controllers
                 model.OnVariableUseSet = OnVariableUseSet;
             }
 
-            vm.Variables = variables;
+            vm!.Variables = variables;
         }
 
         private void OnVariableUseSet(VariableTableModel model)
@@ -71,7 +74,7 @@ namespace Data.Application.Controllers
             var inputIndexes = new List<int>();
             var targetIndexes = new List<int>();
             var ignoredIndexes = new List<int>();
-            foreach (var var in model.ContainingArray)
+            foreach (var var in model.ContainingArray!)
             {
                 if(var.Error != null) return;
                 if (var.VariableUse == VariableUses.Input) inputIndexes.Add(var.Index);
@@ -80,7 +83,7 @@ namespace Data.Application.Controllers
             }
 
 
-            var trainingData = _appState.ActiveSession.TrainingData;
+            var trainingData = _appState.ActiveSession!.TrainingData;
             var newIndexes = new SupervisedSetVariableIndexes(inputIndexes.ToArray(), targetIndexes.ToArray(), ignoredIndexes.ToArray());
 
 
@@ -88,12 +91,12 @@ namespace Data.Application.Controllers
 
             _currentIndexes = newIndexes;
 
-            _dsService.ChangeVariables(_currentIndexes, trainingData);
+            _dsService.ChangeVariables(_currentIndexes, trainingData!);
         }
 
         private void IgnoreAll()
         {
-            var vm = VariablesSelectionViewModel.Instance;
+            var vm = VariablesSelectionViewModel.Instance!;
 
             foreach (var model in vm.Variables)
             {
@@ -109,8 +112,8 @@ namespace Data.Application.Controllers
                 }
             }
 
-            var trainingData = _appState.ActiveSession.TrainingData;
-            _dsService.ChangeVariables(_currentIndexes, trainingData);
+            var trainingData = _appState.ActiveSession!.TrainingData;
+            _dsService.ChangeVariables(_currentIndexes, trainingData!);
 
             foreach (var model in vm.Variables)
             {

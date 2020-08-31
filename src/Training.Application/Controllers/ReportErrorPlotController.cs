@@ -29,7 +29,7 @@ namespace Training.Application.Services
             ctrl.Initialize(this);
         }
 
-        public Action<NavigationContext> Navigated { get; set; }
+        public Action<NavigationContext> Navigated { get; set; } = null!;
     }
 }
 
@@ -37,9 +37,8 @@ namespace Training.Application.Controllers
 {
     internal class ReportErrorPlotController : ITransientController<ReportErrorService>
     {
-        private string ReportErrorPlotSettingsRegion;
-        private IViewModelAccessor _accessor;
-        private IRegionManager _rm;
+        private string? _reportErrorPlotSettingsRegion;
+        private readonly IViewModelAccessor _accessor;
 
         public ReportErrorPlotController(IViewModelAccessor accessor)
         {
@@ -55,10 +54,10 @@ namespace Training.Application.Controllers
         {
             var parameters = new ReportErrorPlotNavParams.ReportErrorPlotRecNavParams(ctx.Parameters);
 
-            var vm = _accessor.Get<ReportErrorPlotViewModel>();
+            var vm = _accessor.Get<ReportErrorPlotViewModel>()!;
 
-            ReportErrorPlotSettingsRegion = nameof(ReportErrorPlotSettingsRegion) + parameters.ParentRegion;
-            vm.BasicPlotModel.SetSettingsRegion(ReportErrorPlotSettingsRegion);
+            _reportErrorPlotSettingsRegion = nameof(_reportErrorPlotSettingsRegion) + parameters.ParentRegion;
+            vm.BasicPlotModel.SetSettingsRegion(_reportErrorPlotSettingsRegion);
 
             vm.Series.Points.Clear();
             vm.Series.Points.AddRange(parameters.Points);

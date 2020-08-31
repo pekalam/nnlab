@@ -9,7 +9,7 @@ namespace Training.Application.ViewModels.PanelLayout.Layouts
 {
     public class SingleLayoutViewModel : LayoutViewModelBase
     {
-        private PanelSelectModel _selected1;
+        private PanelSelectModel _selected1 = null!;
 
         public SingleLayoutViewModel(IRegionManager rm) : base(rm)
         {
@@ -48,8 +48,8 @@ namespace Training.Application.ViewModels.PanelLayout.Layouts
 
     class Horizontal2LayoutViewModel : LayoutViewModelBase
     {
-        private PanelSelectModel _selected1;
-        private PanelSelectModel _selected2;
+        private PanelSelectModel _selected1 = null!;
+        private PanelSelectModel _selected2 = null!;
 
         public Horizontal2LayoutViewModel(IRegionManager rm) : base(rm)
         {
@@ -104,9 +104,9 @@ namespace Training.Application.ViewModels.PanelLayout.Layouts
 
     class Part3LayoutViewModel : LayoutViewModelBase
     {
-        private PanelSelectModel _selected1;
-        private PanelSelectModel _selected2;
-        private PanelSelectModel _selected3;
+        private PanelSelectModel _selected1 = null!;
+        private PanelSelectModel _selected2 = null!;
+        private PanelSelectModel _selected3 = null!;
 
         public Part3LayoutViewModel(IRegionManager rm) : base(rm)
         {
@@ -178,10 +178,10 @@ namespace Training.Application.ViewModels.PanelLayout.Layouts
 
     class Part4LayoutViewModel : LayoutViewModelBase
     {
-        private PanelSelectModel _selected1;
-        private PanelSelectModel _selected2;
-        private PanelSelectModel _selected3;
-        private PanelSelectModel _selected4;
+        private PanelSelectModel _selected1 = null!;
+        private PanelSelectModel _selected2 = null!;
+        private PanelSelectModel _selected3 = null!;
+        private PanelSelectModel _selected4 = null!;
 
         public Part4LayoutViewModel(IRegionManager rm) : base(rm)
         {

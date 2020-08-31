@@ -29,7 +29,7 @@ namespace Shell.Application.PrismDecorators
             Debug.Assert(navigationParameters is ContentRegionNavigationParameters);
 
             _region.RequestNavigate(target, navigationCallback, navigationParameters);
-            _navigationAction.Invoke(target, navigationParameters as ContentRegionNavigationParameters);
+            _navigationAction.Invoke(target, (navigationParameters as ContentRegionNavigationParameters)!);
         }
 
         public event PropertyChangedEventHandler PropertyChanged

@@ -22,12 +22,12 @@ namespace Data.Application.ViewModels.DataSource.Preview
 
             if (setType == DataSetType.Test)
             {
-                return _trainingData.Sets.TestSet.Input.Count;
+                return _trainingData.Sets.TestSet!.Input.Count;
             }
 
             if (setType == DataSetType.Validation)
             {
-                return _trainingData.Sets.ValidationSet.Input.Count;
+                return _trainingData.Sets.ValidationSet!.Input.Count;
             }
 
             throw new ArgumentException();

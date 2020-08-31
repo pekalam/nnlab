@@ -56,7 +56,7 @@ namespace Training.Application.Plots
         public PlotEpochEndConsumer(ModuleState moduleState, Action<IList<EpochEndArgs>, TrainingSession> callback,
             Action<TrainingSession>? onTrainingStarting = null,
             Action<TrainingSession>? onTrainingStopped = null, Action<TrainingSession>? onTrainingPaused = null,
-            PlotEpochEndConsumerOptions options = null)
+            PlotEpochEndConsumerOptions? options = null)
         {
             _options = options ?? new PlotEpochEndConsumerOptions();
             _consumerType = _options.DefaultConsumerType;
@@ -99,7 +99,7 @@ namespace Training.Application.Plots
 
         private void TrainingSessionOnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            var session = sender as TrainingSession;
+            var session = (sender as TrainingSession)!;
             switch (e.PropertyName)
             {
                 case nameof(TrainingSession.Started):
@@ -203,6 +203,7 @@ namespace Training.Application.Plots
 
         private void InitSubscription()
         {
+            Debug.Assert(_session != null);
             if (ConsumerType == PlotEpochEndConsumerType.Online)
             {
                 if (_bufSub != null)

@@ -64,12 +64,12 @@ namespace SharedUI.MatrixPreview
 
     public class MatrixPreviewModel : INotifyPropertyChanged
     {
-        public string RowHeader { get; set; }
-        public MatrixRowDictionary Props { get; set; }
+        public string RowHeader { get; set; } = null!;
+        public MatrixRowDictionary Props { get; set; } = null!;
         public void RaisePropsChanged() => OnPropertyChanged(nameof(Props));
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }

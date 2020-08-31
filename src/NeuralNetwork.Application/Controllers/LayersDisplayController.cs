@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
@@ -19,7 +20,7 @@ namespace NeuralNetwork.Application.Controllers
 {
     internal class LayersDisplayController : ITransientController<LayersDisplayService>
     {
-        private LayersDisplayService _service;
+        private LayersDisplayService _service = null!;
         private readonly INeuralNetworkShellService _shellService;
         private readonly INeuralNetworkService _networkService;
         private readonly AppState _appState;
@@ -65,7 +66,7 @@ namespace NeuralNetwork.Application.Controllers
 
         private void InsertAfter(LayerEditorItemModel obj)
         {
-            if (obj.LayerIndex == _appState.ActiveSession.Network.TotalLayers - 1)
+            if (obj.LayerIndex == _appState.ActiveSession!.Network!.TotalLayers - 1)
             {
                 AddLayer();
             }
@@ -81,13 +82,13 @@ namespace NeuralNetwork.Application.Controllers
         {
             if(obj == null || obj.IsAddLayerItem) return;
             //TODO fix
-            _ea.GetEvent<IntLayerClicked>().Publish((_appState.ActiveSession.Network.Layers[obj.LayerIndex],obj.LayerIndex));
+            _ea.GetEvent<IntLayerClicked>().Publish((_appState.ActiveSession!.Network!.Layers[obj.LayerIndex],obj.LayerIndex));
         }
 
         private void SelectLayer(Layer layer)
         {
-            var neuralNetwork = _appState.ActiveSession.Network;
-            var vm = _accessor.Get<LayersDisplayViewModel>();
+            var neuralNetwork = _appState.ActiveSession!.Network!;
+            var vm = _accessor.Get<LayersDisplayViewModel>()!;
             int layerInd = -1;
             for (int i = 0; i < neuralNetwork.TotalLayers; i++)
             {
@@ -114,7 +115,7 @@ namespace NeuralNetwork.Application.Controllers
         {
             if (e.PropertyName == nameof(AppState.ActiveSession))
             {
-                if(_accessor.Get<LayersDisplayViewModel>() != null && _appState.ActiveSession.Network != null) SetLayers();
+                if(_accessor.Get<LayersDisplayViewModel>() != null && _appState.ActiveSession!.Network != null) SetLayers();
             }
         }
 
@@ -135,14 +136,16 @@ namespace NeuralNetwork.Application.Controllers
 
         private void SetLayers()
         {
-            var neuralNetwork = _appState.ActiveSession.Network;
+            Debug.Assert(_moduleState.ModelAdapter != null);
+            
+            var neuralNetwork = _appState.ActiveSession!.Network!;
             _service.CreateLayers(neuralNetwork.Layers);
             _moduleState.ModelAdapter.Controller.ClearHighlight();
         }
 
         private void AddLayer()
         {
-            var neuralNetwork = _appState.ActiveSession.Network;
+            var neuralNetwork = _appState.ActiveSession!.Network!;
             if (!_networkService.AddLayer())
             {
                 _ea.GetEvent<ShowErrorNotification>().Publish(new ErrorNotificationArgs()

@@ -17,7 +17,7 @@ namespace Training.Presentation.Views
         public TrainingInfoView()
         {
             InitializeComponent();
-            (DataContext as TrainingInfoViewModel).SetView(this);
+            (DataContext as TrainingInfoViewModel)!.SetView(this);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

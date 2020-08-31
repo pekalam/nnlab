@@ -26,7 +26,7 @@ namespace Training.Application.Services
 
     class MatrixTrainingPreviewService : IMatrixTrainingPreviewService
     {
-        public Action<NavigationContext> Navigated { get; set; }
+        public Action<NavigationContext> Navigated { get; set; } = null!;
 
         public MatrixTrainingPreviewService(ITransientController<MatrixTrainingPreviewService> ctrl)
         {
@@ -49,9 +49,9 @@ namespace Training.Application.Controllers
 
         protected override void VmCreated()
         {
-            Vm.IsActiveChanged += (_, __) =>
+            Vm!.IsActiveChanged += (_, __) =>
             {
-                if (!Vm.IsActive) _epochEndConsumer.ForceStop();
+                if (!Vm!.IsActive) _epochEndConsumer!.ForceStop();
             };
         }
 
@@ -62,7 +62,7 @@ namespace Training.Application.Controllers
 
         private void AssignSession(TrainingSession session)
         {
-            Vm.MatVm.Controller.AssignNetwork(session.Network);
+            Vm!.MatVm!.Controller.AssignNetwork(session.Network!);
         }
 
         private void Navigated(NavigationContext parameters)
@@ -79,11 +79,11 @@ namespace Training.Application.Controllers
 
             _epochEndConsumer = new PlotEpochEndConsumer(_moduleState,(list, session) =>
             {
-                Vm.MatVm.Controller.Update();
+                Vm!.MatVm!.Controller.Update();
                 GlobalDistributingDispatcher.Call(() =>
                 {
-                    Vm.MatVm.Controller.ApplyUpdate();
-                }, _epochEndConsumer);
+                    Vm!.MatVm!.Controller.ApplyUpdate();
+                }, _epochEndConsumer!);
             });
 
             _epochEndConsumer.Initialize();

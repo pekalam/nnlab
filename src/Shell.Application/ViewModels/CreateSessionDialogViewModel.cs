@@ -12,7 +12,7 @@ namespace Shell.Application.ViewModels
 {
     public class CreateSessionDialogViewModel : ViewModelBase<CreateSessionDialogViewModel>, IDialogAware
     {
-        private string _name;
+        private string? _name;
         private bool _isSwitchToSessionChecked = true;
 
         public CreateSessionDialogViewModel()
@@ -29,7 +29,7 @@ namespace Shell.Application.ViewModels
         public ICommand OkCommand { get; }
         public ICommand CancelCommand { get; }
 
-        public string Name
+        public string? Name
         {
             get => _name;
             set => SetProperty(ref _name, value);
@@ -56,6 +56,6 @@ namespace Shell.Application.ViewModels
         }
 
         public string Title { get; } = "Create session";
-        public event Action<IDialogResult> RequestClose;
+        public event Action<IDialogResult> RequestClose = null!;
     }
 }

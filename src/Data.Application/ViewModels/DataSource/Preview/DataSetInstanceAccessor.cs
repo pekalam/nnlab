@@ -1,5 +1,6 @@
 ﻿using NNLib.Common;
 using System.Data;
+using System.Diagnostics;
 using Common.Domain;
 
 namespace Data.Application.ViewModels.DataSource.Preview
@@ -14,7 +15,7 @@ namespace Data.Application.ViewModels.DataSource.Preview
             DataSetType defaultDataSetType = DataSetType.Training)
         {
             _trainingData = trainingData;
-            _set = trainingData.GetSet(defaultDataSetType);
+            _set = trainingData.GetSet(defaultDataSetType)!;
             _dataTable = new DataTable();
             var cols = new DataColumn[trainingData.Variables.Names.Length - trainingData.Variables.Indexes.Ignored.Length];
             int ind = 0;
@@ -30,7 +31,7 @@ namespace Data.Application.ViewModels.DataSource.Preview
 
         public void ChangeDataSet(DataSetType type)
         {
-            _set = _trainingData.GetSet(type);
+            _set = _trainingData.GetSet(type)!;
         }
 
         public int Count => _set.Input.Count;
