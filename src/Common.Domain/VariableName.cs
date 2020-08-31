@@ -48,5 +48,6 @@
         public const int NeuralNetwork = 2;
         public const int Training = 3;
         public const int Shell = 4;
+        public const int Prediction = 5;
     }
 }

@@ -59,7 +59,10 @@ namespace NeuralNetwork.Application.Controllers
         private void CloseLayerEditor()
         {
             _isEditorOpened = false;
-            _rm.Regions[NeuralNetworkRegions.NetworkDownRegion].RequestNavigate(nameof(LayersDisplayViewModel));
+            if (_rm.Regions.ContainsRegionWithName(NeuralNetworkRegions.NetworkDownRegion))
+            {
+                _rm.Regions[NeuralNetworkRegions.NetworkDownRegion].RequestNavigate(nameof(LayersDisplayViewModel));
+            }
         }
 
         private void OpenLayerEditor(LayerEditorItemModel model)

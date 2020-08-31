@@ -87,6 +87,9 @@ namespace Shell.Application.ViewModels
                     case ModuleIds.Training:
                         IsTrainingItemEnabled = true;
                         break;
+                    case ModuleIds.Prediction:
+                        IsPredictionItemEnabled = true;
+                        break;
                 }
 
             });
@@ -103,6 +106,9 @@ namespace Shell.Application.ViewModels
                         break;
                     case ModuleIds.Training:
                         IsTrainingItemEnabled = false;
+                        break;
+                    case ModuleIds.Prediction:
+                        IsPredictionItemEnabled = false;
                         break;
                 }
 

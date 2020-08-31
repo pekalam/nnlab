@@ -27,6 +27,8 @@
     <ProjectReference Include="..\NeuralNetwork.Application\NeuralNetwork.Application.csproj" />
     <ProjectReference Include="..\NeuralNetwork.Domain\NeuralNetwork.Domain.csproj" />
     <ProjectReference Include="..\NeuralNetwork.Presentation\NeuralNetwork.Presentation.csproj" />
+    <ProjectReference Include="..\Prediction.Application\Prediction.Application.csproj" />
+    <ProjectReference Include="..\Prediction.Presentation\Prediction.Presentation.csproj" />
     <ProjectReference Include="..\Shell.Application\Shell.Application.csproj" />
     <ProjectReference Include="..\Shell.Presentation\Shell.Presentation.csproj" />
     <ProjectReference Include="..\Training.Application\Training.Application.csproj" />

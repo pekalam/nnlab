@@ -24,7 +24,7 @@ namespace ArchTests
         public ModuleTests(ITestOutputHelper output)
         {
             _output = output;
-            _packages = new[] { "Shell", "Data", "NeuralNetwork", "Training" };
+            _packages = new[] { "Shell", "Data", "NeuralNetwork", "Training", "Prediction" };
         }
 
         private IEnumerable<Assembly> GetAssembliesFromPackage(string package, string[] modules = null)

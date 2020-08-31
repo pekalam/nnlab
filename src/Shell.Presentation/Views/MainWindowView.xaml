@@ -65,6 +65,7 @@
                                                Margin="12,0,0,0" />
             </RadioButton>
             <RadioButton Style="{StaticResource NavButton2}" Height="60"
+                         IsChecked="{Binding CheckedNavItemId, Converter={StaticResource NavItemIdConverter},ConverterParameter={x:Static  domain:ModuleIds.Prediction}}"
                          IsEnabled="{Binding IsPredictionItemEnabled}">
                 <iconPacks:PackIconFontAwesome Kind="ChartLineSolid" Width="22" Height="16"
                                                VerticalAlignment="Center" HorizontalAlignment="Center"

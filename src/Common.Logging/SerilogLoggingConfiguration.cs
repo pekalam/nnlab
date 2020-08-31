@@ -14,7 +14,7 @@ namespace Common.Logging
         private static void ConfigureRelease(LoggerConfiguration c)
         {
             c.Enrich.WithThreadId().Enrich.WithMemoryUsage()
-                .MinimumLevel.Information()
+                .MinimumLevel.Warning()
                 .WriteTo.File("log.txt", fileSizeLimitBytes: 1024 * 1024 * 512, rollOnFileSizeLimit: true, outputTemplate: OutputTemplate)
                 .WriteTo.Console(outputTemplate: OutputTemplate);
         }
@@ -172,16 +172,20 @@ namespace Common.Logging
     {
         public static ILogger Logger { get; internal set; } = new DefaultLogger();
 
-        public static void Information<T>(Exception exception, string? template = null, T? param1 = null)
-            where T : class => Logger.Information(exception, template, param1);
+        [Conditional("DEBUG")]
+        public static void Information<T>(Exception exception, string? template = null, T? param1 = null) where T : class => Logger.Information(exception, template, param1);
+        [Conditional("DEBUG")]
         public static void Debug<T>(Exception exception, string? template = null, T? param1 = null) where T : class => Logger.Debug(exception,template,param1);
+
         public static void Warning<T>(Exception exception, string? template = null, T? param1 = null) where T : class => Logger.Warning(exception,template,param1);
         public static void Error<T>(Exception exception, string? template = null, T? param1 = null) where T : class => Logger.Error(exception,template,param1);
         public static void Fatal<T>(Exception exception, string? template = null, T? param1 = null) where T : class => Logger.Fatal(exception,template,param1);
 
-
+        [Conditional("DEBUG")]
         public static void Information(string msg) => Logger.Information(msg);
+        [Conditional("DEBUG")]
         public static void Debug(string msg) => Logger.Debug(msg);
+
         public static void Warning(string msg) => Logger.Warning(msg);
         public static void Fatal(string msg) => Logger.Fatal(msg);
 
