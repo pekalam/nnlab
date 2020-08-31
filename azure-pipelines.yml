@@ -28,5 +28,5 @@ steps:
 - task: VSBuild@1
   displayName: 'Build solution'
   inputs:
-    solution: 'NNLab.sln'
+    solution: 'src\NNLab.sln'
     vsVersion: '16.0'
