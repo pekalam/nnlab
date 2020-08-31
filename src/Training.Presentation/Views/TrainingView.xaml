@@ -95,47 +95,6 @@
 
                             <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
 
-
-                                <Button Padding="0" MaxWidth="40" Name="NetworkParametersBtn">
-                                    <Button.Style>
-                                        <Style BasedOn="{StaticResource UpperPanelBtn}" TargetType="Button">
-                                            <Style.Triggers>
-                                                
-                                                <DataTrigger Binding="{Binding ModuleState.ActiveSession.Started}" Value="False">
-                                                    <Setter Property="IsEnabled" Value="True"/>
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding ModuleState.ActiveSession.Started}" Value="True">
-                                                    <Setter Property="IsEnabled" Value="False"/>
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding ModuleState.ActiveSession}" Value="{x:Null}">
-                                                    <Setter Property="IsEnabled" Value="False"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Button.Style>
-                                    <mah:DropDownButton Content="{x:Null}" Width="40" MaxWidth="40"
-                                                        IsEnabled="{Binding ElementName=NetworkParametersBtn,Path=IsEnabled}">
-                                        <mah:DropDownButton.Icon>
-                                            <iconPacks:FontAwesome Kind="ProjectDiagramSolid" />
-                                        </mah:DropDownButton.Icon>
-                                        <mah:DropDownButton.Style>
-                                            <Style TargetType="mah:DropDownButton">
-                                                <Setter Property="BorderThickness" Value="0" />
-                                                <Setter Property="ArrowVisibility" Value="Collapsed" />
-                                                <Setter Property="Padding" Value="0" />
-                                                <Setter Property="Margin" Value="0" />
-                                                <Setter Property="BorderBrush" Value="{x:Null}" />
-                                                <Setter Property="ButtonStyle" Value="{StaticResource UpperPanelBtn}" />
-                                            </Style>
-                                        </mah:DropDownButton.Style>
-                                        <mah:DropDownButton.ItemsSource>
-                                            <CompositeCollection>
-                                                <MenuItem Header="Reset parameters" Command="{Binding Service.ResetParametersCommand}" />
-                                            </CompositeCollection>
-                                        </mah:DropDownButton.ItemsSource>
-                                    </mah:DropDownButton>
-                                </Button>
-
                                 <Button Command="{Binding Service.SelectPanelsClickCommand}"
                                         Visibility="{Binding UpperSelectPanelsButtonVisibility}"
                                         Style="{StaticResource UpperPanelBtn}">

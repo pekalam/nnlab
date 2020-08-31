@@ -13,6 +13,7 @@ using Prism.Mvvm;
 using Prism.Regions;
 using Shell.Application.Interfaces;
 using Shell.Interface;
+using Training.Interface;
 using Unity;
 
 namespace Shell.Application.ViewModels
@@ -110,6 +111,19 @@ namespace Shell.Application.ViewModels
             _ea.GetEvent<CheckNavMenuItem>().Subscribe((identifier) =>
             {
                 CheckedNavItemId = identifier;
+            });
+
+            _ea.GetEvent<TrainingSessionStarted>().Subscribe(() =>
+                {
+                    IsDataItemEnabled = IsNetworkItemEnabled = IsPredictionItemEnabled = false;
+                });
+            _ea.GetEvent<TrainingSessionPaused>().Subscribe(() =>
+            {
+                IsDataItemEnabled = IsNetworkItemEnabled = IsPredictionItemEnabled = true;
+            });
+            _ea.GetEvent<TrainingSessionStopped>().Subscribe(() =>
+            {
+                IsDataItemEnabled = IsNetworkItemEnabled = IsPredictionItemEnabled = true;
             });
 
             CloseFlyoutCommand = new DelegateCommand(() =>

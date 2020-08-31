@@ -35,7 +35,6 @@ namespace Training.Presentation
             cr.RegisterDialog<PanelSelectView, PanelSelectViewModel>();
             cr.RegisterForNavigation<ReportsView>();
             cr.RegisterForNavigation<ReportErrorPlotView>();
-
         }
     }
 }

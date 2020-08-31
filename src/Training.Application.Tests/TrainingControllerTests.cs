@@ -65,19 +65,50 @@ namespace Training.Application.Tests
         }
 
         [Fact]
-        public async void TrainingReport_is_created_after_training_is_stopped()
+        public async Task TrainingReport_is_created_after_training_is_paused_or_stopped()
         {
             SetupValidSession();
 
             _service.StartTrainingSessionCommand.Execute();
 
-            await Task.Delay(1000);
+            await Task.Delay(50);
+
+            _service.PauseTrainingSessionCommand.Execute();
+
+            await Task.Delay(50);
+
+            _moduleState.ActiveSession.CurrentReport.Should().NotBeNull();
+
+            _service.StartTrainingSessionCommand.Execute();
+
+            await Task.Delay(50);
 
             _service.StopTrainingSessionCommand.Execute();
 
-            await Task.Delay(500);
+            await Task.Delay(50);
 
-            _moduleState.ActiveSession.CurrentReport.Should().NotBeNull();
+            _appState.ActiveSession.TrainingReports.Count.Should().Be(2);
+        }
+
+
+        [Fact]
+        public async Task Commands_when_training_is_started_cant_exec_and_can_exec_when_stopped()
+        {
+            SetupValidSession();
+
+            _service.StartTrainingSessionCommand.Execute();
+
+            await Task.Delay(50);
+
+            _service.StartTrainingSessionCommand.CanExecute().Should().BeFalse();
+            _service.StopTrainingSessionCommand.CanExecute().Should().BeTrue();
+            _service.PauseTrainingSessionCommand.CanExecute().Should().BeTrue();
+            _service.ResetParametersCommand.CanExecute().Should().BeTrue();
+            _service.OpenReportsCommand.CanExecute().Should().BeFalse();
+            _service.SelectPanelsClickCommand.CanExecute().Should().BeTrue();
+            _service.OpenParametersCommand.CanExecute().Should().BeFalse();
+
+            _service.StopTrainingSessionCommand.Execute();
         }
     }
 }

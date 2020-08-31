@@ -4,7 +4,13 @@
              xmlns:prism="http://prismlibrary.com/"
              xmlns:domain="clr-namespace:Common.Domain;assembly=Common.Domain"
              xmlns:presentation="clr-namespace:Common.Presentation;assembly=Common.Presentation"
-             prism:ViewModelLocator.AutoWireViewModel="True">
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:designData="clr-namespace:Training.Presentation.__DesignData"
+             prism:ViewModelLocator.AutoWireViewModel="True"
+             mc:Ignorable="d"
+             d:DesignWidth="800" d:DesignHeight="600"
+             d:DataContext="{d:DesignInstance designData:DesignParametersEditVm, IsDesignTimeCreatable=True}">
     <StackPanel>
 
         <TextBlock Text="Training parameters" Margin="10,10,0,0" FontSize="16" />
@@ -13,7 +19,7 @@
                 <Style TargetType="UniformGrid">
                     <Setter Property="Visibility" Value="Collapsed"/>
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding TrainingParametersModel.Algorithm}" Value="{x:Static domain:TrainingAlgorithm.GradientDescent}">
+                        <DataTrigger Binding="{Binding AppState.ActiveSession.TrainingParameters.Algorithm}" Value="{x:Static domain:TrainingAlgorithm.GradientDescent}">
                             <Setter Property="Visibility" Value="Visible"/>
                         </DataTrigger>
                     </Style.Triggers>
@@ -24,7 +30,7 @@
                                         StringFormat="###0.###################"
                                         Speedup="True"
                                         Interval="0.0001"
-                                        Value="{Binding Path=TrainingParametersModel.GradientDescentParamsModel.LearningRate, Mode=TwoWay}"
+                                        Value="{Binding AppState.ActiveSession.TrainingParameters.GDParams.LearningRate, Mode=TwoWay}"
                                         HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" />
 
             <TextBlock Text="Momentum" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,10,0,10" />
@@ -33,7 +39,7 @@
                 StringFormat="###0.###################"
                 Speedup="True"
                 Interval="0.0001"
-                Value="{Binding Path=TrainingParametersModel.GradientDescentParamsModel.Momentum, Mode=TwoWay}" HorizontalAlignment="Stretch"
+                Value="{Binding AppState.ActiveSession.TrainingParameters.GDParams.Momentum, Mode=TwoWay}" HorizontalAlignment="Stretch"
                 HorizontalContentAlignment="Stretch" />
         </UniformGrid>
 
@@ -42,7 +48,7 @@
                 <Style TargetType="UniformGrid">
                     <Setter Property="Visibility" Value="Collapsed"/>
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding TrainingParametersModel.Algorithm}" Value="{x:Static domain:TrainingAlgorithm.LevenbergMarquardt}">
+                        <DataTrigger Binding="{Binding AppState.ActiveSession.TrainingParameters.Algorithm}" Value="{x:Static domain:TrainingAlgorithm.LevenbergMarquardt}">
                             <Setter Property="Visibility" Value="Visible"/>
                         </DataTrigger>
                     </Style.Triggers>
@@ -53,7 +59,7 @@
                                         StringFormat="###0.###################"
                                         Speedup="True"
                                         Interval="0.0001"
-                                        Value="{Binding Path=TrainingParametersModel.LevenbergMarquardtParamsModel.DampingParamIncFactor, Mode=TwoWay}"
+                                        Value="{Binding AppState.ActiveSession.TrainingParameters.LMParams.DampingParamIncFactor, Mode=TwoWay}"
                                         HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" />
 
             <TextBlock Text="Damping parameter decrement factor" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,10,0,10" />
@@ -62,7 +68,7 @@
                 StringFormat="###0.###################"
                 Speedup="True"
                 Interval="0.0001"
-                Value="{Binding Path=TrainingParametersModel.LevenbergMarquardtParamsModel.DampingParamDecFactor, Mode=TwoWay}" HorizontalAlignment="Stretch"
+                Value="{Binding AppState.ActiveSession.TrainingParameters.LMParams.DampingParamDecFactor, Mode=TwoWay}" HorizontalAlignment="Stretch"
                 HorizontalContentAlignment="Stretch" />
         </UniformGrid>
     </StackPanel>

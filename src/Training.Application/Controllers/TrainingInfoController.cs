@@ -20,9 +20,11 @@ namespace Training.Application.Controllers
     class TrainingInfoController : ControllerBase<TrainingInfoViewModel>,ITrainingInfoController
     {
         private readonly PlotEpochEndConsumer _epochEndConsumer;
+        private readonly ModuleState _moduleState;
 
         public TrainingInfoController(IEventAggregator ea, IViewModelAccessor accessor, ModuleState moduleState) : base(accessor)
         {
+            _moduleState = moduleState;
             _epochEndConsumer = new PlotEpochEndConsumer(moduleState,
                 (args, session) =>
                 {
@@ -44,11 +46,7 @@ namespace Training.Application.Controllers
                     Vm.StopTimer();
                 });
 
-            moduleState.ActiveSessionChanged += (sender, args) =>
-            {
-                args.next.PropertyChanged += SessionOnPropertyChanged;
-            };
-
+            
             ea.GetEvent<TrainingValidationFinished>().Subscribe(d =>
             {
                 Vm.ValidationError = d;
@@ -61,6 +59,24 @@ namespace Training.Application.Controllers
 
 
             _epochEndConsumer.Initialize();
+        }
+
+        protected override void VmCreated()
+        {
+            _moduleState.ActiveSessionChanged += (sender, args) =>
+            {
+                if (!args.next.StartTime.HasValue) Vm.View.ResetProgress();
+                else
+                {
+                    var last = args.next.EpochEndEvents.Last();
+                    Vm.View.UpdateTimer(args.next.CurrentReport.Duration);
+                    Vm.View.UpdateTraining(last.Error, last.Epoch, last.Iterations);
+                }
+
+                args.next.PropertyChanged -= SessionOnPropertyChanged;
+                args.next.PropertyChanged += SessionOnPropertyChanged;
+            };
+
         }
 
         private void SessionOnPropertyChanged(object sender, PropertyChangedEventArgs e)

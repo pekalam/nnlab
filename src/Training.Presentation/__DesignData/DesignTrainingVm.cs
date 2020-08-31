@@ -35,4 +35,9 @@ namespace Training.Presentation.__DesignData
             a.ActiveSession.TrainingReports.Add(TrainingSessionReport.CreateStoppedSessionReport(2100, .12, DateTime.Now, new List<EpochEndArgs>()));
         }
     }
+
+    class DesignParametersEditVm : ParametersEditViewModel
+    {
+
+    }
 }

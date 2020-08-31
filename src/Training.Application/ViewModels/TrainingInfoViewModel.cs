@@ -51,6 +51,11 @@ namespace Training.Application.ViewModels
             }
         }
 
+        protected override void ViewChanged(ITrainingInfoView view)
+        {
+            view.ResetProgress();
+        }
+
         /// <summary>
         /// Starts view timer from 0
         /// </summary>

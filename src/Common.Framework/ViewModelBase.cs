@@ -85,7 +85,11 @@ namespace Common.Framework
         {
         }
 
-        public void SetView(TV view) => View = view;
+        public void SetView(TV view)
+        {
+            View = view;
+            ViewChanged(view);
+        }
 
         public override void OnNavigatedTo(NavigationContext navigationContext)
         {

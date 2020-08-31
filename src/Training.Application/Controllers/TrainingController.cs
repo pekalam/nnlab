@@ -39,8 +39,8 @@ namespace Training.Application.Controllers
             _dialogService = dialogService;
             _moduleState = moduleState;
 
-            _service.OpenParametersCommand = new DelegateCommand(OpenParameters);
-            _service.OpenReportsCommand = new DelegateCommand(OpenReports, () => _moduleState.ActiveSession?.CurrentReport != null);
+            _service.OpenParametersCommand = new DelegateCommand(OpenParameters, () => _moduleState.ActiveSession != null && !_moduleState.ActiveSession.Started);
+            _service.OpenReportsCommand = new DelegateCommand(OpenReports, () => _moduleState.ActiveSession?.CurrentReport != null && !_moduleState.ActiveSession.Started);
             _service.SelectPanelsClickCommand = new DelegateCommand(SelectPanels, () => _moduleState.ActiveSession != null && _moduleState.ActiveSession.IsValid);
             _service.StartTrainingSessionCommand = new DelegateCommand(StartTrainingSession, () => 
                 _moduleState.ActiveSession != null && (_moduleState.ActiveSession.IsValid && !_moduleState.ActiveSession.Stopped && !_moduleState.ActiveSession.Started));
@@ -57,6 +57,7 @@ namespace Training.Application.Controllers
                 _service.PauseTrainingSessionCommand.RaiseCanExecuteChanged();
                 _service.OpenReportsCommand.RaiseCanExecuteChanged();
                 _service.SelectPanelsClickCommand.RaiseCanExecuteChanged();
+                _service.OpenParametersCommand.RaiseCanExecuteChanged();
             }
 
             _moduleState.ActiveSessionChanged += (_, args) =>
@@ -80,7 +81,7 @@ namespace Training.Application.Controllers
 
         private void ResetParameters()
         {
-            throw new System.NotImplementedException();
+            _moduleState.ActiveSession.Network.RebuildMatrices();
         }
 
         private async void PauseTrainingSession()

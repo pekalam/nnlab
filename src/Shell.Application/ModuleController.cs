@@ -23,15 +23,6 @@ namespace Shell.Application
             _ea = ea;
             ActionMenuHelpers.RegionManager = rm;
 
-            _appState.ActiveSessionChanged += AppStateOnActiveSessionChanged;
-        }
-
-        private void AppStateOnActiveSessionChanged(object? sender, (Session? prev, Session next) e)
-        {
-            if (e.prev != null)
-            {
-
-            }
         }
 
         public void Run()

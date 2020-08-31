@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -16,20 +17,10 @@ namespace Training.Presentation.Views
         public TrainingInfoView()
         {
             InitializeComponent();
+            (DataContext as TrainingInfoViewModel).SetView(this);
         }
 
-        protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
-        {
-            base.OnPropertyChanged(e);
-            if (e.Property.Name == nameof(DataContext))
-            {
-                if (DataContext is TrainingInfoViewModel vm)
-                {
-                    vm.SetView(this);
-                }
-            }
-        }
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private string ToTimerString(in TimeSpan date)
         {
             var str = new StringBuilder();
@@ -65,6 +56,14 @@ namespace Training.Presentation.Views
                 Epoch.Text = ep;
                 Iterations.Text = it;
             }, DispatcherPriority.Normal);
+        }
+
+        public void ResetProgress()
+        {
+            TimerText.Text = "-";
+            Error.Text = "-";
+            Epoch.Text = "-";
+            Iterations.Text = "-";
         }
     }
 }

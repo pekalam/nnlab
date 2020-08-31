@@ -85,7 +85,7 @@
                                             StringFormat="0"
                                             Speedup="True"
                                             Interval="1"
-                                            Value="{Binding TrainingParameters.GDParams.BatchParams.BatchSize, Mode=TwoWay, UpdateSourceTrigger=Explicit, ValidatesOnDataErrors=True}"
+                                            Value="{Binding TrainingParameters.GDParams.BatchSize, Mode=TwoWay, UpdateSourceTrigger=Explicit, ValidatesOnDataErrors=True}"
                                             HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" />
                 </Grid>
 

@@ -6,8 +6,7 @@
              xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:mvvm="http://prismlibrary.com/"
-             xmlns:converters="clr-namespace:Data.Presentation.Converters"
-             xmlns:converters1="clr-namespace:Common.Presentation.Converters;assembly=Common.Presentation"
+             xmlns:converters="clr-namespace:Common.Presentation.Converters;assembly=Common.Presentation"
              xmlns:designData="clr-namespace:Data.Presentation.__DesignData"
              mc:Ignorable="d"
              mvvm:ViewModelLocator.AutoWireViewModel="True"
@@ -15,7 +14,7 @@
              d:DesignHeight="450" d:DesignWidth="800"
              Style="{StaticResource ContentUserControl}">
     <UserControl.Resources>
-        <converters1:BooleanNegConverter x:Key="BooleanNeg"/>
+        <converters:BooleanNegConverter x:Key="BooleanNeg"/>
         <converters:NullToLineConverter x:Key="NullToLine"/>
 
         <Style TargetType="TextBlock" x:Key="TextBoxActiveOnLoaded">

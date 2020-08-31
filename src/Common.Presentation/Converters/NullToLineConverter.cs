@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Text;
 using System.Windows.Data;
 
-namespace Data.Presentation.Converters
+namespace Common.Presentation.Converters
 {
     public class NullToLineConverter : IValueConverter
     {

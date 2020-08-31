@@ -9,5 +9,6 @@ namespace Training.Application.Views
     {
         void UpdateTimer(in TimeSpan timeSpan);
         void UpdateTraining(double error, int epochs, int iterations);
+        void ResetProgress();
     }
 }

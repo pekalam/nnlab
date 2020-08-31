@@ -12,6 +12,8 @@
              d:DataContext="{d:DesignInstance dd:DesignTrainingInfoVm, IsDesignTimeCreatable=True}"
              prism:ViewModelLocator.AutoWireViewModel="True">
     <UserControl.Resources>
+        <converters:NullToLineConverter x:Key="NullToLine"/>
+
         <Style x:Key="StatsTitle" TargetType="TextBlock">
             <Setter Property="FontSize" Value="14"/>
             <Setter Property="FontWeight" Value="Bold"/>
@@ -64,7 +66,7 @@
         <TextBlock Text="Training Time" Style="{StaticResource StatsTitle}"/>
         <UniformGrid Columns="2">
             <TextBlock Text="Start time:" Style="{StaticResource StatsText}"/>
-            <TextBlock Text="{Binding ModuleState.ActiveSession.StartTime, StringFormat=HH:mm:ss}" Style="{StaticResource StatsText}"/>
+            <TextBlock Text="{Binding ModuleState.ActiveSession.StartTime, StringFormat=HH:mm:ss, Converter={StaticResource NullToLine}}" Style="{StaticResource StatsText}"/>
             <TextBlock Text="Elapsed time:" Style="{StaticResource StatsText}"/>
             <TextBlock x:Name="TimerText" Style="{StaticResource StatsText}"/>
         </UniformGrid>
