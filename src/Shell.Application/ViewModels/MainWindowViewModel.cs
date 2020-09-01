@@ -48,6 +48,7 @@ namespace Shell.Application.ViewModels
         private AppState _appState;
         private Visibility _modalNavigationVisibility = Visibility.Collapsed;
         private DelegateCommand? _modalNavigationCommand;
+        private Visibility _hamburgerMenuVisibility = Visibility.Collapsed;
 
 #pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
         public MainWindowViewModel()
@@ -69,6 +70,10 @@ namespace Shell.Application.ViewModels
                 _modalNavigationCommand?.Execute();
                 ModalNavigationVisibility = Visibility.Collapsed;
             });
+
+            ToggleHamburgerMenuCommand = new DelegateCommand(() => HamburgerMenuVisibility = HamburgerMenuVisibility == Visibility.Collapsed ? Visibility.Visible : Visibility.Collapsed);
+
+            ExitCommand = new DelegateCommand(() => System.Windows.Application.Current.MainWindow.Close());
 
             _ea.GetEvent<ShowFlyout>().Subscribe(args =>
             {
@@ -183,6 +188,8 @@ namespace Shell.Application.ViewModels
 
         public NavigationBreadcrumbsViewModel NavigationBreadcrumbsVm { get; }
         public StatusBarViewModel StatusBarViewModel { get; }
+        public DelegateCommand ToggleHamburgerMenuCommand { get; }
+        public DelegateCommand ExitCommand { get; }
 
         private void Navigate(int identifier)
         {
@@ -276,5 +283,11 @@ namespace Shell.Application.ViewModels
         }
 
         public DelegateCommand ModalNavigationCommand { get; }
+
+        public Visibility HamburgerMenuVisibility
+        {
+            get => _hamburgerMenuVisibility;
+            set => SetProperty(ref _hamburgerMenuVisibility, value);
+        }
     }
 }

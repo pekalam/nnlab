@@ -19,6 +19,28 @@
     <mah:MetroWindow.Resources>
         <converters:NullToVisibilityConverter x:Key="NullToVisibility" />
         <viewModels:NavItemIdConverter x:Key="NavItemIdConverter" />
+
+        <Style TargetType="Button" x:Key="HamburgerMenuButton">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Height" Value="38"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" BorderBrush="Gray" BorderThickness="0,0,0,1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{StaticResource MenuColorHighlighted}"/>
+                </Trigger>
+                <Trigger Property="IsMouseOver" Value="False">
+                    <Setter Property="Background" Value="Transparent"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
     </mah:MetroWindow.Resources>
     <mah:MetroWindow.Flyouts>
         <mah:FlyoutsControl>
@@ -34,137 +56,156 @@
         </mah:FlyoutsControl>
     </mah:MetroWindow.Flyouts>
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="66" />
-            <ColumnDefinition />
-        </Grid.ColumnDefinitions>
-
         <Grid>
-            <StackPanel Background="{StaticResource MenuColor}">
-                <Button Style="{StaticResource NavButton}" Height="61">
-                    <iconPacks:PackIconFontAwesome Kind="BarsSolid" Width="28" Height="19"
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="66" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+
+            <Grid>
+                <StackPanel Background="{StaticResource MenuColor}">
+                    <Button Style="{StaticResource NavButton}" Height="61" Command="{Binding ToggleHamburgerMenuCommand}">
+                        <iconPacks:PackIconFontAwesome Kind="BarsSolid" Width="28" Height="19"
                                                VerticalAlignment="Center" HorizontalAlignment="Center" />
-                </Button>
-                <RadioButton Style="{StaticResource NavButton2}" Height="60"
+                    </Button>
+                    <RadioButton Style="{StaticResource NavButton2}" Height="60"
                          IsChecked="{Binding CheckedNavItemId, Converter={StaticResource NavItemIdConverter},ConverterParameter={x:Static domain:ModuleIds.Data}}"
                          IsEnabled="{Binding IsDataItemEnabled}">
-                    <iconPacks:PackIconFontAwesome Kind="DatabaseSolid" Width="25" Height="19"
+                        <iconPacks:PackIconFontAwesome Kind="DatabaseSolid" Width="25" Height="19"
                                                VerticalAlignment="Center" HorizontalAlignment="Center"
                                                Margin="12,0,0,0" />
-                </RadioButton>
-                <RadioButton Style="{StaticResource NavButton2}" Height="60"
+                    </RadioButton>
+                    <RadioButton Style="{StaticResource NavButton2}" Height="60"
                          IsChecked="{Binding CheckedNavItemId, Converter={StaticResource NavItemIdConverter},ConverterParameter={x:Static  domain:ModuleIds.NeuralNetwork}}"
                          IsEnabled="{Binding IsNetworkItemEnabled}">
-                    <iconPacks:PackIconFontAwesome Kind="ProjectDiagramSolid" Width="24" Height="17"
+                        <iconPacks:PackIconFontAwesome Kind="ProjectDiagramSolid" Width="24" Height="17"
                                                VerticalAlignment="Center" HorizontalAlignment="Center"
                                                Margin="13,2,0,0" />
-                </RadioButton>
-                <RadioButton Style="{StaticResource NavButton2}" Height="60"
+                    </RadioButton>
+                    <RadioButton Style="{StaticResource NavButton2}" Height="60"
                          IsChecked="{Binding CheckedNavItemId, Converter={StaticResource NavItemIdConverter},ConverterParameter={x:Static  domain:ModuleIds.Training}}"
                          IsEnabled="{Binding IsTrainingItemEnabled}">
-                    <iconPacks:PackIconFontAwesome Kind="CaretRightSolid" Width="26" Height="20"
+                        <iconPacks:PackIconFontAwesome Kind="CaretRightSolid" Width="26" Height="20"
                                                VerticalAlignment="Center" HorizontalAlignment="Center"
                                                Margin="12,0,0,0" />
-                </RadioButton>
-                <RadioButton Style="{StaticResource NavButton2}" Height="60"
+                    </RadioButton>
+                    <RadioButton Style="{StaticResource NavButton2}" Height="60"
                          IsChecked="{Binding CheckedNavItemId, Converter={StaticResource NavItemIdConverter},ConverterParameter={x:Static  domain:ModuleIds.Prediction}}"
                          IsEnabled="{Binding IsPredictionItemEnabled}">
-                    <iconPacks:PackIconFontAwesome Kind="ChartLineSolid" Width="22" Height="16"
+                        <iconPacks:PackIconFontAwesome Kind="ChartLineSolid" Width="22" Height="16"
                                                VerticalAlignment="Center" HorizontalAlignment="Center"
                                                Margin="14,2,0,0" />
-                </RadioButton>
-            </StackPanel>
+                    </RadioButton>
+                </StackPanel>
 
-            <StackPanel Visibility="{Binding ModalNavigationVisibility}" Background="{StaticResource MenuColor}">
-                <Button Style="{StaticResource NavButton}" Height="61" Command="{Binding ModalNavigationCommand}">
-                    <iconPacks:PackIconFontAwesome Kind="ArrowLeftSolid" Width="28" Height="19"
+                <StackPanel Visibility="{Binding ModalNavigationVisibility}" Background="{StaticResource MenuColor}">
+                    <Button Style="{StaticResource NavButton}" Height="61" Command="{Binding ModalNavigationCommand}">
+                        <iconPacks:PackIconFontAwesome Kind="ArrowLeftSolid" Width="28" Height="19"
                                                    VerticalAlignment="Center" HorizontalAlignment="Center" />
-                </Button>
-            </StackPanel>
-        </Grid>
-
-
-
-
-
-        <Grid Grid.Column="1">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition />
-                <RowDefinition Height="32" />
-            </Grid.RowDefinitions>
-
-
-            <Grid Grid.Row="0">
-
-                <StackPanel>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition />
-                            <ColumnDefinition />
-                        </Grid.ColumnDefinitions>
-                        <views:NavigationBreadcrumbsView DataContext="{Binding NavigationBreadcrumbsVm}" />
-                        <ContentControl Height="61" Grid.Column="1" IsTabStop="False"
-                                        prism:RegionManager.RegionName="{x:Static shellInterface:AppRegions.TopMenuRightRegion}" />
-                    </Grid>
-                    <StackPanel>
-                        <StackPanel.Style>
-                            <Style TargetType="StackPanel">
-                                <Style.Triggers>
-                                    <MultiDataTrigger>
-                                        <MultiDataTrigger.Conditions>
-                                            <Condition
-                                                Binding="{Binding ElementName=ActionMenuLeftRegion,Path=Content}"
-                                                Value="{x:Null}" />
-                                            <Condition
-                                                Binding="{Binding ElementName=ActionMenuRightRegion,Path=Content}"
-                                                Value="{x:Null}" />
-                                        </MultiDataTrigger.Conditions>
-                                        <Setter Property="Visibility" Value="Collapsed" />
-                                    </MultiDataTrigger>
-
-                                </Style.Triggers>
-                            </Style>
-                        </StackPanel.Style>
-                        <Rectangle Height="1" Fill="#72787878" />
-                        <Grid Margin="0,13,0,0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition />
-                                <ColumnDefinition />
-                            </Grid.ColumnDefinitions>
-                            <ContentControl x:Name="ActionMenuLeftRegion" Height="45" IsTabStop="False"
-                                            prism:RegionManager.RegionName="{x:Static shellInterface:AppRegions.ActionMenuLeftRegion}" />
-                            <ContentControl x:Name="ActionMenuRightRegion" Grid.Column="1" Height="45"
-                                            HorizontalAlignment="Right" IsTabStop="False"
-                                            prism:RegionManager.RegionName="{x:Static shellInterface:AppRegions.ActionMenuRightRegion}" />
-                        </Grid>
-                    </StackPanel>
-
+                    </Button>
                 </StackPanel>
             </Grid>
 
 
-            <Grid Grid.Row="1" Background="{StaticResource ContentColorBackground}">
 
-                <Border BorderThickness="0,1,0,0" BorderBrush="#72787878" ClipToBounds="True" Panel.ZIndex="999">
-                    <Border.Effect>
-                        <DropShadowEffect Direction="1" BlurRadius="6" Opacity="0.7" Color="#787878"
-                                          ShadowDepth="0" />
-                    </Border.Effect>
-                </Border>
-                <Border BorderThickness="0.6,0,0,0" BorderBrush="#B5B5B5" Panel.ZIndex="999">
-                    <Border.Effect>
-                        <DropShadowEffect Direction="1" BlurRadius="3" Opacity="1" Color="#FF959595"
-                                          ShadowDepth="0" />
-                    </Border.Effect>
-                </Border>
 
-                <ContentControl prism:RegionManager.RegionName="{x:Static shellInterface:AppRegions.ContentRegion}" IsTabStop="False"/>
+
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition />
+                    <RowDefinition Height="32" />
+                </Grid.RowDefinitions>
+
+
+                <Grid Grid.Row="0">
+
+                    <StackPanel>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <views:NavigationBreadcrumbsView DataContext="{Binding NavigationBreadcrumbsVm}" />
+                            <ContentControl Height="61" Grid.Column="1" IsTabStop="False"
+                                        prism:RegionManager.RegionName="{x:Static shellInterface:AppRegions.TopMenuRightRegion}" />
+                        </Grid>
+                        <StackPanel>
+                            <StackPanel.Style>
+                                <Style TargetType="StackPanel">
+                                    <Style.Triggers>
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition
+                                                Binding="{Binding ElementName=ActionMenuLeftRegion,Path=Content}"
+                                                Value="{x:Null}" />
+                                                <Condition
+                                                Binding="{Binding ElementName=ActionMenuRightRegion,Path=Content}"
+                                                Value="{x:Null}" />
+                                            </MultiDataTrigger.Conditions>
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                        </MultiDataTrigger>
+
+                                    </Style.Triggers>
+                                </Style>
+                            </StackPanel.Style>
+                            <Rectangle Height="1" Fill="#72787878" />
+                            <Grid Margin="0,13,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <ContentControl x:Name="ActionMenuLeftRegion" Height="45" IsTabStop="False"
+                                            prism:RegionManager.RegionName="{x:Static shellInterface:AppRegions.ActionMenuLeftRegion}" />
+                                <ContentControl x:Name="ActionMenuRightRegion" Grid.Column="1" Height="45"
+                                            HorizontalAlignment="Right" IsTabStop="False"
+                                            prism:RegionManager.RegionName="{x:Static shellInterface:AppRegions.ActionMenuRightRegion}" />
+                            </Grid>
+                        </StackPanel>
+
+                    </StackPanel>
+                </Grid>
+
+
+                <Grid Grid.Row="1" Background="{StaticResource ContentColorBackground}">
+
+                    <Border BorderThickness="0,1,0,0" BorderBrush="#72787878" ClipToBounds="True" Panel.ZIndex="999">
+                        <Border.Effect>
+                            <DropShadowEffect Direction="1" BlurRadius="6" Opacity="0.7" Color="#787878"
+                                          ShadowDepth="0" />
+                        </Border.Effect>
+                    </Border>
+                    <Border BorderThickness="0.6,0,0,0" BorderBrush="#B5B5B5" Panel.ZIndex="999">
+                        <Border.Effect>
+                            <DropShadowEffect Direction="1" BlurRadius="3" Opacity="1" Color="#FF959595"
+                                          ShadowDepth="0" />
+                        </Border.Effect>
+                    </Border>
+
+                    <ContentControl prism:RegionManager.RegionName="{x:Static shellInterface:AppRegions.ContentRegion}" IsTabStop="False"/>
+                </Grid>
+
+
+                <views:StatusBarView DataContext="{Binding StatusBarViewModel}" Grid.Row="2" />
+
             </Grid>
-
-
-            <views:StatusBarView DataContext="{Binding StatusBarViewModel}" Grid.Row="2" />
-
         </Grid>
+
+
+        <Border Width="600" Background="{StaticResource MenuColor}" Visibility="{Binding HamburgerMenuVisibility}" HorizontalAlignment="Left" Padding="19,0,19,8">
+            <StackPanel HorizontalAlignment="Stretch">
+
+                <Button Style="{StaticResource NavButton}" Command="{Binding ToggleHamburgerMenuCommand}" Margin="0,0,0,16" Background="Transparent" HorizontalAlignment="Left" Height="61">
+                    <iconPacks:PackIconFontAwesome Kind="BarsSolid" Width="28" Height="19" Foreground="White"
+                                                   VerticalAlignment="Center" HorizontalAlignment="Left" />
+                </Button>
+
+                <Button Style="{StaticResource HamburgerMenuButton}" Command="{Binding ExitCommand}">
+                    Exit
+                </Button>
+            </StackPanel>
+        </Border>
+
     </Grid>
+
 </mah:MetroWindow>
