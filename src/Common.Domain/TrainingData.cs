@@ -10,11 +10,30 @@ namespace Common.Domain
     {
         Memory,Csv
     }
+
+    public enum NormalizationMethod
+    {
+        None,MinMax,Mean,Std
+    }
+
     public class TrainingData : BindableBase
     {
         private SupervisedSetVariables _variables = null!;
-        public SupervisedTrainingSets Sets { get; }
+        private NormalizationMethod _normalizationMethod;
+        private SupervisedTrainingSets _sets;
         public TrainingDataSource Source { get; }
+
+        public SupervisedTrainingSets Sets
+        {
+            get => _sets;
+            set => SetProperty(ref _sets, value);
+        }
+
+        public NormalizationMethod NormalizationMethod
+        {
+            get => _normalizationMethod;
+            set => SetProperty(ref _normalizationMethod, value);
+        }
 
         public SupervisedSetVariables Variables
         {
@@ -87,6 +106,14 @@ namespace Common.Domain
 
         public TrainingData Clone()
         {
+            SupervisedTrainingSets setsCpy = CloneSets();
+
+            return new TrainingData(setsCpy!, Variables.Clone(), Source);
+        }
+
+
+        public SupervisedTrainingSets CloneSets()
+        {
             SupervisedTrainingSets? setsCpy = null;
 
             if (Source == TrainingDataSource.Csv)
@@ -102,10 +129,12 @@ namespace Common.Domain
                     TestSet = Sets.TestSet != null ? CloneMemorySet(Sets.TestSet) : null,
                     ValidationSet = Sets.ValidationSet != null ? CloneMemorySet(Sets.ValidationSet) : null,
                 };
+            }else
+            {
+                throw new NotImplementedException();
             }
 
-
-            return new TrainingData(setsCpy!, Variables.Clone(), Source);
+            return setsCpy;
         }
     }
 }

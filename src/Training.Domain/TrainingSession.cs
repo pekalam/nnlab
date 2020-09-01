@@ -56,8 +56,17 @@ namespace Training.Domain
 
         private void ConstructTrainer()
         {
-            Trainer = new MLPTrainer(_session.Network!, _session.TrainingData!.Sets, SelectAlgorithm(_session.TrainingParameters!), new QuadraticLossFunction());
+            _session.TrainingParameters!.PropertyChanged += TrainingParametersOnPropertyChanged;
+            Trainer = new MLPTrainer(_session.Network!, _session.TrainingData!.Sets, SelectAlgorithm(), new QuadraticLossFunction());
             IsValid = true;
+        }
+
+        private void TrainingParametersOnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(TrainingParameters.Algorithm))
+            {
+                Trainer!.Algorithm = SelectAlgorithm();
+            }
         }
 
         private void SessionOnPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -82,6 +91,15 @@ namespace Training.Domain
             {
                 ConstructTrainer();
                 _session.PropertyChanged -= SessionOnPropertyChanged;
+                _session.PropertyChanged += SessionOnTrainingParametersChanged;
+            }
+        }
+
+        private void SessionOnTrainingParametersChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(Session.TrainingParameters))
+            {
+                Trainer!.Algorithm = SelectAlgorithm();
             }
         }
 
@@ -91,12 +109,13 @@ namespace Training.Domain
         public TrainingParameters? Parameters => _session.TrainingParameters;
         public TrainingData? TrainingData => _session.TrainingData;
 
-        private AlgorithmBase SelectAlgorithm(TrainingParameters trainingParameters)
+        private AlgorithmBase SelectAlgorithm()
         {
-            return trainingParameters.Algorithm switch
+            var parameters = _session.TrainingParameters!;
+            return parameters.Algorithm switch
             {
-                TrainingAlgorithm.GradientDescent => new GradientDescentAlgorithm(trainingParameters.GDParams.Params),
-                TrainingAlgorithm.LevenbergMarquardt => new LevenbergMarquardtAlgorithm(trainingParameters.LMParams.Params),
+                TrainingAlgorithm.GradientDescent => new GradientDescentAlgorithm(parameters.GDParams.Params),
+                TrainingAlgorithm.LevenbergMarquardt => new LevenbergMarquardtAlgorithm(parameters.LMParams.Params),
                 _ => throw new NotImplementedException()
             };
         }

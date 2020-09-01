@@ -2,11 +2,11 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:prism="http://prismlibrary.com/"
-             xmlns:common="clr-namespace:NNLib.Common;assembly=NNLib.Data"
              xmlns:System="clr-namespace:System;assembly=System.Runtime"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:dd="clr-namespace:Data.Presentation.__DesignData"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:common1="clr-namespace:NNLib.Common;assembly=NNLib"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance dd:DesignVariablesSelectionVm, IsDesignTimeCreatable=True}"
              prism:ViewModelLocator.AutoWireViewModel="True">
@@ -14,7 +14,7 @@
         <ObjectDataProvider x:Key="variableUses"
                             MethodName="GetValues" ObjectType="{x:Type System:Enum}">
             <ObjectDataProvider.MethodParameters>
-                <x:Type TypeName="common:VariableUses" />
+                <x:Type TypeName="common1:VariableUses" />
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
     </UserControl.Resources>
@@ -34,7 +34,7 @@
                     Foreground="White">
             <DataGrid.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Header="Ignore all" Command="{Binding IgnoreAll}"/>
+                    <MenuItem Header="Ignore all" Command="{Binding Service.IgnoreAllCommand}"/>
                 </ContextMenu>
             </DataGrid.ContextMenu>
             <DataGrid.Columns>

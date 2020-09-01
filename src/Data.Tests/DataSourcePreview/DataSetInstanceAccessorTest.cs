@@ -27,10 +27,12 @@ namespace Data.Application.Tests.DataSourcePreview
         public void When_constructed_with_valid_data_returns_valid_table()
         {
             var fileName = @"Files/plik.csv";
+            var appState = new AppState();
             TrainingData trainingData = LoadTrainingData(fileName, InputTarget);
+            appState.CreateSession().TrainingData = trainingData;
 
             var dataSetInstanceAccessor =
-                new DataSetInstanceAccessor(trainingData);
+                new DataSetInstanceAccessor(appState);
 
             var instance0 = dataSetInstanceAccessor[0];
             var columnNames = new string[instance0.Columns.Count];

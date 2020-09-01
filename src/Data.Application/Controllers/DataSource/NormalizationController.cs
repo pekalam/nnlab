@@ -2,6 +2,7 @@
 using Data.Domain.Services;
 using Prism.Commands;
 using System;
+using System.ComponentModel;
 using Common.Domain;
 using Common.Framework;
 using Data.Application.Controllers.DataSource;
@@ -29,7 +30,7 @@ namespace Data.Application.Controllers.DataSource
     {
         private readonly INormalizationDomainService _normalizationService;
 
-        public NormalizationController(INormalizationDomainService normalizationService)
+        public NormalizationController(INormalizationDomainService normalizationService, AppState appState)
         {
             _normalizationService = normalizationService;
 
@@ -37,6 +38,47 @@ namespace Data.Application.Controllers.DataSource
             MinMaxNormalizationCommand = new DelegateCommand(MinMaxNormalization);
             MeanNormalizationCommand = new DelegateCommand(MeanNormalization);
             StdNormalizationCommand = new DelegateCommand(StdNormalization);
+
+            appState.ActiveSessionChanged += AppStateOnActiveSessionChanged;
+        }
+
+        private void AppStateOnActiveSessionChanged(object? sender, (Session? prev, Session next) e)
+        {
+            e.next.PropertyChanged += SessionPropertyChanged;
+        }
+
+        private void SessionPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(Session.TrainingData))
+            {
+                var session= (sender as Session);
+                if(session.TrainingData == null) return;
+                session.TrainingData.PropertyChanged -= TrainingDataOnPropertyChanged;
+                session.TrainingData.PropertyChanged += TrainingDataOnPropertyChanged;
+            }
+        }
+
+        private void TrainingDataOnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(TrainingData.Variables))
+            {
+                var trainingData = (sender as TrainingData)!;
+                if (trainingData.Source == TrainingDataSource.Csv)
+                {
+                    switch (trainingData.NormalizationMethod)
+                    {
+                        case NormalizationMethod.Mean:
+                            MeanNormalization();
+                            break;
+                        case NormalizationMethod.Std:
+                            StdNormalization();
+                            break;
+                        case NormalizationMethod.MinMax:
+                            MinMaxNormalization();
+                            break;
+                    }
+                }
+            }
         }
 
         public DelegateCommand NoNormalizationCommand { get; set; }

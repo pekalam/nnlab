@@ -12,6 +12,7 @@ using Training.Application.Controllers;
 using Training.Application.Plots;
 using Training.Application.Services;
 using Training.Application.ViewModels;
+using Training.Application.ViewModels.PanelLayout;
 using Training.Domain;
 
 namespace Training.Application.Services
@@ -57,6 +58,14 @@ namespace Training.Application.Controllers
 
         protected override void VmCreated()
         {
+            viewModelAccessor.Get<PanelLayoutViewModel>()!.IsActiveChanged += (sender, args) =>
+            {
+                if (!(sender as PanelLayoutViewModel)!.IsActive)
+                {
+                    _epochEndConsumer?.ForceStop();
+                }
+            };
+
             Vm!.IsActiveChanged += (sender, args) =>
             {
                 if (!Vm!.IsActive) _epochEndConsumer!.ForceStop();
@@ -74,7 +83,10 @@ namespace Training.Application.Controllers
 
         private void ModuleStateOnActiveSessionChanged(object? sender, (TrainingSession? prev, TrainingSession next) e)
         {
-            Vm!.ModelAdapter.ColorAnimation.StopAnimation(true);
+            if (Vm!.ModelAdapter.ColorAnimation.IsAnimating)
+            {
+                Vm!.ModelAdapter.ColorAnimation.StopAnimation(true);
+            }
         }
 
         public void Initialize(TrainingNetworkPreviewService service)

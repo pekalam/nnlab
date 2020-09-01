@@ -12,7 +12,7 @@ namespace Data.Application.ViewModels.DataSourceSelection
         private string? _selectedFileName;
         private VariablesTableModel[]? _variables;
 
-        protected SingleFileSourceViewModel(ISingleFileService singleFileService)
+        public SingleFileSourceViewModel(ISingleFileService singleFileService)
         {
             SingleFileService = singleFileService;
             KeepAlive = false;

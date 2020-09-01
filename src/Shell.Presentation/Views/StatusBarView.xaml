@@ -2,7 +2,6 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:prism="http://prismlibrary.com/"
-             prism:ViewModelLocator.AutoWireViewModel="True"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:designData="clr-namespace:Shell.Presentation.__DesignData"
@@ -44,7 +43,7 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <StackPanel Grid.ColumnSpan="2" VerticalAlignment="Stretch" Orientation="Horizontal" Visibility="{Binding ErrorNotificationVisibility,Converter={StaticResource NegVisibility}}" Margin="0,0,46,0">
+                <StackPanel IsEnabled="{Binding CanModifyActiveSession}" Grid.ColumnSpan="2" VerticalAlignment="Stretch" Orientation="Horizontal" Visibility="{Binding ErrorNotificationVisibility,Converter={StaticResource NegVisibility}}" Margin="0,0,46,0">
                     <iconPacks:PackIconFontAwesome Kind="FlaskSolid" Width="50" Height="14" VerticalAlignment="Center">
                         <iconPacks:PackIconFontAwesome.Style>
                             <Style TargetType="iconPacks:PackIconFontAwesome">
@@ -75,7 +74,7 @@
                     <!-- </Border> -->
 
                     <ComboBox Height="21.5" Width="120" ItemsSource="{Binding AppState.Sessions}"
-                              SelectedItem="{Binding AppState.ActiveSession}" IsEnabled="{Binding CanModifyActiveSession}">
+                              SelectedItem="{Binding AppState.ActiveSession}">
                         <ComboBox.Style>
                             <Style TargetType="ComboBox">
                                 <Setter Property="ItemTemplate">
@@ -93,8 +92,7 @@
                             </Style>
                         </ComboBox.Style>
                     </ComboBox>
-                    <Button Width="26" Height="26" Margin="10,0,0,0" ToolTip="Duplicate current session" Command="{Binding Serivce.DuplicateSessionCommand}"
-                            IsEnabled="{Binding CanModifyActiveSession}">
+                    <Button Width="26" Height="26" Margin="10,0,0,0" ToolTip="Duplicate current session" Command="{Binding Serivce.DuplicateSessionCommand}">
                         <Button.Style>
                             <Style BasedOn="{StaticResource MenuButton}" TargetType="Button">
                                 <Setter Property="MinWidth" Value="0"/>
@@ -118,8 +116,7 @@
                         </Button.Style>
                         <iconPacks:PackIconFontAwesome Kind="CopyRegular" Width="10" Height="10" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                     </Button>
-                    <Button Width="26" Height="26" Margin="8,0,0,0" ToolTip="Add new session" Command="{Binding Serivce.AddSessionCommand}"
-                            IsEnabled="{Binding CanModifyActiveSession}">
+                    <Button Width="26" Height="26" Margin="8,0,0,0" ToolTip="Add new session" Command="{Binding Serivce.AddSessionCommand}">
                         <Button.Style>
                             <Style BasedOn="{StaticResource MenuButton}" TargetType="Button">
                                 <Setter Property="MinWidth" Value="0"/>

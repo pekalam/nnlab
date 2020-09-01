@@ -67,27 +67,45 @@ namespace Data.Application.ViewModels.DataSource.Preview
             if (e.PropertyName == nameof(Session.TrainingData))
             {
                 SetTrainingData(_appState.ActiveSession!.TrainingData!);
+                _appState.ActiveSession!.PropertyChanged -= ActiveSessionOnPropertyChanged;
             }
         }
 
         private void AppStateOnActiveSessionChanged(object? sender, (Session? prev, Session next) e)
         {
-            if (e.next.TrainingData == null)
+            if (e.next.TrainingData != null)
+            {
+                SetTrainingData(e.next.TrainingData);
+            }
+            else
             {
                 _appState.ActiveSession!.PropertyChanged -= ActiveSessionOnPropertyChanged;
                 _appState.ActiveSession.PropertyChanged += ActiveSessionOnPropertyChanged;
             }
-            else SetTrainingData(e.next.TrainingData);
         }
 
         private void SetTrainingData(TrainingData trainingData)
         {
             DataSetTypes = trainingData.SetTypes;
-            DataSetInstanceAccessor = new DataSetInstanceAccessor(trainingData, DataSetType.Training);
-            DataSetPreviewAccessor = new DataSetPreviewAccessor(trainingData);
+            DataSetInstanceAccessor = new DataSetInstanceAccessor(_appState, DataSetType.Training);
+            DataSetPreviewAccessor = new DataSetPreviewAccessor(_appState);
             Stats = new TrainingDataStats(trainingData);
 
             ShowLoading = false;
+
+            trainingData.PropertyChanged -= TrainingDataOnPropertyChanged;
+            trainingData.PropertyChanged += TrainingDataOnPropertyChanged;
+        }
+
+        private void TrainingDataOnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(TrainingData.Variables)
+            || e.PropertyName == nameof(TrainingData.Sets))
+            {
+                DataSetInstanceAccessor = new DataSetInstanceAccessor(_appState, DataSetType.Training);
+                DataSetPreviewAccessor = new DataSetPreviewAccessor(_appState);
+            }
+
         }
 
         public bool PreviewLoaded

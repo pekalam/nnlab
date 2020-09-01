@@ -29,9 +29,9 @@ namespace Data.Domain.Services
 
         public Task MinMaxNormalization()
         {
-            if (_moduleState.OriginalTrainingData == null)
+            if (_moduleState.OriginalSets == null)
             {
-                _moduleState.StoreOriginalTrainingData();
+                _moduleState.StoreOriginalSets();
             }
 
 
@@ -75,19 +75,21 @@ namespace Data.Domain.Services
 
             return Task.Run(() =>
             {
-                var trainingData = _appState.ActiveSession!.TrainingData!.Clone();
-                MinMax(trainingData.Sets.TrainingSet);
-                if (trainingData.Sets.ValidationSet != null) MinMax(trainingData.Sets.ValidationSet);
-                if (trainingData.Sets.TestSet != null) MinMax(trainingData.Sets.TestSet);
-                _appState.ActiveSession.TrainingData = trainingData;
+                var trainingData = _appState.ActiveSession!.TrainingData!;
+                var sets = trainingData.CloneSets();
+                trainingData.NormalizationMethod = NormalizationMethod.MinMax;
+                MinMax(sets.TrainingSet);
+                if (sets.ValidationSet != null) MinMax(sets.ValidationSet);
+                if (sets.TestSet != null) MinMax(sets.TestSet);
+                trainingData.Sets = sets;
             });
         }
 
         public Task MeanNormalization()
         {
-            if (_moduleState.OriginalTrainingData == null)
+            if (_moduleState.OriginalSets == null)
             {
-                _moduleState.StoreOriginalTrainingData();
+                _moduleState.StoreOriginalSets();
             }
 
             void Mean(SupervisedSet set)
@@ -132,19 +134,21 @@ namespace Data.Domain.Services
 
             return Task.Run(() =>
             {
-                var trainingData = _appState.ActiveSession!.TrainingData!.Clone();
-                Mean(trainingData.Sets.TrainingSet);
-                if (trainingData.Sets.ValidationSet != null) Mean(trainingData.Sets.ValidationSet);
-                if (trainingData.Sets.TestSet != null) Mean(trainingData.Sets.TestSet);
-                _appState.ActiveSession.TrainingData = trainingData;
+                var trainingData = _appState.ActiveSession!.TrainingData!;
+                var sets = trainingData.CloneSets();
+                trainingData.NormalizationMethod = NormalizationMethod.Mean;
+                Mean(sets.TrainingSet);
+                if (sets.ValidationSet != null) Mean(sets.ValidationSet);
+                if (sets.TestSet != null) Mean(sets.TestSet);
+                trainingData.Sets = sets;
             });
         }
 
         public Task StdNormalization()
         {
-            if (_moduleState.OriginalTrainingData == null)
+            if (_moduleState.OriginalSets == null)
             {
-                _moduleState.StoreOriginalTrainingData();
+                _moduleState.StoreOriginalSets();
             }
 
             void Std(SupervisedSet set)
@@ -188,17 +192,21 @@ namespace Data.Domain.Services
 
             return Task.Run(() =>
             {
-                var trainingData = _appState.ActiveSession!.TrainingData!.Clone();
-                Std(trainingData.Sets.TrainingSet);
-                if (trainingData.Sets.ValidationSet != null) Std(trainingData.Sets.ValidationSet);
-                if (trainingData.Sets.TestSet != null) Std(trainingData.Sets.TestSet);
-                _appState.ActiveSession.TrainingData = trainingData;
+                var trainingData = _appState.ActiveSession!.TrainingData!;
+                var sets = trainingData.CloneSets();
+                trainingData.NormalizationMethod = NormalizationMethod.Std;
+                Std(sets.TrainingSet);
+                if (sets.ValidationSet != null) Std(sets.ValidationSet);
+                if (sets.TestSet != null) Std(sets.TestSet);
+                trainingData.Sets = sets;
             });
         }
 
         public void NoNormalization()
         {
-            _appState.ActiveSession!.TrainingData = _moduleState.OriginalTrainingData;
+            var trainingData = _appState.ActiveSession!.TrainingData!;
+            trainingData.Sets = _moduleState.OriginalSets ?? throw new NullReferenceException("No original sets stored");
+            trainingData.NormalizationMethod = NormalizationMethod.None;
         }
     }
 }

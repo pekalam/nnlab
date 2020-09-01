@@ -14,6 +14,7 @@ using Training.Application.Controllers;
 using Training.Application.Plots;
 using Training.Application.Services;
 using Training.Application.ViewModels;
+using Training.Application.ViewModels.PanelLayout;
 using Training.Domain;
 // ReSharper disable InconsistentlySynchronizedField
 
@@ -92,9 +93,17 @@ namespace Training.Application.Controllers
 
         protected override void VmCreated()
         {
+            viewModelAccessor.Get<PanelLayoutViewModel>()!.IsActiveChanged += (sender, args) =>
+            {
+                if (!(sender as PanelLayoutViewModel)!.IsActive)
+                {
+                    _epochEndConsumer?.ForceStop();
+                }
+            };
+
             Vm!.IsActiveChanged += (sender, args) =>
             {
-                if (!(sender as ErrorPlotViewModel)!.IsActive)
+                if (!Vm.IsActive)
                 {
                     _epochEndConsumer?.ForceStop();
                 }
@@ -144,13 +153,13 @@ namespace Training.Application.Controllers
                         return;
                     }
 
-                    var points = endsObs.Select(end => new DataPoint(end.Epoch, end.Error));
+                    var points = endsObs.Select(end => new DataPoint(end.Epoch, end.Error)).ToArray();
 
                     lock (_ptsLock)
                     {
                         if (Vm!.Series.Points.Count + endsObs.Count > 2000)
                         {
-                            var newMin = Vm!.Series.Points.Count + endsObs.Count;
+                            var newMin = endsObs[^1].Epoch;
                             Vm!.Series.Points.Clear();
                             Vm!.BasicPlotModel.Model.Axes[0].AbsoluteMinimum = newMin;
                         }
@@ -159,7 +168,8 @@ namespace Training.Application.Controllers
                     }
 
                     InvalidatePlot();
-                }, onTrainingStopped: _ => { _cts!.Cancel(); }, onTrainingStarting:
+                }, onTrainingStopped: _ => { _cts!.Cancel(); }, 
+                onTrainingStarting:
                 _ =>
                 {
                     _cts = new CancellationTokenSource();

@@ -1,6 +1,8 @@
 ﻿using System.Diagnostics;
 using Common.Framework;
+using Data.Application.Services;
 using Data.Domain;
+using Unity;
 
 namespace Data.Application.ViewModels.DataSource.VariablesSelection
 {
@@ -9,6 +11,19 @@ namespace Data.Application.ViewModels.DataSource.VariablesSelection
         private VariableTableModel[] _variables = null!;
         private string? _error;
 
+        public VariablesSelectionViewModel()
+        {
+            
+        }
+
+        [InjectionConstructor]
+        public VariablesSelectionViewModel(IVariablesSelectionService service)
+        {
+            Service = service;
+        }
+
+
+        public IVariablesSelectionService Service { get; }
 
         public VariableTableModel[] Variables
         {

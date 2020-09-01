@@ -83,6 +83,23 @@ namespace Data.Application.Controllers.DataSource
             StatisticsViewModel.Instance!.DataSetTypes = setTypes.ToArray();
 
             _variablesPlotCtrl.Plot(trainingData, DataSetType.Training);
+
+            trainingData.PropertyChanged -= TrainingDataOnPropertyChanged;
+            trainingData.PropertyChanged += TrainingDataOnPropertyChanged;
+        }
+
+        private void TrainingDataOnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case nameof(TrainingData.Variables):
+                    _variablesPlotCtrl.Plot((sender as TrainingData)!, DataSetType.Training);
+                    break;
+                case nameof(TrainingData.Sets):
+                    _variablesPlotCtrl.Plot((sender as TrainingData)!, DataSetType.Training);
+                    break;
+
+            }
         }
 
         private void SelectDataSetExecute(DataSetType? set)

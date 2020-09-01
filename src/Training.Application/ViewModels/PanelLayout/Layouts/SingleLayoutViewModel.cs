@@ -25,7 +25,7 @@ namespace Training.Application.ViewModels.PanelLayout.Layouts
         {
             var viewName = views.First();
             Selected1 = selected.First();
-            Rm.Regions[SingleLayoutRegions.SingleLayoutMainRegion].RequestNavigate(viewName, navParams);
+            ClearAndNavgate(SingleLayoutRegions.SingleLayoutMainRegion, viewName, navParams);
             PropertyChanged += ViewModelOnPropertyChanged;
         }
 

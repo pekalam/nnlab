@@ -6,6 +6,7 @@ using NeuralNetwork.Application.Controllers;
 using NeuralNetwork.Application.Services;
 using NeuralNetwork.Application.ViewModels;
 using NeuralNetwork.Domain;
+using NNLib.Common;
 using Shell.Interface;
 using TestUtils;
 using Xunit;
@@ -168,6 +169,25 @@ namespace NeuralNetwork.Application.Tests
             _appState.ActiveSession = session;
             session.TrainingData = TrainingDataMocks.ValidFileData4;
             _ea.VerifyTimesCalled<EnableNavMenuItem>(1);
+        }
+
+        [Fact]
+        public void When_variables_are_changed_new_network_is_cretated()
+        {
+            _ctrl.Run();
+            var session = _appState.CreateSession();
+            session.TrainingData = TrainingDataMocks.ValidFileData4;
+
+            var network = _appState.ActiveSession.Network;
+            network.Layers[0].InputsCount.Should().Be(TrainingDataMocks.ValidData4.Sets.TrainingSet.Input[0].RowCount);
+            network.Layers[^1].NeuronsCount.Should().Be(TrainingDataMocks.ValidData4.Sets.TrainingSet.Target[0].RowCount);
+
+            session.TrainingData.Variables = new SupervisedSetVariables(new SupervisedSetVariableIndexes(
+                new []{0}, new []{1}, new []{2}
+                ), new []{new VariableName("x"), new VariableName("y"), new VariableName("z")});
+
+            network.Layers[0].InputsCount.Should().Be(1);
+            network.Layers[^1].NeuronsCount.Should().Be(1);
         }
     }
 

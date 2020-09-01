@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Windows.Controls;
+using System.Windows.Threading;
 using Common.Domain;
 using Common.Framework;
 using Prism.Events;
@@ -30,6 +31,7 @@ namespace Training.Application.Controllers
                 {
 
                     var last = args.Last();
+
                     Vm!.View!.UpdateTraining(last.Error, last.Epoch, last.Iterations);
                 },
                 trainingSession =>

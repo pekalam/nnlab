@@ -143,11 +143,11 @@ namespace Shell.Application.ViewModels
 
     public class FileNameConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object? Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var str = (value as string)!;
+            var str = value as string;
 
-            return str.Split('\\')[^1];
+            return str?.Split('\\')[^1];
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

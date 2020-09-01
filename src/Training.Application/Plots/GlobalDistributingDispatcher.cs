@@ -84,13 +84,13 @@ namespace Training.Application.Plots
             }
         }
 
-        public static void Call(Action action, PlotEpochEndConsumer consumer)
+        public static void Call(Action action, PlotEpochEndConsumer consumer, DispatcherPriority dispatcherPriority = DispatcherPriority.Background)
         {
             _queues[consumer].Enqueue(() =>
             {
                 if (System.Windows.Application.Current == null) return;
 
-                System.Windows.Application.Current.Dispatcher.Invoke(action, DispatcherPriority.Background);
+                System.Windows.Application.Current.Dispatcher.Invoke(action, dispatcherPriority);
             });
             Interlocked.Increment(ref _toInvoke);
             TryStartBgTask();

@@ -60,22 +60,42 @@ namespace NeuralNetwork.Application
             if (_appState.ActiveSession!.TrainingData != null)
             {
                 _ea.GetEvent<EnableNavMenuItem>().Publish(ModuleIds.NeuralNetwork);
-                CreateNetworkForSession(_appState.ActiveSession);
+                if (_appState.ActiveSession.Network == null)
+                {
+                    CreateNetworkForSession(_appState.ActiveSession);
+                }
             }
             else
             {
                 _ea.GetEvent<DisableNavMenuItem>().Publish(ModuleIds.NeuralNetwork);
-                _appState.ActiveSession.PropertyChanged -= ActiveSessionOnTrainingDataChanged;
-                _appState.ActiveSession.PropertyChanged += ActiveSessionOnTrainingDataChanged;
             }
+            _appState.ActiveSession.PropertyChanged -= ActiveSessionOnTrainingDataChanged;
+            _appState.ActiveSession.PropertyChanged += ActiveSessionOnTrainingDataChanged;
         }
 
         private void CreateNetworkForSession(Session session)
         {
-            if (session.Network == null)
+            var network = _networkService.CreateNeuralNetwork(session.TrainingData!);
+            session.Network = network;
+
+
+            session.TrainingData!.PropertyChanged -= TrainingDataOnPropertyChanged;
+            session.TrainingData.PropertyChanged += TrainingDataOnPropertyChanged;
+        }
+
+        private void AdjustNetworkToNewVariables(TrainingData trainingData)
+        {
+            _networkService.SetInputsCount(trainingData.Variables.InputVariableNames.Length);
+            _networkService.SetNeuronsCount(_appState.ActiveSession!.Network!.Layers[^1],
+                trainingData.Variables.TargetVariableNames.Length);
+        }
+
+        private void TrainingDataOnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(TrainingData.Variables))
             {
-                var network = _networkService.CreateNeuralNetwork(session.TrainingData!);
-                session.Network = network;
+                var trainingData = (sender as TrainingData)!;
+                AdjustNetworkToNewVariables(trainingData);
             }
         }
 
@@ -121,7 +141,6 @@ namespace NeuralNetwork.Application
                 {
                     _ea.GetEvent<EnableNavMenuItem>().Publish(ModuleIds.NeuralNetwork);
                     CreateNetworkForSession(_appState.ActiveSession);
-                    _appState.ActiveSession.PropertyChanged -= ActiveSessionOnTrainingDataChanged;
                 }
                 else
                 {

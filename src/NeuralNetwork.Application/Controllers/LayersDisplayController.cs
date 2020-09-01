@@ -140,7 +140,7 @@ namespace NeuralNetwork.Application.Controllers
             
             var neuralNetwork = _appState.ActiveSession!.Network!;
             _service.CreateLayers(neuralNetwork.Layers);
-            _moduleState.ModelAdapter.Controller.ClearHighlight();
+            _moduleState.ModelAdapter.Controller?.ClearHighlight();
         }
 
         private void AddLayer()

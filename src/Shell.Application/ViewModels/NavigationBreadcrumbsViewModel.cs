@@ -21,7 +21,7 @@ namespace Shell.Application.ViewModels
         private readonly Dictionary<int, BreadcrumbModel[]> _previousBreadcrumbs =
             new Dictionary<int, BreadcrumbModel[]>();
 
-        private bool _isEnabled;
+        private bool _isEnabled = true;
 
         public NavigationBreadcrumbsViewModel(IEventAggregator ea, IRegionManager rm)
         {

@@ -136,7 +136,7 @@ namespace Training.Application.Controllers
 
         private void SelectionChanged(TrainingSessionReport item)
         {
-            Debug.Assert(item != null);
+            if (item == null) return;
             ShowErrorPlot(item);
             InitHyperlinksText();
         }

@@ -14,6 +14,7 @@ using System.Windows.Shapes;
 using CommonServiceLocator;
 using Prism.Events;
 using Prism.Regions;
+using Prism.Regions.Behaviors;
 using Prism.Services.Dialogs;
 using Shell.Interface;
 using Training.Application;
@@ -42,7 +43,18 @@ namespace Training.Presentation.Views.PanelLayout
 
         private static void PropertyChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            (d as PanelContainer)!.region.SetValue(RegionManager.RegionNameProperty, e.NewValue);
+            var container = (d as PanelContainer)!;
+            var regName = (e.NewValue as string)!;
+
+            var rm = ServiceLocator.Current.GetInstance<IRegionManager>();
+            if (rm.Regions.ContainsRegionWithName(regName))
+            {
+                rm.Regions.Remove(regName);
+            }
+
+            RegionManager.SetRegionName(container.region, regName);
+            RegionManager.SetRegionManager(container.region, rm);
+            container.region.SetValue(ClearChildViewsRegionBehavior.ClearChildViewsProperty, true);
         }
 
         public string Region

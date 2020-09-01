@@ -115,8 +115,8 @@ namespace NeuralNetwork.Domain
 
         public MLPNetwork CreateNeuralNetwork(TrainingData trainingData)
         {
-            var inputCount = trainingData.Sets.TrainingSet.Input[0].RowCount;
-            var outputCount = trainingData.Sets.TrainingSet.Target[0].RowCount;
+            var inputCount = trainingData.Variables.InputVariableNames.Length;
+            var outputCount = trainingData.Variables.TargetVariableNames.Length;
 
             return new MLPNetwork(
                 new PerceptronLayer(inputCount, inputCount, new LinearActivationFunction()),

@@ -15,6 +15,7 @@ using Prism.Regions;
 using SharedUI.BasicPlot;
 using Training.Application.Services;
 using Training.Domain;
+using System.Linq;
 
 namespace Training.Application.ViewModels
 {
@@ -207,6 +208,7 @@ namespace Training.Application.ViewModels
 
         private void InitPlot(TrainingData trainingData, DataSetType setType, OutputPlotViewModel vm)
         {
+
             vm.PlotType = OutputPlotType.Approximation;
             vm.PlotModel.Series.Clear();
             vm.PlotModel.Title = "Accuracy";
@@ -234,10 +236,7 @@ namespace Training.Application.ViewModels
                 MarkerFill = OxyColor.FromRgb(0, 0, 255),
             };
 
-            var approximation = new LineSeries()
-            {
-                Color = OxyColor.FromRgb(0, 255, 0),
-            };
+
 
 
             _output = new LineSeries()
@@ -251,11 +250,9 @@ namespace Training.Application.ViewModels
             for (int i = 0; i < input.Count; i++)
             {
                 scatter.Points.Add(new ScatterPoint(input[i][0, 0], target[i][0, 0]));
-                approximation.Points.Add(new DataPoint(input[i][0, 0], target[i][0, 0]));
             }
 
             vm.PlotModel.Series.Add(scatter);
-            vm.PlotModel.Series.Add(approximation);
             vm.PlotModel.Series.Add(_output);
         }
 

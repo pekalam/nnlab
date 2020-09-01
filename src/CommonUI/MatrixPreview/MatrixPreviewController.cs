@@ -89,6 +89,7 @@ namespace SharedUI.MatrixPreview
             lock (_vm)
             {
                 var matrix = GetSelectedMatrix();
+                if (matrix == null) return;
                 _matrixGridRenderer.ApplyUpdate(matrix);
             }
         }
@@ -264,6 +265,7 @@ namespace SharedUI.MatrixPreview
         private void UpdatePreview()
         {
             var matrix = GetSelectedMatrix();
+            if(matrix == null) return;
             _matrixGridRenderer.Update(matrix, _numFormat);
         }
     }

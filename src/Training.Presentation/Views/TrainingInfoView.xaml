@@ -31,7 +31,7 @@
         <Style x:Key="GdPanel" TargetType="TextBlock" BasedOn="{StaticResource StatsText}">
             <Setter Property="Visibility" Value="Collapsed"/>
             <Style.Triggers>
-                <DataTrigger Binding="{Binding AppState.ActiveSession.TrainingParameters.Algorithm}" Value="{x:Static domain:TrainingAlgorithm.GradientDescent}">
+                <DataTrigger Binding="{Binding AppState.ActiveSession.TrainingParameters.Algorithm,Mode=OneWay}" Value="{x:Static domain:TrainingAlgorithm.GradientDescent}">
                     <Setter Property="Visibility" Value="Visible"/>
                 </DataTrigger>
             </Style.Triggers>
@@ -39,7 +39,7 @@
         <Style x:Key="LmPanel" TargetType="TextBlock" BasedOn="{StaticResource StatsText}">
             <Setter Property="Visibility" Value="Collapsed"/>
             <Style.Triggers>
-                <DataTrigger Binding="{Binding AppState.ActiveSession.TrainingParameters.Algorithm}" Value="{x:Static domain:TrainingAlgorithm.LevenbergMarquardt}">
+                <DataTrigger Binding="{Binding AppState.ActiveSession.TrainingParameters.Algorithm,Mode=OneWay}" Value="{x:Static domain:TrainingAlgorithm.LevenbergMarquardt}">
                     <Setter Property="Visibility" Value="Visible"/>
                 </DataTrigger>
             </Style.Triggers>
@@ -52,7 +52,7 @@
         <TextBlock Text="Training" Margin="0,0,0,10" Style="{StaticResource StatsTitle}"/>
         <UniformGrid Columns="2">
             <TextBlock Text="Algorithm:" Style="{StaticResource StatsText}"/>
-            <TextBlock Text="{Binding AppState.ActiveSession.TrainingParameters, Converter={StaticResource TrainingAlgorithmText}}" Style="{StaticResource StatsText}"/>
+            <TextBlock Text="{Binding AppState.ActiveSession.TrainingParameters, Converter={StaticResource TrainingAlgorithmText},Mode=OneWay}" Style="{StaticResource StatsText}"/>
             <TextBlock Text="Learning rate:" Style="{StaticResource GdPanel}"/>
             <TextBlock Text="{Binding AppState.ActiveSession.TrainingParameters.GDParams.LearningRate, Converter={StaticResource FloatingPointText}}" Style="{StaticResource GdPanel}"/>
             <TextBlock Text="Momentum:" Style="{StaticResource GdPanel}"/>

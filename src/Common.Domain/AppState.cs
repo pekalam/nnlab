@@ -145,7 +145,7 @@ namespace Common.Domain
             {
                 SetProperty(ref _trainingData, value);
                 if (value == null || _network == null) return;
-                TrainingParameters = new TrainingParameters();
+                if (TrainingParameters == null) TrainingParameters = new TrainingParameters();
             }
         }
 
@@ -167,7 +167,7 @@ namespace Common.Domain
             {
                 SetProperty(ref _network, value);
                 if (value == null || _trainingData == null) return;
-                TrainingParameters = new TrainingParameters();
+                if (TrainingParameters == null) TrainingParameters = new TrainingParameters();
             }
         }
 

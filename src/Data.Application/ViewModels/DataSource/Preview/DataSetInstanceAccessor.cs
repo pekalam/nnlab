@@ -1,6 +1,7 @@
 ﻿using NNLib.Common;
 using System.Data;
 using System.Diagnostics;
+using System.Linq;
 using Common.Domain;
 
 namespace Data.Application.ViewModels.DataSource.Preview
@@ -8,14 +9,17 @@ namespace Data.Application.ViewModels.DataSource.Preview
     public class DataSetInstanceAccessor
     {
         private readonly DataTable _dataTable;
-        private readonly TrainingData _trainingData;
+        private readonly AppState _appState;
         private SupervisedSet _set;
 
-        public DataSetInstanceAccessor(TrainingData trainingData,
-            DataSetType defaultDataSetType = DataSetType.Training)
+
+        public DataSetInstanceAccessor(AppState appState, DataSetType defaultDataSetType = DataSetType.Training)
         {
-            _trainingData = trainingData;
+            Debug.Assert(appState.ActiveSession?.TrainingData != null);
+            _appState = appState;
+            var trainingData = _appState.ActiveSession!.TrainingData!;
             _set = trainingData.GetSet(defaultDataSetType)!;
+
             _dataTable = new DataTable();
             var cols = new DataColumn[trainingData.Variables.Names.Length - trainingData.Variables.Indexes.Ignored.Length];
             int ind = 0;
@@ -31,7 +35,7 @@ namespace Data.Application.ViewModels.DataSource.Preview
 
         public void ChangeDataSet(DataSetType type)
         {
-            _set = _trainingData.GetSet(type)!;
+            _set = _appState.ActiveSession!.TrainingData!.GetSet(type)!;
         }
 
         public int Count => _set.Input.Count;
@@ -40,23 +44,24 @@ namespace Data.Application.ViewModels.DataSource.Preview
         {
             var inputInstance = _set.Input[index];
             var targetInstance = _set.Target[index];
+            var trainingData = _appState.ActiveSession!.TrainingData!;
 
-            var row = new string[_trainingData.Variables.Length];
+            var row = new string[trainingData.Variables.Length];
 
             int i = 0;
-            foreach (var inputVarIndex in _trainingData.Variables.Indexes.InputVarIndexes)
+            foreach (var inputVarIndex in trainingData.Variables.Indexes.InputVarIndexes)
             {
                 row[inputVarIndex] = inputInstance[i++, 0].ToString();
             }
 
             i = 0;
-            foreach (var targetVarIndex in _trainingData.Variables.Indexes.TargetVarIndexes)
+            foreach (var targetVarIndex in trainingData.Variables.Indexes.TargetVarIndexes)
             {
                 row[targetVarIndex] = targetInstance[i++, 0].ToString();
             }
 
             _dataTable.Rows.Clear();
-            _dataTable.Rows.Add(row);
+            _dataTable.Rows.Add(row.Where(v => v != null).ToArray());
 
             return _dataTable;
         }

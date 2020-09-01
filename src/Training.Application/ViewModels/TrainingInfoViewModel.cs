@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Text;
 using System.Timers;
 using System.Windows;
+using System.Windows.Threading;
 using Common.Domain;
 using Common.Framework;
 using Training.Application.Views;
@@ -28,7 +29,7 @@ namespace Training.Application.ViewModels
         {
             ModuleState = moduleState;
             AppState = appState;
-            _timer.Elapsed += (_,__) => View!.UpdateTimer(Time.Now - _timerDate);
+            _timer.Elapsed += (_, __) => System.Windows.Application.Current.Dispatcher.InvokeAsync(() => View!.UpdateTimer(Time.Now - _timerDate), DispatcherPriority.Send);
 
             if (ModuleState.ActiveSession != null)
             {

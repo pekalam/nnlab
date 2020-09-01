@@ -9,6 +9,7 @@ using Training.Application.Controllers;
 using Training.Application.Plots;
 using Training.Application.Services;
 using Training.Application.ViewModels;
+using Training.Application.ViewModels.PanelLayout;
 using Training.Domain;
 
 namespace Training.Application.Services
@@ -49,6 +50,14 @@ namespace Training.Application.Controllers
 
         protected override void VmCreated()
         {
+            viewModelAccessor.Get<PanelLayoutViewModel>()!.IsActiveChanged += (sender, args) =>
+            {
+                if (!(sender as PanelLayoutViewModel)!.IsActive)
+                {
+                    _epochEndConsumer?.ForceStop();
+                }
+            };
+
             Vm!.IsActiveChanged += (_, __) =>
             {
                 if (!Vm!.IsActive) _epochEndConsumer!.ForceStop();

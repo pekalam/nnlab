@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using Common.Domain;
+using NNLib.Common;
 
 namespace Data.Domain
 {
-    internal class ModuleState
+    public class ModuleState
     {
-        private readonly Dictionary<Session, TrainingData> _orgTrainingData = new Dictionary<Session, TrainingData>();
+        private readonly Dictionary<Session, SupervisedTrainingSets> _orgSets = new Dictionary<Session, SupervisedTrainingSets>();
         private readonly AppState _appState;
 
         public ModuleState(AppState appState)
@@ -15,17 +16,18 @@ namespace Data.Domain
         }
 
 
-        public void StoreOriginalTrainingData()
+
+        public void StoreOriginalSets()
         {
             Debug.Assert(_appState.ActiveSession?.TrainingData != null);
-            _orgTrainingData[_appState.ActiveSession] = _appState.ActiveSession.TrainingData;
+            _orgSets[_appState.ActiveSession] = _appState.ActiveSession.TrainingData.Sets;
         }
 
-        public TrainingData? OriginalTrainingData
+        public SupervisedTrainingSets? OriginalSets
         {
             get
             {
-                _orgTrainingData.TryGetValue(_appState.ActiveSession!, out var data);
+                _orgSets.TryGetValue(_appState.ActiveSession!, out var data);
                 return data;
             }
         }

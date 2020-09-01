@@ -9,6 +9,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:dd="clr-namespace:Training.Presentation.__DesignData"
+             xmlns:behaviors="clr-namespace:Common.Presentation.Behaviors;assembly=Common.Presentation"
+             xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance dd:DesignTrainingParametersVm, IsDesignTimeCreatable=True}"
              prism:ViewModelLocator.AutoWireViewModel="True" Style="{StaticResource ContentUserControl}">
@@ -59,11 +61,14 @@
                     <presentation:SubmitNumericUpDown Grid.Row="0" MinWidth="120"
                                             Grid.Column="1"
                                             Minimum="0"
-                                            StringFormat="###0.###################"
                                             Speedup="True"
                                             Interval="0.0001"
                                             Value="{Binding TrainingParameters.GDParams.LearningRate, Mode=TwoWay, UpdateSourceTrigger=Explicit, ValidatesOnDataErrors=True}"
-                                            HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" />
+                                            HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" >
+                        <b:Interaction.Behaviors>
+                            <behaviors:UpDownFloatFormatBehavior/>
+                        </b:Interaction.Behaviors>
+                    </presentation:SubmitNumericUpDown>
 
                     <TextBlock Grid.Column="0" Grid.Row="2" Text="Momentum" HorizontalAlignment="Left" VerticalAlignment="Center"
                            Margin="0,10,0,10" />
@@ -71,11 +76,14 @@
                                             Grid.Row="2"
                                             Grid.Column="1"
                                             Minimum="0"
-                                            StringFormat="###0.###################"
                                             Speedup="True"
                                             Interval="0.0001"
                                             Value="{Binding TrainingParameters.GDParams.Momentum, Mode=TwoWay, UpdateSourceTrigger=Explicit, ValidatesOnDataErrors=True}"
-                                            HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" />
+                                            HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" >
+                        <b:Interaction.Behaviors>
+                            <behaviors:UpDownFloatFormatBehavior/>
+                        </b:Interaction.Behaviors>
+                    </presentation:SubmitNumericUpDown>
                     <TextBlock Grid.Column="0" Grid.Row="4" Text="Batch size" HorizontalAlignment="Left" VerticalAlignment="Center"
                            Margin="0,10,0,10" />
                     <presentation:SubmitNumericUpDown MinWidth="120"
@@ -117,11 +125,14 @@
                     <presentation:SubmitNumericUpDown Grid.Row="0" MinWidth="120"
                                             Grid.Column="1"
                                             Minimum="0"
-                                            StringFormat="###0.###################"
                                             Speedup="True"
                                             Interval="0.0001"
                                             Value="{Binding TrainingParameters.LMParams.DampingParamIncFactor, Mode=TwoWay, UpdateSourceTrigger=Explicit, ValidatesOnDataErrors=True}"
-                                            HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" />
+                                            HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" >
+                        <b:Interaction.Behaviors>
+                            <behaviors:UpDownFloatFormatBehavior/>
+                        </b:Interaction.Behaviors>
+                    </presentation:SubmitNumericUpDown>
 
                     <TextBlock Grid.Column="0" Grid.Row="2" Text="Damping parameter decrement factor" HorizontalAlignment="Left" VerticalAlignment="Center"
                            Margin="0,10,0,10" />
@@ -129,11 +140,14 @@
                                             Grid.Row="2"
                                             Grid.Column="1"
                                             Minimum="0"
-                                            StringFormat="###0.###################"
                                             Speedup="True"
                                             Interval="0.0001"
                                             Value="{Binding TrainingParameters.LMParams.DampingParamDecFactor, Mode=TwoWay, UpdateSourceTrigger=Explicit, ValidatesOnDataErrors=True}"
-                                            HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" />
+                                            HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" >
+                        <b:Interaction.Behaviors>
+                            <behaviors:UpDownFloatFormatBehavior/>
+                        </b:Interaction.Behaviors>
+                    </presentation:SubmitNumericUpDown>
                 </Grid>
 
                 <StackPanel>
@@ -153,14 +167,17 @@
                         </Grid.RowDefinitions>
                         <TextBlock Grid.Row="0" Text="Target error" HorizontalAlignment="Left" VerticalAlignment="Center"
                            Margin="0,10,0,10" />
-                        <mah:NumericUpDown MinWidth="120"
-                                   Grid.Row="0"
-                                   Grid.Column="1"
-                                   Minimum="0"
-                                   Interval="0.0001"
-                                   StringFormat="###0.###################"
-                                   Value="{Binding TrainingParameters.TargetError, Mode=TwoWay, ValidatesOnDataErrors=True}"
-                                   HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" />
+                        <presentation:SubmitNumericUpDown MinWidth="120"
+                                                          Grid.Row="0"
+                                                          Grid.Column="1"
+                                                          Minimum="0"
+                                                          Interval="0.0001"
+                                                          Value="{Binding TrainingParameters.TargetError, Mode=TwoWay, ValidatesOnDataErrors=True}"
+                                                          HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" >
+                            <b:Interaction.Behaviors>
+                                <behaviors:UpDownFloatFormatBehavior/>
+                            </b:Interaction.Behaviors>
+                        </presentation:SubmitNumericUpDown>
                         <TextBlock Grid.Column="0" Grid.Row="2" Text="Max learning time" HorizontalAlignment="Left"
                            VerticalAlignment="Center" Margin="0,10,0,10" />
                         <Grid Grid.Row="2" Grid.Column="1">

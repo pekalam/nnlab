@@ -6,6 +6,7 @@
              prism:ViewModelLocator.AutoWireViewModel="True">
     <Grid>
         <ContentControl prism:RegionManager.RegionName="{x:Static panelLayout:PanelLayoutRegions.PanelLayoutMain}"
+                        prism:ClearChildViewsRegionBehavior.ClearChildViews="True"
                         Margin="5" />
     </Grid>
 </UserControl>

@@ -34,11 +34,13 @@ namespace Data.Application.Controllers
         private readonly AppState _appState;
         private SupervisedSetVariableIndexes _currentIndexes = null!;
         private readonly ITrainingDataService _dsService;
+        private readonly ModuleState _moduleState;
 
-        public VariablesSelectionController(AppState appState, ITrainingDataService dsService)
+        public VariablesSelectionController(AppState appState, ITrainingDataService dsService, ModuleState moduleState)
         {
             _appState = appState;
             _dsService = dsService;
+            _moduleState = moduleState;
 
             IgnoreAllCommand = new DelegateCommand(IgnoreAll);
 
@@ -83,7 +85,7 @@ namespace Data.Application.Controllers
             }
 
 
-            var trainingData = _appState.ActiveSession!.TrainingData;
+            var trainingData = _appState.ActiveSession!.TrainingData!;
             var newIndexes = new SupervisedSetVariableIndexes(inputIndexes.ToArray(), targetIndexes.ToArray(), ignoredIndexes.ToArray());
 
 
@@ -91,7 +93,11 @@ namespace Data.Application.Controllers
 
             _currentIndexes = newIndexes;
 
-            _dsService.ChangeVariables(_currentIndexes, trainingData!);
+            _dsService.ChangeVariables(_currentIndexes, trainingData);
+            if (_moduleState.OriginalSets != null)
+            {
+                _dsService.ChangeVariables(_currentIndexes, _moduleState.OriginalSets, trainingData.Source);
+            }
         }
 
         private void IgnoreAll()

@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Common.Domain;
 using FluentAssertions;
@@ -268,6 +269,32 @@ namespace Training.Domain.Tests
             _session.Stopped.Should().BeFalse();
             _session.Paused.Should().BeTrue();
             _session.Started.Should().BeFalse();
+        }
+
+
+        [Fact]
+        public void Algorithm_is_changed_when_changed_in_parameters()
+        {
+            _session.Trainer.Algorithm.Should().BeOfType<GradientDescentAlgorithm>();
+
+            _appState.ActiveSession.TrainingParameters.Algorithm = TrainingAlgorithm.LevenbergMarquardt;
+
+            _session.Trainer.Algorithm.Should().BeOfType<LevenbergMarquardtAlgorithm>();
+        }
+
+
+        [Fact]
+        public void Algorithm_is_changed_when_new_parameters_are_set()
+        {
+            var param = new TrainingParameters()
+            {
+                Algorithm = TrainingAlgorithm.LevenbergMarquardt,
+            };
+            _session.Trainer.Algorithm.Should().BeOfType<GradientDescentAlgorithm>();
+
+            _appState.ActiveSession.TrainingParameters = param;
+
+            _session.Trainer.Algorithm.Should().BeOfType<LevenbergMarquardtAlgorithm>();
         }
     }
 }

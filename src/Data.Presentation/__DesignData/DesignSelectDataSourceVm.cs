@@ -61,7 +61,7 @@ namespace Data.Presentation.__DesignData
 
     class DesignNormalizationViewModel : NormalizationViewModel
     {
-        public DesignNormalizationViewModel() : base(null)
+        public DesignNormalizationViewModel() : base()
         {
         }
     }

@@ -3,6 +3,7 @@ using Common.Domain;
 using Common.Framework;
 using FluentAssertions;
 using Moq.AutoMock;
+using NNLib;
 using TestUtils;
 using Training.Application.Controllers;
 using Training.Application.Services;
@@ -35,7 +36,7 @@ namespace Training.Application.Tests
         }
 
         [Fact]
-        public void f()
+        public void Properties_are_changed_with_active_session()
         {
             var session = _appState.CreateSession();
             session.SetupValidAndGate();
@@ -70,6 +71,20 @@ namespace Training.Application.Tests
             var vm = _mocker.UseVm<TrainingParametersViewModel>();
             vm.IsMaxLearningTimeChecked.Should().BeFalse();
             vm.MaxLearningTime.Should().BeAtLeast(TimeSpan.FromMinutes(2));
+        }
+
+        [Fact]
+        public void f()
+        {
+            var session = _appState.CreateSession();
+            session.SetupValidAndGate();
+            _moduleState.ActiveSession.Trainer.Algorithm.Should().BeOfType<GradientDescentAlgorithm>();
+
+            _vm.TrainingParameters.Algorithm = TrainingAlgorithm.LevenbergMarquardt;
+            _service.OkCommand.Execute();
+
+            _moduleState.ActiveSession.Trainer.Algorithm.Should().BeOfType<LevenbergMarquardtAlgorithm>();
+
         }
     }
 }

@@ -12,6 +12,7 @@ namespace Data.Domain.Services
         TrainingData LoadSets(string fileName, IDataSetDivider? divider, DataSetDivisionOptions? divisionOptions, SupervisedSetVariableIndexes? variableIndexes);
         TrainingData LoadDefaultSetsFromFiles(string trainingSetFile, string validationSetFile, string testSetFile);
         void ChangeVariables(SupervisedSetVariableIndexes newVariableIndexes, TrainingData trainingData);
+        void ChangeVariables(SupervisedSetVariableIndexes newVariableIndexes, SupervisedTrainingSets sets, TrainingDataSource source);
     }
 
     internal class TrainingDataService : ITrainingDataService
@@ -75,6 +76,14 @@ namespace Data.Domain.Services
 
             var newVariables = new SupervisedSetVariables(newVariableIndexes, trainingData.Variables.Names);
             trainingData.Variables = newVariables;
+        }
+
+        public void ChangeVariables(SupervisedSetVariableIndexes newVariableIndexes, SupervisedTrainingSets sets, TrainingDataSource source)
+        {
+            if (source == TrainingDataSource.Csv)
+            {
+                CsvFacade.ChangeVariableIndexes(newVariableIndexes, sets);
+            }
         }
     }
 }
