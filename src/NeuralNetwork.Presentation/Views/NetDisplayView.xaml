@@ -7,6 +7,7 @@
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:mvvm="http://prismlibrary.com/"
              xmlns:designData="clr-namespace:NeuralNetwork.Presentation.__DesignData"
+             xmlns:interface="clr-namespace:Shell.Interface;assembly=Shell.Interface"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              mvvm:ViewModelLocator.AutoWireViewModel="True"

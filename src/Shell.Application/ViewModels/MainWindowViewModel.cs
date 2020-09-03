@@ -271,12 +271,10 @@ namespace Shell.Application.ViewModels
                 SetProperty(ref _modalNavigationVisibility, value);
                 if (value == Visibility.Visible)
                 {
-                    NavigationBreadcrumbsVm.IsEnabled = false;
                     StatusBarViewModel.CanModifyActiveSession = false;
                 }
                 else
                 {
-                    NavigationBreadcrumbsVm.IsEnabled = true;
                     StatusBarViewModel.CanModifyActiveSession = true;
                 }
             }

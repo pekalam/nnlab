@@ -101,11 +101,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.Logging", "Common.Lo
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "B. Prediction", "B. Prediction", "{20194232-0561-44FF-9160-154191DBEAA6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Prediction", "Prediction\Prediction.csproj", "{DEAF858B-2B3D-4F8F-9B1D-0CAF0746C9EE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Prediction", "Prediction\Prediction.csproj", "{DEAF858B-2B3D-4F8F-9B1D-0CAF0746C9EE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Prediction.Presentation", "Prediction.Presentation\Prediction.Presentation.csproj", "{471A9559-87E2-489A-ABF3-C7F75D5E2C4E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Prediction.Presentation", "Prediction.Presentation\Prediction.Presentation.csproj", "{471A9559-87E2-489A-ABF3-C7F75D5E2C4E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Prediction.Application", "Prediction.Application\Prediction.Application.csproj", "{B8F2D31D-AF3D-4F65-B0B7-FD557E155FB9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Prediction.Application", "Prediction.Application\Prediction.Application.csproj", "{B8F2D31D-AF3D-4F65-B0B7-FD557E155FB9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -18,7 +18,6 @@ namespace Data.Application.ViewModels.DataSource.Statistics
         public StatisticsViewModel(IStatisticsService service)
         {
             Service = service;
-            service.Created?.Invoke(this);
         }
 
         public IStatisticsService Service { get; }

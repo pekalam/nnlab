@@ -10,10 +10,10 @@ namespace Shell.Application.PrismDecorators
     internal class RegionCollectionDecorator : IRegionCollection
     {
         private readonly IRegionCollection _regionCollection;
-        private readonly Action<Uri, ContentRegionNavigationParameters> _navigationAction;
+        private readonly Action _navigationAction;
 
         public RegionCollectionDecorator(IRegionCollection regionCollection,
-            Action<Uri, ContentRegionNavigationParameters> navigationAction)
+            Action navigationAction)
         {
             _regionCollection = regionCollection;
             _navigationAction = navigationAction;

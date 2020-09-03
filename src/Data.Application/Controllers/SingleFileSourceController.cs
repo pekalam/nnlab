@@ -9,6 +9,7 @@ using Prism.Regions;
 using Shell.Interface;
 using System.Threading.Tasks;
 using Common.Domain;
+using Prism.Events;
 
 namespace Data.Application.Controllers
 {
@@ -21,14 +22,16 @@ namespace Data.Application.Controllers
         private readonly ITrainingDataService _dataService;
         private readonly ICsvValidationService _csvValidationService;
         private readonly IRegionManager _rm;
+        private readonly IEventAggregator _ea;
         private readonly AppState _appState;
 
-        public SingleFileSourceController(ITrainingDataService dataService, ICsvValidationService csvValidationService, IRegionManager rm, AppState appState)
+        public SingleFileSourceController(ITrainingDataService dataService, ICsvValidationService csvValidationService, IRegionManager rm, AppState appState, IEventAggregator ea)
         {
             _dataService = dataService;
             _csvValidationService = csvValidationService;
             _rm = rm;
             _appState = appState;
+            _ea = ea;
         }
 
         public void Initialize(SingleFileService service)
@@ -41,8 +44,10 @@ namespace Data.Application.Controllers
             _singleFileService.ReturnCommand = new DelegateCommand(() =>
             {
                 _loadedTrainingData = null;
-                _rm.NavigateContentRegion("SelectDataSourceView", "Data source");
+                _rm.NavigateContentRegion("SelectDataSourceView");
             }, () => _canReturn);
+
+            _ea.GetEvent<EnableModalNavigation>().Publish(_singleFileService.ReturnCommand);
         }
 
 
@@ -98,7 +103,8 @@ namespace Data.Application.Controllers
             _appState.ActiveSession!.SingleDataFile = SingleFileSourceViewModel.Instance!.SelectedFilePath;
             _loadedTrainingData = null;
 
-            _rm.NavigateContentRegion("FileDataSourceView", "Data");
+            _ea.GetEvent<DisableModalNavigation>().Publish();
+            _rm.NavigateContentRegion("FileDataSourceView");
         }
     }
 }

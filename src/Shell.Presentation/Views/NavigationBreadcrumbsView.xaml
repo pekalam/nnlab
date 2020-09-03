@@ -13,7 +13,7 @@
              d:DataContext="{d:DesignInstance designData:DesignNavigationBreadcrumbsVm, IsDesignTimeCreatable=True}"
              prism:ViewModelLocator.AutoWireViewModel="False">
     <UserControl.Resources>
-        <Style TargetType="TextBlock" x:Key="BreadcrumbText">
+        <Style TargetType="TextBlock">
             <Setter Property="Margin" Value="0,0,0,0" />
             <Setter Property="VerticalAlignment" Value="Center" />
             <Setter Property="HorizontalAlignment" Value="Left" />
@@ -34,7 +34,7 @@
         <converters:NotNullStrToBooleanConverter x:Key="notNullConverter"/>
     </UserControl.Resources>
 
-    <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="10,0,0,0" TextBlock.FontSize="24" IsEnabled="{Binding IsEnabled}">
+    <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="10,0,0,0" TextBlock.FontSize="24">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="40" />
@@ -46,26 +46,6 @@
 
         <TextBlock x:Name="Breadcrumb0"
                    Text="{Binding Breadcrumbs, Converter={StaticResource breadcrumbStrConverter}, ConverterParameter=0}">
-            <TextBlock.Style>
-                <Style TargetType="TextBlock" BasedOn="{StaticResource BreadcrumbText}">
-                    <Style.Triggers>
-                        <MultiDataTrigger>
-                            <MultiDataTrigger.Conditions>
-                                <Condition Binding="{Binding ElementName=Breadcrumb1,Path=Text,Converter={StaticResource notNullConverter}}" Value="True"/>
-                                <Condition Binding="{Binding RelativeSource={RelativeSource Mode=Self},Path=IsMouseOver}" Value="True"/>
-                            </MultiDataTrigger.Conditions>
-                            <Setter Property="Foreground" Value="#8A8A8A" />
-                            <Setter Property="Cursor" Value="Hand" />
-                        </MultiDataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </TextBlock.Style>
-            <i:Interaction.Triggers>
-                <i:EventTrigger EventName="MouseDown">
-                    <i:InvokeCommandAction Command="{Binding NavigateCommand}"
-                                           CommandParameter="{Binding Breadcrumbs, Converter={StaticResource breadcrumbConverter}, ConverterParameter=0}" />
-                </i:EventTrigger>
-            </i:Interaction.Triggers>
         </TextBlock>
 
 
@@ -87,26 +67,6 @@
 
         <TextBlock x:Name="Breadcrumb1" Grid.Column="2"
                    Text="{Binding Breadcrumbs, Converter={StaticResource breadcrumbStrConverter}, ConverterParameter=1}">
-            <TextBlock.Style>
-                <Style TargetType="TextBlock" BasedOn="{StaticResource BreadcrumbText}">
-                    <Style.Triggers>
-                        <MultiDataTrigger>
-                            <MultiDataTrigger.Conditions>
-                                <Condition Binding="{Binding ElementName=Breadcrumb2,Path=Text,Converter={StaticResource notNullConverter}}" Value="True"/>
-                                <Condition Binding="{Binding RelativeSource={RelativeSource Mode=Self},Path=IsMouseOver}" Value="True"/>
-                            </MultiDataTrigger.Conditions>
-                            <Setter Property="Foreground" Value="#8A8A8A" />
-                            <Setter Property="Cursor" Value="Hand" />
-                        </MultiDataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </TextBlock.Style>
-            <i:Interaction.Triggers>
-                <i:EventTrigger EventName="MouseDown">
-                    <i:InvokeCommandAction Command="{Binding NavigateCommand}"
-                                           CommandParameter="{Binding Breadcrumbs, Converter={StaticResource breadcrumbConverter}, ConverterParameter=1}" />
-                </i:EventTrigger>
-            </i:Interaction.Triggers>
         </TextBlock>
 
 
@@ -127,13 +87,7 @@
 
 
         <TextBlock x:Name="Breadcrumb2" Grid.Column="4"
-                   Text="{Binding Breadcrumbs, Converter={StaticResource breadcrumbStrConverter}, ConverterParameter=2}" Style="{StaticResource BreadcrumbText}">
-            <i:Interaction.Triggers>
-                <i:EventTrigger EventName="MouseDown">
-                    <i:InvokeCommandAction Command="{Binding NavigateCommand}"
-                                           CommandParameter="{Binding Breadcrumbs, Converter={StaticResource breadcrumbConverter}, ConverterParameter=2}" />
-                </i:EventTrigger>
-            </i:Interaction.Triggers>
+                   Text="{Binding Breadcrumbs, Converter={StaticResource breadcrumbStrConverter}, ConverterParameter=2}">
         </TextBlock>
 
 

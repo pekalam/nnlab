@@ -9,12 +9,14 @@ using Shell.Interface;
 using System.Linq;
 using Common.Domain;
 using Data.Application.Interfaces;
+using Prism.Events;
 
 namespace Data.Application.Controllers
 {
     internal class MultiFileSourceController : ControllerBase<MultiFileSourceViewModel>,ITransientController<MultiFileService>
     {
         private MultiFileService? _multiFileService;
+        private readonly IEventAggregator _ea;
         private readonly IRegionManager _rm;
         private readonly ICsvValidationService _csvValidationService;
         private readonly ITrainingDataService _dataService;
@@ -32,13 +34,14 @@ namespace Data.Application.Controllers
 
 
         public MultiFileSourceController(IRegionManager rm, ICsvValidationService csvValidationService,
-            ITrainingDataService dataService, AppState appState, IFileDialogService fileDialogService, IViewModelAccessor accessor) : base(accessor)
+            ITrainingDataService dataService, AppState appState, IFileDialogService fileDialogService, IViewModelAccessor accessor, IEventAggregator ea) : base(accessor)
         {
             _rm = rm;
             _csvValidationService = csvValidationService;
             _dataService = dataService;
             _appState = appState;
             _fileDialogService = fileDialogService;
+            _ea = ea;
         }
 
 
@@ -61,9 +64,11 @@ namespace Data.Application.Controllers
             _multiFileService!.ReturnCommand = new DelegateCommand(() =>
             {
                 _trainingData = null;
-                _rm.NavigateContentRegion("SelectDataSourceView", "");
+                _rm.NavigateContentRegion("SelectDataSourceView");
             });
             _multiFileService!.ContinueCommand = new DelegateCommand(Continue, () => _continueCanExec);
+
+            _ea.GetEvent<EnableModalNavigation>().Publish(_multiFileService.ReturnCommand);
         }
 
 
@@ -80,8 +85,8 @@ namespace Data.Application.Controllers
 
             _trainingData = null;
 
-
-            _rm.NavigateContentRegion("FileDataSourceView", new ContentRegionNavigationParameters("Files")
+            _ea.GetEvent<DisableModalNavigation>().Publish();
+            _rm.NavigateContentRegion("FileDataSourceView", new NavigationParameters("Files")
             {
                 {"Multi", true}
             });

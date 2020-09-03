@@ -1,12 +1,14 @@
 using System;
 using Common.Domain;
 using FluentAssertions;
+using Moq;
 using Moq.AutoMock;
 using NeuralNetwork.Application.Controllers;
 using NeuralNetwork.Application.Services;
 using NeuralNetwork.Application.ViewModels;
 using NeuralNetwork.Domain;
 using NNLib.Common;
+using Prism.Regions;
 using Shell.Interface;
 using TestUtils;
 using Xunit;
@@ -21,10 +23,11 @@ namespace NeuralNetwork.Application.Tests
         private ModuleState _moduleState;
         private ModuleController _ctrl;
         private TestEa _ea;
+        private Mock<IRegionManager> _rm;
 
         public ModuleControllerTests()
         {
-            _mocker.UseTestRm();
+            (_rm, _) = _mocker.UseTestRm();
             _ea = _mocker.UseTestEa();
             _appState = _mocker.UseImpl<AppState>();
             _moduleState = _mocker.UseImpl<ModuleState>();
@@ -47,7 +50,7 @@ namespace NeuralNetwork.Application.Tests
         }
 
         [Fact]
-        public void State_when_session_with_data_is_created_gets_set()
+        public void State_when_session_with_data_is_created_is_set()
         {
             var sesion = _appState.CreateSession();
             sesion.TrainingData = TrainingDataMocks.ValidData1;
@@ -59,7 +62,7 @@ namespace NeuralNetwork.Application.Tests
         }
 
         [Fact]
-        public void State_when_session_without_data_is_created_after_data_is_set()
+        public void State_when_session_without_data_is_created_is_set_after_data_is_set()
         {
             var sesion = _appState.CreateSession();
 
@@ -68,14 +71,19 @@ namespace NeuralNetwork.Application.Tests
 
             _ctrl.Run();
 
+            _appState.ActiveSession.Network.Should().BeNull();
+            _moduleState.ModelAdapter.Should().BeNull();
+
+            //act
             sesion.TrainingData = TrainingDataMocks.ValidData1;
 
+            //assert
             _appState.ActiveSession.Network.Should().NotBeNull();
             _moduleState.ModelAdapter.Should().NotBeNull();
         }
 
         [Fact]
-        public void State_when_no_active_session_is_created_after_session_and_data_is_set()
+        public void State_when_no_active_session_is_created_is_set_after_new_session_with_data_is_created()
         {
             _ctrl.Run();
 
@@ -90,7 +98,7 @@ namespace NeuralNetwork.Application.Tests
         }
 
         [Fact]
-        public void Session_network_when_created_has_parameters_compatible_with_data()
+        public void Session_when_created_has_network_parameters_compatible_with_data()
         {
             var sesion = _appState.CreateSession();
             sesion.TrainingData = TrainingDataMocks.ValidData1;
@@ -105,13 +113,14 @@ namespace NeuralNetwork.Application.Tests
         }
 
         [Fact]
-        public void Session_network_when_created_after_ctrl_run_has_parameters_compatible_with_data()
+        public void Session_when_created_after_ctrl_run_and_changed_has_network_parameters_compatible_with_data()
         {
             _ctrl.Run();
 
             var sesion = _appState.CreateSession();
             sesion.TrainingData = TrainingDataMocks.ValidData1;
 
+            var firstNet = _appState.ActiveSession.Network;
             var network = _appState.ActiveSession.Network;
             network.Layers[0].InputsCount.Should().Be(TrainingDataMocks.ValidData1.Sets.TrainingSet.Input[0].RowCount);
             network.Layers[^1].NeuronsCount.Should().Be(TrainingDataMocks.ValidData1.Sets.TrainingSet.Target[0].RowCount);
@@ -124,6 +133,11 @@ namespace NeuralNetwork.Application.Tests
             network = _appState.ActiveSession.Network;
             network.Layers[0].InputsCount.Should().Be(TrainingDataMocks.ValidData4.Sets.TrainingSet.Input[0].RowCount);
             network.Layers[^1].NeuronsCount.Should().Be(TrainingDataMocks.ValidData4.Sets.TrainingSet.Target[0].RowCount);
+
+
+            //should not be recreated
+            _appState.ActiveSession = sesion;
+            _appState.ActiveSession.Network.Should().BeSameAs(firstNet);
         }
 
         [Fact]
@@ -178,17 +192,47 @@ namespace NeuralNetwork.Application.Tests
             var session = _appState.CreateSession();
             session.TrainingData = TrainingDataMocks.ValidFileData4;
 
-            var network = _appState.ActiveSession.Network;
-            network.Layers[0].InputsCount.Should().Be(TrainingDataMocks.ValidData4.Sets.TrainingSet.Input[0].RowCount);
-            network.Layers[^1].NeuronsCount.Should().Be(TrainingDataMocks.ValidData4.Sets.TrainingSet.Target[0].RowCount);
 
+            //act
             session.TrainingData.Variables = new SupervisedSetVariables(new SupervisedSetVariableIndexes(
                 new []{0}, new []{1}, new []{2}
                 ), new []{new VariableName("x"), new VariableName("y"), new VariableName("z")});
 
+
+            //assert
+            var network = _appState.ActiveSession.Network;
             network.Layers[0].InputsCount.Should().Be(1);
             network.Layers[^1].NeuronsCount.Should().Be(1);
         }
+
+
+        [Fact]
+        public void When_session_is_duplicated_with_no_net_network_is_created()
+        {
+            var session = _appState.CreateSession();
+            session.TrainingData = TrainingDataMocks.ValidData1;
+            session.Network = MLPMocks.ValidNet1;
+
+            _ctrl.Run();
+
+            _appState.DuplicateActiveSession(DuplicateOptions.NoTrainingParams | DuplicateOptions.NoNetwork);
+
+            _appState.ActiveSession.Network.Should().NotBeNull().And.NotBeSameAs(session.Network);
+        }
+
+
+        // [Fact]
+        // public void f()
+        // {
+        //     _ctrl.Run();
+        //
+        //
+        //
+        //     _ea.GetEvent<PreviewCheckNavMenuItem>().Publish(new PreviewCheckNavMenuItemArgs(-1, ModuleIds.NeuralNetwork));
+        //     _rm.VerifyContentNavigation("NeuralNetworkShellView", Times.Once());
+        //
+        //     _ea.GetEvent<ReloadContentForSession>().Publish((ModuleIds.Data));
+        // }
     }
 
 

@@ -12,6 +12,238 @@ using Xunit;
 
 namespace Common.Tests
 {
+    public class AppStateHelperTests
+    {
+        private AppState _appState = new AppState();
+        private AppStateHelper _helper;
+
+        public AppStateHelperTests()
+        {
+            _helper = new AppStateHelper(_appState);
+        }
+
+        private void AssingTrainingData(Session session)
+        {
+            session.TrainingData = TrainingDataMocks.ValidData1;
+        }
+
+        private void AssignNetwork(Session session)
+        {
+            session.Network = MLPMocks.ValidNet1;
+        }
+
+        [Fact]
+        public void OnNetworkInSession_called_when_assigned_after_session_created()
+        {
+            int called = 0;
+
+            var session = _appState.CreateSession();
+            _helper.OnNetworkInSession(network => called++);
+            //called for null
+            called.Should().Be(1);
+            AssignNetwork(session);
+
+            //assert
+            called.Should().Be(2);
+        }
+
+        [Fact]
+        public void OnNetworkInSession_called_when_assigned_after_session_created_with_net()
+        {
+            int called = 0;
+
+            var session = _appState.CreateSession();
+            AssignNetwork(session);
+            _helper.OnNetworkInSession(network => called++);
+
+            //assert
+            called.Should().Be(1);
+        }
+
+        [Fact]
+        public void OnNetworkInSession_called_when_assigned_after_session_is_created_and_is_changed()
+        {
+            int called = 0;
+
+            //create
+            var session = _appState.CreateSession();
+
+            _helper.OnNetworkInSession(network => called++);
+            AssignNetwork(session);
+
+            //change
+            var session2 = _appState.CreateSession();
+            AssignNetwork(session2);
+            _appState.ActiveSession = session2;
+
+            //assert
+            called.Should().Be(3);
+
+
+            //change
+            _appState.ActiveSession = session;
+
+            //assert
+            called.Should().Be(4);
+
+            _appState.ActiveSession.Network = MLPMocks.ValidNet2;
+
+
+            //assert
+            called.Should().Be(5);
+        }
+
+        [Fact]
+        public void OnNetworkInSession_called_when_assigned_before_session_created()
+        {
+            int called = 0;
+
+            _helper.OnNetworkInSession(network => called++);
+            var session = _appState.CreateSession();
+            AssignNetwork(session);
+
+            //assert
+            called.Should().Be(2);
+        }
+
+
+
+        [Fact]
+        public void OnTrainingDataInSession_called_when_assigned_after_session_created()
+        {
+            int called = 0;
+
+            var session = _appState.CreateSession();
+            _helper.OnTrainingDataInSession(network => called++);
+            AssingTrainingData(session);
+
+            //assert
+            called.Should().Be(2);
+        }
+
+        [Fact]
+        public void OnTrainingDataInSession_called_when_assigned_after_session_created_with_net()
+        {
+            int called = 0;
+
+            var session = _appState.CreateSession();
+            AssingTrainingData(session);
+            _helper.OnTrainingDataInSession(network => called++);
+
+            //assert
+            called.Should().Be(1);
+        }
+
+        [Fact]
+        public void OnTrainingDataInSession_called_when_assigned_after_session_is_created_and_is_changed()
+        {
+            int called = 0;
+
+            //create
+            var session = _appState.CreateSession();
+
+            _helper.OnTrainingDataInSession(network => called++);
+            AssingTrainingData(session);
+
+            //change
+            var session2 = _appState.CreateSession();
+            AssingTrainingData(session2);
+            _appState.ActiveSession = session2;
+
+            //assert
+            called.Should().Be(3);
+
+
+            //change
+            _appState.ActiveSession = session;
+
+            //assert
+            called.Should().Be(4);
+
+            _appState.ActiveSession.TrainingData = TrainingDataMocks.ValidFileData4;
+
+
+            //assert
+            called.Should().Be(5);
+        }
+
+        [Fact]
+        public void OnTrainingDataInSession_called_when_assigned_before_session_created()
+        {
+            int called = 0;
+
+            _helper.OnTrainingDataInSession(network => called++);
+            var session = _appState.CreateSession();
+            AssingTrainingData(session);
+
+            //assert
+            called.Should().Be(2);
+        }
+
+
+        [Fact]
+        public void OnTrainingDataPropertyChanged_called_when_assigned_before_session_created()
+        {
+            int called = 0;
+
+           
+            _helper.OnTrainingDataPropertyChanged(network => called++, s => s == nameof(TrainingData.NormalizationMethod));
+            var session = _appState.CreateSession();
+            AssingTrainingData(session);
+
+            session.TrainingData!.NormalizationMethod = NormalizationMethod.MinMax;
+
+            //assert
+            called.Should().Be(1);
+        }
+
+        [Fact]
+        public void OnTrainingDataPropertyChanged_called_when_assigned_after_session_is_created_and_is_changed()
+        {
+            int called = 0;
+
+            _helper.OnTrainingDataPropertyChanged(network => called++, s => s == nameof(TrainingData.NormalizationMethod));
+            var session = _appState.CreateSession();
+            AssingTrainingData(session);
+
+            session.TrainingData!.NormalizationMethod = NormalizationMethod.MinMax;
+
+            //assert
+            called.Should().Be(1);
+
+
+            //change
+            var session2 = _appState.CreateSession();
+            AssingTrainingData(session2);
+            _appState.ActiveSession = session2;
+
+            //should not be called
+            called.Should().Be(1);
+
+            session2.TrainingData!.NormalizationMethod = NormalizationMethod.Mean;
+
+            //assert
+            called.Should().Be(2);
+
+            //change
+            _appState.ActiveSession = session;
+
+            //assert not called
+            called.Should().Be(2);
+
+            _appState.ActiveSession.TrainingData = TrainingDataMocks.ValidFileData4;
+
+
+            //assert not called
+            called.Should().Be(2);
+
+
+            _appState.ActiveSession.TrainingData.NormalizationMethod = NormalizationMethod.Std;
+
+            called.Should().Be(3);
+        }
+    }
+
     public class AppStateTests
     {
         private AppState appState = new AppState();
@@ -33,8 +265,7 @@ namespace Common.Tests
         [Fact]
         public void CreatedSessions_distinct_names()
         {
-            
-            appState.CreateSession(); 
+            appState.CreateSession();
             appState.CreateSession();
 
             //assert
@@ -45,7 +276,7 @@ namespace Common.Tests
         public void CreateSession_when_0_sessions_calls_property_changed_event()
         {
             //arrange
-            
+
             appState.PropertyChanged += (sender, args) =>
                 args.PropertyName.Should().Be(nameof(AppState.ActiveSession));
 
@@ -66,7 +297,7 @@ namespace Common.Tests
             int times = 0;
 
             //arrange
-            
+
             appState.PropertyChanged += (sender, args) =>
             {
                 if (args.PropertyName == nameof(AppState.ActiveSession))
@@ -91,7 +322,7 @@ namespace Common.Tests
             //arrange
 
             int times = 0;
-            
+
             appState.PropertyChanged += (sender, args) =>
             {
                 if (args.PropertyName == nameof(AppState.ActiveSession))
@@ -149,6 +380,20 @@ namespace Common.Tests
 
             session.TrainingParameters.Should().NotBeNull();
         }
+
+        [Fact]
+        public void DuplicateActiveSession_creates_copy_based_on_parameters()
+        {
+            var session = appState.CreateSession();
+            session.TrainingData = TrainingDataMocks.ValidData3;
+            session.Network = MLPMocks.ValidNet1;
+
+            var clone = session.CloneWithName("x", DuplicateOptions.NoNetwork);
+
+            clone.Network.Should().BeNull();
+            clone.TrainingData.Should().NotBeNull();
+            clone.TrainingParameters.Should().NotBeNull();
+        }
     }
 
 
@@ -159,30 +404,33 @@ namespace Common.Tests
         [Fact]
         public void Add_when_overlapping_added_throws()
         {
-            var paused = TrainingSessionReport.CreatePausedSessionReport(10, 0.1, Time.Now.Subtract(TimeSpan.FromHours(1)), new List<EpochEndArgs>());
+            var paused = TrainingSessionReport.CreatePausedSessionReport(10, 0.1,
+                Time.Now.Subtract(TimeSpan.FromHours(1)), new List<EpochEndArgs>());
             Time.TimeProvider = () => DateTime.Now.AddMinutes(5);
-            var stopped = TrainingSessionReport.CreateStoppedSessionReport(10, 0.1, Time.Now.Subtract(TimeSpan.FromHours(1)), new List<EpochEndArgs>());
-            
+            var stopped = TrainingSessionReport.CreateStoppedSessionReport(10, 0.1,
+                Time.Now.Subtract(TimeSpan.FromHours(1)), new List<EpochEndArgs>());
+
             collection.Add(paused);
-            
+
             Assert.ThrowsAny<Exception>(() => collection.Add(stopped));
         }
 
         [Fact]
         public void Add_when_last_is_of_terminating_type_throws()
         {
-            var paused = TrainingSessionReport.CreatePausedSessionReport(10, 0.1, Time.Now.Subtract(TimeSpan.FromHours(1)), new List<EpochEndArgs>());
+            var paused = TrainingSessionReport.CreatePausedSessionReport(10, 0.1,
+                Time.Now.Subtract(TimeSpan.FromHours(1)), new List<EpochEndArgs>());
             Time.TimeProvider = () => DateTime.Now.AddHours(1);
-            var stopped = TrainingSessionReport.CreateStoppedSessionReport(10, 0.1, Time.Now.Subtract(TimeSpan.FromHours(1)), new List<EpochEndArgs>());
+            var stopped = TrainingSessionReport.CreateStoppedSessionReport(10, 0.1,
+                Time.Now.Subtract(TimeSpan.FromHours(1)), new List<EpochEndArgs>());
             Time.TimeProvider = () => DateTime.Now.AddHours(1);
-            var timeout = TrainingSessionReport.CreateTimeoutSessionReport(10, 0.1, Time.Now.Subtract(TimeSpan.FromHours(1)), new List<EpochEndArgs>());
-            
+            var timeout = TrainingSessionReport.CreateTimeoutSessionReport(10, 0.1,
+                Time.Now.Subtract(TimeSpan.FromHours(1)), new List<EpochEndArgs>());
+
             collection.Add(paused);
             collection.Add(stopped);
-            
+
             Assert.ThrowsAny<Exception>(() => collection.Add(timeout));
         }
-        
     }
-
 }

@@ -7,10 +7,12 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:designData="clr-namespace:Prediction.Presentation.__DesignData"
+             xmlns:interface="clr-namespace:Shell.Interface;assembly=Shell.Interface"
              mc:Ignorable="d" 
              d:DesignHeight="1200" d:DesignWidth="800"
              d:DataContext="{d:DesignInstance designData:DesignPredictVm, IsDesignTimeCreatable=True}"
-             prism:ViewModelLocator.AutoWireViewModel="True" Style="{StaticResource ContentUserControl}">
+             prism:ViewModelLocator.AutoWireViewModel="True" Style="{StaticResource ContentUserControl}"
+             interface:BreadcrumbsHelper.Breadcrumb="Predict">
     <ContentControl Style="{StaticResource ContentPanel}">
         <Grid>
             <Grid.RowDefinitions>

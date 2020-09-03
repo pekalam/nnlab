@@ -9,9 +9,9 @@ namespace Shell.Application.PrismDecorators
     internal class ContentRegionDecorator : IRegion
     {
         private readonly IRegion _region;
-        private readonly Action<Uri, ContentRegionNavigationParameters> _navigationAction;
+        private readonly Action _navigationAction;
 
-        public ContentRegionDecorator(IRegion region, Action<Uri, ContentRegionNavigationParameters> navigationAction)
+        public ContentRegionDecorator(IRegion region, Action navigationAction)
         {
             _region = region;
             _navigationAction = navigationAction;
@@ -20,16 +20,15 @@ namespace Shell.Application.PrismDecorators
 
         public void RequestNavigate(Uri target, Action<NavigationResult> navigationCallback)
         {
-            throw new InvalidOperationException("Content region requestNavigate called without navigationParameters");
+            _region.RequestNavigate(target, navigationCallback);
+            _navigationAction.Invoke();
         }
 
         public void RequestNavigate(Uri target, Action<NavigationResult> navigationCallback,
             NavigationParameters navigationParameters)
         {
-            Debug.Assert(navigationParameters is ContentRegionNavigationParameters);
-
             _region.RequestNavigate(target, navigationCallback, navigationParameters);
-            _navigationAction.Invoke(target, (navigationParameters as ContentRegionNavigationParameters)!);
+            _navigationAction.Invoke();
         }
 
         public event PropertyChangedEventHandler PropertyChanged

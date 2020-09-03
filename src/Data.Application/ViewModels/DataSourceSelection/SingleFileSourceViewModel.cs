@@ -26,7 +26,7 @@ namespace Data.Application.ViewModels.DataSourceSelection
                 case nameof(FileValidationResult.IsFileValid):
                     if (FileValidationResult.IsFileValid == true)
                     {
-                        SingleFileService.LoadCommand.Execute(_selectedFilePath ?? throw new NullReferenceException("Null selected file path"));
+                        SingleFileService.LoadCommand.Execute(_selectedFilePath!);
                     }
                     break;
             }

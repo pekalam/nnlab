@@ -9,8 +9,10 @@ using Common.Framework;
 using NNLib.Common;
 using OxyPlot;
 using Prism.Commands;
+using Prism.Events;
 using Prism.Ioc;
 using Prism.Regions;
+using Shell.Interface;
 using Training.Application.Controllers;
 using Training.Application.Services;
 using Training.Application.ViewModels;
@@ -54,14 +56,19 @@ namespace Training.Application.Controllers
         private readonly IRegionManager _rm;
         private readonly AppState _appState;
         private readonly ModuleState _moduleState;
+        private readonly IEventAggregator _ea;
 
-        public ReportsController(IViewModelAccessor accessor, IRegionManager rm, AppState appState, ModuleState moduleState)
+        public ReportsController(IViewModelAccessor accessor, IRegionManager rm, AppState appState, ModuleState moduleState, IEventAggregator ea)
         {
             _accessor = accessor;
             _rm = rm;
             _appState = appState;
             _moduleState = moduleState;
+            _ea = ea;
+            CloseReportsCommand = new DelegateCommand(CloseReports);
         }
+
+        private DelegateCommand CloseReportsCommand { get; }
 
         private void ShowErrorPlot(TrainingSessionReport? report)
         {
@@ -113,6 +120,12 @@ namespace Training.Application.Controllers
             _rm.Regions[region].RequestNavigate("OutputPlotView", param);
         }
 
+        private void CloseReports()
+        {
+            _ea.GetEvent<DisableModalNavigation>().Publish();
+            _rm.NavigateContentRegion("TrainingView");
+        }
+
         public void Initialize(ReportsService service)
         {
             service.SelectionChangedCommand = new DelegateCommand<TrainingSessionReport>(SelectionChanged);
@@ -131,6 +144,7 @@ namespace Training.Application.Controllers
 
         private void Navigated(NavigationContext ctx)
         {
+            _ea.GetEvent<EnableModalNavigation>().Publish(CloseReportsCommand);
             ShowErrorPlot(_appState.ActiveSession!.TrainingReports[0]);
         }
 

@@ -14,7 +14,8 @@
              xmlns:interface="clr-namespace:Shell.Interface;assembly=Shell.Interface"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance dd:DesignTrainingVm, IsDesignTimeCreatable=True}"
-             Style="{StaticResource ContentUserControl}">
+             Style="{StaticResource ContentUserControl}"
+             interface:BreadcrumbsHelper.Breadcrumb="Training">
     <UserControl.Resources>
         <converters:BoolCollapsedConverter x:Key="collapsedConverter" />
         <converters:BooleanNegConverter x:Key="boolNegConverter" />

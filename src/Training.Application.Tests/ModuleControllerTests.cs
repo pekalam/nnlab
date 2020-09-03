@@ -1,10 +1,15 @@
+using System;
 using System.ComponentModel;
 using System.Reflection;
+using AutoFixture;
 using Common.Domain;
 using Common.Framework;
+using Moq;
 using Moq.AutoMock;
+using Prism.Regions;
 using Shell.Interface;
 using TestUtils;
+using Training.Application.ViewModels;
 using Training.Domain;
 using Training.Interface;
 using Xunit;
@@ -27,11 +32,12 @@ namespace Training.Application.Tests
         private ModuleController _ctrl;
         private TestEa _ea;
         private ModuleState _moduleState;
+        private Mock<IRegionManager> _rm;
 
         public ModuleControllerTests()
         {
             _ea = _mocker.UseTestEa();
-            _mocker.UseTestRm();
+            (_rm,_) = _mocker.UseTestRm();
             _mocker.UseTestVmAccessor();
             _appState = _mocker.UseImpl<AppState>();
             _moduleState =_mocker.UseImpl<ModuleState>();

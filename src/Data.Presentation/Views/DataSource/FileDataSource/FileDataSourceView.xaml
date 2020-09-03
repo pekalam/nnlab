@@ -14,7 +14,7 @@
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance dd:DesignFileDataSourceVm, IsDesignTimeCreatable=True}"
              prism:ViewModelLocator.AutoWireViewModel="True"
-             >
+             interface:BreadcrumbsHelper.Breadcrumb="File data source">
     <UserControl.Resources>
         <data:ActionMenuLeftView x:Key="ActionMenuLeft"/>
     </UserControl.Resources>

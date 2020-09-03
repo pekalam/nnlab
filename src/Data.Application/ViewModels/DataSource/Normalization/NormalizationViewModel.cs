@@ -21,57 +21,9 @@ namespace Data.Application.ViewModels.DataSource.Normalization
         }
 
         [InjectionConstructor]
-        public NormalizationViewModel(INormalizationService service, AppState appState)
+        public NormalizationViewModel(INormalizationService service)
         {
             Service = service;
-
-            var method = appState.ActiveSession!.TrainingData!.NormalizationMethod;
-            SetCheckedFromMethod(method);
-
-            appState.ActiveSessionChanged += (sender, args) =>
-            {
-                if (args.next.TrainingData != null)
-                {
-                    SetCheckedFromMethod(args.next.TrainingData.NormalizationMethod);
-                }
-                else
-                {
-                    args.next.PropertyChanged += OnActiveSessionTrainingDataChanged;
-                }
-            };
-        }
-
-        private void OnActiveSessionTrainingDataChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(Session.TrainingData))
-            {
-                var session = (sender as Session)!;
-                SetCheckedFromMethod(session.TrainingData!.NormalizationMethod);
-                session.PropertyChanged -= OnActiveSessionTrainingDataChanged;
-            }
-        }
-
-        private void SetCheckedFromMethod(NormalizationMethod method)
-        {
-            var temp = Service;
-            Service = null;
-            switch (method)
-            {
-                case NormalizationMethod.None:
-                    NoneChecked = true;
-                    break;
-                case NormalizationMethod.Mean:
-                    MeanChecked = true;
-                    break;
-                case NormalizationMethod.MinMax:
-                    MinMaxChecked = true;
-                    break;
-                case NormalizationMethod.Std:
-                    StdChecked = true;
-                    break;
-            }
-
-            Service = temp;
         }
 
         public INormalizationService? Service

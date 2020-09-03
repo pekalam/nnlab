@@ -18,24 +18,24 @@ using Shell.Interface;
 
 namespace NeuralNetwork.Application.Controllers
 {
-    internal class LayersDisplayController : ITransientController<LayersDisplayService>
+    internal class LayersDisplayController : ControllerBase<LayersDisplayViewModel>,ITransientController<LayersDisplayService>
     {
         private LayersDisplayService _service = null!;
         private readonly INeuralNetworkShellService _shellService;
         private readonly INeuralNetworkService _networkService;
         private readonly AppState _appState;
         private readonly ModuleState _moduleState;
-        private readonly IViewModelAccessor _accessor;
         private readonly IEventAggregator _ea;
+        private readonly AppStateHelper _helper;
 
-        public LayersDisplayController(INeuralNetworkShellService shellService, INeuralNetworkService networkService, AppState appState, IViewModelAccessor accessor, IEventAggregator ea, ModuleState moduleState)
+        public LayersDisplayController(INeuralNetworkShellService shellService, INeuralNetworkService networkService, AppState appState, IViewModelAccessor accessor, IEventAggregator ea, ModuleState moduleState) : base(accessor)
         {
             _shellService = shellService;
             _networkService = networkService;
             _appState = appState;
-            _accessor = accessor;
             _ea = ea;
             _moduleState = moduleState;
+            _helper = new AppStateHelper(appState);
         }
 
         public void Initialize(LayersDisplayService service)
@@ -48,14 +48,14 @@ namespace NeuralNetwork.Application.Controllers
             service.LayerClickedCommand = new DelegateCommand<LayerEditorItemModel>(LayerClicked);
             service.InsertAfterCommand = new DelegateCommand<LayerEditorItemModel>(InsertAfter);
             service.InsertBeforeCommand = new DelegateCommand<LayerEditorItemModel>(InsertBefore);
+        }
 
-            _appState.PropertyChanged += AppStateOnPropertyChanged;
-
-            _accessor.OnCreated<LayersDisplayViewModel>(() =>
+        protected override void VmCreated()
+        {
+            _helper.OnNetworkChanged(network =>
             {
-                if(_appState.ActiveSession != null) SetLayers();
+                SetLayers();
             });
-
         }
 
         private void InsertBefore(LayerEditorItemModel obj)
@@ -88,7 +88,6 @@ namespace NeuralNetwork.Application.Controllers
         private void SelectLayer(Layer layer)
         {
             var neuralNetwork = _appState.ActiveSession!.Network!;
-            var vm = _accessor.Get<LayersDisplayViewModel>()!;
             int layerInd = -1;
             for (int i = 0; i < neuralNetwork.TotalLayers; i++)
             {
@@ -104,19 +103,10 @@ namespace NeuralNetwork.Application.Controllers
                 throw new Exception();
             }
 
-            var selected = vm.Layers.First(l =>
+            var selected = Vm!.Layers.First(l =>
                 l.LayerIndex == layerInd);
 
-            vm.SelectedLayer = selected;
-        }
-
-
-        private void AppStateOnPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(AppState.ActiveSession))
-            {
-                if(_accessor.Get<LayersDisplayViewModel>() != null && _appState.ActiveSession!.Network != null) SetLayers();
-            }
+            Vm!.SelectedLayer = selected;
         }
 
 

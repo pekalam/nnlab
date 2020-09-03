@@ -8,9 +8,11 @@
              xmlns:prism="http://prismlibrary.com/"
              xmlns:neuralNetwork="clr-namespace:NeuralNetwork.Application.View;assembly=NeuralNetwork.Application"
              xmlns:designData="clr-namespace:NeuralNetwork.Presentation.__DesignData"
+             xmlns:interface="clr-namespace:Shell.Interface;assembly=Shell.Interface"
              prism:ViewModelLocator.AutoWireViewModel="True" 
              mc:Ignorable="d" 
-             d:DataContext="{d:DesignInstance designData:DesignNeuralNetworkShellVm, IsDesignTimeCreatable=True}">
+             d:DataContext="{d:DesignInstance designData:DesignNeuralNetworkShellVm, IsDesignTimeCreatable=True}"
+             interface:BreadcrumbsHelper.Breadcrumb="Neural network">
     <Grid Style="{StaticResource ContentGrid}">
         <Grid.RowDefinitions>
             <RowDefinition Height="1*"/>

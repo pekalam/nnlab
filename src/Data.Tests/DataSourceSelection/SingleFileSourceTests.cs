@@ -28,13 +28,14 @@ namespace Data.Application.Tests.DataSourceSelection
         public SingleFileSourceTests()
         {
             _mocker.UseTestRm();
+            _mocker.UseTestVmAccessor();
             _appState = _mocker.UseImpl<AppState>();
             _csvValidation = _mocker.UseMock<ICsvValidationService>();
             _dataSetService = _mocker.UseMock<ITrainingDataService>();
             _ctrl = _mocker.UseImpl<ITransientController<SingleFileService>, SingleFileSourceController>();
             _singleFileService = _mocker.UseImpl<ISingleFileService, SingleFileService>();
 
-            _vm = _mocker.CreateInstance<SingleFileSourceViewModel>();
+            _vm = _mocker.UseVm<SingleFileSourceViewModel>();
         }
 
         [Fact]

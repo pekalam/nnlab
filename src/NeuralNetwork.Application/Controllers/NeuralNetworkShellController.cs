@@ -52,7 +52,7 @@ namespace NeuralNetwork.Application.Controllers
 
             Navigated = (_) =>
             {
-                _rm.Regions[NeuralNetworkRegions.NetworkDownRegion].RequestNavigate(nameof(LayersDisplayViewModel));
+                _rm.Regions[NeuralNetworkRegions.NetworkDownRegion].RequestNavigate("LayersDisplayView");
             };
 
             _appState.ActiveSessionChanged += (_, __) =>
@@ -66,7 +66,7 @@ namespace NeuralNetwork.Application.Controllers
             _isEditorOpened = false;
             if (_rm.Regions.ContainsRegionWithName(NeuralNetworkRegions.NetworkDownRegion))
             {
-                _rm.Regions[NeuralNetworkRegions.NetworkDownRegion].RequestNavigate(nameof(LayersDisplayViewModel));
+                _rm.Regions[NeuralNetworkRegions.NetworkDownRegion].RequestNavigate("LayersDisplayView");
             }
         }
 
@@ -75,7 +75,7 @@ namespace NeuralNetwork.Application.Controllers
             _ea.GetEvent<EnableModalNavigation>().Publish(CloseLayerEditorCommand);
             _isEditorOpened = true;
             var layer = _appState.ActiveSession!.Network!.Layers[model.LayerIndex];
-            _rm.Regions[NeuralNetworkRegions.NetworkDownRegion].RequestNavigate(nameof(LayerEditorViewModel),new NavigationParameters()
+            _rm.Regions[NeuralNetworkRegions.NetworkDownRegion].RequestNavigate("LayerEditorView", new NavigationParameters()
             {
                 {"params", new LayerEditorNavParams(_appState.ActiveSession.Network, layer, model.LayerIndex)}
             });

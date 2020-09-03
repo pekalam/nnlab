@@ -10,7 +10,8 @@
              xmlns:interface="clr-namespace:Shell.Interface;assembly=Shell.Interface"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance dd:DesignCustomDataSetVm, IsDesignTimeCreatable=True}"
-             prism:ViewModelLocator.AutoWireViewModel="True">
+             prism:ViewModelLocator.AutoWireViewModel="True"
+             interface:BreadcrumbsHelper.Breadcrumb="Custom data set">
     <UserControl.Resources>
         <customDataSet:ActionMenuLeftView x:Key="ActionMenuLeft"/>
     </UserControl.Resources>

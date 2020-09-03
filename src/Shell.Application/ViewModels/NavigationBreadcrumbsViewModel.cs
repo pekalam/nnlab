@@ -1,96 +1,103 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using System.Windows;
 using System.Windows.Data;
 using Common.Framework;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Regions;
 using Shell.Interface;
+using Unity;
 
 namespace Shell.Application.ViewModels
 {
     public class NavigationBreadcrumbsViewModel : ViewModelBase<NavigationBreadcrumbsViewModel>
     {
-        private IEventAggregator _ea;
-        private IRegionManager _rm;
-        private bool _show = true;
-        private readonly Dictionary<int, bool> _previousShow = new Dictionary<int, bool>();
+        private readonly IEventAggregator _ea;
+        private readonly IRegionManager _rm;
         private readonly Dictionary<int, BreadcrumbModel[]> _previousBreadcrumbs =
             new Dictionary<int, BreadcrumbModel[]>();
 
         private bool _isEnabled = true;
 
+        public NavigationBreadcrumbsViewModel() { }
+
+        [InjectionConstructor]
         public NavigationBreadcrumbsViewModel(IEventAggregator ea, IRegionManager rm)
         {
             _ea = ea;
             _rm = rm;
             _ea.GetEvent<ContentRegionViewChanged>().Subscribe(OnContentRegionViewChanged);
 
-            NavigateCommand = new DelegateCommand<BreadcrumbModel>(Navigate);
         }
 
         internal IReadOnlyDictionary<int, BreadcrumbModel[]> PreviousBreadcrumbs => _previousBreadcrumbs;
         public ObservableCollection<BreadcrumbModel> Breadcrumbs { get; } = new ObservableCollection<BreadcrumbModel>();
 
-        public DelegateCommand<BreadcrumbModel> NavigateCommand { get; }
-
-        public bool IsEnabled
-        {
-            get => _isEnabled;
-            set => SetProperty(ref _isEnabled, value);
-        }
-
-        public bool Show
-        {
-            get => _show;
-            set => SetProperty(ref _show, value);
-        }
-
-        private void RemoveUntilExisting(string viewName)
+        private void RemoveUntilExisting(string breadcrumb)
         {
             var count = Breadcrumbs.Count;
-            int viewInd = -1;
+            int ind = -1;
             for (int i = 0; i < Breadcrumbs.Count; i++)
             {
-                if (viewName == Breadcrumbs[i].ViewName)
+                if (breadcrumb == Breadcrumbs[i].Breadcrumb)
                 {
-                    viewInd = i;
+                    ind = i;
                     break;
                 }
             }
 
-            if (viewInd == -1)
+            if (ind == -1)
             {
-                throw new ArgumentException($"Cannot find breadcrumb with viewName {viewName}");
+                throw new ArgumentException($"Cannot find breadcrumb {breadcrumb}");
             }
 
-            for (int i = count - 1; i > viewInd; i--)
+            for (int i = count - 1; i > ind; i--)
             {
                 Breadcrumbs.RemoveAt(i);
             }
         }
 
-        private void OnContentRegionViewChanged(ContentRegionViewChangedEventArgs args)
+        private void OnContentRegionViewChanged()
         {
-            Show = args.NavigationParameters!.ShowBreadcrumbs;
-            if (Breadcrumbs.FirstOrDefault(b => b.ViewName == args.ViewName) != null)
+            var view = _rm.Regions[AppRegions.ContentRegion].ActiveViews.FirstOrDefault();
+            Debug.Assert(view != null);
+
+            var isModal = (bool)(view as DependencyObject).GetValue(BreadcrumbsHelper.IsModalProperty);
+            var breadcrumb = (view as DependencyObject).GetValue(BreadcrumbsHelper.BreadcrumbProperty) as string;
+
+            Debug.Assert(breadcrumb != null);
+
+            if (isModal)
             {
-                RemoveUntilExisting(args.ViewName!);
-            }
-            else
-            {
-                if (Breadcrumbs.Count < 3)
+                if (Breadcrumbs.FirstOrDefault(b => b.Breadcrumb == breadcrumb) != null)
                 {
-                    Breadcrumbs.Add(new BreadcrumbModel()
-                        { ViewName = args.ViewName!, Breadcrumb = args.NavigationParameters.Breadcrumb, NavParams=args.NavigationParameters });
+                    RemoveUntilExisting(breadcrumb);
                 }
                 else
                 {
-                    throw new InvalidOperationException("NavigationBreadcrumbs cannot have more than 4 breadcrumbs");
+                    if (Breadcrumbs.Count < 3)
+                    {
+                        Breadcrumbs.Add(new BreadcrumbModel()
+                            { Breadcrumb = breadcrumb });
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException("NavigationBreadcrumbs cannot have more than 4 breadcrumbs");
+                    }
                 }
+            }
+            else
+            {
+                Breadcrumbs.Clear();
+                Breadcrumbs.Add(new BreadcrumbModel()
+                {
+                    Breadcrumb = breadcrumb,
+                });
             }
 
             RaisePropertyChanged(nameof(Breadcrumbs));
@@ -110,7 +117,6 @@ namespace Shell.Application.ViewModels
         public void SaveBreadcrumbsForModule(int moduleNavId)
         {
             _previousBreadcrumbs[moduleNavId] = Breadcrumbs.Select(b => b.Clone()).ToArray();
-            _previousShow[moduleNavId] = Show;
             Breadcrumbs.Clear();
         }
 
@@ -123,22 +129,8 @@ namespace Shell.Application.ViewModels
                 {
                     Breadcrumbs.Add(breadcrumb);
                 }
-
-                Show = _previousShow[moduleNavId];
             }
             RaisePropertyChanged(nameof(Breadcrumbs));
-        }
-
-        private void Navigate(BreadcrumbModel breadcrumb)
-        {
-            if (breadcrumb.IsCustom)
-            {
-                breadcrumb.CustomNavigationAction!(breadcrumb);
-            }
-            else
-            {
-                _rm.NavigateContentRegion(breadcrumb.ViewName, breadcrumb.NavParams);
-            }
         }
     }
 
@@ -187,16 +179,12 @@ namespace Shell.Application.ViewModels
     public class BreadcrumbModel
     {
         public string Breadcrumb { get; set; } = null!;
-        public string ViewName { get; set; } = null!;
-        public ContentRegionNavigationParameters NavParams { get; set; } = null!;
-        public Action<BreadcrumbModel>? CustomNavigationAction { get; set; }
-        public bool IsCustom => CustomNavigationAction != null;
 
         public BreadcrumbModel Clone()
         {
             return new BreadcrumbModel()
             {
-                Breadcrumb = Breadcrumb, CustomNavigationAction = CustomNavigationAction,NavParams = NavParams,ViewName = ViewName,
+                Breadcrumb = Breadcrumb
             };
         }
     }

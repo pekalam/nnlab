@@ -7,11 +7,13 @@
              xmlns:dd="clr-namespace:Data.Presentation.__DesignData"
              xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:converters="clr-namespace:Common.Presentation.Converters;assembly=Common.Presentation"
+             xmlns:interface="clr-namespace:Shell.Interface;assembly=Shell.Interface"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800"
              d:DataContext="{d:DesignInstance dd:DesignSingleFileSourceVm, IsDesignTimeCreatable=True}"
              mvvm:ViewModelLocator.AutoWireViewModel="True" Name="root"
-             Style="{StaticResource ContentUserControl}">
+             Style="{StaticResource ContentUserControl}"
+             interface:BreadcrumbsHelper.Breadcrumb="Single file" interface:BreadcrumbsHelper.IsModal="True">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="Bool2Vis" />
         <converters:TextBlockTrimToVisConverter x:Key="TextBlockTrimToVis"/>
@@ -24,11 +26,6 @@
             </Grid.ColumnDefinitions>
 
             <StackPanel>
-                <Button Style="{StaticResource MenuButton}" Command="{Binding SingleFileService.ReturnCommand}"
-                        HorizontalAlignment="Left" Margin="0,0,0,22">
-                    <iconPacks:PackIconFontAwesome Kind="ArrowLeftSolid" FontSize="17" HorizontalAlignment="Center"
-                                                   VerticalAlignment="Center" Width="17" Height="17" />
-                </Button>
                 <TextBlock FontSize="24" Text="{Binding SelectedFileName}" HorizontalAlignment="Left" TextTrimming="CharacterEllipsis">
                     <TextBlock.ToolTip>
                         <ToolTip Style="{StaticResource AutoTextBlockTooltip}">

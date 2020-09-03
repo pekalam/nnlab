@@ -42,8 +42,7 @@ namespace Data.Application.Controllers
 
         private void SelectFiles()
         {
-            
-            _rm.NavigateContentRegion("MultiFileSourceView", "Files");
+            _rm.NavigateContentRegion("MultiFileSourceView");
         }
 
 
@@ -52,7 +51,7 @@ namespace Data.Application.Controllers
             var dialog = _fileDialogService.OpenCsv();
             if (dialog.result == true)
             {
-                _rm.NavigateContentRegion("SingleFileSourceView", "File");
+                _rm.NavigateContentRegion("SingleFileSourceView");
                 SingleFileSourceViewModel.Instance!.SelectedFilePath = dialog.filePath;
             }
         }
@@ -63,7 +62,7 @@ namespace Data.Application.Controllers
             {
                 _appState.CreateSession();
             }
-            _rm.NavigateContentRegion("CustomDataSetView", "Custom data set");
+            _rm.NavigateContentRegion("CustomDataSetView");
         }
     }
 }

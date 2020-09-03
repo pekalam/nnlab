@@ -1,6 +1,4 @@
-﻿using System.Collections.Specialized;
-using System.ComponentModel;
-using Common.Domain;
+﻿using Common.Domain;
 using NeuralNetwork.Application.Controllers;
 using NeuralNetwork.Application.ViewModels;
 using NeuralNetwork.Domain;
@@ -12,12 +10,13 @@ namespace NeuralNetwork.Application
 {
     class ModuleController
     {
-        private IEventAggregator _ea;
-        private IRegionManager _rm;
+        private readonly IEventAggregator _ea;
+        private readonly IRegionManager _rm;
         private readonly INeuralNetworkService _networkService;
         private readonly NeuralNetworkShellController _shellController;
         private NetDisplayController _netDisplayController;
         private readonly AppState _appState;
+        private readonly AppStateHelper _helper;
         private bool _firstNav;
 
         public ModuleController(IEventAggregator ea, IRegionManager rm, NeuralNetworkShellController shellController, AppState appState, INeuralNetworkService networkService, NetDisplayController netDisplayController)
@@ -28,19 +27,30 @@ namespace NeuralNetwork.Application
             _appState = appState;
             _networkService = networkService;
             _netDisplayController = netDisplayController;
+            _helper = new AppStateHelper(appState);
 
             _ea.GetEvent<SetupNewNavigationForSession>().Subscribe(OnSetupNewNavigationForSession);
             _ea.GetEvent<ReloadContentForSession>().Subscribe(OnReloadContentForSession);
-
         }
 
         public void Run()
         {
-            _appState.PropertyChanged += AppStateOnPropertyChanged;
-            if (_appState.ActiveSession != null)
+            _helper.OnTrainingDataInSession(data =>
             {
-                SetupActiveSession();
-            }
+                if (data == null)
+                {
+                    _ea.GetEvent<DisableNavMenuItem>().Publish(ModuleIds.NeuralNetwork);
+                    return;
+                }
+
+                if (_appState.ActiveSession!.Network == null)
+                {
+                    CreateNetworkForSession(_appState.ActiveSession);
+                }
+                _ea.GetEvent<EnableNavMenuItem>().Publish(ModuleIds.NeuralNetwork);
+            });
+
+            _helper.OnTrainingDataPropertyChanged(AdjustNetworkToNewVariables, s => s == nameof(TrainingData.Variables));
 
             _shellController.Initialize();
 
@@ -48,39 +58,16 @@ namespace NeuralNetwork.Application
             _ea.OnFirstNavigation(ModuleIds.NeuralNetwork, () =>
             {
                 _firstNav = true;
-                _rm.NavigateContentRegion(nameof(NeuralNetworkShellViewModel), "Neural network");
+                _rm.NavigateContentRegion("NeuralNetworkShellView");
             });
         }
 
-        
 
-        private void SetupActiveSession()
-        {
-
-            if (_appState.ActiveSession!.TrainingData != null)
-            {
-                _ea.GetEvent<EnableNavMenuItem>().Publish(ModuleIds.NeuralNetwork);
-                if (_appState.ActiveSession.Network == null)
-                {
-                    CreateNetworkForSession(_appState.ActiveSession);
-                }
-            }
-            else
-            {
-                _ea.GetEvent<DisableNavMenuItem>().Publish(ModuleIds.NeuralNetwork);
-            }
-            _appState.ActiveSession.PropertyChanged -= ActiveSessionOnTrainingDataChanged;
-            _appState.ActiveSession.PropertyChanged += ActiveSessionOnTrainingDataChanged;
-        }
 
         private void CreateNetworkForSession(Session session)
         {
             var network = _networkService.CreateNeuralNetwork(session.TrainingData!);
             session.Network = network;
-
-
-            session.TrainingData!.PropertyChanged -= TrainingDataOnPropertyChanged;
-            session.TrainingData.PropertyChanged += TrainingDataOnPropertyChanged;
         }
 
         private void AdjustNetworkToNewVariables(TrainingData trainingData)
@@ -90,34 +77,12 @@ namespace NeuralNetwork.Application
                 trainingData.Variables.TargetVariableNames.Length);
         }
 
-        private void TrainingDataOnPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(TrainingData.Variables))
-            {
-                var trainingData = (sender as TrainingData)!;
-                AdjustNetworkToNewVariables(trainingData);
-            }
-        }
-
-
-        private void AppStateOnPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            switch (e.PropertyName)
-            {
-                case nameof(AppState.ActiveSession):
-                {
-                    SetupActiveSession();
-                    break;
-                }
-            }
-        }
-
         private void OnReloadContentForSession((int moduleId, Session prev, Session next) arg)
         {
             if (arg.moduleId == ModuleIds.NeuralNetwork)
             {
-                //null network - go to data module in order to select data source
-                if (arg.next.Network == null)
+                //null data - go to data module in order to select data source
+                if (arg.next.TrainingData == null)
                 {
                     _ea.GetEvent<CheckNavMenuItem>().Publish(ModuleIds.Data);
                 }
@@ -129,23 +94,8 @@ namespace NeuralNetwork.Application
             if (arg.moduleId == ModuleIds.NeuralNetwork)
             {
                 if (!_firstNav) return;
-                _ea.OnFirstNavigation(ModuleIds.NeuralNetwork, () => _rm.NavigateContentRegion(nameof(NeuralNetworkShellViewModel), "Neural network"));
-            }
-        }
-
-        private void ActiveSessionOnTrainingDataChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(Session.TrainingData))
-            {
-                if (_appState.ActiveSession!.TrainingData != null)
-                {
-                    _ea.GetEvent<EnableNavMenuItem>().Publish(ModuleIds.NeuralNetwork);
-                    CreateNetworkForSession(_appState.ActiveSession);
-                }
-                else
-                {
-                    _ea.GetEvent<DisableNavMenuItem>().Publish(ModuleIds.NeuralNetwork);
-                }
+                _ea.OnFirstNavigation(ModuleIds.NeuralNetwork, () => 
+                    _rm.NavigateContentRegion("NeuralNetworkShellView"));
             }
         }
     }

@@ -49,8 +49,8 @@ namespace Data.Application
         {
             if (arg.moduleId == ModuleIds.Data)
             {
-                var (view, breadcrumb) = GetViewToNavigateFromSession(arg);
-                _rm.NavigateContentRegion(view, breadcrumb);
+                var view = GetViewToNavigateFromSession(arg);
+                _rm.NavigateContentRegion(view);
             }
         }
 
@@ -58,25 +58,25 @@ namespace Data.Application
         {
             if(arg.moduleId == ModuleIds.Data)
             {
-                var (view , breadcrumb)= GetViewToNavigateFromSession(arg);
-                _ea.OnFirstNavigation(ModuleIds.Data, () => _rm.NavigateContentRegion(view, breadcrumb));
+                var view = GetViewToNavigateFromSession(arg);
+                _ea.OnFirstNavigation(ModuleIds.Data, () => _rm.NavigateContentRegion(view));
             }
         }
 
-        private (string view, string breadcrumb) GetViewToNavigateFromSession((int moduleId, Session prev, Session next) arg)
+        private string GetViewToNavigateFromSession((int moduleId, Session prev, Session next) arg)
         {
             if (arg.next.TrainingData == null)
             {
-                return ("SelectDataSourceView", "Select");
+                return "SelectDataSourceView";
             }
             else if (arg.next.TrainingData.Source == TrainingDataSource.Csv)
             {
-                return ("FileDataSourceView", "File");
+                return "FileDataSourceView";
 
             }
             else if (arg.next.TrainingData.Source == TrainingDataSource.Memory)
             {
-                return ("CustomDataSetView", "Custom");
+                return "CustomDataSetView";
             }
 
             throw new Exception("Invalid arg");
@@ -91,7 +91,7 @@ namespace Data.Application
 
             _ea.GetEvent<EnableNavMenuItem>().Publish(ModuleIds.Data);
             _ea.GetEvent<CheckNavMenuItem>().Publish(ModuleIds.Data);
-            _rm.NavigateContentRegion("SelectDataSourceView", "Data source");
+            _rm.NavigateContentRegion("SelectDataSourceView");
         }
     }
 }

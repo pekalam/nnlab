@@ -66,6 +66,7 @@ namespace Shell.Application.ViewModels
                 SetProperty(ref _includeData, value);
                 if (!value)
                 {
+                    Options ^= DuplicateOptions.All;
                     Options |= DuplicateOptions.NoData;
                 }
                 else
@@ -83,6 +84,7 @@ namespace Shell.Application.ViewModels
                 SetProperty(ref _includeNetwork, value);
                 if (!value)
                 {
+                    Options ^= DuplicateOptions.All;
                     Options |= DuplicateOptions.NoNetwork;
                 }
                 else
@@ -100,6 +102,7 @@ namespace Shell.Application.ViewModels
                 SetProperty(ref _includeTrainingParameters, value);
                 if (!value)
                 {
+                    Options ^= DuplicateOptions.All;
                     Options |= DuplicateOptions.NoTrainingParams;
                 }
                 else

@@ -6,10 +6,12 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
     xmlns:dd="clr-namespace:Data.Presentation.__DesignData"
+    xmlns:interface="clr-namespace:Shell.Interface;assembly=Shell.Interface"
     mc:Ignorable="d" x:Class="Data.Presentation.Views.DataSourceSelection.SelectDataSourceView"
     d:DataContext="{d:DesignInstance dd:DesignSelectDataSourceVm, IsDesignTimeCreatable=True}"
     prism:ViewModelLocator.AutoWireViewModel="True" d:DesignWidth="1600.5" d:DesignHeight="800.951"
-    Style="{StaticResource ContentUserControl}">
+    Style="{StaticResource ContentUserControl}"
+    interface:BreadcrumbsHelper.Breadcrumb="Data source">
 
 
     <UserControl.Resources>

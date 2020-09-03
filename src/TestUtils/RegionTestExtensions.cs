@@ -24,7 +24,14 @@ namespace TestUtils
         public static void VerifyContentNavigation(this Mock<IRegionManager> rm, string viewName,
             Times times)
         {
-            rm.Verify(f => f.RequestNavigate(AppRegions.ContentRegion, viewName, It.IsAny<ContentRegionNavigationParameters>()), times);
+            try
+            {
+                rm.Verify(f => f.RequestNavigate(AppRegions.ContentRegion, viewName), times);
+            }
+            catch (MockException e)
+            {
+                rm.Verify(f => f.RequestNavigate(AppRegions.ContentRegion, viewName,It.IsAny<NavigationParameters>()), times);
+            }
         }
     }
 

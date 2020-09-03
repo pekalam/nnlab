@@ -8,6 +8,7 @@ using Shell.Application.ViewModels;
 using Shell.Interface;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows;
 using TestUtils;
 using Xunit;
 
@@ -50,16 +51,33 @@ namespace Shell.Application.Tests
         private AutoMocker _mocker = new AutoMocker();
         private AppState _appState;
         private TestEa _ea;
-        private Mock<RegionManagerNavigationDecorator> _rm;
+        private RegionManagerNavigationDecorator _rm;
         private MainWindowViewModel _vm;
 
         public MainWindowNavMenuTests()
         {
-            (_rm, _, _ea) = _mocker.UseDecoratedTestRm();
+            _ea = _mocker.UseTestEa();
+            _rm = new RegionManagerNavigationDecorator(new RegionManager(), _ea);
+            _mocker.Use<IRegionManager>(_rm);
             _appState = _mocker.UseImpl<AppState>();
             _mocker.UseImpl<NavigationBreadcrumbsViewModel>();
             _vm = _mocker.CreateInstance<MainWindowViewModel>();
             _vm.IsDataItemEnabled = _vm.IsNetworkItemEnabled = _vm.IsTrainingItemEnabled = _vm.IsPredictionItemEnabled = true;
+
+            _rm.Regions.Add(AppRegions.ContentRegion, new Region());
+        }
+
+        private void NavigateContent(string breadcrumb, bool isModal)
+        {
+            _rm.Regions[AppRegions.ContentRegion].RemoveAll();
+
+            var view = new DependencyObject();
+            view.SetValue(BreadcrumbsHelper.BreadcrumbProperty, breadcrumb);
+            view.SetValue(BreadcrumbsHelper.IsModalProperty, isModal);
+            _rm.Regions[AppRegions.ContentRegion].Add(view);
+            _rm.Regions[AppRegions.ContentRegion].Activate(view);
+
+            _ea.GetEvent<ContentRegionViewChanged>().Publish();
         }
 
         [Fact]
@@ -76,7 +94,7 @@ namespace Shell.Application.Tests
         public void ContentRegion_navigation___sets_breadcrumbs()
         {
             //act
-            _rm.Object.NavigateContentRegion("x", "b1");
+            NavigateContent("b1", false);
 
             //assert
             _vm.NavigationBreadcrumbsVm.Breadcrumbs.Select(b => b.Breadcrumb).Should().BeEquivalentTo("b1");
@@ -94,14 +112,13 @@ namespace Shell.Application.Tests
                 if (arg.Next == ModuleIds.NeuralNetwork && !netNav)
                 {
                     netNav = true;
-                    _rm.Object.NavigateContentRegion("y", "by");
-                    _rm.Object.NavigateContentRegion("z", "bz");
+                    NavigateContent("by", false);
                 }
 
                 if (arg.Next == ModuleIds.Data && !dataNav)
                 {
                     dataNav = true;
-                    _rm.Object.NavigateContentRegion("x", "bx");
+                    NavigateContent("bx", false);
                 }
             });
 
@@ -111,7 +128,7 @@ namespace Shell.Application.Tests
 
             //act
             _vm.CheckedNavItemId = ModuleIds.NeuralNetwork;
-            _vm.NavigationBreadcrumbsVm.Breadcrumbs.Select(b => b.Breadcrumb).Should().BeEquivalentTo("by", "bz");
+            _vm.NavigationBreadcrumbsVm.Breadcrumbs.Select(b => b.Breadcrumb).Should().BeEquivalentTo("by");
 
             //should be restored
             _vm.CheckedNavItemId = ModuleIds.Data;
@@ -121,19 +138,19 @@ namespace Shell.Application.Tests
 
             //should be restored
             _vm.CheckedNavItemId = ModuleIds.NeuralNetwork;
-            _vm.NavigationBreadcrumbsVm.Breadcrumbs.Select(b => b.Breadcrumb).Should().BeEquivalentTo("by", "bz");
+            _vm.NavigationBreadcrumbsVm.Breadcrumbs.Select(b => b.Breadcrumb).Should().BeEquivalentTo("by");
         }
 
         [Fact]
         public void Reload_and_setup_navigation_events_are_published_when_active_session_is_changed()
         {
-            var reloadTimesCalled = new int[] { 0, 0, 0, 0, 0 };
-            var startNewNavTimesCalled = new int[] { 0, 0, 0, 0, 0 };
+            var reloadTimesCalled = new int[] { 0, 0, 0, 0, 0,0 };
+            var startNewNavTimesCalled = new int[] { 0, 0, 0, 0, 0,0 };
 
             void ResetCounters()
             {
-                reloadTimesCalled = new int[] { 0, 0, 0, 0, 0 };
-                startNewNavTimesCalled = new int[] { 0, 0, 0, 0, 0 };
+                reloadTimesCalled = new int[] { 0, 0, 0, 0, 0,0 };
+                startNewNavTimesCalled = new int[] { 0, 0, 0, 0, 0,0 };
             }
 
 

@@ -11,9 +11,11 @@
              xmlns:dd="clr-namespace:Training.Presentation.__DesignData"
              xmlns:behaviors="clr-namespace:Common.Presentation.Behaviors;assembly=Common.Presentation"
              xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:interface="clr-namespace:Shell.Interface;assembly=Shell.Interface"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance dd:DesignTrainingParametersVm, IsDesignTimeCreatable=True}"
-             prism:ViewModelLocator.AutoWireViewModel="True" Style="{StaticResource ContentUserControl}">
+             prism:ViewModelLocator.AutoWireViewModel="True" Style="{StaticResource ContentUserControl}"
+             interface:BreadcrumbsHelper.Breadcrumb="Parameters" interface:BreadcrumbsHelper.IsModal="True">
     <UserControl.Resources>
         <converters:BooleanNegConverter x:Key="boolNegConverter" />
     </UserControl.Resources>

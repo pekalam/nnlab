@@ -54,14 +54,7 @@ namespace Shell.Interface
 
     public class HideFlyout : PubSubEvent { }
 
-
-    public class ContentRegionViewChangedEventArgs
-    {
-        public string ViewName { get; set; } = null!;
-        public ContentRegionNavigationParameters NavigationParameters { get; set; } = null!;
-    }
-
-    public class ContentRegionViewChanged : PubSubEvent<ContentRegionViewChangedEventArgs>
+    public class ContentRegionViewChanged : PubSubEvent
     {
     }
 

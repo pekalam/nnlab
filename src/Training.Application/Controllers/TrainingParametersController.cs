@@ -6,7 +6,10 @@ using System.Windows.Controls;
 using Common.Domain;
 using Common.Framework;
 using Prism.Commands;
+using Prism.Events;
 using Prism.Ioc;
+using Prism.Regions;
+using Shell.Interface;
 using Training.Application.Controllers;
 using Training.Application.Services;
 using Training.Application.ViewModels;
@@ -18,6 +21,7 @@ namespace Training.Application.Services
     {
         DelegateCommand OkCommand { get; }
         DelegateCommand ResetCommand { get; }
+        DelegateCommand ReturnCommand { get; }
 
         public static void Register(IContainerRegistry cr)
         {
@@ -35,71 +39,75 @@ namespace Training.Application.Services
 
         public DelegateCommand OkCommand { get; set; } = null!;
         public DelegateCommand ResetCommand { get; set; } = null!;
+        public DelegateCommand ReturnCommand { get; set; } = null!;
     }
 }
 
 namespace Training.Application.Controllers
 {
-    internal class TrainingParametersController : ITransientController<TrainingParametersService>
+    internal class TrainingParametersController : ControllerBase<TrainingParametersViewModel>,ITransientController<TrainingParametersService>
     {
-        private readonly IViewModelAccessor _accessor;
         private readonly AppState _appState;
         private TrainingParametersService _service = null!;
+        private readonly IRegionManager _rm;
+        private readonly IEventAggregator _ea;
 
-        public TrainingParametersController(IViewModelAccessor accessor, AppState appState)
+        public TrainingParametersController(IViewModelAccessor accessor, AppState appState, IRegionManager rm, IEventAggregator ea) : base(accessor)
         {
-            _accessor = accessor;
             _appState = appState;
+            _rm = rm;
+            _ea = ea;
+        }
 
-            _accessor.OnCreated<TrainingParametersViewModel>(() =>
+        protected override void VmCreated()
+        {
+            Vm!.PropertyChanged += VmOnPropertyChanged;
+
+            _appState.ActiveSessionChanged += (sender, session) =>
             {
-                var vm = _accessor.Get<TrainingParametersViewModel>()!;
-
-                vm.PropertyChanged += VmOnPropertyChanged;
-
-                _appState.ActiveSessionChanged += (sender, session) =>
+                if (session.next.TrainingParameters != null)
                 {
-                    if (session.next.TrainingParameters != null)
-                    {
-                        vm.TrainingParameters = session.next.TrainingParameters.Clone();
-                        AttachHandlersToParameters(vm.TrainingParameters);
-                        vm.IsMaxLearningTimeChecked = vm.TrainingParameters.MaxLearningTime == TimeSpan.MaxValue;
+                    Vm!.TrainingParameters = session.next.TrainingParameters.Clone();
+                    AttachHandlersToParameters(Vm!.TrainingParameters);
+                    Vm!.IsMaxLearningTimeChecked = Vm!.TrainingParameters.MaxLearningTime == TimeSpan.MaxValue;
 
-                        if (!vm.IsMaxLearningTimeChecked)
-                        {
-                            vm.MaxLearningTime = Time.Now.Add(vm.TrainingParameters.MaxLearningTime);
-                        }
-                        else vm.MaxLearningTime = default;
+                    if (!Vm!.IsMaxLearningTimeChecked)
+                    {
+                        Vm!.MaxLearningTime = Time.Now.Add(Vm!.TrainingParameters.MaxLearningTime);
                     }
-
-                    session.next.PropertyChanged += (o, args) =>
-                    {
-                        if (args.PropertyName == nameof(Session.TrainingParameters))
-                        {
-                            vm.TrainingParameters = (o as Session)!.TrainingParameters!.Clone();
-                            AttachHandlersToParameters(vm.TrainingParameters);
-                            vm.IsMaxLearningTimeChecked = vm.TrainingParameters.MaxLearningTime == TimeSpan.MaxValue;
-
-                            if (!vm.IsMaxLearningTimeChecked)
-                            {
-                                vm.MaxLearningTime = Time.Now.Add(vm.TrainingParameters.MaxLearningTime);
-                            }
-                            else vm.MaxLearningTime = default;
-                        }
-                    };
-                };
-
-                vm.TrainingParameters = _appState.ActiveSession?.TrainingParameters?.Clone();
-                if (vm.TrainingParameters != null)
-                {
-                    AttachHandlersToParameters(vm.TrainingParameters);
-                    vm.IsMaxLearningTimeChecked = vm.TrainingParameters.MaxLearningTime == TimeSpan.MaxValue;
-                    if (!vm.IsMaxLearningTimeChecked)
-                    {
-                        vm.MaxLearningTime = Time.Now.Add(vm.TrainingParameters.MaxLearningTime);
-                    }
+                    else Vm!.MaxLearningTime = default;
                 }
-            });
+
+                session.next.PropertyChanged += (o, args) =>
+                {
+                    if (args.PropertyName == nameof(Session.TrainingParameters))
+                    {
+                        Vm!.TrainingParameters = (o as Session)!.TrainingParameters!.Clone();
+                        AttachHandlersToParameters(Vm!.TrainingParameters);
+                        Vm!.IsMaxLearningTimeChecked = Vm!.TrainingParameters.MaxLearningTime == TimeSpan.MaxValue;
+
+                        if (!Vm!.IsMaxLearningTimeChecked)
+                        {
+                            Vm!.MaxLearningTime = Time.Now.Add(Vm!.TrainingParameters.MaxLearningTime);
+                        }
+                        else Vm!.MaxLearningTime = default;
+                    }
+                };
+            };
+
+            Vm!.TrainingParameters = _appState.ActiveSession?.TrainingParameters?.Clone();
+            if (Vm!.TrainingParameters != null)
+            {
+                AttachHandlersToParameters(Vm!.TrainingParameters);
+                Vm!.IsMaxLearningTimeChecked = Vm!.TrainingParameters.MaxLearningTime == TimeSpan.MaxValue;
+                if (!Vm!.IsMaxLearningTimeChecked)
+                {
+                    Vm!.MaxLearningTime = Time.Now.Add(Vm!.TrainingParameters.MaxLearningTime);
+                }
+            }
+
+
+            _ea.GetEvent<EnableModalNavigation>().Publish(_service.ReturnCommand);
         }
 
         private void AttachHandlersToParameters(TrainingParameters parameters)
@@ -143,21 +151,29 @@ namespace Training.Application.Controllers
             _service = service;
             service.OkCommand = new DelegateCommand(() =>
                 {
-                    var param = _accessor.Get<TrainingParametersViewModel>()!.TrainingParameters!.Clone();
+                    var param = Vm!.TrainingParameters!.Clone();
                     _appState.ActiveSession!.TrainingParameters = param;
                     RaiseCommandsCanExec();
                 },
-                () => !_accessor.Get<TrainingParametersViewModel>()!.TrainingParameters!
+                () => !Vm!.TrainingParameters!
                     .Equals(_appState.ActiveSession!.TrainingParameters));
 
             service.ResetCommand = new DelegateCommand(() =>
                 {
                     var newParams = _appState.ActiveSession!.TrainingParameters!.Clone();
-                    _accessor.Get<TrainingParametersViewModel>()!.TrainingParameters = newParams;
+                    Vm!.TrainingParameters = newParams;
                     AttachHandlersToParameters(newParams);
                 },
-                () => !_accessor.Get<TrainingParametersViewModel>()!.TrainingParameters!
+                () => !Vm!.TrainingParameters!
                     .Equals(_appState.ActiveSession!.TrainingParameters));
+
+
+            service.ReturnCommand = new DelegateCommand(Return);
+        }
+
+        private void Return()
+        {
+            _rm.NavigateContentRegion("TrainingView");
         }
     }
 }

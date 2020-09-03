@@ -11,9 +11,9 @@ namespace Shell.Application.Tests
 {
     class TestRegionCollectionDecorator : RegionCollectionDecorator
     {
-        private Action<Uri, ContentRegionNavigationParameters> _navigationAction;
+        private Action _navigationAction;
 
-        public TestRegionCollectionDecorator(IRegionCollection regionCollection, Action<Uri, ContentRegionNavigationParameters> navigationAction) : base(
+        public TestRegionCollectionDecorator(IRegionCollection regionCollection, Action navigationAction) : base(
             regionCollection, navigationAction)
         {
             _navigationAction = navigationAction;
@@ -54,13 +54,13 @@ namespace Shell.Application.Tests
             rm.Regions.Add(AppRegions.ContentRegion, new Region());
 
             var ea = new EventAggregator();
-            ea.GetEvent<ContentRegionViewChanged>().Subscribe(s => called++);
+            ea.GetEvent<ContentRegionViewChanged>().Subscribe(() => called++);
 
             var regionManager = new TestRegionManagerDecorator(rm, ea);
 
             //act
             regionManager.Regions[AppRegions.ContentRegion]
-                .RequestNavigate(new Uri("x2", UriKind.RelativeOrAbsolute), new ContentRegionNavigationParameters("x2"));
+                .RequestNavigate(new Uri("x2", UriKind.RelativeOrAbsolute));
 
 
             //assert

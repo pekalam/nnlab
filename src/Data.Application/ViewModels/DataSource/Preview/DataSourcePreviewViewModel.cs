@@ -45,43 +45,25 @@ namespace Data.Application.ViewModels.DataSource.Preview
         public Action? Loaded;
 
         private readonly AppState _appState;
+        private readonly AppStateHelper _helper;
 
         public DataSourcePreviewViewModel(AppState appState)
         {
             _appState = appState;
-            appState.ActiveSessionChanged += AppStateOnActiveSessionChanged;
-            if (appState.ActiveSession?.TrainingData != null)
-            {
-                SetTrainingData(appState.ActiveSession.TrainingData);
-            }
+            _helper = new AppStateHelper(appState);
 
-            if (appState.ActiveSession != null)
-            {
-                appState.ActiveSession.PropertyChanged += ActiveSessionOnPropertyChanged;
-            }
+            _helper.OnTrainingDataChanged(SetTrainingData);
             
-        }
-
-        private void ActiveSessionOnPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(Session.TrainingData))
+            _helper.OnTrainingDataPropertyChanged(data =>
             {
-                SetTrainingData(_appState.ActiveSession!.TrainingData!);
-                _appState.ActiveSession!.PropertyChanged -= ActiveSessionOnPropertyChanged;
-            }
-        }
-
-        private void AppStateOnActiveSessionChanged(object? sender, (Session? prev, Session next) e)
-        {
-            if (e.next.TrainingData != null)
+                DataSetInstanceAccessor = new DataSetInstanceAccessor(_appState, DataSetType.Training);
+                DataSetPreviewAccessor = new DataSetPreviewAccessor(_appState);
+            }, s => s switch
             {
-                SetTrainingData(e.next.TrainingData);
-            }
-            else
-            {
-                _appState.ActiveSession!.PropertyChanged -= ActiveSessionOnPropertyChanged;
-                _appState.ActiveSession.PropertyChanged += ActiveSessionOnPropertyChanged;
-            }
+                nameof(TrainingData.Variables) => true,
+                nameof(TrainingData.Sets) => true,
+                _ => false,
+            });
         }
 
         private void SetTrainingData(TrainingData trainingData)
@@ -92,20 +74,6 @@ namespace Data.Application.ViewModels.DataSource.Preview
             Stats = new TrainingDataStats(trainingData);
 
             ShowLoading = false;
-
-            trainingData.PropertyChanged -= TrainingDataOnPropertyChanged;
-            trainingData.PropertyChanged += TrainingDataOnPropertyChanged;
-        }
-
-        private void TrainingDataOnPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(TrainingData.Variables)
-            || e.PropertyName == nameof(TrainingData.Sets))
-            {
-                DataSetInstanceAccessor = new DataSetInstanceAccessor(_appState, DataSetType.Training);
-                DataSetPreviewAccessor = new DataSetPreviewAccessor(_appState);
-            }
-
         }
 
         public bool PreviewLoaded

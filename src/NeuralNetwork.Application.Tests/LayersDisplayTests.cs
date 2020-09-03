@@ -38,7 +38,6 @@ namespace NeuralNetwork.Application.Tests
         [Fact]
         public void Layers_when_no_active_session_are_empty()
         {
-               
             _vm = _mocker.UseVm<LayersDisplayViewModel>();
 
             _vm.Layers.Should().BeNullOrEmpty();
@@ -54,7 +53,7 @@ namespace NeuralNetwork.Application.Tests
             _vm.Layers.Should().HaveCount(_appState.ActiveSession.Network!.TotalLayers + 1);
 
             var session2 = _appState.CreateSession();
-            session2.Network = MLPMocks.ValidNet1;
+            session2.Network = MLPMocks.ValidNet2;
             _appState.ActiveSession = session2;
 
             _vm.Layers.Should().HaveCount(_appState.ActiveSession.Network!.TotalLayers + 1);

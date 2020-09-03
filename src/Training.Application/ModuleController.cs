@@ -1,6 +1,8 @@
 ﻿using System.ComponentModel;
+using System.Linq;
 using System.Windows.Data;
 using Common.Domain;
+using Common.Framework;
 using Prism.Events;
 using Prism.Regions;
 using Shell.Interface;
@@ -39,8 +41,9 @@ namespace Training.Application
 
         private ITrainingInfoController _trainingInfoController;
         private ITrainingController _trainingController;
+        private IViewModelAccessor _accessor;
 
-        public ModuleController(IEventAggregator ea, IRegionManager rm, AppState appState, ITrainingInfoController trainingInfoController, ITrainingController trainingController, ModuleState moduleState)
+        public ModuleController(IEventAggregator ea, IRegionManager rm, AppState appState, ITrainingInfoController trainingInfoController, ITrainingController trainingController, ModuleState moduleState, IViewModelAccessor accessor)
         {
             _ea = ea;
             _rm = rm;
@@ -48,6 +51,7 @@ namespace Training.Application
             _trainingInfoController = trainingInfoController;
             _trainingController = trainingController;
             _moduleState = moduleState;
+            _accessor = accessor;
 
             _moduleState.PropertyChanged += ModuleStateOnPropertyChanged;
 
@@ -57,13 +61,9 @@ namespace Training.Application
             {
                 if (args.moduleId == ModuleIds.Training)
                 {
-                    if (args.next.TrainingParameters == null)
+                    if (args.next.TrainingData == null)
                     {
                         _ea.GetEvent<CheckNavMenuItem>().Publish(ModuleIds.Data);
-                    }
-                    else
-                    {
-                        _rm.NavigateContentRegion("TrainingView", "Training");
                     }
                 }
             });
@@ -71,7 +71,7 @@ namespace Training.Application
             {
                 if (args.moduleId == ModuleIds.Training)
                 {
-                    _ea.OnFirstNavigation(ModuleIds.Training, () => _rm.NavigateContentRegion("TrainingView", "Training"));
+                    _ea.OnFirstNavigation(ModuleIds.Training, () => _rm.NavigateContentRegion("TrainingView"));
                 }
             });
 
@@ -140,7 +140,7 @@ namespace Training.Application
         {
             _ea.OnFirstNavigation(ModuleIds.Training, () =>
             {
-                _rm.NavigateContentRegion("TrainingView", "Training");
+                _rm.NavigateContentRegion("TrainingView");
             });
         }
     }

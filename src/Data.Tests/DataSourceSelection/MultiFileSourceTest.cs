@@ -34,6 +34,7 @@ namespace Data.Application.Tests.DataSourceSelection
         {
             _testOutput = testOutput;
             _mocker.UseTestRm();
+            _mocker.UseTestVmAccessor();
             _appState = _mocker.UseImpl<AppState>();
             _dataSetService = _mocker.UseMock<ITrainingDataService>();
             _dialogService = _mocker.UseMock<IFileDialogService>();
@@ -42,7 +43,7 @@ namespace Data.Application.Tests.DataSourceSelection
             _multiFileService = _mocker.UseImpl<IMultiFileService, MultiFileService>();
             _fileService = _mocker.UseMock<IFileService, FileService>();
 
-            _vm = _mocker.CreateInstance<MultiFileSourceViewModel>();
+            _vm = _mocker.UseVm<MultiFileSourceViewModel>();
             _fileController = _mocker.CreateInstance<FileController>();
         }
 

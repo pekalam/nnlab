@@ -12,10 +12,9 @@ using Prism.Ioc;
 
 namespace Data.Application.Services
 {
-    public interface IStatisticsService : ITransientController
+    public interface IStatisticsService
     {
         DelegateCommand<DataSetType?> SelectDataSet { get; set; }
-        Action<StatisticsViewModel> Created { get; set; }
 
         public static void Register(IContainerRegistry cr)
         {
@@ -26,50 +25,43 @@ namespace Data.Application.Services
 
 namespace Data.Application.Controllers.DataSource
 {
-    internal class StatisticsController : IStatisticsService
+    internal class StatisticsController : ControllerBase<StatisticsViewModel>,IStatisticsService, ITransientController
     {
         private HistogramController _histogramCtrl = null!;
         private VariablesPlotController _variablesPlotCtrl = null!;
         private readonly AppState _appState;
+        private readonly AppStateHelper _helper;
 
-        public StatisticsController(AppState appState)
+        public StatisticsController(AppState appState, IViewModelAccessor accessor) : base(accessor)
         {
             _appState = appState;
-
-            _appState.ActiveSession!.PropertyChanged += ActiveSessionOnPropertyChanged;
-            _appState.ActiveSessionChanged += AppStateOnActiveSessionChanged;
-
-            Created = vm =>
-            {
-                _histogramCtrl = new HistogramController(vm.HistogramVm);
-                _variablesPlotCtrl = new VariablesPlotController(vm.VariablesPlotVm);
-
-                SetTrainingData();
-                SelectDataSet = new DelegateCommand<DataSetType?>(SelectDataSetExecute);
-            };
+            _helper = new AppStateHelper(appState);
         }
 
         public DelegateCommand<DataSetType?> SelectDataSet { get; set; } = null!;
-        public Action<StatisticsViewModel> Created { get; set; }
 
-        private void ActiveSessionOnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        protected override void VmCreated()
         {
-            switch (e.PropertyName)
-            {
-                case nameof(Session.TrainingData):
-                    SetTrainingData();
-                    break;
-            }
-        }
+            _histogramCtrl = new HistogramController(Vm!.HistogramVm);
+            _variablesPlotCtrl = new VariablesPlotController(Vm!.VariablesPlotVm);
 
-        private void AppStateOnActiveSessionChanged(object? sender, (Session? prev, Session next) e)
-        {
-            if (e.next.TrainingData != null)
+            _helper.OnTrainingDataInSession(data =>
             {
-                SetTrainingData();
-            }
-            e.next.PropertyChanged -= ActiveSessionOnPropertyChanged;
-            e.next.PropertyChanged += ActiveSessionOnPropertyChanged;
+                if (data != null) SetTrainingData();
+            });
+
+            _helper.OnTrainingDataPropertyChanged(data =>
+            {
+                _variablesPlotCtrl.Plot(data, DataSetType.Training);
+            }, s => s switch
+            {
+                nameof(TrainingData.Variables) => true,
+                nameof(TrainingData.Sets) => true,
+                _ => false,
+            });
+
+            SetTrainingData();
+            SelectDataSet = new DelegateCommand<DataSetType?>(SelectDataSetExecute);
         }
 
 
@@ -80,26 +72,9 @@ namespace Data.Application.Controllers.DataSource
             var setTypes = new List<DataSetType>() {DataSetType.Training};
             if (trainingData.Sets.TestSet != null) setTypes.Add(DataSetType.Test);
             if (trainingData.Sets.ValidationSet != null) setTypes.Add(DataSetType.Validation);
-            StatisticsViewModel.Instance!.DataSetTypes = setTypes.ToArray();
+            Vm!.DataSetTypes = setTypes.ToArray();
 
             _variablesPlotCtrl.Plot(trainingData, DataSetType.Training);
-
-            trainingData.PropertyChanged -= TrainingDataOnPropertyChanged;
-            trainingData.PropertyChanged += TrainingDataOnPropertyChanged;
-        }
-
-        private void TrainingDataOnPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            switch (e.PropertyName)
-            {
-                case nameof(TrainingData.Variables):
-                    _variablesPlotCtrl.Plot((sender as TrainingData)!, DataSetType.Training);
-                    break;
-                case nameof(TrainingData.Sets):
-                    _variablesPlotCtrl.Plot((sender as TrainingData)!, DataSetType.Training);
-                    break;
-
-            }
         }
 
         private void SelectDataSetExecute(DataSetType? set)

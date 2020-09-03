@@ -11,9 +11,9 @@ namespace NeuralNetwork.Presentation
     {
         public static void RegisterTypes(IContainerRegistry cr)
         {
-            cr.RegisterForNavigation<NeuralNetworkShellView>(nameof(NeuralNetworkShellViewModel));
-            cr.RegisterForNavigation<LayerEditorView>(nameof(LayerEditorViewModel));
-            cr.RegisterForNavigation<LayersDisplayView>(nameof(LayersDisplayViewModel));
+            cr.RegisterForNavigation<NeuralNetworkShellView>();
+            cr.RegisterForNavigation<LayerEditorView>();
+            cr.RegisterForNavigation<LayersDisplayView>();
         }
     }
 }

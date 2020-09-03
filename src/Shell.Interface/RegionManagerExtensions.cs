@@ -4,16 +4,14 @@ namespace Shell.Interface
 {
     public static class RegionManagerExtensions
     {
-        public static void NavigateContentRegion(this IRegionManager rm, string viewName,
-            ContentRegionNavigationParameters navParams)
+        public static void NavigateContentRegion(this IRegionManager rm, string viewName)
         {
-            rm.RequestNavigate(AppRegions.ContentRegion, viewName, navParams);
+            rm.RequestNavigate(AppRegions.ContentRegion, viewName);
         }
 
-
-        public static void NavigateContentRegion(this IRegionManager rm, string viewName, string breadcrumb)
+        public static void NavigateContentRegion(this IRegionManager rm, string viewName, NavigationParameters navigationParameters)
         {
-            rm.RequestNavigate(AppRegions.ContentRegion, viewName, new ContentRegionNavigationParameters(breadcrumb));
+            rm.RequestNavigate(AppRegions.ContentRegion, viewName, navigationParameters);
         }
     }
 }

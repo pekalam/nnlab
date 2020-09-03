@@ -12,10 +12,12 @@
              xmlns:viewModels="clr-namespace:Training.Application.ViewModels;assembly=Training.Application"
              xmlns:converters="clr-namespace:Common.Presentation.Converters;assembly=Common.Presentation"
              xmlns:presentation="clr-namespace:Training.Presentation"
+             xmlns:interface="clr-namespace:Shell.Interface;assembly=Shell.Interface"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance designData:DesignReportsVm, IsDesignTimeCreatable=True}"
              d:DesignWidth="800" d:DesignHeight="600"
-             Style="{StaticResource ContentUserControl}">
+             Style="{StaticResource ContentUserControl}"
+             interface:BreadcrumbsHelper.Breadcrumb="Reports" interface:BreadcrumbsHelper.IsModal="True">
     <UserControl.Resources>
         <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
     </UserControl.Resources>

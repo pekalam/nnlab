@@ -32,6 +32,7 @@ namespace Data.Application.Tests.DataSourceSelection
         public FileSelectTest()
         {
             (_rm, _regions) = _mocker.UseTestRm();
+            _mocker.UseTestVmAccessor();
             _appState = _mocker.UseImpl<AppState>();
             _dialogService = _mocker.UseMock<IFileDialogService>();
             _fileService = _mocker.UseMock<IFileService, FileService>();
@@ -48,8 +49,8 @@ namespace Data.Application.Tests.DataSourceSelection
         public void SelectFileCommand_when_dialog_returns_path_navigates_to_next_view()
         {
             //arrange
-            var vm = _mocker.CreateInstance<SelectDataSourceViewModel>(); //current vm
-            var sigVm = _mocker.CreateInstance<SingleFileSourceViewModel>(); //next view vm
+            var vm = _mocker.UseVm<SelectDataSourceViewModel>(); //current vm
+            var sigVm = _mocker.UseVm<SingleFileSourceViewModel>(); //next view vm
 
             var successfulPath = "C:\\Dir\\test.csv";
 
@@ -75,8 +76,8 @@ namespace Data.Application.Tests.DataSourceSelection
         public void SelectFileCommand_when_dialog_returns_empty_path_doesnt_navigate()
         {
             //arrange
-            var vm = _mocker.CreateInstance<SelectDataSourceViewModel>();
-            var sigVm = _mocker.CreateInstance<SingleFileSourceViewModel>();
+            var vm = _mocker.UseVm<SelectDataSourceViewModel>();
+            var sigVm = _mocker.UseVm<SingleFileSourceViewModel>();
 
 
             _dialogService.Setup(f => f.OpenCsv()).Returns((false, default));
@@ -99,8 +100,8 @@ namespace Data.Application.Tests.DataSourceSelection
         public void SelectTSVFiles_when_dialog_returns_valid_path_sets_paths()
         {
             //arrange
-            var vm = _mocker.CreateInstance<SelectDataSourceViewModel>();
-            var mulVm = _mocker.CreateInstance<MultiFileSourceViewModel>();
+            var vm = _mocker.UseVm<SelectDataSourceViewModel>();
+            var mulVm = _mocker.UseVm<MultiFileSourceViewModel>();
 
             var trainingPath = "C:\\Dir\\training.csv";
             var validationPath = "C:\\Dir\\validation.csv";

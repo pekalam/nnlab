@@ -6,6 +6,7 @@ using System.ComponentModel;
 using Common.Domain;
 using Common.Framework;
 using Data.Application.Controllers.DataSource;
+using Data.Application.ViewModels.DataSource.Normalization;
 using Prism.Ioc;
 
 namespace Data.Application.Services
@@ -26,46 +27,29 @@ namespace Data.Application.Services
 
 namespace Data.Application.Controllers.DataSource
 {
-    internal class NormalizationController : INormalizationService
+    internal class NormalizationController : INormalizationService, ISingletonController
     {
         private readonly INormalizationDomainService _normalizationService;
+        private readonly AppStateHelper _helper;
+        private bool _ignoreCmd;
+        private readonly IViewModelAccessor _accessor;
 
-        public NormalizationController(INormalizationDomainService normalizationService, AppState appState)
+        public NormalizationController(INormalizationDomainService normalizationService, AppState appState, IViewModelAccessor accessor)
         {
             _normalizationService = normalizationService;
+            _accessor = accessor;
+            _helper = new AppStateHelper(appState);
 
             NoNormalizationCommand = new DelegateCommand(NoNormalization);
             MinMaxNormalizationCommand = new DelegateCommand(MinMaxNormalization);
             MeanNormalizationCommand = new DelegateCommand(MeanNormalization);
             StdNormalizationCommand = new DelegateCommand(StdNormalization);
 
-            appState.ActiveSessionChanged += AppStateOnActiveSessionChanged;
-        }
-
-        private void AppStateOnActiveSessionChanged(object? sender, (Session? prev, Session next) e)
-        {
-            e.next.PropertyChanged += SessionPropertyChanged;
-        }
-
-        private void SessionPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(Session.TrainingData))
+            _helper.OnTrainingDataPropertyChanged(data =>
             {
-                var session= (sender as Session);
-                if(session.TrainingData == null) return;
-                session.TrainingData.PropertyChanged -= TrainingDataOnPropertyChanged;
-                session.TrainingData.PropertyChanged += TrainingDataOnPropertyChanged;
-            }
-        }
-
-        private void TrainingDataOnPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(TrainingData.Variables))
-            {
-                var trainingData = (sender as TrainingData)!;
-                if (trainingData.Source == TrainingDataSource.Csv)
+                if (data.Source == TrainingDataSource.Csv)
                 {
-                    switch (trainingData.NormalizationMethod)
+                    switch (data.NormalizationMethod)
                     {
                         case NormalizationMethod.Mean:
                             MeanNormalization();
@@ -78,7 +62,9 @@ namespace Data.Application.Controllers.DataSource
                             break;
                     }
                 }
-            }
+            }, s => s == nameof(TrainingData.Variables));
+
+            _helper.OnTrainingDataInSession(SetVmNormalizationMethod);
         }
 
         public DelegateCommand NoNormalizationCommand { get; set; }
@@ -86,27 +72,52 @@ namespace Data.Application.Controllers.DataSource
         public DelegateCommand MeanNormalizationCommand { get; set; }
         public DelegateCommand StdNormalizationCommand { get; set; }
 
+        private void SetVmNormalizationMethod(TrainingData? data)
+        {
+            if(data == null) return;
+            var vm = _accessor.Get<NormalizationViewModel>();
+            if(vm == null) return;
+            _ignoreCmd = true;
+            switch (data.NormalizationMethod)
+            {
+                case NormalizationMethod.None:
+                    vm.NoneChecked = true;
+                    break;
+                case NormalizationMethod.Mean:
+                    vm.MeanChecked = true;
+                    break;
+                case NormalizationMethod.MinMax:
+                    vm.MinMaxChecked = true;
+                    break;
+                case NormalizationMethod.Std:
+                    vm.StdChecked = true;
+                    break;
+            }
+            _ignoreCmd = false;
+        }
+
         private void StdNormalization()
         {
+            if(_ignoreCmd) return;
             _normalizationService.StdNormalization();
         }
 
         private void MeanNormalization()
         {
+            if (_ignoreCmd) return;
             _normalizationService.MeanNormalization();
-
         }
 
         private void MinMaxNormalization()
         {
+            if (_ignoreCmd) return;
             _normalizationService.MinMaxNormalization();
-
         }
 
         private void NoNormalization()
         {
+            if (_ignoreCmd) return;
             _normalizationService.NoNormalization();
-
         }
 
         public void Initialize()

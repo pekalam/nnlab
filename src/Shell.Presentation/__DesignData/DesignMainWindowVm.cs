@@ -7,7 +7,7 @@ namespace Shell.Presentation.__DesignData
     }
 
     class DesignNavigationBreadcrumbsVm : NavigationBreadcrumbsViewModel {
-        public DesignNavigationBreadcrumbsVm() : base(null, null)
+        public DesignNavigationBreadcrumbsVm() : base()
         {
         }
     }
