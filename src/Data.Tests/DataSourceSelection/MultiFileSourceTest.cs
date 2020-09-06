@@ -34,6 +34,7 @@ namespace Data.Application.Tests.DataSourceSelection
         {
             _testOutput = testOutput;
             _mocker.UseTestRm();
+            _mocker.UseTestEa();
             _mocker.UseTestVmAccessor();
             _appState = _mocker.UseImpl<AppState>();
             _dataSetService = _mocker.UseMock<ITrainingDataService>();
@@ -214,7 +215,7 @@ namespace Data.Application.Tests.DataSourceSelection
             var multiFileService = _multiFileService;
 
             _dataSetService.Setup(f =>
-                f.LoadDefaultSetsFromFiles(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                f.LoadDefaultTrainingDataFromFiles(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
                 .Returns(trainingData);
 
             _csvValidation.Setup(f => f.Validate(It.IsAny<string>())).Returns((true, null, 2, 2));

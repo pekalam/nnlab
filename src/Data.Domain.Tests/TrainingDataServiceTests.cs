@@ -24,12 +24,12 @@ namespace Data.Domain.Tests
         [Theory]
         [InlineData(100, 99)]
         [InlineData(33, 33)]
-        public void LoadSets_when_valid_params_returns_valid_trainingData(int trainingSetPercentage, int setCount)
+        public void LoadDefaultTrainingData_when_valid_params_returns_valid_trainingData(int trainingSetPercentage, int setCount)
         {
 
             var fileName = @"Files\plik.csv";
 
-            var trainingData = _service.LoadSets(fileName, new LinearDataSetDivider(), new DataSetDivisionOptions()
+            var trainingData = _service.LoadDefaultTrainingData(fileName, new LinearDataSetDivider(), new DataSetDivisionOptions()
             {
                 TrainingSetPercent = trainingSetPercentage,
             }, new SupervisedSetVariableIndexes(new[] { 0 }, new[] { 1 }));
@@ -60,14 +60,14 @@ namespace Data.Domain.Tests
 
         [Theory]
         [InlineData(33, 33, 33, 33, 33, 33)]
-        public void LoadSets_when_valid_params_returns_trainingData_with_3_sets(int trainingSetPercentage,
+        public void LoadDefaultTrainingData_when_valid_params_returns_trainingData_with_3_sets(int trainingSetPercentage,
             int trainingSetCount, int validationSetPercentage, int validationSetCount, int testSetPercentage,
             int testSetCount)
         {
 
             var fileName = @"Files\plik.csv";
 
-            var trainingData = _service.LoadSets(fileName, new LinearDataSetDivider(), new DataSetDivisionOptions()
+            var trainingData = _service.LoadDefaultTrainingData(fileName, new LinearDataSetDivider(), new DataSetDivisionOptions()
             {
                 TrainingSetPercent = trainingSetPercentage,
                 ValidationSetPercent = validationSetPercentage,
@@ -139,7 +139,7 @@ namespace Data.Domain.Tests
 
             var fileName = @"Files\plik.csv";
 
-            var trainingData = _service.LoadDefaultSet(fileName);
+            var trainingData = _service.LoadDefaultTrainingData(fileName);
             CheckFileIsNotLocked(fileName);
             
 
@@ -193,7 +193,7 @@ namespace Data.Domain.Tests
 
             var files = new[] { @"Files\plik_t.csv", @"Files\plik_v.csv", @"Files\plik_ts.csv" };
 
-            var trainingData = _service.LoadDefaultSetsFromFiles(trainingSetFile: files[0], validationSetFile: files[1], testSetFile: files[2]);
+            var trainingData = _service.LoadDefaultTrainingDataFromFiles(trainingSetFile: files[0], validationSetFile: files[1], testSetFile: files[2]);
             CheckFileIsNotLocked(files[0]);
             CheckFileIsNotLocked(files[1]);
             CheckFileIsNotLocked(files[2]);
@@ -224,7 +224,7 @@ namespace Data.Domain.Tests
             var fileName = @"Files\testxyz.csv";
 
 
-            var trainingData = _service.LoadSets(fileName, new LinearDataSetDivider(), new DataSetDivisionOptions()
+            var trainingData = _service.LoadDefaultTrainingData(fileName, new LinearDataSetDivider(), new DataSetDivisionOptions()
             {
                 TrainingSetPercent = 33,
                 ValidationSetPercent = 33,

@@ -230,7 +230,7 @@ namespace Data.Application.Controllers
 
                 var trainingData = new TrainingData(sets,
                     new SupervisedSetVariables(new SupervisedSetVariableIndexes(new[] {0}, new[] {1}),
-                        new[] {new VariableName("x"), new VariableName("y"),}), TrainingDataSource.Memory);
+                        new[] {new VariableName("x"), new VariableName("y"),}), TrainingDataSource.Memory, NormalizationMethod.None);
 
                 _appState.ActiveSession!.TrainingData = trainingData;
 

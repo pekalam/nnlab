@@ -1,8 +1,6 @@
 ﻿using Data.Application.Services;
 using Data.Domain.Services;
 using Prism.Commands;
-using System;
-using System.ComponentModel;
 using Common.Domain;
 using Common.Framework;
 using Data.Application.Controllers.DataSource;
@@ -11,42 +9,55 @@ using Prism.Ioc;
 
 namespace Data.Application.Services
 {
-    public interface INormalizationService
+    public interface INormalizationService : IService
     {
-        DelegateCommand NoNormalizationCommand { get; set; }
-        DelegateCommand MinMaxNormalizationCommand { get; set; }
-        DelegateCommand MeanNormalizationCommand { get; set; }
-        DelegateCommand StdNormalizationCommand { get; set; }
+        DelegateCommand NoNormalizationCommand { get;  }
+        DelegateCommand MinMaxNormalizationCommand { get;  }
+        DelegateCommand MeanNormalizationCommand { get;  }
+        DelegateCommand StdNormalizationCommand { get;  }
 
         public static void Register(IContainerRegistry cr)
         {
-            cr.RegisterSingleton<INormalizationService, NormalizationController>();
+            cr.Register<INormalizationService, NormalizationService>().Register<ITransientController<NormalizationService>, NormalizationController>();
         }
+    }
+
+    public class NormalizationService : INormalizationService
+    {
+        public NormalizationService(ITransientController<NormalizationService> ctrl)
+        {
+            ctrl.Initialize(this);
+        }
+
+        public DelegateCommand NoNormalizationCommand { get; set; } = null!;
+        public DelegateCommand MinMaxNormalizationCommand { get; set; } = null!;
+        public DelegateCommand MeanNormalizationCommand { get; set; } = null!;
+        public DelegateCommand StdNormalizationCommand { get; set; } = null!;
     }
 }
 
 namespace Data.Application.Controllers.DataSource
 {
-    internal class NormalizationController : INormalizationService, ISingletonController
+    internal class NormalizationController : ControllerBase<NormalizationViewModel>,ITransientController<NormalizationService>
     {
         private readonly INormalizationDomainService _normalizationService;
         private readonly AppStateHelper _helper;
         private bool _ignoreCmd;
-        private readonly IViewModelAccessor _accessor;
+        private bool _cmdCall;
 
-        public NormalizationController(INormalizationDomainService normalizationService, AppState appState, IViewModelAccessor accessor)
+        public NormalizationController(INormalizationDomainService normalizationService, AppState appState, IViewModelAccessor accessor) : base(accessor)
         {
             _normalizationService = normalizationService;
-            _accessor = accessor;
             _helper = new AppStateHelper(appState);
-
-            NoNormalizationCommand = new DelegateCommand(NoNormalization);
-            MinMaxNormalizationCommand = new DelegateCommand(MinMaxNormalization);
-            MeanNormalizationCommand = new DelegateCommand(MeanNormalization);
-            StdNormalizationCommand = new DelegateCommand(StdNormalization);
 
             _helper.OnTrainingDataPropertyChanged(data =>
             {
+                if (_cmdCall)
+                {
+                    _cmdCall = false;
+                    return;
+                }
+
                 if (data.Source == TrainingDataSource.Csv)
                 {
                     switch (data.NormalizationMethod)
@@ -62,35 +73,44 @@ namespace Data.Application.Controllers.DataSource
                             break;
                     }
                 }
-            }, s => s == nameof(TrainingData.Variables));
-
-            _helper.OnTrainingDataInSession(SetVmNormalizationMethod);
+            }, s => s switch
+            {
+                nameof(TrainingData.Variables) => true,
+                nameof(TrainingData.Sets) => true,
+                _ => false,
+            });
         }
 
-        public DelegateCommand NoNormalizationCommand { get; set; }
-        public DelegateCommand MinMaxNormalizationCommand { get; set; }
-        public DelegateCommand MeanNormalizationCommand { get; set; }
-        public DelegateCommand StdNormalizationCommand { get; set; }
+        public void Initialize(NormalizationService service)
+        {
+            service.NoNormalizationCommand = new DelegateCommand(NoNormalization);
+            service.MinMaxNormalizationCommand = new DelegateCommand(MinMaxNormalization);
+            service.MeanNormalizationCommand = new DelegateCommand(MeanNormalization);
+            service.StdNormalizationCommand = new DelegateCommand(StdNormalization);
+        }
+
+        protected override void VmCreated()
+        {
+            _helper.OnTrainingDataInSession(SetVmNormalizationMethod);
+        }
 
         private void SetVmNormalizationMethod(TrainingData? data)
         {
             if(data == null) return;
-            var vm = _accessor.Get<NormalizationViewModel>();
-            if(vm == null) return;
             _ignoreCmd = true;
             switch (data.NormalizationMethod)
             {
                 case NormalizationMethod.None:
-                    vm.NoneChecked = true;
+                    Vm!.NoneChecked = true;
                     break;
                 case NormalizationMethod.Mean:
-                    vm.MeanChecked = true;
+                    Vm!.MeanChecked = true;
                     break;
                 case NormalizationMethod.MinMax:
-                    vm.MinMaxChecked = true;
+                    Vm!.MinMaxChecked = true;
                     break;
                 case NormalizationMethod.Std:
-                    vm.StdChecked = true;
+                    Vm!.StdChecked = true;
                     break;
             }
             _ignoreCmd = false;
@@ -99,29 +119,29 @@ namespace Data.Application.Controllers.DataSource
         private void StdNormalization()
         {
             if(_ignoreCmd) return;
+            _cmdCall = true;
             _normalizationService.StdNormalization();
         }
 
         private void MeanNormalization()
         {
             if (_ignoreCmd) return;
+            _cmdCall = true;
             _normalizationService.MeanNormalization();
         }
 
         private void MinMaxNormalization()
         {
             if (_ignoreCmd) return;
+            _cmdCall = true;
             _normalizationService.MinMaxNormalization();
         }
 
         private void NoNormalization()
         {
             if (_ignoreCmd) return;
+            _cmdCall = true;
             _normalizationService.NoNormalization();
-        }
-
-        public void Initialize()
-        {
         }
     }
 }

@@ -21,12 +21,12 @@ namespace Data.Application.Controllers
         }
     }
 
-    internal class DataSetDivisionController : IDataSetDivisionController
+    internal class DataSetDivisionController : ControllerBase<DataSetDivisionViewModel>,IDataSetDivisionController
     {
         private readonly AppState _appState;
         private readonly ITrainingDataService _dataService;
 
-        public DataSetDivisionController(DataSetDivisionService service, ITrainingDataService dataService, AppState appState)
+        public DataSetDivisionController(DataSetDivisionService service, ITrainingDataService dataService, AppState appState, IViewModelAccessor accessor) : base(accessor)
         {
             _dataService = dataService;
             _appState = appState;
@@ -35,12 +35,11 @@ namespace Data.Application.Controllers
                 new DelegateCommand<string>(DivideFileData, _ => CanDivide());
 
             service.DivideMemoryDataCommand = new DelegateCommand<(List<double[]> input, List<double[]> target)?>(DivideMemoryData, _ => CanDivide());
+        }
 
-            DataSetDivisionViewModel.Created += () =>
-            {
-                var vm = DataSetDivisionViewModel.Instance!;
-                vm.PropertyChanged += VmOnPropertyChanged;
-            };
+        protected override void VmCreated()
+        {
+            Vm!.PropertyChanged += VmOnPropertyChanged;
         }
 
         private void VmOnPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -58,7 +57,6 @@ namespace Data.Application.Controllers
 
         private void CalcHasSufficientSize()
         {
-            var vm = DataSetDivisionViewModel.Instance!;
             if (!CanDivide()) return;
 
             if (_appState.ActiveSession?.TrainingData != null)
@@ -67,15 +65,15 @@ namespace Data.Application.Controllers
                 var total = data.Sets.TrainingSet.Input.Count + (data.Sets.ValidationSet?.Input.Count ?? 0) + (data.Sets.TestSet?.Input.Count ?? 0);
                 var left = total;
 
-                var trainingSetCount = (int)Math.Ceiling(vm.TrainingSetPercent * total / 100f);
+                var trainingSetCount = (int)Math.Ceiling(Vm!.TrainingSetPercent * total / 100f);
                 trainingSetCount = trainingSetCount > left ? left : trainingSetCount;
                 left -= trainingSetCount;
 
-                var validationSetCount = (int)Math.Ceiling(vm.ValidationSetPercent * total / 100f);
+                var validationSetCount = (int)Math.Ceiling(Vm!.ValidationSetPercent * total / 100f);
                 validationSetCount = validationSetCount > left ? left : validationSetCount;
                 left -= validationSetCount;
 
-                var testSetCount = (int)Math.Ceiling(vm.TestSetPercent * total / 100f);
+                var testSetCount = (int)Math.Ceiling(Vm!.TestSetPercent * total / 100f);
                 testSetCount = testSetCount > left ? left : testSetCount;
 
                 var calcTrainingPerc = (int)Math.Round(trainingSetCount * 100.0 / total);
@@ -83,14 +81,14 @@ namespace Data.Application.Controllers
                 var calcTestPerc = (int)Math.Round(testSetCount * 100.0 / total);
 
 
-                if (vm.TrainingSetPercent != calcTrainingPerc || vm.ValidationSetPercent != calcValidationPerc ||
-                    vm.TestSetPercent != calcTestPerc)
+                if (Vm!.TrainingSetPercent != calcTrainingPerc || Vm!.ValidationSetPercent != calcValidationPerc ||
+                    Vm!.TestSetPercent != calcTestPerc)
                 {
-                    vm.InsufficientSizeMsg = $"Data set will be divided by ratio: {calcTrainingPerc}:{calcValidationPerc}:{calcTestPerc}";
+                    Vm!.InsufficientSizeMsg = $"Data set will be divided by ratio: {calcTrainingPerc}:{calcValidationPerc}:{calcTestPerc}";
                 }
                 else
                 {
-                    vm.InsufficientSizeMsg = default;
+                    Vm!.InsufficientSizeMsg = default;
                 }
 
             }
@@ -99,24 +97,21 @@ namespace Data.Application.Controllers
 
         private bool CanDivide()
         {
-            var vm = DataSetDivisionViewModel.Instance!;
-            return vm.TrainingSetPercent > 0 && vm.TrainingSetPercent + vm.ValidationSetPercent + vm.TestSetPercent == 100;
+            return Vm!.TrainingSetPercent > 0 && Vm!.TrainingSetPercent + Vm!.ValidationSetPercent + Vm!.TestSetPercent == 100;
         }
 
         private DataSetDivisionOptions ConstructDivOptions()
         {
-            var vm = DataSetDivisionViewModel.Instance!;
             return new DataSetDivisionOptions()
             {
-                TrainingSetPercent = vm.TrainingSetPercent,
-                ValidationSetPercent = vm.ValidationSetPercent,
-                TestSetPercent = vm.TestSetPercent,
+                TrainingSetPercent = Vm!.TrainingSetPercent,
+                ValidationSetPercent = Vm!.ValidationSetPercent,
+                TestSetPercent = Vm!.TestSetPercent,
             };
         }
 
         private void DivideMemoryData((List<double[]> input, List<double[]> target)? args)
         {
-            var vm = DataSetDivisionViewModel.Instance!;
             var method = new LinearDataSetDivider();
 
             var pos = args!.Value!.input.Select((doubles, i) => (long)i).ToList();
@@ -157,30 +152,34 @@ namespace Data.Application.Controllers
                 ValidationSet = validation
             };
 
-            var existing = _appState.ActiveSession!.TrainingData!;
-
-
             var total = sets.TrainingSet.Input.Count + (sets.ValidationSet?.Input.Count ?? 0) +
                         (sets.TestSet?.Input.Count ?? 0);
             var calcTrainingPerc = (int)Math.Round(sets.TrainingSet.Input.Count * 100.0 / total);
             var calcValidationPerc = (int)Math.Round((sets.ValidationSet?.Input.Count ?? 0) * 100.0 / total);
             var calcTestPerc = (int)Math.Round((sets.TestSet?.Input.Count ?? 0) * 100.0 / total);
 
-            vm.PropertyChanged -= VmOnPropertyChanged;
-            vm.TrainingSetPercent = calcTrainingPerc;
-            vm.ValidationSetPercent = calcValidationPerc;
-            vm.TestSetPercent = calcTestPerc;
-            vm.InsufficientSizeMsg = default;
-            vm.UpdateRatio();
-            vm.PropertyChanged += VmOnPropertyChanged;
+            Vm!.PropertyChanged -= VmOnPropertyChanged;
+            Vm!.TrainingSetPercent = calcTrainingPerc;
+            Vm!.ValidationSetPercent = calcValidationPerc;
+            Vm!.TestSetPercent = calcTestPerc;
+            Vm!.InsufficientSizeMsg = default;
+            Vm!.UpdateRatio();
+            Vm!.PropertyChanged += VmOnPropertyChanged;
 
-            _appState.ActiveSession.TrainingData = new TrainingData(sets, existing.Variables, TrainingDataSource.Memory);
+            _appState.ActiveSession!.TrainingData!.Sets = sets;
         }
 
         private void DivideFileData(string path)
         {
             var existingData = _appState.ActiveSession!.TrainingData!;
-            _appState.ActiveSession.TrainingData = _dataService.LoadSets(path, new LinearDataSetDivider(), ConstructDivOptions(), existingData.Variables.Indexes);
+            var opt = ConstructDivOptions();
+            _appState.ActiveSession.TrainingData!.Sets = _dataService.LoadSets(path, new LinearDataSetDivider(), opt, existingData.Variables.Indexes);
+
+            Vm!.PropertyChanged -= VmOnPropertyChanged;
+            Vm!.TrainingSetPercent = opt.TrainingSetPercent;
+            Vm!.ValidationSetPercent = opt.ValidationSetPercent;
+            Vm!.TestSetPercent = opt.TestSetPercent;
+            Vm!.PropertyChanged += VmOnPropertyChanged;
         }
 
         public void Initialize()

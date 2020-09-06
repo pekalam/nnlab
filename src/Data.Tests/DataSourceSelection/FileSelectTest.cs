@@ -25,13 +25,13 @@ namespace Data.Application.Tests.DataSourceSelection
         private Mock<FileService> _fileService;
         private Mock<IFileDialogService> _dialogService;
         private Mock<IRegionManager> _rm;
-        private Dictionary<string, Mock<IRegion>> _regions;
 
         private FileController _ctrl;
 
         public FileSelectTest()
         {
-            (_rm, _regions) = _mocker.UseTestRm();
+            (_rm, _) = _mocker.UseTestRm();
+            _mocker.UseTestEa();
             _mocker.UseTestVmAccessor();
             _appState = _mocker.UseImpl<AppState>();
             _dialogService = _mocker.UseMock<IFileDialogService>();

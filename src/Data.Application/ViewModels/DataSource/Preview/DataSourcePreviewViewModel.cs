@@ -56,6 +56,7 @@ namespace Data.Application.ViewModels.DataSource.Preview
             
             _helper.OnTrainingDataPropertyChanged(data =>
             {
+                DataSetTypes = data.SetTypes;
                 DataSetInstanceAccessor = new DataSetInstanceAccessor(_appState, DataSetType.Training);
                 DataSetPreviewAccessor = new DataSetPreviewAccessor(_appState);
             }, s => s switch

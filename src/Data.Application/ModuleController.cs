@@ -22,14 +22,13 @@ namespace Data.Application
         private readonly IFileController _fileController;
         private readonly IDataSetDivisionController _dataSetDivisionController;
         private readonly IVariablesSelectionService _variablesSelectionController;
-        private readonly INormalizationService _normalizationController;
         private readonly IFileDataSourceController _fileDataSourceController;
 
         
 
         public ModuleController(IRegionManager rm, AppState appState, IFileController fileController,
             IDataSetDivisionController dataSetDivisionController,
-            IVariablesSelectionService variablesSelectionController, INormalizationService normalizationController,
+            IVariablesSelectionService variablesSelectionController,
             IFileDataSourceController fileDataSourceController, IEventAggregator ea)
         {
             _rm = rm;
@@ -37,7 +36,6 @@ namespace Data.Application
             _fileController = fileController;
             _dataSetDivisionController = dataSetDivisionController;
             _variablesSelectionController = variablesSelectionController;
-            _normalizationController = normalizationController;
             _fileDataSourceController = fileDataSourceController;
             _ea = ea;
 

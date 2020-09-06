@@ -62,7 +62,7 @@ namespace Data.Application.Controllers
         {
             SetCanReturn(false);
             _singleFileService.SetLoading();
-            await Task.Run(() => _loadedTrainingData = _dataService.LoadDefaultSet(path));
+            await Task.Run(() => _loadedTrainingData = _dataService.LoadDefaultTrainingData(path));
             Debug.Assert(_loadedTrainingData != null);
             _singleFileService.SetLoaded(_loadedTrainingData);
             SetCanReturn(true);

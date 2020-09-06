@@ -12,10 +12,7 @@ namespace Data.Application.Tests.DataSourcePreview
         private TrainingData LoadTrainingData(string fileName, SupervisedSetVariableIndexes variableIndexes)
         {
             var dsService = new TrainingDataService();
-            var data = dsService.LoadSets(fileName, new LinearDataSetDivider(), new DataSetDivisionOptions()
-            {
-                TrainingSetPercent = 100,
-            }, variableIndexes);
+            var data = dsService.LoadDefaultTrainingData(fileName);
             return data;
         }
 

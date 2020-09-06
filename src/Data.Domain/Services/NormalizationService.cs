@@ -27,7 +27,7 @@ namespace Data.Domain.Services
             _appState = appState;
         }
 
-        public Task MinMaxNormalization()
+        public async Task MinMaxNormalization()
         {
             if (_moduleState.OriginalSets == null)
             {
@@ -73,19 +73,21 @@ namespace Data.Domain.Services
                 MinMaxVec(set.Target);
             }
 
-            return Task.Run(() =>
+            var trainingData = _appState.ActiveSession!.TrainingData!;
+            SupervisedTrainingSets? sets = null;
+            await Task.Run(() =>
             {
-                var trainingData = _appState.ActiveSession!.TrainingData!;
-                var sets = trainingData.CloneSets();
-                trainingData.NormalizationMethod = NormalizationMethod.MinMax;
+                sets = trainingData.CloneSets();
                 MinMax(sets.TrainingSet);
                 if (sets.ValidationSet != null) MinMax(sets.ValidationSet);
                 if (sets.TestSet != null) MinMax(sets.TestSet);
-                trainingData.Sets = sets;
+
             });
+            trainingData.NormalizationMethod = NormalizationMethod.MinMax;
+            trainingData.Sets = sets!;
         }
 
-        public Task MeanNormalization()
+        public async Task MeanNormalization()
         {
             if (_moduleState.OriginalSets == null)
             {
@@ -132,19 +134,21 @@ namespace Data.Domain.Services
                 MeanVec(set.Target);
             }
 
-            return Task.Run(() =>
+
+            var trainingData = _appState.ActiveSession!.TrainingData!;
+            SupervisedTrainingSets? sets = null;
+            await Task.Run(() =>
             {
-                var trainingData = _appState.ActiveSession!.TrainingData!;
-                var sets = trainingData.CloneSets();
-                trainingData.NormalizationMethod = NormalizationMethod.Mean;
+                sets = trainingData.CloneSets();
                 Mean(sets.TrainingSet);
                 if (sets.ValidationSet != null) Mean(sets.ValidationSet);
                 if (sets.TestSet != null) Mean(sets.TestSet);
-                trainingData.Sets = sets;
             });
+            trainingData.NormalizationMethod = NormalizationMethod.Mean;
+            trainingData.Sets = sets!;
         }
 
-        public Task StdNormalization()
+        public async Task StdNormalization()
         {
             if (_moduleState.OriginalSets == null)
             {
@@ -190,16 +194,17 @@ namespace Data.Domain.Services
                 StdVec(set.Target);
             }
 
-            return Task.Run(() =>
+            var trainingData = _appState.ActiveSession!.TrainingData!;
+            SupervisedTrainingSets? sets = null;
+            await Task.Run(() =>
             {
-                var trainingData = _appState.ActiveSession!.TrainingData!;
-                var sets = trainingData.CloneSets();
-                trainingData.NormalizationMethod = NormalizationMethod.Std;
+                sets = trainingData.CloneSets();
                 Std(sets.TrainingSet);
                 if (sets.ValidationSet != null) Std(sets.ValidationSet);
                 if (sets.TestSet != null) Std(sets.TestSet);
-                trainingData.Sets = sets;
             });
+            trainingData.NormalizationMethod = NormalizationMethod.Std;
+            trainingData.Sets = sets!;
         }
 
         public void NoNormalization()

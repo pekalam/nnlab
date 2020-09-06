@@ -25,6 +25,7 @@ namespace Training.Application.Tests
         public TrainingParametersTests()
         {
             _mocker.UseTestRm();
+            _mocker.UseTestEa();
             _mocker.UseTestVmAccessor();
             _appState = _mocker.UseImpl<AppState>();
             _moduleState = _mocker.UseImpl<ModuleState>();

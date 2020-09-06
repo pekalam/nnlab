@@ -52,6 +52,7 @@ namespace Data.Application.Controllers.DataSource
 
             _helper.OnTrainingDataPropertyChanged(data =>
             {
+                Vm.DataSetTypes = data.SetTypes;
                 _variablesPlotCtrl.Plot(data, DataSetType.Training);
             }, s => s switch
             {

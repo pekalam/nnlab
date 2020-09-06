@@ -28,6 +28,7 @@ namespace Data.Application.Tests.DataSourceSelection
         public SingleFileSourceTests()
         {
             _mocker.UseTestRm();
+            _mocker.UseTestEa();
             _mocker.UseTestVmAccessor();
             _appState = _mocker.UseImpl<AppState>();
             _csvValidation = _mocker.UseMock<ICsvValidationService>();
@@ -104,7 +105,7 @@ namespace Data.Application.Tests.DataSourceSelection
             //arrange
             var trainingData = TrainingDataMocks.ValidData1;
             _csvValidation.Setup(f => f.Validate(It.IsAny<string>())).Returns((true, null, 2, 2));
-            _dataSetService.Setup(f => f.LoadDefaultSet(It.IsAny<string>())).Returns(trainingData);
+            _dataSetService.Setup(f => f.LoadDefaultTrainingData(It.IsAny<string>(), null,null,null)).Returns(trainingData);
             var singleFileService = _singleFileService;
 
 

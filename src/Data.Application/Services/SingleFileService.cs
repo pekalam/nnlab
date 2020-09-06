@@ -25,8 +25,11 @@ namespace Data.Application.Services
 
     internal class SingleFileService : BindableBase, ISingleFileService
     {
-        public SingleFileService(ITransientController<SingleFileService> controller)
+        private IViewModelAccessor _accessor;
+
+        public SingleFileService(ITransientController<SingleFileService> controller, IViewModelAccessor accessor)
         {
+            _accessor = accessor;
             controller.Initialize(this);
         }
 
@@ -35,7 +38,7 @@ namespace Data.Application.Services
         public DelegateCommand<string> ValidateCommand { get; set; } = null!;
         public DelegateCommand<string> LoadCommand { get; set; } = null!;
 
-        public FileValidationResult FileValidationResult => SingleFileSourceViewModel.Instance!.FileValidationResult;
+        public FileValidationResult? FileValidationResult => _accessor.Get<SingleFileSourceViewModel>()?.FileValidationResult;
 
         public void SetLoading()
         {
@@ -53,7 +56,7 @@ namespace Data.Application.Services
         {
             FileValidationResult.IsValidatingFile = FileValidationResult.IsLoadingFile = false;
             FileValidationResult.IsLoaded = true;
-            SingleFileSourceViewModel.Instance!.Variables = trainingData.Variables.InputVariableNames.Union(trainingData.Variables.TargetVariableNames)
+            _accessor.Get<SingleFileSourceViewModel>()!.Variables = trainingData.Variables.InputVariableNames.Union(trainingData.Variables.TargetVariableNames)
                 .Select((s, i) => new VariablesTableModel()
                 {
                     Column = i+1, Name = s

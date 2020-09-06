@@ -118,7 +118,7 @@ namespace Data.Application.Controllers
         {
             _multiFileService!.SetIsLoading();
 
-            _trainingData = _dataService.LoadDefaultSetsFromFiles(arg!.Value.trainingFile, arg.Value.validationFile,
+            _trainingData = _dataService.LoadDefaultTrainingDataFromFiles(arg!.Value.trainingFile, arg.Value.validationFile,
                 arg.Value.testFile);
             _continueCanExec = true;
             _multiFileService!.ContinueCommand.RaiseCanExecuteChanged();

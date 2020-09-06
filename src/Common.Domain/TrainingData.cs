@@ -18,7 +18,7 @@ namespace Common.Domain
 
     public class TrainingData : BindableBase
     {
-        private SupervisedSetVariables _variables = null!;
+        private SupervisedSetVariables _variables;
         private NormalizationMethod _normalizationMethod;
         private SupervisedTrainingSets _sets;
         public TrainingDataSource Source { get; }
@@ -41,11 +41,12 @@ namespace Common.Domain
             set => SetProperty(ref _variables, value ?? throw new NullReferenceException("Null Variables"));
         }
 
-        public TrainingData(SupervisedTrainingSets sets, SupervisedSetVariables variables, TrainingDataSource source)
+        public TrainingData(SupervisedTrainingSets sets, SupervisedSetVariables variables, TrainingDataSource source, NormalizationMethod normalizationMethod)
         {
-            Sets = sets;
-            Variables = variables;
+            _sets = sets;
+            _variables = variables;
             Source = source;
+            _normalizationMethod = normalizationMethod;
         }
 
         public DataSetType[] SetTypes
@@ -54,10 +55,7 @@ namespace Common.Domain
             {
                 List<DataSetType> setTypes = new List<DataSetType>();
 
-                if (Sets.TrainingSet != null)
-                {
-                    setTypes.Add(DataSetType.Training);
-                }
+                setTypes.Add(DataSetType.Training);
 
                 if (Sets.ValidationSet != null)
                 {
@@ -108,7 +106,7 @@ namespace Common.Domain
         {
             SupervisedTrainingSets setsCpy = CloneSets();
 
-            return new TrainingData(setsCpy!, Variables.Clone(), Source);
+            return new TrainingData(setsCpy!, Variables.Clone(), Source, NormalizationMethod);
         }
 
 
