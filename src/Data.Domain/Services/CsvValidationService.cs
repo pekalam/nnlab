@@ -20,7 +20,15 @@ namespace Data.Domain.Services
         {
             if (!File.Exists(path)) return (false, "File not found", 0,0);
 
-            using var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+            FileStream fs = null;
+            try
+            {
+                fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+            }
+            catch (IOException)
+            {
+                return (false, "File does not exist or is being used by another process", 0, 0);
+            }
             using var rdr = new StreamReader(fs);
             using var csv = new CsvReader(rdr, CultureInfo.CurrentCulture);
 

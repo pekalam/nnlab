@@ -78,7 +78,7 @@ namespace Data.Application.Controllers
             var ignoredIndexes = new List<int>();
             foreach (var var in model.ContainingArray!)
             {
-                if(var.Error != null) return;
+                if(var[nameof(VariableTableModel.VariableUse)] != null) return;
                 if (var.VariableUse == VariableUses.Input) inputIndexes.Add(var.Index);
                 if (var.VariableUse == VariableUses.Target) targetIndexes.Add(var.Index);
                 if (var.VariableUse == VariableUses.Ignore) ignoredIndexes.Add(var.Index);
@@ -118,8 +118,8 @@ namespace Data.Application.Controllers
                 }
             }
 
-            var trainingData = _appState.ActiveSession!.TrainingData;
-            _dsService.ChangeVariables(_currentIndexes, trainingData!);
+            //var trainingData = _appState.ActiveSession!.TrainingData;
+            //_dsService.ChangeVariables(_currentIndexes, trainingData!);
 
             foreach (var model in vm.Variables)
             {

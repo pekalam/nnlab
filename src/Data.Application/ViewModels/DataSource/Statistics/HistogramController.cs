@@ -31,6 +31,16 @@ namespace Data.Application.ViewModels.DataSource.Statistics
                     _vm.Variables = data.Variables.InputVariableNames.Union(data.Variables.TargetVariableNames).ToArray();
                     _vm.SelectedVariable = _vm.Variables[0];
                 });
+
+            _helper.OnTrainingDataPropertyChanged(data =>
+            {
+                _vm.Variables = data.Variables.InputVariableNames.Union(data.Variables.TargetVariableNames).ToArray();
+                _vm.SelectedVariable = _vm.Variables[0];
+            }, s => s switch
+            {
+                nameof(TrainingData.Variables) => true,
+                _ => false,
+            });
         }
 
         private void VmOnPropertyChanged(object sender, PropertyChangedEventArgs e)
