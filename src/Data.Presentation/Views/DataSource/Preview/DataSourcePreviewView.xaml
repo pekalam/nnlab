@@ -34,7 +34,7 @@
                       ItemsSource="{Binding Path=FileDataPreview.DefaultView}"
                       RowHeaderWidth="0"
                       IsReadOnly="True"
-                      SelectionUnit="CellOrRowHeader"
+                      SelectionUnit="Cell"
                       CanUserAddRows="False"
                       CanUserDeleteRows="False"
                       CanUserReorderColumns="False"
@@ -46,17 +46,6 @@
                 <DataGrid.Columns>
                     <DataGridTextColumn />
                 </DataGrid.Columns>
-                <DataGrid.ColumnHeaderStyle>
-                    <Style TargetType="DataGridColumnHeader">
-                        <EventSetter Event="Click" Handler="DataGridColumnHeader_Click" />
-                        <Setter Property="MinWidth" Value="50"/>
-                    </Style>
-                </DataGrid.ColumnHeaderStyle>
-                <DataGrid.CellStyle>
-                    <Style TargetType="DataGridCell">
-                        <EventSetter Event="PreviewMouseDown" Handler="DataGridCell_MouseDown" />
-                    </Style>
-                </DataGrid.CellStyle>
                 <DataGrid.Style>
                     <Style BasedOn="{StaticResource MahApps.Styles.DataGrid}"
                                    TargetType="{x:Type DataGrid}">

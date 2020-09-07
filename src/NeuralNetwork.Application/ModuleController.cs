@@ -18,8 +18,9 @@ namespace NeuralNetwork.Application
         private readonly AppState _appState;
         private readonly AppStateHelper _helper;
         private bool _firstNav;
+        private ModuleState _moduleState;
 
-        public ModuleController(IEventAggregator ea, IRegionManager rm, NeuralNetworkShellController shellController, AppState appState, INeuralNetworkService networkService, NetDisplayController netDisplayController)
+        public ModuleController(IEventAggregator ea, IRegionManager rm, NeuralNetworkShellController shellController, AppState appState, INeuralNetworkService networkService, NetDisplayController netDisplayController, ModuleState moduleState)
         {
             _ea = ea;
             _rm = rm;
@@ -27,6 +28,7 @@ namespace NeuralNetwork.Application
             _appState = appState;
             _networkService = networkService;
             _netDisplayController = netDisplayController;
+            _moduleState = moduleState;
             _helper = new AppStateHelper(appState);
 
             _ea.GetEvent<SetupNewNavigationForSession>().Subscribe(OnSetupNewNavigationForSession);
@@ -75,6 +77,8 @@ namespace NeuralNetwork.Application
             _networkService.SetInputsCount(trainingData.Variables.InputVariableNames.Length);
             _networkService.SetNeuronsCount(_appState.ActiveSession!.Network!.Layers[^1],
                 trainingData.Variables.TargetVariableNames.Length);
+            _moduleState.ModelAdapter!.SetInputLabels(trainingData.Variables.InputVariableNames);
+            _moduleState.ModelAdapter.SetOutputLabels(trainingData.Variables.TargetVariableNames);
         }
 
         private void OnReloadContentForSession((int moduleId, Session prev, Session next) arg)

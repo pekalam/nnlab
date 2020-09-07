@@ -68,6 +68,10 @@ namespace NeuralNetwork.Application
                 adapter.SetNeuralNetwork(session.Network);
                 adapter.NeuralNetworkModel.BackgroundColor = "#cce6ff";
                 _sessionToAdapter[session] = adapter;
+
+                adapter.SetInputLabels(session.TrainingData!.Variables.InputVariableNames);
+                adapter.SetOutputLabels(session.TrainingData.Variables.TargetVariableNames);
+
                 RaisePropertyChanged(nameof(ModelAdapter));
             }
         }

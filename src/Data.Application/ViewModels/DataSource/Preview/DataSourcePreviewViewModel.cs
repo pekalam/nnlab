@@ -72,6 +72,10 @@ namespace Data.Application.ViewModels.DataSource.Preview
             DataSetTypes = trainingData.SetTypes;
             DataSetInstanceAccessor = new DataSetInstanceAccessor(_appState, DataSetType.Training);
             DataSetPreviewAccessor = new DataSetPreviewAccessor(_appState);
+            _instanceDataSetType = DataSetType.Training;
+            _previewDataSetType = DataSetType.Training;
+            RaisePropertyChanged(nameof(InstanceDataSetType));
+            RaisePropertyChanged(nameof(PreviewDataSetType));
             Stats = new TrainingDataStats(trainingData);
 
             ShowLoading = false;

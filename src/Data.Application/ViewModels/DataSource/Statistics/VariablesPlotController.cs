@@ -74,7 +74,7 @@ namespace Data.Application.ViewModels.DataSource.Statistics
             }
 
 
-            _vm.PlotModel.Series.Clear();
+            _vm.PlotModel.Model.Series.Clear();
 
             if (args.GetSet(dataSetType)!.Input.Count > 5000)
             {
@@ -91,7 +91,7 @@ namespace Data.Application.ViewModels.DataSource.Statistics
                     s.Points.Add(new DataPoint(j, args.GetSet(dataSetType)!.Input[j][i, 0]));
                 }
 
-                _vm.PlotModel.Series.Add(s);
+                _vm.PlotModel.Model.Series.Add(s);
             }
 
             for (int i = 0; i < args.Variables.Indexes.TargetVarIndexes.Length; i++)
@@ -103,10 +103,10 @@ namespace Data.Application.ViewModels.DataSource.Statistics
                     s.Points.Add(new DataPoint(j, args.GetSet(dataSetType)!.Target[j][i, 0]));
                 }
 
-                _vm.PlotModel.Series.Add(s);
+                _vm.PlotModel.Model.Series.Add(s);
             }
 
-            _vm.PlotModel.InvalidatePlot(true);
+            _vm.PlotModel.Model.InvalidatePlot(true);
         }
     }
 }

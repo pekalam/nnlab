@@ -14,16 +14,6 @@ namespace Training.Application.ViewModels
         public TrainingNetworkPreviewViewModel(ModuleState moduleState, ITrainingNetworkPreviewService service)
         {
             Service = service;
-            if (moduleState.ActiveSession?.Network != null)
-            {
-                _modelAdapter = new NNLibModelAdapter();
-                _modelAdapter.SetNeuralNetwork(moduleState.ActiveSession.Network);
-                _modelAdapter.NeuralNetworkModel.BackgroundColor = "#cce6ff";
-            }
-            else
-            {
-                throw new Exception();
-            }
         }
 
         public ITrainingNetworkPreviewService Service { get; }

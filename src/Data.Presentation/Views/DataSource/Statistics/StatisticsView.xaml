@@ -8,46 +8,59 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:dd="clr-namespace:Data.Presentation.__DesignData"
              xmlns:helpers="clr-namespace:Common.Presentation.Helpers;assembly=Common.Presentation"
+             xmlns:basicPlot="clr-namespace:SharedUI.BasicPlot;assembly=SharedUI"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance dd:DesignStatisticsVm, IsDesignTimeCreatable=True}"
              prism:ViewModelLocator.AutoWireViewModel="True">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <StackPanel Grid.Row="0">
-            <TextBlock Text="Visualizations" FontSize="24"/>
-            <TextBlock Text="Data set" Margin="0,20,0,6"/>
+        <StackPanel Grid.Row="0" Margin="0,0,0,12">
+            <TextBlock Text="Visualizations" FontSize="24" />
+            <TextBlock Text="Data set" Margin="0,20,0,8" />
             <ComboBox MinWidth="180" HorizontalAlignment="Left" Margin="0,0,0,10"
                       SelectedIndex="0"
                       ItemsSource="{Binding DataSetTypes}">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="SelectionChanged">
-                        <i:InvokeCommandAction Command="{Binding Service.SelectDataSet}" 
-                                               CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=ComboBox},Path=SelectedItem}"/>
+                        <i:InvokeCommandAction Command="{Binding Service.SelectDataSet}"
+                                               CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=ComboBox},Path=SelectedItem}" />
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
             </ComboBox>
         </StackPanel>
 
 
-        <oxy:PlotView x:Name="variablesPlot" Grid.Row="1" Model="{Binding Path=VariablesPlotVm.PlotModel}" MinHeight="400" />
+        <basicPlot:BasicPlot PlotModel="{Binding VariablesPlotVm.PlotModel}" MinHeight="400" Grid.Row="1" />
 
-        <Grid Grid.Row="2">
+        <Grid Grid.Row="2" Margin="0,48,0,0">
             <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="80"/>
+                <RowDefinition/>
+                <RowDefinition Height="*" />
+                <RowDefinition />
             </Grid.RowDefinitions>
-            <oxy:PlotView DockPanel.Dock="Top" x:Name="histogramPlot" Margin="0,15,0,0" Model="{Binding Path=HistogramVm.HistogramModel}" MinHeight="400" VerticalAlignment="Stretch"/>
-            <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="20,10,20,15" VerticalAlignment="Bottom" DockPanel.Dock="Bottom">
-                <TextBlock Text="Bin width" VerticalAlignment="Center"/>
-                <TextBox Text="{Binding Path=HistogramVm.BinWidth, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" 
-                         helpers:TextboxHelpers.UpdateSourceOnReturnKeyProperty="True"
-                         Margin="10,0,0,0" Width="60" VerticalAlignment="Center"/>
+            <StackPanel Margin="0,0,0,22" Orientation="Horizontal">
+                <StackPanel Margin="0,0,22,0">
+                    <TextBlock  Margin="0,0,0,8" Text="Bin width" VerticalAlignment="Center" />
+                    <TextBox Text="{Binding Path=HistogramVm.BinWidth, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                             helpers:TextboxHelpers.UpdateSourceOnReturnKeyProperty="True" Width="60" VerticalAlignment="Center" />
+                </StackPanel>
+            <StackPanel>
+                <TextBlock Margin="0,0,0,8" Text="Variable"/>
+                <ComboBox ItemsSource="{Binding HistogramVm.Variables}" SelectedItem="{Binding HistogramVm.SelectedVariable}" HorizontalAlignment="Left" MinWidth="200"/>
+
             </StackPanel>
+
+            </StackPanel>
+
+<basicPlot:BasicPlot Grid.Row="1" DockPanel.Dock="Top"
+                                     PlotModel="{Binding Path=HistogramVm.HistogramModel}" MinHeight="400"
+                                     VerticalAlignment="Stretch" />
+
         </Grid>
 
     </Grid>

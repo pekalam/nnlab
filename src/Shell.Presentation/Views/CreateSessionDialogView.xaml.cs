@@ -1,4 +1,7 @@
-﻿using System.Windows.Controls;
+﻿using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using System.Windows.Input;
 
 namespace Shell.Presentation.Views
 {
@@ -11,6 +14,14 @@ namespace Shell.Presentation.Views
         {
             Loaded += (sender, args) => SessionName.Focus();
             InitializeComponent();
+        }
+
+        private void SessionName_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                OkButton.Command.Execute(null);
+            }
         }
     }
 }

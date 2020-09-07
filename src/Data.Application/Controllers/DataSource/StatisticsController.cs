@@ -42,7 +42,7 @@ namespace Data.Application.Controllers.DataSource
 
         protected override void VmCreated()
         {
-            _histogramCtrl = new HistogramController(Vm!.HistogramVm);
+            _histogramCtrl = new HistogramController(Vm!.HistogramVm, _appState);
             _variablesPlotCtrl = new VariablesPlotController(Vm!.VariablesPlotVm);
 
             _helper.OnTrainingDataInSession(data =>

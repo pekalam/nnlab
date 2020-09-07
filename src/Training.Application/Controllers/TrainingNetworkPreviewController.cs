@@ -4,7 +4,10 @@ using System.ComponentModel;
 using System.Text;
 using System.Threading;
 using System.Windows.Threading;
+using Common.Domain;
 using Common.Framework;
+using NNLib;
+using NNLibAdapter;
 using Prism.Commands;
 using Prism.Ioc;
 using Prism.Regions;
@@ -45,15 +48,21 @@ namespace Training.Application.Services
 
 namespace Training.Application.Controllers
 {
-    class TrainingNetworkPreviewController : ControllerBase<TrainingNetworkPreviewViewModel>,ITransientController<TrainingNetworkPreviewService>
+    class TrainingNetworkPreviewController : ControllerBase<TrainingNetworkPreviewViewModel>,
+        ITransientController<TrainingNetworkPreviewService>
     {
         private PlotEpochEndConsumer? _epochEndConsumer;
         private Action _epochEndCallback = () => { };
         private readonly ModuleState _moduleState;
+        private readonly AppStateHelper _helper;
+        private readonly AppState _appState;
 
-        public TrainingNetworkPreviewController(IViewModelAccessor accessor, ModuleState moduleState) : base(accessor)
+        public TrainingNetworkPreviewController(IViewModelAccessor accessor, ModuleState moduleState, AppState appState)
+            : base(accessor)
         {
             _moduleState = moduleState;
+            _appState = appState;
+            _helper = new AppStateHelper(appState);
         }
 
         protected override void VmCreated()
@@ -70,15 +79,37 @@ namespace Training.Application.Controllers
             {
                 if (!Vm!.IsActive) _epochEndConsumer!.ForceStop();
             };
+
+            _helper.OnNetworkChanged(network =>
+            {
+                _appState.ActiveSession!.NetworkStructureChanged -= ActiveSessionOnNetworkStructureChanged;
+                _appState.ActiveSession!.NetworkStructureChanged += ActiveSessionOnNetworkStructureChanged;
+
+                if (Vm!.ModelAdapter == null)
+                {
+                    Vm!.ModelAdapter = new NNLibModelAdapter();
+                }
+
+                Vm!.ModelAdapter.SetNeuralNetwork(network);
+                Vm!.ModelAdapter.NeuralNetworkModel.BackgroundColor = "#cce6ff";
+                Vm.ModelAdapter.SetInputLabels(_appState.ActiveSession!.TrainingData!.Variables.InputVariableNames);
+                Vm.ModelAdapter.SetOutputLabels(_appState.ActiveSession.TrainingData.Variables.TargetVariableNames);
+            });
+        }
+
+        private void ActiveSessionOnNetworkStructureChanged(MLPNetwork obj)
+        {
+            Vm!.ModelAdapter.SetNeuralNetwork(obj);
+            Vm!.ModelAdapter.NeuralNetworkModel.BackgroundColor = "#cce6ff";
+            Vm.ModelAdapter.SetInputLabels(_appState.ActiveSession!.TrainingData!.Variables.InputVariableNames);
+            Vm.ModelAdapter.SetOutputLabels(_appState.ActiveSession.TrainingData.Variables.TargetVariableNames);
         }
 
 
         private void SetupAnimation()
         {
-            Vm!.ModelAdapter.ColorAnimation.SetupTrainer(_moduleState.ActiveSession!.Trainer!, ref _epochEndCallback, action =>
-            {
-                GlobalDistributingDispatcher.Call(action, _epochEndConsumer!);
-            });
+            Vm!.ModelAdapter.ColorAnimation.SetupTrainer(_moduleState.ActiveSession!.Trainer!, ref _epochEndCallback,
+                action => { GlobalDistributingDispatcher.Call(action, _epochEndConsumer!); });
         }
 
         private void ModuleStateOnActiveSessionChanged(object? sender, (TrainingSession? prev, TrainingSession next) e)
@@ -99,18 +130,17 @@ namespace Training.Application.Controllers
         private void Navigated(NavigationContext obj)
         {
             _epochEndConsumer = new PlotEpochEndConsumer(_moduleState, (_, __) => _epochEndCallback(),
-                session =>
-                {
-                    SetupAnimation();
-                },
+                session => { SetupAnimation(); },
                 session =>
                 {
                     Vm!.ModelAdapter.ColorAnimation.StopAnimation(false);
-                    System.Windows.Application.Current.Dispatcher.InvokeAsync(() => Vm!.ModelAdapter.Controller.Color.ApplyColors(), DispatcherPriority.Background);
+                    System.Windows.Application.Current.Dispatcher.InvokeAsync(
+                        () => Vm!.ModelAdapter.Controller.Color.ApplyColors(), DispatcherPriority.Background);
                 },
                 session =>
                 {
-                    System.Windows.Application.Current.Dispatcher.InvokeAsync(() => Vm!.ModelAdapter.Controller.Color.ApplyColors(), DispatcherPriority.Background);
+                    System.Windows.Application.Current.Dispatcher.InvokeAsync(
+                        () => Vm!.ModelAdapter.Controller.Color.ApplyColors(), DispatcherPriority.Background);
                 });
             _epochEndConsumer.Initialize();
 

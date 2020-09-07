@@ -1,5 +1,7 @@
 ﻿using OxyPlot;
+using OxyPlot.Axes;
 using Prism.Mvvm;
+using SharedUI.BasicPlot;
 
 namespace Data.Application.ViewModels.DataSource.Statistics
 {
@@ -7,14 +9,25 @@ namespace Data.Application.ViewModels.DataSource.Statistics
     {
         public VariablesPlotViewModel()
         {
-            PlotModel = new PlotModel()
+            PlotModel.Model.Title = "Variables plot";
+            PlotModel.Model.Axes.Add(new LinearAxis()
             {
-                Title = "Plot"
-            };
+                Position = AxisPosition.Bottom,
+                Title = "n-th variable",
+                MinimumMajorStep = 1,
+                MinimumMinorStep = 1,
+            });
+            PlotModel.Model.Axes.Add(new LinearAxis()
+            {
+                Position = AxisPosition.Left,
+                Title = "Value",
+            });
+            PlotModel.DisplaySettingsRegion = false;
             Controller = new VariablesPlotController(this);
         }
 
-        public PlotModel PlotModel { get; set; }
         public VariablesPlotController Controller { get; }
+
+        public BasicPlotModel PlotModel { get; set; } = new BasicPlotModel();
     }
 }

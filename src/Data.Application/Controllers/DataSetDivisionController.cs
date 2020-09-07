@@ -179,6 +179,7 @@ namespace Data.Application.Controllers
             Vm!.TrainingSetPercent = opt.TrainingSetPercent;
             Vm!.ValidationSetPercent = opt.ValidationSetPercent;
             Vm!.TestSetPercent = opt.TestSetPercent;
+            Vm!.UpdateRatio();
             Vm!.PropertyChanged += VmOnPropertyChanged;
         }
 

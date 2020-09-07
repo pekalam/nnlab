@@ -179,5 +179,6 @@ namespace SharedUI.BasicPlot
 
         public Action<string> SetSettingsRegion { get; internal set; }
         public Action<string> RemoveSettingsRegion { get; internal set; }
+        public bool DisplaySettingsRegion { get; set; } = true;
     }
 }

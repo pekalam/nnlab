@@ -85,7 +85,8 @@ namespace NeuralNetwork.Application
 
         public MLPNetwork CreateNeuralNetwork(TrainingData trainingData)
         {
-            return _service.CreateNeuralNetwork(trainingData);
+            var network = _service.CreateNeuralNetwork(trainingData);
+            return network;
         }
     }
 }

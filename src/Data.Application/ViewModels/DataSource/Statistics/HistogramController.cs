@@ -5,6 +5,7 @@ using Serilog;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using Common.Domain;
 
@@ -15,11 +16,21 @@ namespace Data.Application.ViewModels.DataSource.Statistics
         private readonly HistogramViewModel _vm;
         private int _varIndex;
         private IVectorSet? _vectorSet;
+        private AppStateHelper _helper;
+        private readonly AppState _appState;
 
-        public HistogramController(HistogramViewModel vm)
+        public HistogramController(HistogramViewModel vm, AppState appState)
         {
             _vm = vm;
+            _appState = appState;
+            _helper = new AppStateHelper(appState);
             vm.PropertyChanged += VmOnPropertyChanged;
+
+            _helper.OnTrainingDataChanged(data =>
+                {
+                    _vm.Variables = data.Variables.InputVariableNames.Union(data.Variables.TargetVariableNames).ToArray();
+                    _vm.SelectedVariable = _vm.Variables[0];
+                });
         }
 
         private void VmOnPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -29,6 +40,9 @@ namespace Data.Application.ViewModels.DataSource.Statistics
                 case nameof(HistogramViewModel.BinWidth):
                     UpdateBinWidth();
                     break;
+                case nameof(HistogramViewModel.SelectedVariable):
+                    PlotColumnDataOnHistogram(_vm.SelectedVariable);
+                    break;
             }
         }
 
@@ -37,8 +51,8 @@ namespace Data.Application.ViewModels.DataSource.Statistics
             if (_vectorSet != null)
             {
                 var items = CollectHistogramItems(_vectorSet, _varIndex);
-                ((HistogramSeries)_vm.HistogramModel.Series[0]).ItemsSource = items;
-                _vm.HistogramModel.InvalidatePlot(true);
+                ((HistogramSeries)_vm.HistogramModel.Model.Series[0]).ItemsSource = items;
+                _vm.HistogramModel.Model.InvalidatePlot(true);
             }
         }
 
@@ -71,7 +85,7 @@ namespace Data.Application.ViewModels.DataSource.Statistics
 
         private void LoadHistogram(IVectorSet vectorSet, string columnName, int varIndex)
         {
-            _vm.HistogramModel.Series.Clear();
+            _vm.HistogramModel.Model.Series.Clear();
 
             _vectorSet = vectorSet;
             _varIndex = varIndex;
@@ -82,10 +96,10 @@ namespace Data.Application.ViewModels.DataSource.Statistics
                 return;
             }
 
-            _vm.HistogramModel.Axes[1].Title = columnName.ToLower();
+            _vm.HistogramModel.Model.Axes[1].Title = columnName.ToLower();
 
             columnName = char.ToUpper(columnName[0]) + columnName.Substring(1);
-            _vm.HistogramModel.Title = $"{columnName} variable histogram";
+            _vm.HistogramModel.Model.Title = $"\"{columnName}\" variable histogram";
 
             var hs = new HistogramSeries()
             {
@@ -96,12 +110,15 @@ namespace Data.Application.ViewModels.DataSource.Statistics
 
             hs.ItemsSource = items;
 
-            _vm.HistogramModel.Series.Add(hs);
-            _vm.HistogramModel.InvalidatePlot(true);
+            _vm.HistogramModel.Model.Series.Add(hs);
+            _vm.HistogramModel.Model.InvalidatePlot(true);
         }
 
-        public void PlotColumnDataOnHistogram(string columnName, TrainingData trainingData)
+        public void PlotColumnDataOnHistogram(string columnName)
         {
+            Debug.Assert(_appState.ActiveSession?.TrainingData != null);
+
+            var trainingData = _appState.ActiveSession.TrainingData;
             columnName = columnName.Replace('_', '.');
             for (int i = 0; i < trainingData.Variables.Length; i++)
             {

@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
+using Common.Domain;
 using Common.Framework;
 using NeuralNetwork.Application.Controllers;
 using NeuralNetwork.Application.Messaging;
 using NeuralNetwork.Application.Services;
 using NeuralNetwork.Application.ViewModels;
 using NNControl;
+using NNLib;
 using NNLibAdapter;
 using Prism.Commands;
 using Prism.Events;
@@ -32,12 +35,16 @@ namespace NeuralNetwork.Application.Controllers
     {
         private readonly ModuleState _moduleState;
         private readonly IEventAggregator _ea;
+        private readonly AppState _appState;
+        private readonly AppStateHelper _helper;
+        private bool _handlersInit;
 
-        public NetDisplayController(ModuleState moduleState, IEventAggregator ea)
+        public NetDisplayController(ModuleState moduleState, IEventAggregator ea, AppState appState)
         {
             _moduleState = moduleState;
             _ea = ea;
-
+            _appState = appState;
+            _helper = new AppStateHelper(appState);
 
             NeuronClickCommand = new DelegateCommand<NeuronClickedEventArgs>(args =>
             {
@@ -49,6 +56,7 @@ namespace NeuralNetwork.Application.Controllers
                 _moduleState.ModelAdapter!.Controller.ClearHighlight();
                 _moduleState.ModelAdapter.Controller.HighlightLayer(arg.layerIndex + 1);
             });
+
         }
 
         public void Initialize()

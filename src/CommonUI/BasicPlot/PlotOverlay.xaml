@@ -7,12 +7,13 @@
              mc:Ignorable="d" 
              d:DesignWidth="450">
     <UserControl.Resources>
-        <Style TargetType="{x:Type Button}">
+        <Style TargetType="{x:Type Button}" x:Key="DefaultBtnStyle">
             <Setter Property="Width" Value="26"/>
             <Setter Property="Height" Value="26"/>
             <Setter Property="HorizontalContentAlignment" Value="Center"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
         </Style>
+        <Style BasedOn="{StaticResource DefaultBtnStyle}" TargetType="{x:Type Button}"/>
     </UserControl.Resources>
     <StackPanel Orientation="Horizontal" Background="#A514202B" Margin="0,10,0,0">
         <Button Background="#A514202B" Foreground="#FFFFFF" Name="Reset" Click="Reset_Click">
@@ -28,6 +29,18 @@
             <iconPacks:FontAwesome Kind="CameraSolid"/>
         </Button>
         <Button Background="#A514202B" Foreground="#FFFFFF" Name="SettingsBtn" Click="SettingsBtn_Click">
+            <Button.Style>
+                <Style BasedOn="{StaticResource DefaultBtnStyle}" TargetType="{x:Type Button}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding PlotModel.DisplaySettingsRegion}" Value="True">
+                            <Setter Property="Visibility" Value="Visible"></Setter>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding PlotModel.DisplaySettingsRegion}" Value="False">
+                            <Setter Property="Visibility" Value="Collapsed"></Setter>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
             <iconPacks:FontAwesome Kind="CogSolid"/>
         </Button>
         <Button Background="#A514202B" Foreground="#FFFFFF" Name="NewWindowBtn" Click="NewWindowBtn_Click" Visibility="{Binding NewWindowVisibility}">
