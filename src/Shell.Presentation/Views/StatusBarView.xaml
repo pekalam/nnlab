@@ -183,9 +183,20 @@
                                         <DataTrigger Binding="{Binding AppState.ActiveSession.SingleDataFile}" Value="{x:Null}">
                                             <Setter Property="Text" Value="Multiple files"/>
                                         </DataTrigger>
-                                        <DataTrigger Binding="{Binding AppState.ActiveSession.TrainingDataFile}" Value="{x:Null}">
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding AppState.ActiveSession.TrainingDataFile}" Value="{x:Null}"/>
+                                                <Condition Binding="{Binding AppState.ActiveSession.TrainingData.Source}" Value="Csv"/>
+                                            </MultiDataTrigger.Conditions>
                                             <Setter Property="Text" Value="{Binding AppState.ActiveSession.SingleDataFile,Converter={StaticResource FileNameConverter}}"/>
-                                        </DataTrigger>
+                                        </MultiDataTrigger>
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding AppState.ActiveSession.TrainingDataFile}" Value="{x:Null}"/>
+                                                <Condition Binding="{Binding AppState.ActiveSession.TrainingData.Source}" Value="Memory"/>
+                                            </MultiDataTrigger.Conditions>
+                                            <Setter Property="Text" Value="Custom"/>
+                                        </MultiDataTrigger>
                                     </Style.Triggers>
                                 </Style>
                             </TextBlock.Style>

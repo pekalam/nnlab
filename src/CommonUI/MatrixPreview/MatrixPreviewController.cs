@@ -25,6 +25,9 @@ namespace SharedUI.MatrixPreview
         private volatile bool _disableUpdate;
         private string _numFormat = "F2";
 
+        private string[] _customColumns;
+        private Func<int, string> _customRows;
+
         //todo clear
         private readonly Dictionary<int, MatrixTypes> _cachedSelection = new Dictionary<int, MatrixTypes>();
         private readonly MatrixGridRenderer _matrixGridRenderer;
@@ -33,7 +36,7 @@ namespace SharedUI.MatrixPreview
         {
             _ea = ea;
             _vm = vm;
-            _matrixGridRenderer = new MatrixGridRenderer(_vm);
+            _matrixGridRenderer = new MatrixGridRenderer(_vm, new DelegateCommand<MatrixPreviewModel>(RemoveItem));
 
             NextLayer = new DelegateCommand(NextLayerExecute);
             PrevLayer = new DelegateCommand(PrevLayerExecute);
@@ -65,6 +68,13 @@ namespace SharedUI.MatrixPreview
             });
 
             _vm.PropertyChanged += VmOnPropertyChanged;
+        }
+
+        private void RemoveItem(MatrixPreviewModel obj)
+        {
+            _assignedMatrix = _assignedMatrix.RemoveRow(obj.RowIndex);
+            _vm.RaiseRowRemoved(_assignedMatrix);
+            CreateGrid();
         }
 
 
@@ -100,8 +110,13 @@ namespace SharedUI.MatrixPreview
             CreateGrid();
         }
 
-        public void AssignMatrix(Matrix<double> mat)
+        public void AssignMatrix(Matrix<double> mat, string[] customColumns = null, Func<int, string> customRows = null)
         {
+            _customColumns = customColumns;
+            _customRows = customRows;
+
+            Debug.Assert(_customColumns == null || _customColumns.Length == mat.ColumnCount);
+
             _assignedMatrix = mat;
             CreateGrid();
         }
@@ -257,10 +272,24 @@ namespace SharedUI.MatrixPreview
                     break;
             }
 
-            var matrix = GetSelectedMatrix(); 
-            _matrixGridRenderer.Create(matrix, _numFormat, i => columnTitle + " " + i, i => "Neuron " + i);
-            
+            var matrix = GetSelectedMatrix();
+            Func<int, string> columnFunc = null;
+            if (_customColumns == null)
+            {
+                columnFunc = i => columnTitle + " " + i;
+            }
+            else
+            {
+                columnFunc = i => _customColumns[i];
+            }
+
+            Func<int, string> rowFunc = null;
+            rowFunc = _customRows ?? (i => "Neuron " + i);
+
+            _matrixGridRenderer.Create(matrix, _numFormat, columnFunc, rowFunc);
         }
+
+
 
         private void UpdatePreview()
         {

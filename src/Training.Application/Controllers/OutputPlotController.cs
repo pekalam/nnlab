@@ -112,7 +112,7 @@ namespace Training.Application.Controllers
 
         private void InvalidatePlot()
         {
-            GlobalDistributingDispatcher.Call(() => { Vm!.PlotModel.InvalidatePlot(true); }, _epochEndConsumer);
+            Vm!.PlotModel.InvalidatePlot(true);
         }
 
         private void InitPlotEpochEndConsumer()
@@ -126,13 +126,14 @@ namespace Training.Application.Controllers
 
                 _plotSelector.OutputPlot?.OnEpochEnd(epochEnds, Vm!, _cts.Token);
 
-                InvalidatePlot();
+                GlobalDistributingDispatcher.Call(InvalidatePlot, _epochEndConsumer!);
+
             }, session =>
             {
                 _cts = new CancellationTokenSource();
                 _plotSelector.SelectPlot(session);
                 _plotSelector.OutputPlot?.OnSessionStarting(Vm!, session, _cts.Token);
-                InvalidatePlot();
+                GlobalDistributingDispatcher.Call(InvalidatePlot, _epochEndConsumer!);
             }, s =>
             {
                 _cts!.Cancel();
@@ -171,7 +172,7 @@ namespace Training.Application.Controllers
                 await Task.Run(
                     () =>
                     {
-                        _plotSelector.OutputPlot!.GeneratrePlot(navParams.Set, navParams.Data, navParams.Network, Vm!);
+                        _plotSelector.OutputPlot!.GeneratePlot(navParams.Set, navParams.Data, navParams.Network, Vm!);
                     }, navParams.Cts.Token);
 
                 System.Windows.Application.Current.Dispatcher.Invoke(() => Vm!.PlotModel.InvalidatePlot(true),

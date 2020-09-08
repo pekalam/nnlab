@@ -6,6 +6,12 @@
     <AssemblyName>Training.Application</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Controllers\PanelLayout\**" />
+    <EmbeddedResource Remove="Controllers\PanelLayout\**" />
+    <None Remove="Controllers\PanelLayout\**" />
+    <Page Remove="Controllers\PanelLayout\**" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\Common.Domain\Common.Domain.csproj" />
     <ProjectReference Include="..\Common.Framework\Common.Framework.csproj" />
     <ProjectReference Include="..\CommonUI\SharedUI.csproj" />
@@ -16,8 +22,5 @@
   <ItemGroup>
     <PackageReference Include="NNLibAdapter" Version="1.0.3" />
     <PackageReference Include="System.Reactive" Version="4.4.1" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Controllers\PanelLayout\" />
   </ItemGroup>
 </Project>

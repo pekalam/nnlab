@@ -6,6 +6,12 @@
     <AssemblyName>Data.Presentation</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Converters\**" />
+    <EmbeddedResource Remove="Converters\**" />
+    <None Remove="Converters\**" />
+    <Page Remove="Converters\**" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\Common.Presentation\Common.Presentation.csproj" />
     <ProjectReference Include="..\Data.Application\Data.Application.csproj" />
   </ItemGroup>
@@ -54,8 +60,5 @@
     <Page Update="Views\DataSource\VariablesSelection\VariablesSelectionView.xaml">
       <SubType>Designer</SubType>
     </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Converters\" />
   </ItemGroup>
 </Project>

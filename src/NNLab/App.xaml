@@ -10,6 +10,7 @@
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Themes/Light.Blue.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.FlatButton.xaml" />
                 <ResourceDictionary Source="GlobalStyles.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/SharedUI;component/Styles.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Data.Presentation;component/Styles/Styles.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Shell.Presentation;component/Styles/Styles.xaml" />
             </ResourceDictionary.MergedDictionaries>

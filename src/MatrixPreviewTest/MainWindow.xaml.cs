@@ -23,9 +23,10 @@ namespace MatrixPreviewTest
             });
             InitializeComponent();
             DataContext = Vm;
+            Vm.CanRemoveItem = true;
 
-            var mat = Matrix<double>.Build.Dense(10, 10);
-            Vm.Controller.AssignMatrix(mat);
+            var mat = Matrix<double>.Build.Dense(10, 2);
+            Vm.Controller.AssignMatrix(mat, new []{"x", "y"}, i => i.ToString());
 
             // Vm.Controller.AssignNetwork(net);
             //

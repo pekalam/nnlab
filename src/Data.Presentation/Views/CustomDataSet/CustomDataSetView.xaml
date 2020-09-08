@@ -8,16 +8,32 @@
              xmlns:dd="clr-namespace:Data.Presentation.__DesignData"
              xmlns:customDataSet="clr-namespace:Data.Presentation.Views.CustomDataSet"
              xmlns:interface="clr-namespace:Shell.Interface;assembly=Shell.Interface"
+             xmlns:matrixPreview="clr-namespace:SharedUI.MatrixPreview;assembly=SharedUI"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance dd:DesignCustomDataSetVm, IsDesignTimeCreatable=True}"
              prism:ViewModelLocator.AutoWireViewModel="True"
              interface:BreadcrumbsHelper.Breadcrumb="Custom data set">
     <UserControl.Resources>
-        <customDataSet:ActionMenuLeftView x:Key="ActionMenuLeft"/>
+        <customDataSet:ActionMenuLeftView x:Key="ActionMenuLeft" />
     </UserControl.Resources>
-    <Grid Margin="40" interface:ActionMenuHelpers.LeftMenuView="{StaticResource ActionMenuLeft}">
-        <ContentControl Style="{StaticResource ContentPanel}">
-            <oxy:PlotView Model="{Binding PlotModel}" Controller="{Binding PlotController}" />
-        </ContentControl>
-    </Grid>
+    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+        <Grid Style="{StaticResource ContentGrid}">
+            <ContentControl Style="{StaticResource ContentPanel}">
+                <Grid interface:ActionMenuHelpers.LeftMenuView="{StaticResource ActionMenuLeft}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="Data points" FontSize="16" />
+                    <oxy:PlotView Grid.Row="1" MinHeight="400" Model="{Binding PlotModel}"
+                                  Controller="{Binding PlotController}" />
+                    <matrixPreview:MatrixPreviewView Grid.Row="2" LayerSelectPanelVisibility="Collapsed" Editable="True"
+                                                     DataContext="{Binding MatrixVm}" />
+                </Grid>
+            </ContentControl>
+        </Grid>
+
+
+    </ScrollViewer>
 </UserControl>

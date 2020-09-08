@@ -47,13 +47,15 @@ namespace NeuralNetwork.Application.Tests
         public void Layers_change_when_active_session_is_changed()
         {
             var session = _appState.CreateSession();
+            session.TrainingData = TrainingDataMocks.ValidData1;
             session.Network = MLPMocks.ValidNet1;
 
             _vm = _mocker.UseVm<LayersDisplayViewModel>();
             _vm.Layers.Should().HaveCount(_appState.ActiveSession.Network!.TotalLayers + 1);
 
             var session2 = _appState.CreateSession();
-            session2.Network = MLPMocks.ValidNet2;
+            session2.TrainingData = TrainingDataMocks.ValidData1;
+            session2.Network = MLPMocks.ValidNet1;
             _appState.ActiveSession = session2;
 
             _vm.Layers.Should().HaveCount(_appState.ActiveSession.Network!.TotalLayers + 1);

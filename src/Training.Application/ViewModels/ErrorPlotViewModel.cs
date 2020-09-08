@@ -33,7 +33,6 @@ namespace Training.Application.ViewModels
                 Title = "Error",
                 AbsoluteMinimum = 0,
                 AxisTitleDistance = 18,
-                FilterMinValue = 0.001d,
             });
             BasicPlotModel.Model.PlotMargins = new OxyThickness(80, Double.NaN, Double.NaN, Double.NaN);
         }

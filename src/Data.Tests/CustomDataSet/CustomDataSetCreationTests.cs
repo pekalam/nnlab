@@ -5,8 +5,10 @@ using Data.Application.Controllers;
 using Data.Application.Services;
 using Data.Application.ViewModels.CustomDataSet;
 using FluentAssertions;
+using MahApps.Metro.IconPacks.Converter;
 using Moq.AutoMock;
 using OxyPlot;
+using SharedUI.MatrixPreview;
 using TestUtils;
 using Xunit;
 
@@ -29,9 +31,11 @@ namespace Data.Application.Tests.CustomDataSet
             _appState = _mocker.UseImpl<AppState>();
             _appState.CreateSession();
 
+            var matVm = _mocker.UseImpl<MatrixPreviewViewModel>();
+            matVm.UpdateColumns = _ => { };
             _ctrl = _mocker.UseImpl<ICustomDataSetService,CustomDataSetController>();
             _vm = _mocker.UseVm<CustomDataSetViewModel>();
-
+            _vm.OnNavigatedTo(null);
 
             _dsService = _ctrl;
 
@@ -48,57 +52,27 @@ namespace Data.Application.Tests.CustomDataSet
         }
 
         [Fact]
-        public void MouseDownCommand_updates_session_training_data_when_3_points_are_created()
+        public void Training_data_is_created_with_3_points_when_vm_is_created()
+        {
+            _appState.ActiveSession.TrainingData.Should().NotBeNull();
+            _appState.ActiveSession.TrainingData.Sets.TrainingSet.Input.Count.Should().Be(3);
+            _appState.ActiveSession.TrainingData.Sets.TrainingSet.Target.Count.Should().Be(3);
+        }
+
+        [Fact]
+        public void MouseDownCommand_updates_session_training_data()
         {
             //act
             _dsService.PlotMouseDownCommand.Execute(new OxyMouseDownEventArgs()
             {
                 ClickCount = 2, Position = new ScreenPoint(0,0), ChangedButton = OxyMouseButton.Left,
             });
-            //assert
-            _appState.ActiveSession.TrainingData.Should().BeNull();
 
-            //act
-            _dsService.PlotMouseDownCommand.Execute(new OxyMouseDownEventArgs()
-            {
-                ClickCount = 2, Position = new ScreenPoint(1, 0), ChangedButton = OxyMouseButton.Left,
-            });
-            //assert
-            _appState.ActiveSession.TrainingData.Should().BeNull();
+            _appState.ActiveSession.TrainingData.Sets.TrainingSet.Input.Count.Should().Be(4);
+            _appState.ActiveSession.TrainingData.Sets.TrainingSet.Target.Count.Should().Be(4);
 
 
-            //act
-            _dsService.PlotMouseDownCommand.Execute(new OxyMouseDownEventArgs()
-            {
-                ClickCount = 2, Position = new ScreenPoint(2, 0), ChangedButton = OxyMouseButton.Left,
-            });
-            //assert
-            _appState.ActiveSession.TrainingData.Should().NotBeNull();
-
-            _appState.ActiveSession.TrainingData.Sets.TrainingSet.Input.Count.Should().Be(3);
-            _appState.ActiveSession.TrainingData.Sets.TrainingSet.Target.Count.Should().Be(3);
-        }
-
-        [Fact]
-        public void VmPoints_when_new_session_created_and_active_are_cleared_and_restored()
-        {
-            AddPoint(0,1);
-            AddPoint(1, 0);
-
-
-            var previous = _appState.ActiveSession;
-            var previousScatter = _vm.Scatter.Points;
-            var previousLine = _vm.Line.Points;
-
-            _appState.ActiveSession = _appState.CreateSession();
-
-            _vm.Scatter.Points.Should().BeEmpty();
-            _vm.Line.Points.Should().BeEmpty();
-
-            _appState.ActiveSession = previous;
-
-            _vm.Scatter.Points.Should().BeEquivalentTo(previousScatter);
-            _vm.Line.Points.Should().BeEquivalentTo(previousLine);
+            _vm.MatrixVm.Controller.AssignedMatrix.RowCount.Should().Be(4);
         }
 
     }

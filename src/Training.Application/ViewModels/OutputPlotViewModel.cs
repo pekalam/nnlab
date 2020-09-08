@@ -61,7 +61,7 @@ namespace Training.Application.ViewModels
         void OnSessionStarting(OutputPlotViewModel vm, TrainingSession session, CancellationToken ct);
         void OnSessionStopped(TrainingSession session);
         void OnSessionPaused(TrainingSession session);
-        void GeneratrePlot(DataSetType set, TrainingData trainingData, MLPNetwork net, OutputPlotViewModel vm);
+        void GeneratePlot(DataSetType set, TrainingData trainingData, MLPNetwork net, OutputPlotViewModel vm);
     }
 
     internal class VecNumPlot : IOutputPlot
@@ -80,9 +80,9 @@ namespace Training.Application.ViewModels
             {
                 _session.Network!.CalculateOutput(input[i]);
 
-                var netOutput = _session.Network.Output;
+                var netOutput = _session.Network.Output!;
 
-                dataPoints.Add(new ScatterPoint(i, netOutput![0, 0]));
+                dataPoints.Add(new ScatterPoint(i, netOutput[0, 0]));
             }
             _output.Points.AddRange(dataPoints);
         }
@@ -97,7 +97,6 @@ namespace Training.Application.ViewModels
 
             var input = _session.TrainingData!.Sets.TrainingSet.Input;
             var target = session.TrainingData!.Sets.TrainingSet.Target;
-            var inputVarInd = session.TrainingData.Variables.Indexes.InputVarIndexes;
             var targetVarInd = session.TrainingData.Variables.Indexes.TargetVarIndexes;
 
             vm.PlotModel.Axes.Clear();
@@ -149,7 +148,7 @@ namespace Training.Application.ViewModels
 
         }
 
-        public void GeneratrePlot(DataSetType set, TrainingData trainingData, MLPNetwork net, OutputPlotViewModel vm)
+        public void GeneratePlot(DataSetType set, TrainingData trainingData, MLPNetwork net, OutputPlotViewModel vm)
         {
             throw new System.NotImplementedException();
         }
@@ -197,7 +196,7 @@ namespace Training.Application.ViewModels
                 dataPoints.Add(new DataPoint(input[i][0, 0], network.Output![0, 0]));
             }
             _output!.Points.Clear();
-            _output.Points.AddRange(dataPoints);
+            _output.Points.AddRange(dataPoints.OrderBy(p => p.X));
         }
 
         public void OnSessionStarting(OutputPlotViewModel vm, TrainingSession session, CancellationToken ct)
@@ -262,7 +261,7 @@ namespace Training.Application.ViewModels
 
         public void OnSessionPaused(TrainingSession session) => OnSessionStopped(session);
 
-        public void GeneratrePlot(DataSetType set, TrainingData trainingData, MLPNetwork net, OutputPlotViewModel vm)
+        public void GeneratePlot(DataSetType set, TrainingData trainingData, MLPNetwork net, OutputPlotViewModel vm)
         {
             Debug.Assert(_output != null);
             Debug.Assert(trainingData.GetSet(set) != null);
@@ -278,7 +277,7 @@ namespace Training.Application.ViewModels
                 dataPoints.Add(new DataPoint(input[i][0, 0], net.Output![0, 0]));
             }
             _output.Points.Clear();
-            _output.Points.AddRange(dataPoints);
+            _output.Points.AddRange(dataPoints.OrderBy(p => p.X));
         }
     }
 }

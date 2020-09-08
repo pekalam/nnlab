@@ -12,6 +12,15 @@ namespace Common.Presentation.Behaviors
         protected override void OnAttached()
         {
             AssociatedObject.ValueChanged += AssociatedObjectOnValueChanged;
+
+            if (AssociatedObject.Value.HasValue && Math.Abs(AssociatedObject.Value.Value % 1) <= (Double.Epsilon * 100))
+            {
+                AssociatedObject.StringFormat = "G";
+            }
+            else
+            {
+                AssociatedObject.StringFormat = "###0.###################";
+            }
         }
 
         private void AssociatedObjectOnValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)

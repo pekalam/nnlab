@@ -1,8 +1,11 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Windows.Input;
 using MathNet.Numerics.LinearAlgebra;
+using Prism.Commands;
 
 namespace SharedUI.MatrixPreview
 {
@@ -11,6 +14,7 @@ namespace SharedUI.MatrixPreview
         private readonly IDictionary<int, string> _dictionary = new Dictionary<int, string>();
         private Matrix<double>? _matrix;
         private int _row;
+        public event Action ElementChanged;
 
         public void AssignMatrix(Matrix<double> matrix, int row)
         {
@@ -54,6 +58,7 @@ namespace SharedUI.MatrixPreview
                     _matrix[_row, key] = double.Parse(value);
                 }
                 _dictionary[key] = value;
+                ElementChanged?.Invoke();
             }
         }
 
@@ -64,8 +69,10 @@ namespace SharedUI.MatrixPreview
 
     public class MatrixPreviewModel : INotifyPropertyChanged
     {
+        public int RowIndex { get; set; }
         public string RowHeader { get; set; } = null!;
         public MatrixRowDictionary Props { get; set; } = null!;
+        public DelegateCommand<MatrixPreviewModel> RemoveCommand { get; set; } = null!;
         public void RaisePropsChanged() => OnPropertyChanged(nameof(Props));
         public event PropertyChangedEventHandler? PropertyChanged;
 

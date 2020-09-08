@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Windows.Threading;
+using Common.Domain;
 using Common.Framework;
 using Common.Framework.Extensions;
 using CommonServiceLocator;
@@ -83,6 +84,7 @@ namespace Training.Application.Controllers
 
         private readonly IRegionManager _rm;
         private readonly ModuleState _moduleState;
+
 
         public ErrorPlotController(IViewModelAccessor accessor, ModuleState moduleState, IRegionManager rm) : base(accessor)
         {

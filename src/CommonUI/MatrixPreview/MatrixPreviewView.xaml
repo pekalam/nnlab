@@ -12,6 +12,8 @@
     <UserControl.Resources>
         <matrixPreview:LayerNumberConverter x:Key="layerNumberConverter" />
         <matrixPreview:MatrixTypeConverter x:Key="matrixTypeConverter" />
+
+
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>

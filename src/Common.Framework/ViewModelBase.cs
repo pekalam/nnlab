@@ -2,6 +2,7 @@
 using Prism.Mvvm;
 using Prism.Regions;
 using System;
+using System.Windows;
 using Microsoft.VisualBasic;
 
 namespace Common.Framework
@@ -31,6 +32,10 @@ namespace Common.Framework
             set
             {
                 _isActive = value;
+                if (!value)
+                {
+                    Created = null;
+                }
                 // if (!value)
                 // {
                 //     Instance = null;

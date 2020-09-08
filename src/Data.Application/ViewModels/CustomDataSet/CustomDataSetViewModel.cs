@@ -3,6 +3,8 @@ using Data.Application.Services;
 using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Series;
+using Prism.Regions;
+using SharedUI.MatrixPreview;
 using Unity;
 
 namespace Data.Application.ViewModels.CustomDataSet
@@ -16,9 +18,12 @@ namespace Data.Application.ViewModels.CustomDataSet
         }
 
         [InjectionConstructor]
-        public CustomDataSetViewModel(ICustomDataSetService customDataSetService)
+        public CustomDataSetViewModel(ICustomDataSetService customDataSetService, MatrixPreviewViewModel matrixVm)
         {
+            KeepAlive = false;
             Service = customDataSetService;
+            MatrixVm = matrixVm;
+            matrixVm.CanRemoveItem = true;
 
             PlotModel.MouseDown += (sender, args) => Service.PlotMouseDownCommand.Execute(args);
 
@@ -59,5 +64,14 @@ namespace Data.Application.ViewModels.CustomDataSet
         };
 
         public PlotController PlotController { get; } = new PlotController();
+
+
+        public MatrixPreviewViewModel MatrixVm { get; }
+
+
+        public override void OnNavigatedTo(NavigationContext navigationContext)
+        {
+            Service.Navigated(navigationContext);
+        }
     }
 }

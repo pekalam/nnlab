@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using System.Windows.Controls;
 using System.Windows.Input;
 using CommonServiceLocator;
+using ControlzEx.Standard;
+using MathNet.Numerics.LinearAlgebra;
 using Prism.Events;
 using Prism.Mvvm;
+using Unity;
 
 namespace SharedUI.MatrixPreview
 {
@@ -15,15 +18,21 @@ namespace SharedUI.MatrixPreview
         private int _numPrecision = 2;
         private List<MatrixPreviewModel> _source;
         private bool _readOnly = true;
+        private bool _canRemoveItem;
 
-        public MatrixPreviewViewModel()
+        [InjectionConstructor]
+        public MatrixPreviewViewModel(IEventAggregator ea)
         {
-            Controller = new MatrixPreviewController(this, ServiceLocator.Current.GetInstance<IEventAggregator>());
+            Controller = new MatrixPreviewController(this,ea);
             NextLayer = Controller.NextLayer;
             PrevLayer = Controller.PrevLayer;
             IncreasePrecision = Controller.IncreasePrecision;
             DecreasePrecision = Controller.DecreasePrecision;
             ColumnClicked = Controller.ColumnClicked;
+        }
+
+        public MatrixPreviewViewModel() : this(ServiceLocator.Current.GetInstance<IEventAggregator>())
+        {
         }
 
         public ICommand NextLayer { get; }
@@ -34,7 +43,12 @@ namespace SharedUI.MatrixPreview
 
         internal Action<IEnumerable<DataGridColumn>>? UpdateColumns { get; set; }
         public event Action GridInitialized;
+        public event Action<Matrix<double>> RowRemoved;
+        public event Action<Matrix<double>> MatrixElementChanged; 
         internal void RaiseGridInitialized() => GridInitialized?.Invoke();
+        internal void RaiseRowRemoved(Matrix<double> newMatrix) => RowRemoved?.Invoke(newMatrix);
+        internal void RaiseMatrixElementChanged(Matrix<double> mat) => MatrixElementChanged?.Invoke(mat);
+
 
         public MatrixPreviewController Controller { get; }
         public int SelectedLayerNum
@@ -65,6 +79,12 @@ namespace SharedUI.MatrixPreview
         {
             get => _numPrecision;
             set => SetProperty(ref _numPrecision, value);
+        }
+
+        public bool CanRemoveItem
+        {
+            get => _canRemoveItem;
+            set => SetProperty(ref _canRemoveItem, value);
         }
     }
 }

@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using MathNet.Numerics.LinearAlgebra;
+using Prism.Commands;
 
 namespace SharedUI.MatrixPreview
 {
@@ -10,11 +13,13 @@ namespace SharedUI.MatrixPreview
     {
         private readonly MatrixPreviewViewModel _vm;
         private List<MatrixPreviewModel> _models;
-        private readonly List<DataGridTextColumn> _columns = new List<DataGridTextColumn>();
+        private readonly List<DataGridColumn> _columns = new List<DataGridColumn>();
+        private DelegateCommand<MatrixPreviewModel> _removeCommand;
 
-        public MatrixGridRenderer(MatrixPreviewViewModel vm)
+        public MatrixGridRenderer(MatrixPreviewViewModel vm, DelegateCommand<MatrixPreviewModel> removeCommand)
         {
             _vm = vm;
+            _removeCommand = removeCommand;
         }
 
         public bool ReadOnly { get; set; } = true;
@@ -42,13 +47,26 @@ namespace SharedUI.MatrixPreview
                     });
                 }
 
+                if (_vm.CanRemoveItem && Application.Current != null)
+                {
+                    var template = Application.Current.Resources["MatrixModelRemoveCellTemplate"] as DataTemplate;
+                    _columns.Add(new DataGridTemplateColumn()
+                    {
+                        CellTemplate = template,
+                    });
+                }
+
                 for (int i = 0; i < matrix.RowCount; i++)
                 {
                     var model = new MatrixPreviewModel
                     {
+                        RowIndex = i,
                         Props = new MatrixRowDictionary(),
                         RowHeader = rowTitle(i),
+                        RemoveCommand = _removeCommand,
                     };
+
+                    model.Props.ElementChanged += () => _vm.RaiseMatrixElementChanged(matrix);
 
                     for (int j = 0; j < matrix.ColumnCount; j++)
                     {

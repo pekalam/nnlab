@@ -30,6 +30,7 @@ namespace SharedUI.MatrixPreview
             set => SetValue(LayerSelectPanelVisibilityProperty, value);
         }
 
+
         private bool _columnSelected;
         private object? _selectedColumn;
 
