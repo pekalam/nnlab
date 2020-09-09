@@ -29,9 +29,14 @@ namespace Training.Application.ViewModels.PanelLayout.Layouts
             PropertyChanged += ViewModelOnPropertyChanged;
         }
 
+        protected override void OnInactive()
+        {
+            Rm.Regions[SingleLayoutRegions.SingleLayoutMainRegion].RemoveAll();
+        }
+
         private void ViewModelOnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(SingleLayoutViewModel.Selected1))
+            if (e.PropertyName == nameof(Selected1))
             {
                 var newView = PanelToViewHelper.GetView(Selected1);
                 ClearAndNavgate(SingleLayoutRegions.SingleLayoutMainRegion, newView, InitialNavParams);
@@ -76,6 +81,12 @@ namespace Training.Application.ViewModels.PanelLayout.Layouts
             Rm.Regions[Horizontal2LayoutRegions.Horizontal2LayoutRegion1].RequestNavigate(first, navParams);
             Rm.Regions[Horizontal2LayoutRegions.Horizontal2LayoutRegion2].RequestNavigate(second, navParams);
             PropertyChanged += vmOnPropertyChanged;
+        }
+
+        protected override void OnInactive()
+        {
+            Rm.Regions[Horizontal2LayoutRegions.Horizontal2LayoutRegion1].RemoveAll();
+            Rm.Regions[Horizontal2LayoutRegions.Horizontal2LayoutRegion2].RemoveAll();
         }
 
         private void vmOnPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -142,6 +153,13 @@ namespace Training.Application.ViewModels.PanelLayout.Layouts
             Rm.Regions[Part3LayoutRegions.Part3LayoutRegion2].RequestNavigate(second, navParams);
             Rm.Regions[Part3LayoutRegions.Part3LayoutRegion3].RequestNavigate(third, navParams);
             PropertyChanged += vmOnPropertyChanged;
+        }
+
+        protected override void OnInactive()
+        {
+            Rm.Regions[Part3LayoutRegions.Part3LayoutRegion1].RemoveAll();
+            Rm.Regions[Part3LayoutRegions.Part3LayoutRegion2].RemoveAll();
+            Rm.Regions[Part3LayoutRegions.Part3LayoutRegion3].RemoveAll();
         }
 
         private void vmOnPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -226,6 +244,14 @@ namespace Training.Application.ViewModels.PanelLayout.Layouts
             Rm.RequestNavigate(Part4LayoutRegions.Part4LayoutRegion3, third, navParams);
             Rm.RequestNavigate(Part4LayoutRegions.Part4LayoutRegion4, fourth, navParams);
             PropertyChanged += vmOnPropertyChanged;
+        }
+
+        protected override void OnInactive()
+        {
+            Rm.Regions[Part4LayoutRegions.Part4LayoutRegion1].RemoveAll();
+            Rm.Regions[Part4LayoutRegions.Part4LayoutRegion2].RemoveAll();
+            Rm.Regions[Part4LayoutRegions.Part4LayoutRegion3].RemoveAll();
+            Rm.Regions[Part4LayoutRegions.Part4LayoutRegion4].RemoveAll();
         }
 
         private void vmOnPropertyChanged(object sender, PropertyChangedEventArgs e)

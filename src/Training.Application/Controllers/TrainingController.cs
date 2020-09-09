@@ -151,7 +151,6 @@ namespace Training.Application.Controllers
         private void OnPanelsSelected(List<PanelSelectModel> list)
         {
             var vm = _accessor.Get<TrainingViewModel>();
-            _rm.Regions[TrainingViewRegions.PanelLayoutRegion].RemoveAll();
             _lastSelectedPanels = list;
 
             if (list.Count > 0)

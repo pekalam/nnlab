@@ -67,19 +67,6 @@ namespace Training.Application.Controllers
 
         protected override void VmCreated()
         {
-            viewModelAccessor.Get<PanelLayoutViewModel>()!.IsActiveChanged += (sender, args) =>
-            {
-                if (!(sender as PanelLayoutViewModel)!.IsActive)
-                {
-                    _epochEndConsumer?.ForceStop();
-                }
-            };
-
-            Vm!.IsActiveChanged += (sender, args) =>
-            {
-                if (!Vm!.IsActive) _epochEndConsumer!.ForceStop();
-            };
-
             _helper.OnNetworkChanged(network =>
             {
                 _appState.ActiveSession!.NetworkStructureChanged -= ActiveSessionOnNetworkStructureChanged;
@@ -95,6 +82,16 @@ namespace Training.Application.Controllers
                 Vm.ModelAdapter.SetInputLabels(_appState.ActiveSession!.TrainingData!.Variables.InputVariableNames);
                 Vm.ModelAdapter.SetOutputLabels(_appState.ActiveSession.TrainingData.Variables.TargetVariableNames);
             });
+            Vm!.IsActiveChanged += OnIsActiveChanged;
+        }
+
+        private void OnIsActiveChanged(object? sender, EventArgs e)
+        {
+            if (!Vm!.IsActive)
+            {
+                _epochEndConsumer?.ForceStop();
+                Vm!.IsActiveChanged -= OnIsActiveChanged;
+            }
         }
 
         private void ActiveSessionOnNetworkStructureChanged(MLPNetwork obj)

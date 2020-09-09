@@ -162,7 +162,6 @@ namespace Training.Application.Plots
         {
             if (_session != null) _session.EpochEnd -= Session_EpochEnd;
             EndSubscriptions();
-            ;
             GlobalDistributingDispatcher.Unregister(this);
         }
 

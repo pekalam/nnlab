@@ -42,6 +42,16 @@ namespace Training.Application.ViewModels.PanelLayout
         protected LayoutViewModelBase(IRegionManager rm)
         {
             Rm = rm;
+            IsActiveChanged += OnIsActiveChanged;
+        }
+
+        private void OnIsActiveChanged(object? sender, EventArgs e)
+        {
+            if (!IsActive)
+            {
+                OnInactive();
+                IsActiveChanged -= OnIsActiveChanged;
+            }
         }
 
         protected void ClearAndNavgate(string regionName, string view, NavigationParameters? navParams = null)
@@ -58,6 +68,7 @@ namespace Training.Application.ViewModels.PanelLayout
         }
 
         protected abstract void OnPanelsSelected(string[] views, List<PanelSelectModel> selected, NavigationParameters navParams);
+        protected abstract void OnInactive();
     }
 
     public class PanelLayoutViewModel : ViewModelBase<PanelLayoutViewModel>
@@ -72,6 +83,7 @@ namespace Training.Application.ViewModels.PanelLayout
         public override void OnNavigatedTo(NavigationContext navigationContext)
         {
             var selected = (navigationContext.Parameters["selectedPanels"] as List<PanelSelectModel>)!;
+            _rm.Regions[PanelLayoutRegions.PanelLayoutMain].RemoveAll();
             switch (selected.Count)
             {
                 case 1: _rm.RequestNavigate(PanelLayoutRegions.PanelLayoutMain, "SingleLayoutView",navigationContext.Parameters); break;

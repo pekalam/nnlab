@@ -50,18 +50,16 @@ namespace Training.Application.Controllers
 
         protected override void VmCreated()
         {
-            viewModelAccessor.Get<PanelLayoutViewModel>()!.IsActiveChanged += (sender, args) =>
-            {
-                if (!(sender as PanelLayoutViewModel)!.IsActive)
-                {
-                    _epochEndConsumer?.ForceStop();
-                }
-            };
+            Vm!.IsActiveChanged += OnIsActiveChanged;
+        }
 
-            Vm!.IsActiveChanged += (_, __) =>
+        private void OnIsActiveChanged(object? sender, EventArgs e)
+        {
+            if (!Vm!.IsActive)
             {
-                if (!Vm!.IsActive) _epochEndConsumer!.ForceStop();
-            };
+                _epochEndConsumer?.ForceStop();
+                Vm!.IsActiveChanged -= OnIsActiveChanged;
+            }
         }
 
         public void Initialize(MatrixTrainingPreviewService service)
