@@ -20,6 +20,8 @@ namespace Training.Application.ViewModels
         private double? _validationError;
         private double? _testError;
 
+        private ModuleStateHelper _helper;
+
         public TrainingInfoViewModel()
         {
         }
@@ -29,27 +31,20 @@ namespace Training.Application.ViewModels
         {
             ModuleState = moduleState;
             AppState = appState;
+            _helper = new ModuleStateHelper(moduleState);
             _timer.Elapsed += (_, __) => System.Windows.Application.Current.Dispatcher.InvokeAsync(() => View!.UpdateTimer(Time.Now - _timerDate), DispatcherPriority.Send);
 
-            if (ModuleState.ActiveSession != null)
-            {
-                ModuleState.ActiveSession.PropertyChanged += OnTraininerChanged;
-                if (ModuleState.ActiveSession.Trainer != null)
-                {
-                    RaisePropertyChanged(nameof(IterationsPerEpoch));
-                }
-            }
-
-            ModuleState.ActiveSessionChanged += (sender, args) => args.next.PropertyChanged += OnTraininerChanged;
-
-        }
-
-        private void OnTraininerChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(TrainingSession.Trainer))
+            _helper.OnTrainerChanged(trainer =>
             {
                 RaisePropertyChanged(nameof(IterationsPerEpoch));
-            }
+                ModuleState.ActiveSession!.TrainerUpdated -= ActiveSessionOnTrainerUpdated;
+                ModuleState.ActiveSession.TrainerUpdated += ActiveSessionOnTrainerUpdated;
+            });
+        }
+
+        private void ActiveSessionOnTrainerUpdated()
+        {
+            RaisePropertyChanged(nameof(IterationsPerEpoch));
         }
 
         protected override void ViewChanged(ITrainingInfoView view)
@@ -57,10 +52,7 @@ namespace Training.Application.ViewModels
             view.ResetProgress();
         }
 
-        /// <summary>
-        /// Starts view timer from 0
-        /// </summary>
-        public void StartTimer()
+        public void RestartTimer()
         {
             _timerDate = Time.Now;
             View!.UpdateTimer(TimeSpan.Zero);

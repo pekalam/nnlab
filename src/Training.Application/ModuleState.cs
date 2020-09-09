@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using Common.Domain;
+using ControlzEx.Standard;
+using NNLib;
 using Prism.Mvvm;
 using Training.Application.Plots;
 using Training.Domain;
@@ -24,13 +26,66 @@ namespace Training.Application
         }
     }
 
+
+    public class ModuleStateHelper
+    {
+        private ModuleState _moduleState;
+        private EventHandler<(TrainingSession? prev, TrainingSession next)>? _activeSessionChangedHandler;
+        private PropertyChangedEventHandler _trainerChangedInSession;
+        private Action<MLPTrainer> _trainerChanged;
+
+        public ModuleStateHelper(ModuleState moduleState)
+        {
+            _moduleState = moduleState;
+        }
+
+        public void OnActiveSessionChanged(Action<TrainingSession> action)
+        {
+            _activeSessionChangedHandler = (_, args) =>
+            {
+                action(args.next);
+            };
+
+            if (_moduleState.ActiveSession != null)
+            {
+                action(_moduleState.ActiveSession);
+            }
+            _moduleState.ActiveSessionChanged -= _activeSessionChangedHandler;
+            _moduleState.ActiveSessionChanged += _activeSessionChangedHandler;
+        }
+
+
+        public void OnTrainerChanged(Action<MLPTrainer> action)
+        {
+            _trainerChangedInSession = (sender, args) =>
+            {
+                if (args.PropertyName == nameof(TrainingSession.Trainer))
+                {
+                    _trainerChanged((sender as TrainingSession)!.Trainer!);
+                }
+            };
+
+            _trainerChanged = action;
+            OnActiveSessionChanged(session =>
+            {
+                if (session.Trainer != null)
+                {
+                    _trainerChanged(session.Trainer);
+                }
+
+                session.PropertyChanged -= _trainerChangedInSession;
+                session.PropertyChanged += _trainerChangedInSession;
+            });
+        }
+    }
+
     public class ModuleState : BindableBase
     {
         private readonly AppState _appState;
         private readonly Dictionary<Session, TrainingSession> _sessionToTraining = new Dictionary<Session, TrainingSession>();
         private TrainingSession? _activeSession;
 
-        public event EventHandler<(TrainingSession? prev, TrainingSession next)> ActiveSessionChanged; 
+        public event EventHandler<(TrainingSession? prev, TrainingSession next)>? ActiveSessionChanged; 
 
         public ModuleState(AppState appState)
         {

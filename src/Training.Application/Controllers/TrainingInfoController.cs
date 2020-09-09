@@ -36,7 +36,7 @@ namespace Training.Application.Controllers
                 },
                 trainingSession =>
                 {
-                    Vm!.StartTimer();
+                    Vm!.RestartTimer();
                     Vm!.TestError = null;
                     Vm!.ValidationError = null;
                 },
@@ -88,7 +88,7 @@ namespace Training.Application.Controllers
                 var session = (sender as TrainingSession)!;
                 if (session.Started)
                 {
-                    Vm!.StartTimer();
+                    Vm!.RestartTimer();
                 }
                 else
                 {

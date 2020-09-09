@@ -38,6 +38,7 @@ namespace Data.Application.Services
     }
 }
 
+//TODO refactor
 namespace Data.Application.Controllers
 {
     internal class CustomDataSetMemento
@@ -93,15 +94,18 @@ namespace Data.Application.Controllers
             {
                 if (_appState.ActiveSession!.TrainingData == null)
                 {
-                    _input.Add(new[] { 0d });
-                    _input.Add(new[] { 1d });
-                    _input.Add(new[] { 2d });
-                    _target.Add(new[] { 0d });
-                    _target.Add(new[] { 1d });
-                    _target.Add(new[] { 2d });
-
-                    var sets = new SupervisedTrainingSets(SupervisedSet.FromArrays(_input.ToArray(),
-                        _target.ToArray()));
+                    var sets = new SupervisedTrainingSets(SupervisedSet.FromArrays(new []
+                        {
+                            new []{0d},
+                            new []{1d},
+                            new []{2d},
+                        },
+                        new[]
+                        {
+                            new []{0d},
+                            new []{1d},
+                            new []{2d},
+                        }));
                     var trainingData = _assignedData = new TrainingData(sets,
                         new SupervisedSetVariables(new SupervisedSetVariableIndexes(new[] { 0 }, new[] { 1 }),
                             new[] { new VariableName("x"), new VariableName("y"), }), TrainingDataSource.Memory, NormalizationMethod.None);
@@ -152,8 +156,12 @@ namespace Data.Application.Controllers
 
                 _currentSession = _appState.ActiveSession!;
 
-                _input.Clear();
-                _target.Clear();
+                if (_assignedData != data)
+                {
+                    _input.Clear();
+                    _target.Clear();
+                }
+
 
                 if (!_memento.TryRestoreForSession(this, _appState.ActiveSession!))
                 {
@@ -161,9 +169,13 @@ namespace Data.Application.Controllers
 
                     for (int i = 0; i < data.Sets.TrainingSet.Input.Count; i++)
                     {
-                        AddPoint(new DataPoint(data.Sets.TrainingSet.Input[i][0,0], data.Sets.TrainingSet.Target[i][0, 0]));
+                        _input.Add(new []{ data.Sets.TrainingSet.Input[i][0, 0] });
+                        _target.Add(new []{ data.Sets.TrainingSet.Target[i][0, 0] });
+                        Vm!.Scatter.Points.Add(new ScatterPoint(data.Sets.TrainingSet.Input[i][0, 0], data.Sets.TrainingSet.Target[i][0, 0]));
                     }
                 }
+                BuildMatrixFromData();
+                Vm!.PlotModel.InvalidatePlot(true);
 
                 Vm!.MatrixVm.RowRemoved += MatrixVmOnRowRemoved;
                 Vm!.MatrixVm.MatrixElementChanged += MatrixVmOnMatrixElementChanged;
@@ -268,14 +280,19 @@ namespace Data.Application.Controllers
             Vm!.PlotModel.InvalidatePlot(true);
 
 
+            BuildMatrixFromData();
+        }
+
+        private void BuildMatrixFromData()
+        {
             var mat = Matrix<double>.Build.Dense(_input.Count, 2);
             for (int i = 0; i < _input.Count; i++)
             {
                 mat[i, 0] = _input[i][0];
                 mat[i, 1] = _target[i][0];
             }
-            Vm!.MatrixVm.Controller.AssignMatrix(mat, new[] { "x", "y" }, i => i.ToString());
 
+            Vm!.MatrixVm.Controller.AssignMatrix(mat, new[] {"x", "y"}, i => i.ToString());
         }
     }
 }

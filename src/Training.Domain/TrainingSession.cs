@@ -35,6 +35,8 @@ namespace Training.Domain
 
         public event EventHandler<EpochEndArgs>? EpochEnd;
 
+        public event Action? TrainerUpdated;
+
         public TrainingSession(AppState appState)
         {
             _session = appState.ActiveSession!;
@@ -43,6 +45,16 @@ namespace Training.Domain
                 ConstructTrainer();
             else
                 _session.PropertyChanged += SessionOnPropertyChanged;
+        }
+
+        private void TrainingDataOnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(TrainingData.Sets) && Parameters?.Algorithm == TrainingAlgorithm.GradientDescent)
+            {
+                (_trainer!.Algorithm as GradientDescentAlgorithm)!.BatchTrainer!.TrainingSet =
+                    _session.TrainingData!.Sets.TrainingSet;
+                TrainerUpdated?.Invoke();
+            }
         }
 
 
@@ -57,6 +69,7 @@ namespace Training.Domain
         private void ConstructTrainer()
         {
             _session.TrainingParameters!.PropertyChanged += TrainingParametersOnPropertyChanged;
+            _session.TrainingData!.PropertyChanged += TrainingDataOnPropertyChanged;
             Trainer = new MLPTrainer(_session.Network!, _session.TrainingData!.Sets, SelectAlgorithm(), new QuadraticLossFunction());
             IsValid = true;
         }
@@ -92,6 +105,7 @@ namespace Training.Domain
                 ConstructTrainer();
                 _session.PropertyChanged -= SessionOnPropertyChanged;
                 _session.PropertyChanged += SessionOnTrainingParametersChanged;
+                _session.TrainingData.PropertyChanged += TrainingDataOnPropertyChanged;
             }
         }
 

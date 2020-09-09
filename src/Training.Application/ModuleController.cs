@@ -74,7 +74,6 @@ namespace Training.Application
                     _ea.OnFirstNavigation(ModuleIds.Training, () => _rm.NavigateContentRegion("TrainingView"));
                 }
             });
-
         }
 
 
