@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Windows.Forms;
 using Common.Domain;
 using Common.Framework;
 using NeuralNetwork.Application.Messaging;
@@ -12,6 +10,7 @@ using NeuralNetwork.Application.Services;
 using NeuralNetwork.Application.ViewModels;
 using NeuralNetwork.Domain;
 using NNLib;
+using NNLibAdapter;
 using Prism.Commands;
 using Prism.Events;
 using Shell.Interface;
@@ -55,7 +54,20 @@ namespace NeuralNetwork.Application.Controllers
             _helper.OnNetworkChanged(network =>
             {
                 SetLayers();
+
+                _moduleState.NetworkStructureChanged += ModuleStateOnNetworkStructureChanged;
             });
+        }
+
+        private void ModuleStateOnNetworkStructureChanged(NNLibModelAdapter obj)
+        {
+            var trainingData = _appState.ActiveSession!.TrainingData!;
+
+            if (obj.LayerModelAdapters[0].LayerModel.NeuronModels.Count != trainingData.Variables.InputVariableNames.Length ||
+                obj.LayerModelAdapters[^1].LayerModel.NeuronModels.Count != trainingData.Variables.TargetVariableNames.Length) return;
+
+            obj.SetInputLabels(trainingData.Variables.InputVariableNames);
+            obj.SetOutputLabels(trainingData.Variables.TargetVariableNames);
         }
 
         private void InsertBefore(LayerEditorItemModel obj)
@@ -120,6 +132,10 @@ namespace NeuralNetwork.Application.Controllers
                     Message = "Invalid network architecture"
                 });
             }
+            else
+            {
+                _ea.GetEvent<HideErrorNotification>().Publish();
+            }
             //TODO remove
             SetLayers();
         }
@@ -142,6 +158,10 @@ namespace NeuralNetwork.Application.Controllers
                 {
                     Message = "Invalid network architecture"
                 });
+            }
+            else
+            {
+                _ea.GetEvent<HideErrorNotification>().Publish();
             }
             _service.AddLayer(neuralNetwork.BaseLayers[^1], neuralNetwork.TotalLayers - 1);
         }

@@ -27,6 +27,7 @@ namespace NeuralNetwork.Application
         {
             var result = _service.AddLayer();
             ModelAdapter.AddLayer(NeuralNetwork.Layers[^1]);
+            _moduleState.RaiseNetworkStructureChanged();
             return result;
         }
 
@@ -37,7 +38,7 @@ namespace NeuralNetwork.Application
             {
                 ModelAdapter.RemoveLayer(layerIndex);
             }
-
+            _moduleState.RaiseNetworkStructureChanged();
             return result;
         }
 
@@ -45,7 +46,9 @@ namespace NeuralNetwork.Application
         {
             var layerModelAdapter = ModelAdapter.LayerModelAdapters.First(l => ((NNLibLayerAdapter)l).Layer == layer);
             layerModelAdapter.SetNeuronsCount(neuronsCount);
-            return _service.SetNeuronsCount(layer, neuronsCount);
+            var result= _service.SetNeuronsCount(layer, neuronsCount);
+            _moduleState.RaiseNetworkStructureChanged();
+            return result;
         }
 
         public void SetActivationFunction(Layer layer, IActivationFunction activationFunction)
@@ -56,7 +59,9 @@ namespace NeuralNetwork.Application
         public bool SetInputsCount(int inputsCount)
         {
             ModelAdapter.LayerModelAdapters[0].SetNeuronsCount(inputsCount);
-            return _service.SetInputsCount(inputsCount);
+            var result = _service.SetInputsCount(inputsCount);
+            _moduleState.RaiseNetworkStructureChanged();
+            return result;
         }
 
         public void ResetWeights(Layer layer)
@@ -73,6 +78,7 @@ namespace NeuralNetwork.Application
         {
             var layer = _service.InsertAfter(layerIndex);
             ModelAdapter.InsertAfter(layerIndex, layer);
+            _moduleState.RaiseNetworkStructureChanged();
             return layer;
         }
 
@@ -80,6 +86,7 @@ namespace NeuralNetwork.Application
         {
             var layer = _service.InsertBefore(layerIndex);
             ModelAdapter.InsertBefore(layerIndex, layer);
+            _moduleState.RaiseNetworkStructureChanged();
             return layer;
         }
 

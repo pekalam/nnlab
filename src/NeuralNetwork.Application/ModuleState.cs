@@ -13,6 +13,8 @@ namespace NeuralNetwork.Application
         private readonly Dictionary<Session, NNLibModelAdapter> _sessionToAdapter = new Dictionary<Session, NNLibModelAdapter>();
         private readonly AppState _appState;
 
+        public event Action<NNLibModelAdapter>? NetworkStructureChanged; 
+
         public ModuleState(AppState appState)
         {
             _appState = appState;
@@ -75,5 +77,7 @@ namespace NeuralNetwork.Application
                 RaisePropertyChanged(nameof(ModelAdapter));
             }
         }
+
+        public void RaiseNetworkStructureChanged() => NetworkStructureChanged?.Invoke(ModelAdapter);
     }
 }
