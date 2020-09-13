@@ -76,8 +76,8 @@
             <TextBlock x:Name="Epoch" Style="{StaticResource StatsText}"/>
             <TextBlock Text="Iterations:" Style="{StaticResource StatsText}"/>
             <TextBlock x:Name="Iterations" Style="{StaticResource StatsText}"/>
-            <TextBlock Text="Iterations per epoch:" Style="{StaticResource StatsText}"/>
-            <TextBlock Text="{Binding IterationsPerEpoch}" Style="{StaticResource StatsText}"/>
+            <TextBlock Text="Iterations per epoch:" Style="{StaticResource GdPanel}"/>
+            <TextBlock Text="{Binding IterationsPerEpoch}" Style="{StaticResource GdPanel}"/>
             <TextBlock Text="Error:" Style="{StaticResource StatsText}"/>
             <TextBlock x:Name="Error" Style="{StaticResource StatsText}"/>
             <TextBlock Text="Validation set error" Visibility="{Binding ValidationError,Converter={StaticResource NullToVisConverter},ConverterParameter=1}" Style="{StaticResource StatsText}"/>
