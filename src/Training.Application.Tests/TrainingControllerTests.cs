@@ -107,6 +107,9 @@ namespace Training.Application.Tests
             _service.OpenReportsCommand.CanExecute().Should().BeFalse();
             _service.SelectPanelsClickCommand.CanExecute().Should().BeTrue();
             _service.OpenParametersCommand.CanExecute().Should().BeFalse();
+            _service.RunTestCommand.CanExecute().Should().BeFalse();
+            _service.RunValidationCommand.CanExecute().Should().BeFalse();
+
 
             _service.StopTrainingSessionCommand.Execute();
         }

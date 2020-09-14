@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using NNLib;
+using Prism.Mvvm;
 
 namespace Common.Domain
 {
@@ -74,8 +75,11 @@ namespace Common.Domain
         public static DateTime Now => TimeProvider();
     }
     
-    public class TrainingSessionReport
+    public class TrainingSessionReport : BindableBase
     {
+        private double? _validationError;
+        private double? _testError;
+
         public static bool IsTerminatingSessionType(SessionEndType type) =>
             type == SessionEndType.Stopped || type == SessionEndType.TargetReached;
         
@@ -86,8 +90,18 @@ namespace Common.Domain
         public TimeSpan Duration { get; }
         
         public DateTime EndDate { get; }
-        public double? ValidationError { get; set; }
-        public double? TestError { get; set; }
+
+        public double? ValidationError
+        {
+            get => _validationError;
+            set => SetProperty(ref _validationError, value);
+        }
+
+        public double? TestError
+        {
+            get => _testError;
+            set => SetProperty(ref _testError, value);
+        }
 
         public EpochEndArgs[] EpochEndEventArgs { get; }
 

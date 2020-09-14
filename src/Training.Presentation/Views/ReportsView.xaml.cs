@@ -19,26 +19,25 @@ namespace Training.Presentation.Views
             if (rm.Regions.ContainsRegionWithName(TrainingReportRegions.ReportRegion1))
             {
                 rm.Regions.Remove(TrainingReportRegions.ReportRegion1);
-
             }
 
-            if (!rm.Regions.ContainsRegionWithName(TrainingReportRegions.ReportRegion1))
+            if (rm.Regions.ContainsRegionWithName(TrainingReportRegions.ReportValidationPlotRegion))
             {
-                
-                RegionManager.SetRegionName(ReportRegion1, TrainingReportRegions.ReportRegion1);
-                RegionManager.SetRegionManager(ReportRegion1, rm);
+                rm.Regions.Remove(TrainingReportRegions.ReportValidationPlotRegion);
             }
-            if (!rm.Regions.ContainsRegionWithName(TrainingReportRegions.ReportValidationPlotRegion))
+            if (rm.Regions.ContainsRegionWithName(TrainingReportRegions.ReportTestPlotRegion))
             {
-                RegionManager.SetRegionName(ValidationRegion, TrainingReportRegions.ReportValidationPlotRegion);
-                RegionManager.SetRegionManager(ValidationRegion, rm);
-            }
-            if (!rm.Regions.ContainsRegionWithName(TrainingReportRegions.ReportTestPlotRegion))
-            {
-                RegionManager.SetRegionName(TestRegion, TrainingReportRegions.ReportTestPlotRegion);
-                RegionManager.SetRegionManager(TestRegion, rm);
+                rm.Regions.Remove(TrainingReportRegions.ReportTestPlotRegion);
             }
 
+            RegionManager.SetRegionName(ReportRegion1, TrainingReportRegions.ReportRegion1);
+            RegionManager.SetRegionManager(ReportRegion1, rm);
+
+            RegionManager.SetRegionName(ValidationRegion, TrainingReportRegions.ReportValidationPlotRegion);
+            RegionManager.SetRegionManager(ValidationRegion, rm);
+
+            RegionManager.SetRegionName(TestRegion, TrainingReportRegions.ReportTestPlotRegion);
+            RegionManager.SetRegionManager(TestRegion, rm);
         }
     }
 }

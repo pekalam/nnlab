@@ -90,14 +90,14 @@ namespace Training.Application.Controllers
             {
                 if (vm.SelectedReport!.ValidationError == null)
                 {
-                    vm.SelectedReport.ValidationError = await _moduleState.ActiveSession!.RunValidation();
+                    await _moduleState.ActiveSession!.RunValidation(vm.SelectedReport);
                 }
             }
             else if (setType == DataSetType.Test)
             {
                 if (vm.SelectedReport!.TestError == null)
                 {
-                    vm.SelectedReport.TestError = await _moduleState.ActiveSession!.RunTest();
+                    await _moduleState.ActiveSession!.RunTest(vm.SelectedReport);
                 }
             }
 
@@ -141,17 +141,24 @@ namespace Training.Application.Controllers
             vm.ValidationHyperlinkText = vm.SelectedReport.ValidationError != null ? "Generate output plot" : "Calculate error and generate output plot";
         }
 
+        private void ClearTestValidationRegions()
+        {
+            _rm.Regions[TrainingReportRegions.ReportValidationPlotRegion].RemoveAll();
+            _rm.Regions[TrainingReportRegions.ReportTestPlotRegion].RemoveAll();
+        }
 
         private void Navigated(NavigationContext ctx)
         {
             _ea.GetEvent<EnableModalNavigation>().Publish(CloseReportsCommand);
             ShowErrorPlot(_appState.ActiveSession!.TrainingReports[0]);
+            InitHyperlinksText();
         }
 
         private void SelectionChanged(TrainingSessionReport item)
         {
             if (item == null) return;
             ShowErrorPlot(item);
+            ClearTestValidationRegions();
             InitHyperlinksText();
         }
     }
