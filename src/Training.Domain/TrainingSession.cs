@@ -49,10 +49,9 @@ namespace Training.Domain
 
         private void TrainingDataOnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(TrainingData.Sets) && Parameters?.Algorithm == TrainingAlgorithm.GradientDescent)
+            if (e.PropertyName == nameof(TrainingData.Sets))
             {
-                (_trainer!.Algorithm as GradientDescentAlgorithm)!.BatchTrainer!.TrainingSet =
-                    _session.TrainingData!.Sets.TrainingSet;
+                _trainer!.TrainingSets= _session.TrainingData!.Sets;
                 TrainerUpdated?.Invoke();
             }
         }
@@ -105,7 +104,6 @@ namespace Training.Domain
                 ConstructTrainer();
                 _session.PropertyChanged -= SessionOnPropertyChanged;
                 _session.PropertyChanged += SessionOnTrainingParametersChanged;
-                _session.TrainingData.PropertyChanged += TrainingDataOnPropertyChanged;
             }
         }
 
@@ -323,7 +321,7 @@ namespace Training.Domain
                 Started = _stopRequested = false;
                 if (Stopped)
                 {
-                    Trainer!.ResetEpochs();
+                    Trainer!.Reset();
                 }
                 else Paused = true;
                 CurrentReport = t.Result;

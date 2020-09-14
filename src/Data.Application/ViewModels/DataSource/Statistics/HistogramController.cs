@@ -51,6 +51,7 @@ namespace Data.Application.ViewModels.DataSource.Statistics
                     UpdateBinWidth();
                     break;
                 case nameof(HistogramViewModel.SelectedVariable):
+                    if(_vm.SelectedVariable == null) return;
                     PlotColumnDataOnHistogram(_vm.SelectedVariable);
                     break;
             }
