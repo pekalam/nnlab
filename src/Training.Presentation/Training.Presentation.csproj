@@ -9,6 +9,7 @@
     <PackageReference Include="Prism.Wpf" Version="7.2.0.1422" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\NNControl\NNControl\NNControl.csproj" />
     <ProjectReference Include="..\Common.Domain\Common.Domain.csproj" />
     <ProjectReference Include="..\Common.Presentation\Common.Presentation.csproj" />
     <ProjectReference Include="..\CommonUI\SharedUI.csproj" />
