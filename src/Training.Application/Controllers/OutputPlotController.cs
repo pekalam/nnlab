@@ -202,7 +202,7 @@ namespace Training.Application.Controllers
 
             public string ParentRegion => _parameters.GetOrDefault<string>(nameof(ParentRegion));
             public bool EpochEnd => _parameters.GetOrDefault<bool>(nameof(EpochEnd), true);
-            public DataSetType Set => _parameters.GetOrDefault<DataSetType>(nameof(DataSetType));
+            public DataSetType Set => _parameters.GetOrDefault<DataSetType>(nameof(Set));
             public MLPNetwork Network => _parameters.GetOrDefault<MLPNetwork>(nameof(Network));
             public TrainingData Data => _parameters.GetOrDefault<TrainingData>(nameof(Data));
             public CancellationTokenSource Cts => _parameters.GetOrDefault<CancellationTokenSource>(nameof(Cts));

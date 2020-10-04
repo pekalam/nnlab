@@ -263,8 +263,19 @@ namespace Training.Application.ViewModels
 
         public void GeneratePlot(DataSetType set, TrainingData trainingData, MLPNetwork net, OutputPlotViewModel vm)
         {
-            Debug.Assert(_output != null);
-            Debug.Assert(trainingData.GetSet(set) != null);
+            if (_output == null)
+            {
+                _output = new LineSeries()
+                {
+                    Color = OxyColor.FromRgb(255, 0, 0),
+                };
+                vm.PlotModel.Series.Add(_output);
+            }
+            else
+            {
+                _output.Points.Clear();
+            }
+
 
             InitPlot(trainingData, set, vm);
 

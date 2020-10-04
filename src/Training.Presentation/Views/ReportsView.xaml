@@ -20,6 +20,7 @@
              interface:BreadcrumbsHelper.Breadcrumb="Reports" interface:BreadcrumbsHelper.IsModal="True">
     <UserControl.Resources>
         <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
+        <converters:InvNullToVisibilityConverter x:Key="InvNullToVisibilityConverter" />
     </UserControl.Resources>
 
     <Grid>
@@ -110,30 +111,29 @@
                                     </Style>
                                 </StackPanel.Style>
                                 <TextBlock FontSize="16" FontWeight="Bold" Margin="0,0,0,20">Validation</TextBlock>
-                                <UniformGrid Columns="2" MaxWidth="500" HorizontalAlignment="Left"
+                                <UniformGrid Columns="2" MaxWidth="500" HorizontalAlignment="Left" Margin="0,0,0,16"
                                              Visibility="{Binding SelectedReport.ValidationError,Converter={StaticResource NullToVisibilityConverter},ConverterParameter=1}">
                                     <TextBlock Text="Validation error:" HorizontalAlignment="Right" Margin="0,0,20,0"
                                                FontSize="14" />
                                     <TextBlock Text="{Binding SelectedReport.ValidationError}"
                                                FontSize="14" />
                                 </UniformGrid>
-                                <Grid Margin="0,20,0,0">
+                                <StackPanel>
                                     <ContentControl Name="ValidationRegion" MinHeight="500"
                                                     Margin="50,0,50,15"
                                                     Visibility="{Binding ElementName=ValidationRegion, Path=Content, Converter={StaticResource NullToVisibilityConverter},ConverterParameter=1}" />
-                                    <TextBlock HorizontalAlignment="Center">
-                                        <Hyperlink
-                                            NavigateUri="http://search.msn.com" Foreground="Blue">
-                                            <!-- <i:Interaction.Triggers> -->
-                                            <!--     <i:EventTrigger EventName="RequestNavigate"> -->
-                                            <!--         <i:InvokeCommandAction -->
-                                            <!--             Command="{Binding Service.GenerateValidationPlotCommand}" /> -->
-                                            <!--     </i:EventTrigger> -->
-                                            <!-- </i:Interaction.Triggers> -->
+                                    <TextBlock HorizontalAlignment="Center" Visibility="{Binding ElementName=ValidationRegion, Path=Content, Converter={StaticResource InvNullToVisibilityConverter},ConverterParameter=1}">
+                                        <Hyperlink Foreground="Blue" NavigateUri="x">
+                                            <i:Interaction.Triggers>
+                                                <i:EventTrigger EventName="RequestNavigate">
+                                                    <i:InvokeCommandAction
+                                                        Command="{Binding Service.GenerateValidationPlotCommand}" />
+                                                </i:EventTrigger>
+                                            </i:Interaction.Triggers>
                                             <TextBlock Text="{Binding ValidationHyperlinkText}" />
                                         </Hyperlink>
                                     </TextBlock>
-                                </Grid>
+                                </StackPanel>
                             </StackPanel>
 
 
@@ -148,7 +148,7 @@
                                     </Style>
                                 </StackPanel.Style>
                                 <TextBlock FontSize="16" FontWeight="Bold" Margin="0,0,0,20">Test</TextBlock>
-                                <UniformGrid Columns="2" MaxWidth="500" HorizontalAlignment="Left"
+                                <UniformGrid Columns="2" MaxWidth="500" HorizontalAlignment="Left" Margin="0,0,0,16"
                                              Visibility="{Binding SelectedReport.TestError,Converter={StaticResource NullToVisibilityConverter},ConverterParameter=1}">
                                     <TextBlock Text="Test error:" HorizontalAlignment="Right" Margin="0,0,20,0"
                                                FontSize="14" />
@@ -156,17 +156,16 @@
                                                FontSize="14" />
                                 </UniformGrid>
                                 <ContentControl Name="TestRegion" MinHeight="500"
-                                                Margin="50,0,50,15"/>
+                                                Margin="50,0,50,15" Visibility="{Binding ElementName=TestRegion, Path=Content, Converter={StaticResource NullToVisibilityConverter},ConverterParameter=1}" />
 
-                                <TextBlock HorizontalAlignment="Center">
-                                    <Hyperlink
-                                        NavigateUri="http://search.msn.com" Foreground="Blue">
-                                        <!-- <i:Interaction.Triggers> -->
-                                        <!--     <i:EventTrigger EventName="RequestNavigate"> -->
-                                        <!--         <i:InvokeCommandAction -->
-                                        <!--             Command="{Binding Service.GenerateTestPlotCommand}" /> -->
-                                        <!--     </i:EventTrigger> -->
-                                        <!-- </i:Interaction.Triggers> -->
+                                <TextBlock HorizontalAlignment="Center"  Visibility="{Binding ElementName=TestRegion, Path=Content, Converter={StaticResource InvNullToVisibilityConverter},ConverterParameter=1}" >
+                                    <Hyperlink Foreground="Blue" NavigateUri="x">
+                                        <i:Interaction.Triggers>
+                                            <i:EventTrigger EventName="RequestNavigate">
+                                                <i:InvokeCommandAction
+                                                    Command="{Binding Service.GenerateTestPlotCommand}" />
+                                            </i:EventTrigger>
+                                        </i:Interaction.Triggers>
                                         <TextBlock Text="{Binding TestHyperlinkText}" />
                                     </Hyperlink>
                                 </TextBlock>
