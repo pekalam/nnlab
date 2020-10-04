@@ -5,7 +5,7 @@ namespace Common.Framework.Extensions
 {
     public static class PubSubEventExtensions
     {
-        public static void SubscribeOnceWhen<TPayload>(this PubSubEvent<TPayload> ev, Action<TPayload> action, Func<TPayload, bool> predicate) where TPayload : class
+        public static SubscriptionToken SubscribeOnceWhen<TPayload>(this PubSubEvent<TPayload> ev, Action<TPayload> action, Func<TPayload, bool> predicate) where TPayload : class
         {
             SubscriptionToken? _token = null;
             SubscriptionToken token = ev.Subscribe(payload => {
@@ -17,6 +17,7 @@ namespace Common.Framework.Extensions
 
             }, keepSubscriberReferenceAlive: true);
             _token = token;
+            return token;
         }
     }
 }

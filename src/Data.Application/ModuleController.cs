@@ -24,7 +24,7 @@ namespace Data.Application
         private readonly IVariablesSelectionService _variablesSelectionController;
         private readonly IFileDataSourceController _fileDataSourceController;
 
-        
+        private SubscriptionToken? _firstNavToken;
 
         public ModuleController(IRegionManager rm, AppState appState, IFileController fileController,
             IDataSetDivisionController dataSetDivisionController,
@@ -57,7 +57,12 @@ namespace Data.Application
             if(arg.moduleId == ModuleIds.Data)
             {
                 var view = GetViewToNavigateFromSession(arg);
-                _ea.OnFirstNavigation(ModuleIds.Data, () => _rm.NavigateContentRegion(view));
+                _firstNavToken?.Dispose();
+                _firstNavToken = _ea.OnFirstNavigation(ModuleIds.Data, () =>
+                {
+                    _rm.NavigateContentRegion(view);
+                    _firstNavToken = null;
+                });
             }
         }
 

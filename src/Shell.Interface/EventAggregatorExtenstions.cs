@@ -6,9 +6,9 @@ namespace Shell.Interface
 {
     public static class EventAggregatorExtenstions
     {
-        public static void OnFirstNavigation(this IEventAggregator ea, int moduleNavId, Action action)
+        public static SubscriptionToken OnFirstNavigation(this IEventAggregator ea, int moduleNavId, Action action)
         {
-            ea.GetEvent<PreviewCheckNavMenuItem>().SubscribeOnceWhen(_ => action(), args => args.Next == moduleNavId);
+            return ea.GetEvent<PreviewCheckNavMenuItem>().SubscribeOnceWhen(_ => action(), args => args.Next == moduleNavId);
         }
     }
 }

@@ -98,11 +98,9 @@ namespace Training.Domain
 
         private void TrainingDataOnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(TrainingData.Sets) &&
-                Parameters?.Algorithm == TrainingAlgorithm.GradientDescent)
+            if (e.PropertyName == nameof(TrainingData.Sets))
             {
-                (_trainer!.Algorithm as GradientDescentAlgorithm)!.BatchTrainer!.TrainingSet =
-                    _session.TrainingData!.Sets.TrainingSet;
+                _trainer!.TrainingSets= _session.TrainingData!.Sets;
                 TrainerUpdated?.Invoke();
             }
         }
@@ -149,7 +147,6 @@ namespace Training.Domain
                 ConstructTrainer();
                 _session.PropertyChanged -= SessionOnPropertyChanged;
                 _session.PropertyChanged += SessionOnTrainingParametersChanged;
-                _session.TrainingData.PropertyChanged += TrainingDataOnPropertyChanged;
             }
         }
 
@@ -323,6 +320,32 @@ namespace Training.Domain
             Stopped = true;
             return TrainingSessionReport.CreateTargetReachedSessionReport(Trainer.Epochs, error, StartTime!.Value,
                 EpochEndEvents);
+        }
+
+        public Task<TrainingSessionReport> Start()
+        {
+            if(!IsValid) throw new InvalidOperationException("Session is in invalid state");
+
+            if (CurrentReport != null) CurrentReport.ValidationError = null;
+            StartTime = Time.Now;
+            var task = InternalStart();
+            Started = true;
+            Paused = false;
+            var sessionTask = task.ContinueWith(t =>
+            {
+                _elapsed += Time.Now - StartTime.Value;
+                Started = _stopRequested = false;
+                if (Stopped)
+                {
+                    Trainer!.ResetEpochs();
+                }
+                else Paused = true;
+                CurrentReport = t.Result;
+                _session.TrainingReports.Add(CurrentReport);
+                return CurrentReport;
+            });
+            _sessionTask = sessionTask;
+            return sessionTask;
         }
 
         public Task<double> RunValidation()

@@ -25,9 +25,11 @@ namespace Data.Application.Controllers
     {
         private readonly AppState _appState;
         private readonly ITrainingDataService _dataService;
+        private readonly DataSetDivisionService _service;
 
         public DataSetDivisionController(DataSetDivisionService service, ITrainingDataService dataService, AppState appState, IViewModelAccessor accessor) : base(accessor)
         {
+            _service = service;
             _dataService = dataService;
             _appState = appState;
 
@@ -57,6 +59,8 @@ namespace Data.Application.Controllers
 
         private void CalcHasSufficientSize()
         {
+            _service.DivideFileDataCommand.RaiseCanExecuteChanged();
+            _service.DivideMemoryDataCommand.RaiseCanExecuteChanged();
             if (!CanDivide()) return;
 
             if (_appState.ActiveSession?.TrainingData != null)

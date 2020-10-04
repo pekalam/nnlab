@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Threading;
 using Common.Domain;
 using Common.Framework;
+using NNLib;
 using Training.Application.Views;
 using Training.Domain;
 using Unity;
@@ -78,7 +79,7 @@ namespace Training.Application.ViewModels
         public ModuleState ModuleState { get; }
         public AppState AppState { get; }
 
-        public int? IterationsPerEpoch => ModuleState.ActiveSession!.Trainer!.Algorithm.BatchTrainer?.IterationsPerEpoch;
+        public int? IterationsPerEpoch => (ModuleState.ActiveSession!.Trainer!.Algorithm as GradientDescentAlgorithm)?.BatchTrainer?.IterationsPerEpoch ?? 0;
 
         public double? ValidationError
         {
