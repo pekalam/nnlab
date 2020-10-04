@@ -5,8 +5,9 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\NNControl\NNControl\NNControl.csproj" />
-    <ProjectReference Include="..\..\..\NNControl\NNLibAdapter\NNLibAdapter.csproj" />
+    <PackageReference Include="NNLibAdapter" Version="1.0.1" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\Common.Presentation\Common.Presentation.csproj" />
     <ProjectReference Include="..\CommonUI\SharedUI.csproj" />
     <ProjectReference Include="..\Prediction.Application\Prediction.Application.csproj" />

@@ -337,7 +337,7 @@ namespace Training.Domain
                 Started = _stopRequested = false;
                 if (Stopped)
                 {
-                    Trainer!.Reset();
+                    Trainer!.ResetEpochs();
                 }
                 else Paused = true;
                 CurrentReport = t.Result;
@@ -348,24 +348,24 @@ namespace Training.Domain
             return sessionTask;
         }
 
-        public Task<double> RunValidation(TrainingSessionReport report)
+        public Task<double> RunValidation()
         {
             Debug.Assert(Trainer != null);
 
             return Task.Run(() => Trainer.RunValidation()).ContinueWith(t =>
             {
-                report.ValidationError = t.Result;
+                if (CurrentReport != null) CurrentReport.ValidationError = t.Result;
                 return t.Result;
             });
         }
 
-        public Task<double> RunTest(TrainingSessionReport report)
+        public Task<double> RunTest()
         {
             Debug.Assert(Trainer != null);
 
             return Task.Run(() => Trainer.RunTest()).ContinueWith(t =>
             {
-                report.TestError = t.Result;
+                if (CurrentReport != null) CurrentReport.TestError = t.Result;
                 return t.Result;
             });
         }

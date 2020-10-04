@@ -48,8 +48,7 @@ namespace Training.Application.Services
         DelegateCommand StartTrainingSessionCommand { get; }
         DelegateCommand StopTrainingSessionCommand { get; }
         DelegateCommand PauseTrainingSessionCommand { get; }
-        DelegateCommand RunValidationCommand { get; }
-        DelegateCommand RunTestCommand { get; }
+
         DelegateCommand OpenReportsCommand { get;  }
         DelegateCommand OpenParametersCommand { get; }
 
@@ -86,8 +85,6 @@ namespace Training.Application.Services
         public DelegateCommand SelectPanelsClickCommand { get; set; } = null!;
         public DelegateCommand ResetParametersCommand { get; set; } = null!;
         public ModuleStateSessionOptionsDecorator SessionOptionsDecorator { get; }
-        public DelegateCommand RunValidationCommand { get; set; } = null!;
-        public DelegateCommand RunTestCommand { get; set; } = null!;
 
         public void ShowPanels(PanelLayoutNavigationParams navParams)
         {

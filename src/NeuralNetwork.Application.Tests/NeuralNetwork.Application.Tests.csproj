@@ -15,8 +15,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\NNControl\NNControl\NNControl.csproj" />
-    <ProjectReference Include="..\..\..\NNControl\NNLibAdapter\NNLibAdapter.csproj" />
     <ProjectReference Include="..\NeuralNetwork.Application\NeuralNetwork.Application.csproj" />
     <ProjectReference Include="..\TestUtils\TestUtils.csproj" />
   </ItemGroup>
