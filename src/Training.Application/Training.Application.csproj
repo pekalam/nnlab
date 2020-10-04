@@ -12,6 +12,8 @@
     <Page Remove="Controllers\PanelLayout\**" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\NNControl\NNControl\NNControl.csproj" />
+    <ProjectReference Include="..\..\..\NNControl\NNLibAdapter\NNLibAdapter.csproj" />
     <ProjectReference Include="..\Common.Domain\Common.Domain.csproj" />
     <ProjectReference Include="..\Common.Framework\Common.Framework.csproj" />
     <ProjectReference Include="..\CommonUI\SharedUI.csproj" />
@@ -20,7 +22,6 @@
     <ProjectReference Include="..\Training.Interface\Training.Interface.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="NNLibAdapter" Version="1.0.3" />
     <PackageReference Include="System.Reactive" Version="4.4.1" />
   </ItemGroup>
 </Project>

@@ -10,6 +10,12 @@
              d:DesignHeight="450" d:DesignWidth="800"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance dd:DesignTrainingVm, IsDesignTimeCreatable=True}">
+    <UserControl.Resources>
+        <Style TargetType="MenuItem" x:Key="CollapsingMenuItem">
+            <Style.Triggers>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
     <StackPanel Orientation="Horizontal">
         <Button Style="{StaticResource ActionMenuButton}" >
             <Grid>
@@ -80,10 +86,45 @@
             </StackPanel>
         </Button>
         <Button Style="{StaticResource ActionMenuButton}">
-            <StackPanel>
-                <iconPacks:PackIconFontAwesome Kind="CheckSolid" Width="20" Height="20" HorizontalAlignment="Center" />
-                <TextBlock>Tests</TextBlock>
-            </StackPanel>
+
+
+            <Grid>
+                <mah:DropDownButton Name="TestDropdown" Content="{x:Null}" IsEnabled="{Binding CanRunTests}" Width="66" Height="60" Margin="0,-8,0,0">
+                    <mah:DropDownButton.Style>
+                        <Style TargetType="mah:DropDownButton">
+                            <Setter Property="BorderThickness" Value="0" />
+                            <Setter Property="ArrowVisibility" Value="Collapsed" />
+                            <Setter Property="Padding" Value="0" />
+                            <Setter Property="Margin" Value="0" />
+                            <Setter Property="BorderBrush" Value="{x:Null}" />
+                            <Setter Property="Background" Value="Transparent"/>
+
+                            <Setter Property="ContentTemplate">
+                                <Setter.Value>
+                                    <DataTemplate>
+                                        <StackPanel>
+
+                                            <iconPacks:PackIconFontAwesome Kind="CheckSolid" Width="20" Height="20" HorizontalAlignment="Center"/>
+                                            <TextBlock TextAlignment="Center" FontSize="13">Tests</TextBlock>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </mah:DropDownButton.Style>
+                    <mah:DropDownButton.ItemsSource>
+                        <CompositeCollection>
+                            <MenuItem Name="ValidationMenuItem" Header="Validation set" Command="{Binding Service.RunValidationCommand}" />
+                            <MenuItem Name="TestMenuItem" Header="Test set" Command="{Binding Service.RunTestCommand}" />
+                        </CompositeCollection>
+                    </mah:DropDownButton.ItemsSource>
+                </mah:DropDownButton>
+
+
+            </Grid>
+
+
+
         </Button>
     </StackPanel>
 </UserControl>
