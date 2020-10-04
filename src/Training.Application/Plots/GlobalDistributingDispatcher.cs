@@ -95,5 +95,13 @@ namespace Training.Application.Plots
             Interlocked.Increment(ref _toInvoke);
             TryStartBgTask();
         }
+
+
+        public static void CallDirectly(Action action, PlotEpochEndConsumer consumer)
+        {
+            _queues[consumer].Enqueue(action);
+            Interlocked.Increment(ref _toInvoke);
+            TryStartBgTask();
+        }
     }
 }

@@ -56,7 +56,7 @@ namespace Training.Application.ViewModels
                 {
                     _epochEndConsumer.ConsumerType = PlotEpochEndConsumerType.Online;
                 }
-                else if(value && _epochEndConsumer.ConsumerType != PlotEpochEndConsumerType.Buffering)
+                else if(!value && _epochEndConsumer.ConsumerType != PlotEpochEndConsumerType.Buffering)
                 {
                     _epochEndConsumer.ConsumerType = PlotEpochEndConsumerType.Buffering;
                     _epochEndConsumer.BufferSize = EpochDelay;

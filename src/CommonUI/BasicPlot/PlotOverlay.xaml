@@ -28,7 +28,7 @@
         <Button Background="#A514202B" Foreground="#FFFFFF" Name="AsPhoto" Click="AsPhoto_Click">
             <iconPacks:FontAwesome Kind="CameraSolid"/>
         </Button>
-        <Button Background="#A514202B" Foreground="#FFFFFF" Name="SettingsBtn" Click="SettingsBtn_Click">
+        <Button Background="#A514202B" Foreground="#FFFFFF" Name="SettingsBtn" Click="SettingsBtn_Click" Visibility="{Binding SettingsVisibility}">
             <Button.Style>
                 <Style BasedOn="{StaticResource DefaultBtnStyle}" TargetType="{x:Type Button}">
                     <Style.Triggers>

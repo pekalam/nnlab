@@ -117,6 +117,9 @@ namespace Training.Application.Controllers
             //do not change for report view
             if (_epochEndConsumer == null) return;
 
+            e.next.SessionReset -= NextOnSessionReset;
+            e.next.SessionReset += NextOnSessionReset;
+
             Vm!.Series.Points.Clear();
 
             var points = e.next.EpochEndEvents.TakeLast(2000).Select(end => new DataPoint(end.Epoch, end.Error))
@@ -129,17 +132,25 @@ namespace Training.Application.Controllers
             Vm!.BasicPlotModel.Model.InvalidatePlot(true);
         }
 
-        private void InvalidatePlot()
+        private void NextOnSessionReset()
         {
-            GlobalDistributingDispatcher.Call(() =>
-            {
-                lock (_ptsLock)
-                {
-                    Vm!.BasicPlotModel.Model.InvalidatePlot(true);
-                }
-            }, _epochEndConsumer!);
+            Vm!.Series.Points.Clear();
         }
 
+        private void InvalidatePlot()
+        {
+            GlobalDistributingDispatcher.CallDirectly(InvalidateMethod, _epochEndConsumer!);
+        }
+
+        private void InvalidateMethod()
+        {
+            lock (_ptsLock)
+            {
+                Vm!.BasicPlotModel.Model.InvalidatePlot(true);
+            }
+        }
+
+        private static double chu = double.MinValue;
         private void InitPlotEpochEndConsumer()
         {
 
@@ -150,7 +161,7 @@ namespace Training.Application.Controllers
                         return;
                     }
 
-                    var points = endsObs.Select(end => new DataPoint(end.Epoch, end.Error)).ToArray();
+                    var points = endsObs.Select(end => new DataPoint(end.Epoch, Math.Round(end.Error, 4))).ToArray();
 
                     lock (_ptsLock)
                     {
@@ -179,10 +190,10 @@ namespace Training.Application.Controllers
 
             var p = new NavigationParameters();
             p.Add(nameof(PlotEpochEndConsumer), _epochEndConsumer);
-
+            p.Add("PlotModel", Vm!.BasicPlotModel);
 
             _rm.Regions[_errorPlotSettingsRegion].RemoveAll();
-            _rm.Regions[_errorPlotSettingsRegion].RequestNavigate("PlotEpochParametersView", p);
+            _rm.Regions[_errorPlotSettingsRegion].RequestNavigate("ErrorPlotSettingsView", p);
 
             _epochEndConsumer.Initialize();
         }

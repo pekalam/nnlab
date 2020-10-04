@@ -101,6 +101,7 @@ namespace SharedUI.BasicPlot
         private void OnModelChanged(BasicPlotModel model)
         {
             plotOverlay.NewWindowVisibility = model.DisplayNewWindow ? Visibility.Visible : Visibility.Collapsed;
+            plotOverlay.SettingsVisibility = model.DisplayNewWindow ? Visibility.Visible : Visibility.Collapsed;
             model.SetSettingsRegion = name =>
             {
                 var rm = ServiceLocator.Current.GetInstance<IRegionManager>();

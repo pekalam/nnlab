@@ -24,6 +24,7 @@ namespace SharedUI.BasicPlot
         public Action OnSettingsClicked;
         public Action OnAsPhotoClicked;
         private Visibility _newWindowVisibility;
+        private Visibility _settingsVisibility;
 
         public Visibility NewWindowVisibility
         {
@@ -32,6 +33,16 @@ namespace SharedUI.BasicPlot
             {
                 _newWindowVisibility = value;
                 OnPropertyChanged(nameof(NewWindowVisibility));
+            }
+        }
+
+        public Visibility SettingsVisibility
+        {
+            get => _settingsVisibility;
+            set
+            {
+                _settingsVisibility = value;
+                OnPropertyChanged(nameof(SettingsVisibility));
             }
         }
 

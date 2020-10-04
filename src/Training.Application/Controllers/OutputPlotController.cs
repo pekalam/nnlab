@@ -75,7 +75,6 @@ namespace Training.Application.Controllers
         private PlotEpochEndConsumer? _epochEndConsumer;
         private readonly OutputPlotSelector _plotSelector = new OutputPlotSelector();
         private CancellationTokenSource? _cts;
-        private readonly List<DispatcherOperation> _ops = new List<DispatcherOperation>();
         private readonly IRegionManager _rm;
         private readonly ModuleState _moduleState;
 
@@ -121,14 +120,14 @@ namespace Training.Application.Controllers
 
                 _plotSelector.OutputPlot?.OnEpochEnd(epochEnds, Vm!, _cts.Token);
 
-                GlobalDistributingDispatcher.Call(InvalidatePlot, _epochEndConsumer!);
+                GlobalDistributingDispatcher.CallDirectly(InvalidatePlot, _epochEndConsumer!);
 
             }, session =>
             {
                 _cts = new CancellationTokenSource();
                 _plotSelector.SelectPlot(session);
                 _plotSelector.OutputPlot?.OnSessionStarting(Vm!, session, _cts.Token);
-                GlobalDistributingDispatcher.Call(InvalidatePlot, _epochEndConsumer!);
+                GlobalDistributingDispatcher.CallDirectly(InvalidatePlot, _epochEndConsumer!);
             }, s =>
             {
                 _cts!.Cancel();
