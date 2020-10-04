@@ -40,6 +40,17 @@ namespace Training.Application.ViewModels
                 ModuleState.ActiveSession!.TrainerUpdated -= ActiveSessionOnTrainerUpdated;
                 ModuleState.ActiveSession.TrainerUpdated += ActiveSessionOnTrainerUpdated;
             });
+
+            _helper.OnActiveSessionChanged(session =>
+            {
+                session.SessionReset -= SessionOnSessionReset;
+                session.SessionReset += SessionOnSessionReset;
+            });
+        }
+
+        private void SessionOnSessionReset()
+        {
+            View?.ResetProgress();
         }
 
         private void ActiveSessionOnTrainerUpdated()

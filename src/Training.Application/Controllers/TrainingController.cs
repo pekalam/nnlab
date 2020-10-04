@@ -71,12 +71,17 @@ namespace Training.Application.Controllers
                     if (_rm.Regions.ContainsRegionWithName(TrainingViewRegions.PanelLayoutRegion))
                     {
                         //_rm.Regions[TrainingViewRegions.PanelLayoutRegion].RemoveAll();
-                        // _service.OnHidePanels();
+                        // _service.HidePanels();
                     }
     
                 }
 
                 Session.PropertyChanged += (a, b) => CheckCommandsCanExec();
+                Session.SessionReset += () =>
+                {
+                    _service.HidePanels();
+                    CheckCommandsCanExec();
+                };
             };
         }
 
@@ -159,12 +164,11 @@ namespace Training.Application.Controllers
                 {
                     ("ParentRegion", TrainingViewRegions.PanelLayoutRegion)
                 });
-                _rm.Regions[TrainingViewRegions.PanelLayoutRegion].RequestNavigate("PanelLayoutView", param);
-                _service.OnShowPanels();
+                _service.ShowPanels(param);
             }
             else
             {
-                _service.OnHidePanels();
+                _service.HidePanels();
             }
         }
 

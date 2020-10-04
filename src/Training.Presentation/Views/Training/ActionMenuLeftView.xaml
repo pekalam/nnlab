@@ -1,8 +1,8 @@
 ﻿<UserControl x:Class="Training.Presentation.Views.Training.ActionMenuLeftView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:Training.Presentation.Views.Training"
              xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:dd="clr-namespace:Training.Presentation.__DesignData"
@@ -11,9 +11,9 @@
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance dd:DesignTrainingVm, IsDesignTimeCreatable=True}">
     <StackPanel Orientation="Horizontal">
-        <Button Style="{StaticResource ActionMenuButton}">
+        <Button Style="{StaticResource ActionMenuButton}" >
             <Grid>
-                <mah:DropDownButton Name="NetOption" Content="{x:Null}" Width="66" Height="60">
+                <mah:DropDownButton Name="NetOption" Content="{x:Null}">
                     <mah:DropDownButton.Style>
                         <Style TargetType="mah:DropDownButton">
                             <Setter Property="BorderThickness" Value="0" />
@@ -21,39 +21,67 @@
                             <Setter Property="Padding" Value="0" />
                             <Setter Property="Margin" Value="0" />
                             <Setter Property="BorderBrush" Value="{x:Null}" />
-                            <Setter Property="Background" Value="Transparent"/>
+                            <Setter Property="Background" Value="Transparent" />
+
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Service.SessionOptionsDecorator.Session.Started}"
+                                             Value="True">
+                                    <Setter Property="IsEnabled" Value="False"></Setter>
+                                </DataTrigger>                   
+                                <DataTrigger Binding="{Binding Service.SessionOptionsDecorator.Session.Started}"
+                                             Value="False">
+                                    <Setter Property="IsEnabled" Value="True"></Setter>
+                                </DataTrigger>
+                            </Style.Triggers>
                         </Style>
                     </mah:DropDownButton.Style>
                     <mah:DropDownButton.ItemsSource>
                         <CompositeCollection>
-                            <MenuItem Header="Reset parameters" Command="{Binding Service.ResetParametersCommand}" />
+                            <MenuItem Header="Reset session"
+                                      Command="{Binding Service.SessionOptionsDecorator.ResetSessionCommand}" />
                         </CompositeCollection>
                     </mah:DropDownButton.ItemsSource>
+
+                    <mah:DropDownButton.ContentTemplate>
+                        <DataTemplate>
+                            <Button Style="{StaticResource ActionMenuButton}">
+
+                                <StackPanel x:Name="Container">
+
+                                    <iconPacks:PackIconFontAwesome Kind="CogSolid" Width="20" Height="20"
+                                                                   HorizontalAlignment="Center" Margin="0,0,0,1" />
+                                    <TextBlock HorizontalAlignment="Center">Session</TextBlock>
+
+                                </StackPanel>
+                            </Button>
+                        </DataTemplate>
+                    </mah:DropDownButton.ContentTemplate>
                 </mah:DropDownButton>
-                <StackPanel x:Name="Container">
- 
-                    <iconPacks:PackIconFontAwesome Kind="ProjectDiagramSolid" Width="20" Height="20" HorizontalAlignment="Center"/>
-                    <TextBlock HorizontalAlignment="Center">Network</TextBlock>
-                </StackPanel>
-  
+                <!-- <StackPanel x:Name="Container"> -->
+                <!-- -->
+                <!--     <iconPacks:PackIconFontAwesome Kind="CogSolid" Width="20" Height="20" HorizontalAlignment="Center" Margin="0,0,0,1"/> -->
+                <!--     <TextBlock HorizontalAlignment="Center">Session</TextBlock> -->
+                <!-- </StackPanel> -->
+
             </Grid>
 
         </Button>
-        <Button Style="{StaticResource ActionMenuButton}" Command="{Binding Service.OpenReportsCommand}" Margin="0,0,6,0">
+        <Button Style="{StaticResource ActionMenuButton}" Command="{Binding Service.OpenReportsCommand}"
+                Margin="0,0,6,0">
             <StackPanel>
-                <iconPacks:PackIconFontAwesome Kind="FileSolid" Width="20" Height="20" HorizontalAlignment="Center"/>
+                <iconPacks:PackIconFontAwesome Kind="FileSolid" Width="20" Height="20" HorizontalAlignment="Center" />
                 <TextBlock>Reports</TextBlock>
             </StackPanel>
         </Button>
         <Button Style="{StaticResource ActionMenuButton}" Command="{Binding Service.OpenParametersCommand}">
             <StackPanel Margin="0,0,6,0">
-                <iconPacks:PackIconFontAwesome Kind="SlidersHSolid" Width="20" Height="20" HorizontalAlignment="Center"/>
+                <iconPacks:PackIconFontAwesome Kind="SlidersHSolid" Width="20" Height="20" HorizontalAlignment="Center" />
                 <TextBlock>Parameters</TextBlock>
             </StackPanel>
         </Button>
         <Button Style="{StaticResource ActionMenuButton}">
             <StackPanel>
-                <iconPacks:PackIconFontAwesome Kind="CheckSolid" Width="20" Height="20" HorizontalAlignment="Center"/>
+                <iconPacks:PackIconFontAwesome Kind="CheckSolid" Width="20" Height="20" HorizontalAlignment="Center" />
                 <TextBlock>Tests</TextBlock>
             </StackPanel>
         </Button>

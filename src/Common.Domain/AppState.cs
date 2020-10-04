@@ -205,6 +205,7 @@ namespace Common.Domain
     {
         private TrainingData? _trainingData;
         private MLPNetwork? _network;
+        private MLPNetwork? _initialNetwork;
         private TrainingParameters? _trainingParameters;
         private string? _singleDataFile;
         private string? _trainingDataFile;
@@ -295,6 +296,7 @@ namespace Common.Domain
             {
                 SetProperty(ref _network, value);
                 if (value == null || _trainingData == null) return;
+                _initialNetwork = value.Clone();
                 if (TrainingParameters == null) TrainingParameters = new TrainingParameters();
             }
         }
@@ -305,7 +307,13 @@ namespace Common.Domain
             NetworkStructureChanged?.Invoke(Network);
         }
 
-        public TrainingReportsCollection TrainingReports { get; } = new TrainingReportsCollection();
+        public void ResetNetwork()
+        {
+            Network = _initialNetwork;
+            TrainingReports = new TrainingReportsCollection();
+        }
+
+        public TrainingReportsCollection TrainingReports { get; private set; } = new TrainingReportsCollection();
 
         public TrainingParameters? TrainingParameters
         {
