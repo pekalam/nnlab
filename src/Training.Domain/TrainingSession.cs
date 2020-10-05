@@ -228,7 +228,7 @@ namespace Training.Domain
                 _elapsed += Time.Now - StartTime.Value;
                 Started = false;
                 if (Stopped)
-                    Trainer!.ResetEpochs();
+                    Trainer!.Reset();
                 else Paused = true;
 
                 CurrentReport = t.Result;
@@ -320,32 +320,6 @@ namespace Training.Domain
             Stopped = true;
             return TrainingSessionReport.CreateTargetReachedSessionReport(Trainer.Epochs, error, StartTime!.Value,
                 EpochEndEvents);
-        }
-
-        public Task<TrainingSessionReport> Start()
-        {
-            if(!IsValid) throw new InvalidOperationException("Session is in invalid state");
-
-            if (CurrentReport != null) CurrentReport.ValidationError = null;
-            StartTime = Time.Now;
-            var task = InternalStart();
-            Started = true;
-            Paused = false;
-            var sessionTask = task.ContinueWith(t =>
-            {
-                _elapsed += Time.Now - StartTime.Value;
-                Started = _stopRequested = false;
-                if (Stopped)
-                {
-                    Trainer!.ResetEpochs();
-                }
-                else Paused = true;
-                CurrentReport = t.Result;
-                _session.TrainingReports.Add(CurrentReport);
-                return CurrentReport;
-            });
-            _sessionTask = sessionTask;
-            return sessionTask;
         }
 
         public Task<double> RunValidation(TrainingSessionReport report)
