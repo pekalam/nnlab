@@ -160,8 +160,8 @@ namespace Training.Application.Controllers
                         return;
                     }
 
-                    var points = endsObs.Select(end => new DataPoint(end.Epoch, Math.Round(end.Error, 4))).ToArray();
-
+                    var points = endsObs.Select(end => new DataPoint(end.Epoch, end.Error)).ToArray();
+                    
                     lock (_ptsLock)
                     {
                         if (Vm!.Series.Points.Count + endsObs.Count > 2000)

@@ -3,9 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:oxy="http://oxyplot.org/wpf"
              xmlns:regions="http://prismlibrary.com/"
-             xmlns:basicPlot="clr-namespace:SharedUI.BasicPlot"
+             xmlns:basicPlot="clr-namespace:SharedUI.BasicPlot" 
+             xmlns:wpf="http://oxyplot.org/skiawpf"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800" Name="root">
     <UserControl.Resources>
@@ -22,7 +22,7 @@
                                    HorizontalAlignment="Right"
                                    Visibility="{Binding ElementName=root,Path=IsMouseOver,Converter={StaticResource boolToVisConverter}}" />
         </StackPanel>
-        <oxy:PlotView x:Name="plot" Grid.Row="1" Visibility="Visible" Margin="0,0,30,0"
+        <wpf:PlotView x:Name="plot" Grid.Row="1" Visibility="Visible" Margin="0,0,30,0"
                       Model="{Binding Path=PlotModel.Model, ElementName=root}"
                       Controller="{Binding Path=PlotModel.Controller, ElementName=root}" />
         <Rectangle x:Name="plotPlaceholder" Grid.Row="1" Visibility="Collapsed" Fill="#3FB4B4B4" />

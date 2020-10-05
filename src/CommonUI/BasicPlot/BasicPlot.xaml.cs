@@ -8,6 +8,7 @@ using System.Windows.Data;
 using CommonServiceLocator;
 using Microsoft.Win32;
 using OxyPlot;
+using OxyPlot.SkiaSharp;
 using OxyPlot.Wpf;
 using Prism.Mvvm;
 using Prism.Regions;
@@ -73,7 +74,7 @@ namespace SharedUI.BasicPlot
             if (saveFileDialog.ShowDialog() == true)
             {
                 var stream = File.OpenWrite(saveFileDialog.FileName);
-                var pngExporter = new PngExporter { Width = ImgSz[saveFileDialog.FilterIndex].w, Height = ImgSz[saveFileDialog.FilterIndex].h, Background = PlotModel.Model.Background };
+                var pngExporter = new PngExporter { Width = ImgSz[saveFileDialog.FilterIndex].w, Height = ImgSz[saveFileDialog.FilterIndex].h, /*Background = PlotModel.Model.Background*/ };
                 pngExporter.Export(PlotModel.Model, stream);
                 stream.Close();
             }

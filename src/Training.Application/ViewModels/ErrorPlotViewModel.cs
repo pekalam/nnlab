@@ -14,6 +14,31 @@ namespace Training.Application.ViewModels
     public class ErrorPlotViewModel : ViewModelBase<ErrorPlotViewModel>
     {
 
+        public static Func<double, string> CreateDefaultLabelFormatter(Axis yAxis)
+        {
+            return d =>
+            {
+                var i = 0;
+                var v = 1d;
+
+                var x = yAxis.ActualMaximum - yAxis.ActualMinimum;
+
+                while ((v /= 10d) > x)
+                {
+                    i++;
+                }
+
+                i++;
+
+                if (i <= 4 || i > 10)
+                {
+                    return d.ToString("g6");
+                }
+
+                return d.ToString("F" + i);
+            };
+        }
+
         public ErrorPlotViewModel(IErrorPlotService service)
         {
             Service = service;
@@ -27,13 +52,16 @@ namespace Training.Application.ViewModels
                 AbsoluteMinimum = 0,
                 AxisTitleDistance = 4,
             });
-            BasicPlotModel.Model.Axes.Add(new LinearAxis()
+            var yAxis = new LinearAxis()
             {
                 Position = AxisPosition.Left,
                 Title = "Error",
                 AbsoluteMinimum = 0,
                 AxisTitleDistance = 18,
-            });
+            };
+            yAxis.LabelFormatter = CreateDefaultLabelFormatter(yAxis);
+
+            BasicPlotModel.Model.Axes.Add(yAxis);
             BasicPlotModel.Model.PlotMargins = new OxyThickness(80, Double.NaN, Double.NaN, Double.NaN);
         }
 

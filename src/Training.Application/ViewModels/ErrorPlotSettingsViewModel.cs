@@ -24,23 +24,27 @@ namespace Training.Application.ViewModels
 
                 if (value)
                 {
-                    _plotModel!.Model.Axes[1] = new LinearAxis()
+                    var newAxis = new LogarithmicAxis()
                     {
                         Position = AxisPosition.Left,
                         Title = "Error",
                         AbsoluteMinimum = 0,
                         AxisTitleDistance = 18,
                     };
+                    newAxis.LabelFormatter = ErrorPlotViewModel.CreateDefaultLabelFormatter(newAxis);
+                    _plotModel!.Model.Axes[1] = newAxis;
                 }
                 else
                 {
-                    _plotModel!.Model.Axes[1] = new LogarithmicAxis()
+                    var newAxis = new LinearAxis()
                     {
                         Position = AxisPosition.Left,
                         Title = "Error",
                         AbsoluteMinimum = 0,
                         AxisTitleDistance = 18,
                     };
+                    newAxis.LabelFormatter = ErrorPlotViewModel.CreateDefaultLabelFormatter(newAxis);
+                    _plotModel!.Model.Axes[1] = newAxis;
                 }
             }
         }
