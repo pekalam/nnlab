@@ -12,9 +12,9 @@ namespace SharedUI.MatrixPreview
     internal class MatrixGridRenderer
     {
         private readonly MatrixPreviewViewModel _vm;
-        private List<MatrixPreviewModel> _models;
+        private List<MatrixPreviewModel>? _models;
         private readonly List<DataGridColumn> _columns = new List<DataGridColumn>();
-        private DelegateCommand<MatrixPreviewModel> _removeCommand;
+        private readonly DelegateCommand<MatrixPreviewModel> _removeCommand;
 
         public MatrixGridRenderer(MatrixPreviewViewModel vm, DelegateCommand<MatrixPreviewModel> removeCommand)
         {
@@ -81,13 +81,15 @@ namespace SharedUI.MatrixPreview
                     _models.Add(model);
                 }
 
-                _vm.UpdateColumns(_columns);
+                _vm.UpdateColumns?.Invoke(_columns);
                 _vm.Source = _models;
             }
         }
 
         public void Update(Matrix<double> matrix, string format)
         {
+            Debug.Assert(_models != null, nameof(_models) + " != null");
+
             for (int i = 0; i < matrix.RowCount; i++)
             {
                 for (int j = 0; j < matrix.ColumnCount; j++)
@@ -99,6 +101,8 @@ namespace SharedUI.MatrixPreview
 
         public void ApplyUpdate(Matrix<double> matrix)
         {
+            Debug.Assert(_models != null, nameof(_models) + " != null");
+
             for (int i = 0; i < matrix.RowCount; i++)
             {
                 lock (_vm)

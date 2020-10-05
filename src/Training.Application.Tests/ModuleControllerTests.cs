@@ -13,6 +13,7 @@ using Training.Application.ViewModels;
 using Training.Domain;
 using Training.Interface;
 using Xunit;
+#pragma warning disable 4014
 
 namespace Training.Application.Tests
 {

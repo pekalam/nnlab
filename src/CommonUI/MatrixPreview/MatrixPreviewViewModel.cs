@@ -16,7 +16,7 @@ namespace SharedUI.MatrixPreview
         private int _selectedLayerNum;
         private MatrixTypes _selectedMatrixType;
         private int _numPrecision = 2;
-        private List<MatrixPreviewModel> _source;
+        private List<MatrixPreviewModel>? _source;
         private bool _readOnly = true;
         private bool _canRemoveItem;
 
@@ -42,9 +42,9 @@ namespace SharedUI.MatrixPreview
         public ICommand ColumnClicked { get; }
 
         internal Action<IEnumerable<DataGridColumn>>? UpdateColumns { get; set; }
-        public event Action GridInitialized;
-        public event Action<Matrix<double>> RowRemoved;
-        public event Action<Matrix<double>> MatrixElementChanged; 
+        public event Action? GridInitialized;
+        public event Action<Matrix<double>>? RowRemoved;
+        public event Action<Matrix<double>>? MatrixElementChanged; 
         internal void RaiseGridInitialized() => GridInitialized?.Invoke();
         internal void RaiseRowRemoved(Matrix<double> newMatrix) => RowRemoved?.Invoke(newMatrix);
         internal void RaiseMatrixElementChanged(Matrix<double> mat) => MatrixElementChanged?.Invoke(mat);
@@ -63,7 +63,7 @@ namespace SharedUI.MatrixPreview
             set => SetProperty(ref _readOnly, value);
         }
 
-        public List<MatrixPreviewModel> Source
+        public List<MatrixPreviewModel>? Source
         {
             get => _source;
             set => SetProperty(ref _source, value);

@@ -17,14 +17,16 @@ namespace Shell.Application.ViewModels
         private Visibility _errorNotificationVisibility = Visibility.Collapsed;
         private string? _errorMessage = "Invalid error";
         private string? _networkInfo;
-        private StringBuilder _bldr = new StringBuilder();
+        private readonly StringBuilder _bldr = new StringBuilder();
         private Visibility _progressVisibility = Visibility.Hidden;
         private string? _progressTooltip;
         private string? _progressMessage;
         private bool _canModifyActiveSession = true;
         private readonly AppState _appState;
 
+#pragma warning disable 8618
         public StatusBarViewModel()
+#pragma warning restore 8618
         {
         }
 

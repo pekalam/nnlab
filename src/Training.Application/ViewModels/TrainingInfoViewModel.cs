@@ -23,7 +23,9 @@ namespace Training.Application.ViewModels
 
         private ModuleStateHelper _helper;
 
+#pragma warning disable 8618
         public TrainingInfoViewModel()
+#pragma warning restore 8618
         {
         }
 

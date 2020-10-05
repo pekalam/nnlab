@@ -28,9 +28,10 @@ namespace Training.Application.Tests
 
             _appState = _mocker.UseImpl<AppState>();
             _moduleState = _mocker.UseImpl<ModuleState>();
+            _mocker.UseImpl<ModuleStateHelper>();
+            _mocker.UseImpl<ModuleStateSessionOptionsDecorator>();
 
-
-            _service = _mocker.UseImpl<TrainingService>();
+            _service = _mocker.UseImpl<ITrainingService,TrainingService>();
 
             _ctrl = _mocker.UseImpl<TrainingController>();
             _vm = _mocker.UseVm<TrainingViewModel>();
@@ -50,7 +51,7 @@ namespace Training.Application.Tests
         {
             SetupValidSession();
 
-            _moduleState.ActiveSession.IsValid.Should().BeTrue();
+            _moduleState.ActiveSession!.IsValid.Should().BeTrue();
 
             _service.StartTrainingSessionCommand.CanExecute().Should().BeTrue();
             _service.StopTrainingSessionCommand.CanExecute().Should().BeFalse();
@@ -77,7 +78,7 @@ namespace Training.Application.Tests
 
             await Task.Delay(50);
 
-            _moduleState.ActiveSession.CurrentReport.Should().NotBeNull();
+            _moduleState.ActiveSession!.CurrentReport.Should().NotBeNull();
 
             _service.StartTrainingSessionCommand.Execute();
 
@@ -87,7 +88,7 @@ namespace Training.Application.Tests
 
             await Task.Delay(50);
 
-            _appState.ActiveSession.TrainingReports.Count.Should().Be(2);
+            _appState.ActiveSession!.TrainingReports.Count.Should().Be(2);
         }
 
 

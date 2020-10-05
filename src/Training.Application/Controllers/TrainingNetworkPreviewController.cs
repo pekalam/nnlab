@@ -79,8 +79,8 @@ namespace Training.Application.Controllers
 
                 Vm!.ModelAdapter.SetNeuralNetwork(network);
                 Vm!.ModelAdapter.NeuralNetworkModel.BackgroundColor = "#cce6ff";
-                Vm.ModelAdapter.SetInputLabels(_appState.ActiveSession!.TrainingData!.Variables.InputVariableNames);
-                Vm.ModelAdapter.SetOutputLabels(_appState.ActiveSession.TrainingData.Variables.TargetVariableNames);
+                Vm!.ModelAdapter.SetInputLabels(_appState.ActiveSession!.TrainingData!.Variables.InputVariableNames);
+                Vm!.ModelAdapter.SetOutputLabels(_appState.ActiveSession.TrainingData.Variables.TargetVariableNames);
             });
             Vm!.IsActiveChanged += OnIsActiveChanged;
         }
@@ -96,22 +96,22 @@ namespace Training.Application.Controllers
 
         private void ActiveSessionOnNetworkStructureChanged(MLPNetwork obj)
         {
-            Vm!.ModelAdapter.SetNeuralNetwork(obj);
+            Vm!.ModelAdapter!.SetNeuralNetwork(obj);
             Vm!.ModelAdapter.NeuralNetworkModel.BackgroundColor = "#cce6ff";
-            Vm.ModelAdapter.SetInputLabels(_appState.ActiveSession!.TrainingData!.Variables.InputVariableNames);
-            Vm.ModelAdapter.SetOutputLabels(_appState.ActiveSession.TrainingData.Variables.TargetVariableNames);
+            Vm!.ModelAdapter.SetInputLabels(_appState.ActiveSession!.TrainingData!.Variables.InputVariableNames);
+            Vm!.ModelAdapter.SetOutputLabels(_appState.ActiveSession.TrainingData.Variables.TargetVariableNames);
         }
 
 
         private void SetupAnimation()
         {
-            Vm!.ModelAdapter.ColorAnimation.SetupTrainer(_moduleState.ActiveSession!.Trainer!, ref _epochEndCallback,
+            Vm!.ModelAdapter!.ColorAnimation.SetupTrainer(_moduleState.ActiveSession!.Trainer!, ref _epochEndCallback,
                 action => { GlobalDistributingDispatcher.Call(action, _epochEndConsumer!); });
         }
 
         private void ModuleStateOnActiveSessionChanged(object? sender, (TrainingSession? prev, TrainingSession next) e)
         {
-            if (Vm!.ModelAdapter.ColorAnimation.IsAnimating)
+            if (Vm!.ModelAdapter!.ColorAnimation.IsAnimating)
             {
                 Vm!.ModelAdapter.ColorAnimation.StopAnimation(true);
             }
@@ -130,14 +130,14 @@ namespace Training.Application.Controllers
                 session => { SetupAnimation(); },
                 session =>
                 {
-                    Vm!.ModelAdapter.ColorAnimation.StopAnimation(false);
+                    Vm!.ModelAdapter!.ColorAnimation.StopAnimation(false);
                     System.Windows.Application.Current.Dispatcher.InvokeAsync(
                         () => Vm!.ModelAdapter.Controller.Color.ApplyColors(), DispatcherPriority.Background);
                 },
                 session =>
                 {
                     System.Windows.Application.Current.Dispatcher.InvokeAsync(
-                        () => Vm!.ModelAdapter.Controller.Color.ApplyColors(), DispatcherPriority.Background);
+                        () => Vm!.ModelAdapter!.Controller.Color.ApplyColors(), DispatcherPriority.Background);
                 });
             _epochEndConsumer.Initialize();
 
@@ -146,12 +146,12 @@ namespace Training.Application.Controllers
 
         private void ClearColors()
         {
-            Vm!.ModelAdapter.Controller.Color.ResetColorsToDefault();
+            Vm!.ModelAdapter!.Controller.Color.ResetColorsToDefault();
         }
 
         private void ToggleAnimation()
         {
-            if (Vm!.ModelAdapter.ColorAnimation.IsAnimating)
+            if (Vm!.ModelAdapter!.ColorAnimation.IsAnimating)
             {
                 Vm!.ModelAdapter.ColorAnimation.StopAnimation(false);
             }

@@ -12,72 +12,7 @@ using System.Windows;
 using Xunit;
 
 namespace Shell.Application.Tests
-{
-    class TestRegion : IRegion
-    {
-        public Action<Uri, Action<NavigationResult>, NavigationParameters> NavCalled;
-
-        public void RequestNavigate(Uri target, Action<NavigationResult> navigationCallback)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void RequestNavigate(Uri target, Action<NavigationResult> navigationCallback, NavigationParameters navigationParameters)
-        {
-            NavCalled(target, navigationCallback, navigationParameters);
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        public IRegionManager Add(object view)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IRegionManager Add(object view, string viewName)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IRegionManager Add(object view, string viewName, bool createRegionManagerScope)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Remove(object view)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void RemoveAll()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Activate(object view)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Deactivate(object view)
-        {
-            throw new NotImplementedException();
-        }
-
-        public object GetView(string viewName)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IViewsCollection Views { get; }
-        public IViewsCollection ActiveViews { get; }
-        public object Context { get; set; }
-        public string Name { get; set; }
-        public Comparison<object> SortComparison { get; set; }
-        public IRegionManager RegionManager { get; set; }
-        public IRegionBehaviorCollection Behaviors { get; }
-        public IRegionNavigationService NavigationService { get; set; }
-    }
-
+{ 
     public class NavigationBreadcrumbsTests
     {
         EventAggregator ea = new EventAggregator();

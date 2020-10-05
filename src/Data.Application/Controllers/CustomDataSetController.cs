@@ -72,7 +72,7 @@ namespace Data.Application.Controllers
         private readonly IEventAggregator _ea;
         private readonly CustomDataSetMemento _memento;
         private readonly AppStateHelper _helper;
-        private TrainingData _assignedData;
+        private TrainingData? _assignedData;
         private Session? _currentSession;
 
         public CustomDataSetController(AppState appState, IRegionManager rm, IEventAggregator ea, IViewModelAccessor accessor, CustomDataSetMemento memento) : base(accessor)

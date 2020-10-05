@@ -29,7 +29,9 @@ namespace Training.Application.ViewModels
         private PanelSelectModel? _singleSelected;
         private SelectionMode _selectionMode;
 
+#pragma warning disable 8618
         public PanelSelectViewModel()
+#pragma warning restore 8618
         {
             
         }

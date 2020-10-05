@@ -29,10 +29,10 @@ namespace Training.Application
 
     public class ModuleStateHelper
     {
-        private ModuleState _moduleState;
+        private readonly ModuleState _moduleState;
         private EventHandler<(TrainingSession? prev, TrainingSession next)>? _activeSessionChangedHandler;
-        private PropertyChangedEventHandler _trainerChangedInSession;
-        private Action<MLPTrainer> _trainerChanged;
+        private PropertyChangedEventHandler? _trainerChangedInSession;
+        private Action<MLPTrainer>? _trainerChanged;
 
         public ModuleStateHelper(ModuleState moduleState)
         {
@@ -61,7 +61,7 @@ namespace Training.Application
             {
                 if (args.PropertyName == nameof(TrainingSession.Trainer))
                 {
-                    _trainerChanged((sender as TrainingSession)!.Trainer!);
+                    _trainerChanged!((sender as TrainingSession)!.Trainer!);
                 }
             };
 

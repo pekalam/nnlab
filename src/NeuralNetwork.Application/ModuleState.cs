@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Text;
 using Common.Domain;
 using NNLibAdapter;
@@ -78,6 +79,10 @@ namespace NeuralNetwork.Application
             }
         }
 
-        public void RaiseNetworkStructureChanged() => NetworkStructureChanged?.Invoke(ModelAdapter);
+        public void RaiseNetworkStructureChanged()
+        {
+            Debug.Assert(ModelAdapter != null, nameof(ModelAdapter) + " != null");
+            NetworkStructureChanged?.Invoke(ModelAdapter);
+        }
     }
 }

@@ -17,11 +17,11 @@ namespace Shell.Presentation.Views
         {
             if ((bool)e.NewValue)
             {
-                (Resources["CogAnimation"] as Storyboard).Begin();
+                (Resources["CogAnimation"] as Storyboard)!.Begin();
             }
             else
             {
-                (Resources["CogAnimation"] as Storyboard).Stop();
+                (Resources["CogAnimation"] as Storyboard)!.Stop();
             }
         }
     }

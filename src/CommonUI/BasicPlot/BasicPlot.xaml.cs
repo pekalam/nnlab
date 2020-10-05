@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Windows;
@@ -34,7 +35,7 @@ namespace SharedUI.BasicPlot
     /// </summary>
     public partial class BasicPlot : UserControl
     {
-        private static (int w, int h)[] imgSz = new (int w, int h)[]
+        private static readonly (int w, int h)[] ImgSz = new (int w, int h)[]
         {
             (600,400),(1200,900)
         };
@@ -45,10 +46,10 @@ namespace SharedUI.BasicPlot
                 (o, args) =>
                 {
                     if (args.NewValue != null)
-                        ((BasicPlot) o).OnModelChanged(args.NewValue as BasicPlotModel);
+                        ((BasicPlot) o).OnModelChanged((args.NewValue as BasicPlotModel)!);
                 }));
 
-        public BasicPlotModel PlotModel
+        public BasicPlotModel? PlotModel
         {
             get => (BasicPlotModel) GetValue(PlotModelProperty);
             set => SetValue(PlotModelProperty, value);
@@ -64,13 +65,15 @@ namespace SharedUI.BasicPlot
 
         private void OnAsPhotoClicked()
         {
+            Debug.Assert(PlotModel != null, nameof(PlotModel) + " != null");
+
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.FileName = saveFileDialog.InitialDirectory + PlotModel.DefaultSaveName;
             saveFileDialog.Filter = "Png 600x400 (*.png)|*.png|Png 1200x900 (*.png)|*.png";
             if (saveFileDialog.ShowDialog() == true)
             {
                 var stream = File.OpenWrite(saveFileDialog.FileName);
-                var pngExporter = new PngExporter { Width = imgSz[saveFileDialog.FilterIndex].w, Height = imgSz[saveFileDialog.FilterIndex].h, Background = PlotModel.Model.Background };
+                var pngExporter = new PngExporter { Width = ImgSz[saveFileDialog.FilterIndex].w, Height = ImgSz[saveFileDialog.FilterIndex].h, Background = PlotModel.Model.Background };
                 pngExporter.Export(PlotModel.Model, stream);
                 stream.Close();
             }
@@ -178,8 +181,8 @@ namespace SharedUI.BasicPlot
         public PlotController Controller { get; set; } = new PlotController();
         internal bool DisplayNewWindow { get; set; } = true;
 
-        public Action<string> SetSettingsRegion { get; internal set; }
-        public Action<string> RemoveSettingsRegion { get; internal set; }
+        public Action<string>? SetSettingsRegion { get; internal set; }
+        public Action<string>? RemoveSettingsRegion { get; internal set; }
         public bool DisplaySettingsRegion { get; set; } = true;
     }
 }

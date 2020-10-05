@@ -33,16 +33,15 @@ namespace NeuralNetwork.Application.Controllers
 {
     public class NetDisplayController : ISingletonController, INetDisplayService
     {
-        private readonly ModuleState _moduleState;
-        private readonly IEventAggregator _ea;
         private readonly AppState _appState;
         private readonly AppStateHelper _helper;
-        private bool _handlersInit;
+        private readonly ModuleState _moduleState;
+        private readonly IEventAggregator _ea;
 
         public NetDisplayController(ModuleState moduleState, IEventAggregator ea, AppState appState)
         {
-            _moduleState = moduleState;
             _ea = ea;
+            _moduleState = moduleState;
             _appState = appState;
             _helper = new AppStateHelper(appState);
 
@@ -51,7 +50,7 @@ namespace NeuralNetwork.Application.Controllers
                 _ea.GetEvent<IntNeuronClicked>().Publish((((NNLibLayerAdapter)args.LayerAdapter).Layer, args.NeuronIndex));
             });
 
-            _ea.GetEvent<IntLayerClicked>().Subscribe(arg =>
+            ea.GetEvent<IntLayerClicked>().Subscribe(arg =>
             {
                 _moduleState.ModelAdapter!.Controller.ClearHighlight();
                 _moduleState.ModelAdapter.Controller.HighlightLayer(arg.layerIndex + 1);

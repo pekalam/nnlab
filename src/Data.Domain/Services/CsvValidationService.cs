@@ -20,7 +20,7 @@ namespace Data.Domain.Services
         {
             if (!File.Exists(path)) return (false, "File not found", 0,0);
 
-            FileStream fs = null;
+            FileStream? fs = null;
             try
             {
                 fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);

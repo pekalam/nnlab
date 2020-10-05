@@ -12,7 +12,7 @@ namespace Training.Presentation.Views
     /// </summary>
     public partial class PanelSelectView : UserControl
     {
-        private PanelSelectViewModel _vm;
+        private PanelSelectViewModel? _vm;
 
         public PanelSelectView()
         {
@@ -45,7 +45,7 @@ namespace Training.Presentation.Views
 
         private void List_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (List.SelectedItems.Count <= _vm.MaxSelected)
+            if (List.SelectedItems.Count <= _vm!.MaxSelected)
             {
                 _vm.Selected = List.SelectedItems.Cast<PanelSelectModel>().ToList();
             }

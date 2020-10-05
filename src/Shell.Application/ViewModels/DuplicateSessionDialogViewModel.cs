@@ -21,7 +21,9 @@ namespace Shell.Application.ViewModels
         private DuplicateOptions Options { get; set; } = DuplicateOptions.All;
 
 
+#pragma warning disable 8618
         public DuplicateSessionDialogViewModel()
+#pragma warning restore 8618
         {
             
         }

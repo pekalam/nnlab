@@ -25,8 +25,8 @@ namespace SharedUI.MatrixPreview
         private volatile bool _disableUpdate;
         private string _numFormat = "F2";
 
-        private string[] _customColumns;
-        private Func<int, string> _customRows;
+        private string[]? _customColumns;
+        private Func<int, string>? _customRows;
 
         //todo clear
         private readonly Dictionary<int, MatrixTypes> _cachedSelection = new Dictionary<int, MatrixTypes>();
@@ -72,6 +72,8 @@ namespace SharedUI.MatrixPreview
 
         private void RemoveItem(MatrixPreviewModel obj)
         {
+            Debug.Assert(_assignedMatrix != null, nameof(_assignedMatrix) + " != null");
+
             _assignedMatrix = _assignedMatrix.RemoveRow(obj.RowIndex);
             _vm.RaiseRowRemoved(_assignedMatrix);
             CreateGrid();
@@ -110,7 +112,7 @@ namespace SharedUI.MatrixPreview
             CreateGrid();
         }
 
-        public void AssignMatrix(Matrix<double> mat, string[] customColumns = null, Func<int, string> customRows = null)
+        public void AssignMatrix(Matrix<double> mat, string[]? customColumns = null, Func<int, string>? customRows = null)
         {
             _customColumns = customColumns;
             _customRows = customRows;
@@ -235,6 +237,7 @@ namespace SharedUI.MatrixPreview
         {
             if (_network == null)
             {
+                Debug.Assert(_assignedMatrix != null, nameof(_assignedMatrix) + " != null");
                 return _assignedMatrix;
             }
             
@@ -273,7 +276,7 @@ namespace SharedUI.MatrixPreview
             }
 
             var matrix = GetSelectedMatrix();
-            Func<int, string> columnFunc = null;
+            Func<int, string>? columnFunc = null;
             if (_customColumns == null)
             {
                 columnFunc = i => columnTitle + " " + i;
@@ -283,7 +286,7 @@ namespace SharedUI.MatrixPreview
                 columnFunc = i => _customColumns[i];
             }
 
-            Func<int, string> rowFunc = null;
+            Func<int, string>? rowFunc = null;
             rowFunc = _customRows ?? (i => "Neuron " + i);
 
             _matrixGridRenderer.Create(matrix, _numFormat, columnFunc, rowFunc);

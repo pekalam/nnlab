@@ -26,7 +26,9 @@ namespace Training.Application.ViewModels
         private string? _validationHyperlinkText;
         private TrainingSessionReport? _selectedReport;
 
+#pragma warning disable 8618
         public ReportsViewModel()
+#pragma warning restore 8618
         {
             
         }

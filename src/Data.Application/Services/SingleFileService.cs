@@ -3,6 +3,7 @@ using Data.Application.ViewModels.DataSourceSelection;
 using Prism.Commands;
 using Prism.Mvvm;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using Common.Domain;
 using Data.Application.ViewModels;
@@ -42,18 +43,21 @@ namespace Data.Application.Services
 
         public void SetLoading()
         {
+            Debug.Assert(FileValidationResult != null, nameof(FileValidationResult) + " != null");
             FileValidationResult.IsValidatingFile = false;
             FileValidationResult.IsLoadingFile = true;
         }
 
         public void SetValidating()
         {
+            Debug.Assert(FileValidationResult != null, nameof(FileValidationResult) + " != null");
             FileValidationResult.IsLoadingFile = false;
             FileValidationResult.IsValidatingFile = true;
         }
 
         public void SetLoaded(TrainingData trainingData)
         {
+            Debug.Assert(FileValidationResult != null, nameof(FileValidationResult) + " != null");
             FileValidationResult.IsValidatingFile = FileValidationResult.IsLoadingFile = false;
             FileValidationResult.IsLoaded = true;
             _accessor.Get<SingleFileSourceViewModel>()!.Variables = trainingData.Variables.InputVariableNames.Union(trainingData.Variables.TargetVariableNames)
@@ -65,6 +69,7 @@ namespace Data.Application.Services
 
         public void SetValidated(bool result, int rows, int cols, string? error)
         {
+            Debug.Assert(FileValidationResult != null, nameof(FileValidationResult) + " != null");
             FileValidationResult.IsValidatingFile = FileValidationResult.IsLoadingFile = false;
             FileValidationResult.FileValidationError = error;
             FileValidationResult.IsFileValid = result;

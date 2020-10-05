@@ -35,7 +35,7 @@ namespace TestUtils
                     if (m.MemberType == MemberTypes.Field && ((FieldInfo)(m)).IsStatic)
                     {
                         var reg = new Mock<IRegion>();
-                        regions.Add((m as FieldInfo).GetValue(null) as string, reg);
+                        regions.Add((string)(m as FieldInfo)!.GetValue(null)!, reg);
                         rm.SetupGet(p => p.Regions[m.Name]).Returns(reg.Object);
                     }
 
@@ -58,8 +58,8 @@ namespace TestUtils
 
     public class TestViewModelAccessor : IViewModelAccessor
     {
-        private Dictionary<Type,object> _vms = new Dictionary<Type, object>();
-        private Dictionary<Type,Action> _onCreated = new Dictionary<Type, Action>();
+        private readonly Dictionary<Type,object> _vms = new Dictionary<Type, object>();
+        private readonly Dictionary<Type,Action> _onCreated = new Dictionary<Type, Action>();
 
         public TestViewModelAccessor()
         {
@@ -69,7 +69,7 @@ namespace TestUtils
         public virtual T Get<T>() where T : ViewModelBase<T>
         {
             _vms.TryGetValue(typeof(T), out var vm);
-            return vm as T;
+            return (vm as T)!;
         }
 
         public void OnCreated<T>(Action action) where T : ViewModelBase<T>
@@ -115,6 +115,7 @@ namespace TestUtils
         {
             var impl = mocker.CreateInstance<TImlp>();
             mocker.Use<TI>(impl);
+            mocker.Use<TImlp>(impl);
 
             return impl;
         }

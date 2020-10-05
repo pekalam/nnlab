@@ -8,7 +8,9 @@ namespace Training.Application.ViewModels
 {
     public class ParametersEditViewModel : ViewModelBase<ParametersEditViewModel>
     {
+#pragma warning disable 8618
         public ParametersEditViewModel()
+#pragma warning restore 8618
         {
             
         }

@@ -20,9 +20,9 @@ namespace SharedUI.BasicPlot
         public static readonly DependencyProperty PlotModelProperty = DependencyProperty.Register(
             "PlotModel", typeof(BasicPlotModel), typeof(PlotOverlay), new PropertyMetadata(default(BasicPlotModel)));
 
-        public Action OnNewWindowClicked;
-        public Action OnSettingsClicked;
-        public Action OnAsPhotoClicked;
+        public Action? OnNewWindowClicked;
+        public Action? OnSettingsClicked;
+        public Action? OnAsPhotoClicked;
         private Visibility _newWindowVisibility;
         private Visibility _settingsVisibility;
 
@@ -81,9 +81,9 @@ namespace SharedUI.BasicPlot
             OnNewWindowClicked?.Invoke();
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }

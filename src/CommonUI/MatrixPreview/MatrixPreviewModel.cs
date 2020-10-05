@@ -14,7 +14,7 @@ namespace SharedUI.MatrixPreview
         private readonly IDictionary<int, string> _dictionary = new Dictionary<int, string>();
         private Matrix<double>? _matrix;
         private int _row;
-        public event Action ElementChanged;
+        public event Action? ElementChanged;
 
         public void AssignMatrix(Matrix<double> matrix, int row)
         {
@@ -46,7 +46,7 @@ namespace SharedUI.MatrixPreview
 
         public bool Remove(int key) => _dictionary.Remove(key);
 
-        public bool TryGetValue(int key, out string value) => _dictionary.TryGetValue(key, out value);
+        public bool TryGetValue(int key, out string value) => _dictionary.TryGetValue(key, out value!);
 
         public string this[int key]
         {

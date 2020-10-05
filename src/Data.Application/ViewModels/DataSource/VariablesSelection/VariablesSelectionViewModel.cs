@@ -11,7 +11,9 @@ namespace Data.Application.ViewModels.DataSource.VariablesSelection
         private VariableTableModel[] _variables = null!;
         private string? _error;
 
+#pragma warning disable 8618
         public VariablesSelectionViewModel()
+#pragma warning restore 8618
         {
             
         }

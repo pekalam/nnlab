@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using System.Windows;
 using System.Windows.Input;
@@ -18,20 +19,17 @@ namespace Training.Application.Services
 {
     public class ModuleStateSessionOptionsDecorator : BindableBase
     {
-        private ModuleStateHelper _moduleStateHelper;
-        private TrainingSession _session;
+        private TrainingSession? _session;
 
         public ModuleStateSessionOptionsDecorator(ModuleStateHelper moduleStateHelper)
         {
-            _moduleStateHelper = moduleStateHelper;
-
-            _moduleStateHelper.OnActiveSessionChanged(session => Session = session);
+            moduleStateHelper.OnActiveSessionChanged(session => Session = session);
             ResetSessionCommand = new DelegateCommand(ResetSession);
         }
 
         public ICommand ResetSessionCommand { get; }
 
-        public TrainingSession Session
+        public TrainingSession? Session
         {
             get => _session;
             set => SetProperty(ref _session, value);
@@ -39,6 +37,7 @@ namespace Training.Application.Services
 
         private async void ResetSession()
         {
+            Debug.Assert(_session != null);
             await _session.ResetSession();
         }
     }

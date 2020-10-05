@@ -161,7 +161,7 @@ namespace Training.Application.ViewModels
 
     internal class OutputPlotSelector
     {
-        public void SelectPlot(TrainingSession session) => SelectPlot(session.Network);
+        public void SelectPlot(TrainingSession session) => SelectPlot(session.Network!);
 
         public void SelectPlot(MLPNetwork network)
         {

@@ -12,9 +12,11 @@ namespace Prediction.Application.ViewModels
 {
     public class PredictViewModel : ViewModelBase<PredictViewModel>
     {
-        private NNLibModelAdapter _modelAdapter;
+        private NNLibModelAdapter? _modelAdapter;
 
+#pragma warning disable 8618
         public PredictViewModel()
+#pragma warning restore 8618
         {
             
         }
@@ -24,7 +26,7 @@ namespace Prediction.Application.ViewModels
             Service = service;
         }
 
-        public NNLibModelAdapter ModelAdapter
+        public NNLibModelAdapter? ModelAdapter
         {
             get => _modelAdapter;
             set => SetProperty(ref _modelAdapter, value);

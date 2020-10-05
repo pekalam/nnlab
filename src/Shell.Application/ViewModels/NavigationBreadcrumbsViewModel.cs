@@ -22,9 +22,10 @@ namespace Shell.Application.ViewModels
         private readonly Dictionary<int, BreadcrumbModel[]> _previousBreadcrumbs =
             new Dictionary<int, BreadcrumbModel[]>();
 
-        private bool _isEnabled = true;
 
+#pragma warning disable 8618
         public NavigationBreadcrumbsViewModel() { }
+#pragma warning restore 8618
 
         [InjectionConstructor]
         public NavigationBreadcrumbsViewModel(IEventAggregator ea, IRegionManager rm)
@@ -67,8 +68,8 @@ namespace Shell.Application.ViewModels
             var view = _rm.Regions[AppRegions.ContentRegion].ActiveViews.FirstOrDefault();
             Debug.Assert(view != null);
 
-            var isModal = (bool)(view as DependencyObject).GetValue(BreadcrumbsHelper.IsModalProperty);
-            var breadcrumb = (view as DependencyObject).GetValue(BreadcrumbsHelper.BreadcrumbProperty) as string;
+            var isModal = (bool)(view as DependencyObject)!.GetValue(BreadcrumbsHelper.IsModalProperty);
+            var breadcrumb = (view as DependencyObject)!.GetValue(BreadcrumbsHelper.BreadcrumbProperty) as string;
 
             Debug.Assert(breadcrumb != null);
 

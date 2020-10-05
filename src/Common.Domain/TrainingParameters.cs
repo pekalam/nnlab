@@ -117,7 +117,7 @@ namespace Common.Domain
         }
     }
 
-    public class TrainingParameters : BindableBase,IDataErrorInfo
+    public class TrainingParameters : BindableBase
     {
         private int _maxEpochs = int.MaxValue;
         private TimeSpan _maxLearningTime = TimeSpan.MaxValue;
@@ -151,18 +151,32 @@ namespace Common.Domain
             set => SetProperty(ref _maxEpochs, value);
         }
 
+
+        protected bool Equals(TrainingParameters other)
+        {
+            return _maxEpochs == other._maxEpochs && _maxLearningTime.Equals(other._maxLearningTime) && _targetError.Equals(other._targetError) && _algorithm == other._algorithm && GDParams.Equals(other.GDParams) && LMParams.Equals(other.LMParams);
+        }
+
         public override bool Equals(object? obj)
         {
-            if (obj == null)
-                return false;
-            if (obj is TrainingParameters o)
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((TrainingParameters) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
             {
-                return GDParams.Equals(o.GDParams) && LMParams.Equals(o.LMParams) && Algorithm.Equals(o.Algorithm) &&
-                       TargetError.Equals(o.TargetError) && MaxLearningTime.Equals(o.MaxLearningTime) &&
-                       MaxEpochs.Equals(o.MaxEpochs);
+                var hashCode = _maxEpochs;
+                hashCode = (hashCode * 397) ^ _maxLearningTime.GetHashCode();
+                hashCode = (hashCode * 397) ^ _targetError.GetHashCode();
+                hashCode = (hashCode * 397) ^ (int) _algorithm;
+                hashCode = (hashCode * 397) ^ GDParams.GetHashCode();
+                hashCode = (hashCode * 397) ^ LMParams.GetHashCode();
+                return hashCode;
             }
-        
-            return false;
         }
 
         public TrainingParameters Clone()
@@ -176,16 +190,6 @@ namespace Common.Domain
                 MaxLearningTime = MaxLearningTime,
                 TargetError = TargetError,
             };
-        }
-
-        public string? Error { get; }
-
-        public string? this[string columnName]
-        {
-            get
-            {
-                return null;
-            }
         }
     }
 }

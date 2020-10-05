@@ -9,7 +9,7 @@ namespace Training.Application.ViewModels
 {
     public class TrainingNetworkPreviewViewModel : ViewModelBase<TrainingNetworkPreviewViewModel>
     {
-        private NNLibModelAdapter _modelAdapter;
+        private NNLibModelAdapter? _modelAdapter;
 
         public TrainingNetworkPreviewViewModel(ModuleState moduleState, ITrainingNetworkPreviewService service)
         {
@@ -18,7 +18,7 @@ namespace Training.Application.ViewModels
 
         public ITrainingNetworkPreviewService Service { get; }
 
-        public NNLibModelAdapter ModelAdapter
+        public NNLibModelAdapter? ModelAdapter
         {
             get => _modelAdapter;
             set => SetProperty(ref _modelAdapter, value);
@@ -30,6 +30,6 @@ namespace Training.Application.ViewModels
         }
 
 
-        public void StopAnimation(bool resetColors) => ModelAdapter.ColorAnimation.StopAnimation(resetColors);
+        public void StopAnimation(bool resetColors) => ModelAdapter?.ColorAnimation.StopAnimation(resetColors);
     }
 }

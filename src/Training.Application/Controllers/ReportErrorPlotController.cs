@@ -57,7 +57,7 @@ namespace Training.Application.Controllers
             var vm = _accessor.Get<ReportErrorPlotViewModel>()!;
 
             _reportErrorPlotSettingsRegion = nameof(_reportErrorPlotSettingsRegion) + parameters.ParentRegion;
-            vm.BasicPlotModel.SetSettingsRegion(_reportErrorPlotSettingsRegion);
+            vm.BasicPlotModel.SetSettingsRegion?.Invoke(_reportErrorPlotSettingsRegion);
 
             vm.Series.Points.Clear();
             vm.Series.Points.AddRange(parameters.Points);

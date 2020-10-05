@@ -26,7 +26,7 @@ namespace Training.Presentation.__DesignData
     {
         private static AppState a = new AppState();
 
-        public DesignReportsVm() : base(a, new ModuleState(a), null)
+        public DesignReportsVm() : base(a, new ModuleState(a), null!)
         {
 
             a.CreateSession();

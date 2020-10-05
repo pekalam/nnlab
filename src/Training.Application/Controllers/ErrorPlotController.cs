@@ -150,7 +150,6 @@ namespace Training.Application.Controllers
             }
         }
 
-        private static double chu = double.MinValue;
         private void InitPlotEpochEndConsumer()
         {
 
@@ -203,7 +202,7 @@ namespace Training.Application.Controllers
             var navParams = ErrorPlotNavParams.FromParams(ctx.Parameters);
 
             _errorPlotSettingsRegion = nameof(_errorPlotSettingsRegion) + navParams.ParentRegion;
-            Vm!.BasicPlotModel.SetSettingsRegion(_errorPlotSettingsRegion);
+            Vm!.BasicPlotModel.SetSettingsRegion?.Invoke(_errorPlotSettingsRegion);
 
             if (navParams.EpochEnd)
             {

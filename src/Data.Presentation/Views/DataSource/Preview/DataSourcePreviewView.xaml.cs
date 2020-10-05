@@ -13,9 +13,6 @@ namespace Data.Presentation.Views.DataSource.Preview
     /// </summary>
     public partial class DataSourcePreviewView : UserControl
     {
-        private bool _columnSelected;
-        private object? _selectedColumn;
-
         public DataSourcePreviewView()
         {
             if (DesignerProperties.GetIsInDesignMode(this) == false)

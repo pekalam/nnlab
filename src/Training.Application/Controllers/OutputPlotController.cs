@@ -154,7 +154,7 @@ namespace Training.Application.Controllers
             var navParams = OutputPlotNavParams.FromNavParams(navigationContext.Parameters);
 
             _outputPlotSettingsRegion = navParams.ParentRegion + nameof(_outputPlotSettingsRegion);
-            Vm!.BasicPlotModel.SetSettingsRegion(_outputPlotSettingsRegion);
+            Vm!.BasicPlotModel.SetSettingsRegion?.Invoke(_outputPlotSettingsRegion);
 
             if (navParams.EpochEnd)
             {

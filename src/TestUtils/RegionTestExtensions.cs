@@ -28,7 +28,7 @@ namespace TestUtils
             {
                 rm.Verify(f => f.RequestNavigate(AppRegions.ContentRegion, viewName), times);
             }
-            catch (MockException e)
+            catch (MockException)
             {
                 rm.Verify(f => f.RequestNavigate(AppRegions.ContentRegion, viewName,It.IsAny<NavigationParameters>()), times);
             }
