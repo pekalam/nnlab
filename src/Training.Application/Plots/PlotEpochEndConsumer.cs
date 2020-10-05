@@ -40,8 +40,6 @@ namespace Training.Application.Plots
         private ReplaySubject<EpochEndArgs>? _sub;
         private Subject<EpochEndArgs>? _online;
         private Subject<EpochEndArgs>? _buffering;
-        private readonly Queue<EpochEndArgs> _epochEndWaitingQueue = new Queue<EpochEndArgs>();
-        private bool _handleEpochs = true;
         private readonly Action<IList<EpochEndArgs>, TrainingSession> _callback;
         Stopwatch stp = new Stopwatch();
         private TrainingSession? _session;
@@ -151,16 +149,13 @@ namespace Training.Application.Plots
             session.EpochEnd += Session_EpochEnd;
         }
 
-        public void SubscribeStartedSession(TrainingSession session)
-        {
-            if (!session.Started) throw new ArgumentException("Session not started");
-            _session = session;
-            SubscribeSession(session);
-        }
-
         public void ForceStop()
         {
-            if (_session != null) _session.EpochEnd -= Session_EpochEnd;
+            if (_session != null)
+            {
+                _session.EpochEnd -= Session_EpochEnd;
+                _session.PropertyChanged -= TrainingSessionOnPropertyChanged;
+            }
             EndSubscriptions();
             GlobalDistributingDispatcher.Unregister(this);
         }
@@ -191,14 +186,7 @@ namespace Training.Application.Plots
 
         private void Session_EpochEnd(object? sender, EpochEndArgs e)
         {
-            if (_handleEpochs)
-            {
-                _sub?.OnNext(e);
-            }
-            else
-            {
-                _epochEndWaitingQueue.Enqueue(e);
-            }
+            _sub?.OnNext(e);
         }
 
         private void InitSubscription()

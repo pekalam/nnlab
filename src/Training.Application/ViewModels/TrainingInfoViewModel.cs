@@ -21,8 +21,6 @@ namespace Training.Application.ViewModels
         private double? _validationError;
         private double? _testError;
 
-        private ModuleStateHelper _helper;
-
 #pragma warning disable 8618
         public TrainingInfoViewModel()
 #pragma warning restore 8618
@@ -34,17 +32,17 @@ namespace Training.Application.ViewModels
         {
             ModuleState = moduleState;
             AppState = appState;
-            _helper = new ModuleStateHelper(moduleState);
-            _timer.Elapsed += (_, __) => System.Windows.Application.Current.Dispatcher.InvokeAsync(() => View!.UpdateTimer(Time.Now - _timerDate), DispatcherPriority.Send);
+            var helper = new ModuleStateHelper(moduleState);
+            _timer.Elapsed += (_, __) => System.Windows.Application.Current?.Dispatcher.InvokeAsync(() => View!.UpdateTimer(Time.Now - _timerDate), DispatcherPriority.Send);
 
-            _helper.OnTrainerChanged(trainer =>
+            helper.OnTrainerChanged(trainer =>
             {
                 RaisePropertyChanged(nameof(IterationsPerEpoch));
                 ModuleState.ActiveSession!.TrainerUpdated -= ActiveSessionOnTrainerUpdated;
                 ModuleState.ActiveSession.TrainerUpdated += ActiveSessionOnTrainerUpdated;
             });
 
-            _helper.OnActiveSessionChanged(session =>
+            helper.OnActiveSessionChanged(session =>
             {
                 session.SessionReset -= SessionOnSessionReset;
                 session.SessionReset += SessionOnSessionReset;

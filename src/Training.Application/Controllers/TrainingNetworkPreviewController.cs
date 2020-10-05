@@ -52,7 +52,7 @@ namespace Training.Application.Controllers
         ITransientController<TrainingNetworkPreviewService>
     {
         private PlotEpochEndConsumer? _epochEndConsumer;
-        private Action _epochEndCallback = () => { };
+        private Action? _epochEndCallback;
         private readonly ModuleState _moduleState;
         private readonly AppStateHelper _helper;
         private readonly AppState _appState;
@@ -89,6 +89,7 @@ namespace Training.Application.Controllers
         {
             if (!Vm!.IsActive)
             {
+                _epochEndCallback = null;
                 _epochEndConsumer?.ForceStop();
                 Vm!.IsActiveChanged -= OnIsActiveChanged;
             }
@@ -105,6 +106,7 @@ namespace Training.Application.Controllers
 
         private void SetupAnimation()
         {
+            _epochEndCallback = () => { };
             Vm!.ModelAdapter!.ColorAnimation.SetupTrainer(_moduleState.ActiveSession!.Trainer!, ref _epochEndCallback,
                 action => { GlobalDistributingDispatcher.Call(action, _epochEndConsumer!); });
         }
@@ -126,18 +128,18 @@ namespace Training.Application.Controllers
 
         private void Navigated(NavigationContext obj)
         {
-            _epochEndConsumer = new PlotEpochEndConsumer(_moduleState, (_, __) => _epochEndCallback(),
+            _epochEndConsumer = new PlotEpochEndConsumer(_moduleState, (_, __) => _epochEndCallback!(),
                 session => { SetupAnimation(); },
                 session =>
                 {
                     Vm!.ModelAdapter!.ColorAnimation.StopAnimation(false);
                     System.Windows.Application.Current.Dispatcher.InvokeAsync(
-                        () => Vm!.ModelAdapter.Controller.Color.ApplyColors(), DispatcherPriority.Background);
+                        Vm!.ModelAdapter.Controller.Color.ApplyColors, DispatcherPriority.Background);
                 },
                 session =>
                 {
                     System.Windows.Application.Current.Dispatcher.InvokeAsync(
-                        () => Vm!.ModelAdapter!.Controller.Color.ApplyColors(), DispatcherPriority.Background);
+                        Vm!.ModelAdapter!.Controller.Color.ApplyColors, DispatcherPriority.Background);
                 });
             _epochEndConsumer.Initialize();
 

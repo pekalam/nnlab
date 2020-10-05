@@ -217,13 +217,13 @@ namespace Training.Domain
         public Task<TrainingSessionReport> Start()
         {
             if (!IsValid) throw new InvalidOperationException("Session is in invalid state");
+            CheckCanStart();
 
             if (CurrentReport != null) CurrentReport.ValidationError = null;
             StartTime = Time.Now;
-            var task = InternalStart();
             Started = true;
             Paused = false;
-            var sessionTask = task.ContinueWith(t =>
+            var sessionTask = InternalStart().ContinueWith(t =>
             {
                 _elapsed += Time.Now - StartTime.Value;
                 Started = false;
@@ -260,8 +260,6 @@ namespace Training.Domain
                 return TrainingSessionReport.CreatePausedSessionReport(Trainer.Epochs, Trainer.Error, StartTime!.Value,
                     EpochEndEvents);
             }
-
-            CheckCanStart();
 
             if (double.IsNaN(Trainer!.Error) && !_reseted)
                 return TrainingSessionReport.CreateNaNSessionReport(Trainer.Epochs, Trainer.Error, StartTime!.Value,
