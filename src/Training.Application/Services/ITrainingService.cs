@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using Common.Framework;
@@ -20,9 +21,11 @@ namespace Training.Application.Services
     public class ModuleStateSessionOptionsDecorator : BindableBase
     {
         private TrainingSession? _session;
+        private readonly IMetroDialogService _dialogService;
 
-        public ModuleStateSessionOptionsDecorator(ModuleStateHelper moduleStateHelper)
+        public ModuleStateSessionOptionsDecorator(ModuleStateHelper moduleStateHelper, IMetroDialogService dialogService)
         {
+            _dialogService = dialogService;
             moduleStateHelper.OnActiveSessionChanged(session => Session = session);
             ResetSessionCommand = new DelegateCommand(ResetSession);
         }
@@ -38,7 +41,10 @@ namespace Training.Application.Services
         private async void ResetSession()
         {
             Debug.Assert(_session != null);
-            await _session.ResetSession();
+            if (_dialogService.ShowModalConfirmationDialog("Confirm session reset", "This action will remove all reports and set all network parameters to state before training was started."))
+            {
+                await _session.ResetSession();
+            }
         }
     }
 
@@ -53,9 +59,6 @@ namespace Training.Application.Services
         DelegateCommand OpenParametersCommand { get; }
 
         DelegateCommand SelectPanelsClickCommand { get; }
-
-        DelegateCommand ResetParametersCommand { get; }
-
 
         ModuleStateSessionOptionsDecorator SessionOptionsDecorator { get; }
 

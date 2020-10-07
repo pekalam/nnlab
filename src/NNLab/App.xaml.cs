@@ -34,6 +34,7 @@ namespace Assemlber
             Common.Logging.Bootstraper.Configure();
             Common.Domain.Bootstraper.RegisterTypes(containerRegistry);
             Common.Framework.Bootstraper.RegisterTypes(containerRegistry);
+            Common.Presentation.Bootstraper.RegisterTypes(containerRegistry);
 
             Shell.Bootstraper.RegisterTypes(containerRegistry);
         }

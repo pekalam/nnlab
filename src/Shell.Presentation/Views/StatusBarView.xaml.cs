@@ -1,5 +1,11 @@
-﻿using System.Windows.Controls;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media.Animation;
+using Common.Domain;
 
 namespace Shell.Presentation.Views
 {
@@ -8,6 +14,9 @@ namespace Shell.Presentation.Views
     /// </summary>
     public partial class StatusBarView : UserControl
     {
+        private List<string> _initialNames = new List<string>();
+        private ObservableCollection<Session>? _sessions;
+
         public StatusBarView()
         {
             InitializeComponent();
@@ -23,6 +32,29 @@ namespace Shell.Presentation.Views
             {
                 (Resources["CogAnimation"] as Storyboard)!.Stop();
             }
+        }
+
+        private void SessionNames_OnDropDownOpened(object? sender, EventArgs e)
+        {
+            _sessions = (SessionNames.ItemsSource as ObservableCollection<Session>)!;
+            _initialNames = _sessions.Select(c => c.Name).ToList();
+        }
+
+        private void SessionNameBox_OnLostFocus(object sender, RoutedEventArgs e)
+        {
+            var txt = (sender as TextBox)!;
+            if(Validation.GetErrors(txt).Count == 0) return;
+
+            for (int i = 0; i < _sessions!.Count; i++)
+            {
+                if (_sessions[i] == txt.Tag)
+                {
+                    txt.Text = _initialNames[i];
+                    break;
+                }
+            }
+
+            txt.GetBindingExpression(TextBox.TextProperty)!.UpdateSource();
         }
     }
 }

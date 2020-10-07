@@ -51,6 +51,9 @@
                                     <DataTrigger Binding="{Binding AppState.ActiveSession}" Value="{x:Null}">
                                         <Setter Property="Visibility" Value="Hidden"/>
                                     </DataTrigger>
+                                    <DataTrigger Binding="{Binding CanModifyActiveSession}" Value="False">
+                                        <Setter Property="Foreground" Value="#B8B8B8"/>
+                                    </DataTrigger>
                                 </Style.Triggers>
                             </Style>
                         </iconPacks:PackIconFontAwesome.Style>
@@ -73,14 +76,37 @@
                     <!--     <TextBlock FontSize="12" Text="Session 1" VerticalAlignment="Center" Margin="10,0,0,0" /> -->
                     <!-- </Border> -->
 
-                    <ComboBox Height="21.5" Width="120" ItemsSource="{Binding AppState.Sessions}"
-                              SelectedItem="{Binding AppState.ActiveSession}">
+                    <ComboBox Height="23" Width="120" ItemsSource="{Binding AppState.Sessions}"
+                              SelectedItem="{Binding AppState.ActiveSession}" Name="SessionNames" DropDownOpened="SessionNames_OnDropDownOpened">
                         <ComboBox.Style>
                             <Style TargetType="ComboBox">
                                 <Setter Property="ItemTemplate">
                                     <Setter.Value>
                                         <DataTemplate DataType="{x:Type domain:Session}">
-                                            <TextBlock Text="{Binding Name}" />
+                                      
+                                            <TextBox Tag="{Binding}" Text="{Binding Name, ValidatesOnExceptions=True}" Name="SessionNameBox" LostFocus="SessionNameBox_OnLostFocus">
+                                                <TextBox.Style>
+                                                    <Style TargetType="TextBox">
+                                                        <Style.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter Property="IsReadOnly" Value="False"></Setter>
+                                                            </Trigger>
+                                                            <Trigger Property="IsMouseOver" Value="False">
+                                                                <Setter Property="IsReadOnly" Value="True"></Setter>
+                                                            </Trigger>
+                                                            <Trigger Property="IsFocused" Value="True">
+                                                                <Setter Property="IsReadOnly" Value="False"></Setter>
+                                                            </Trigger>
+                                               
+
+                                                            <Trigger Property="IsReadOnly" Value="True">
+                                                                <Setter Property="BorderBrush" Value="{x:Null}"></Setter>
+                                                                <Setter Property="Background" Value="{x:Null}"></Setter>
+                                                            </Trigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBox.Style>
+                                            </TextBox>
                                         </DataTemplate>
                                     </Setter.Value>
                                 </Setter>

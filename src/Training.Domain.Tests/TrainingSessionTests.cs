@@ -145,7 +145,7 @@ namespace Training.Domain.Tests
             {
             }
     
-            await Assert.ThrowsAsync<AggregateException>(() => _session.Start());
+            await Assert.ThrowsAsync<Exception>(() => _session.Start());
         }
     
     

@@ -211,6 +211,7 @@ namespace Common.Domain
         private string? _trainingDataFile;
         private string? _validationDataFile;
         private string? _testDataFile;
+        private string _name;
 
         public event Action<MLPNetwork>? NetworkStructureChanged;
 
@@ -241,7 +242,18 @@ namespace Common.Domain
                 );
         }
 
-        public string Name { get; }
+        public string Name
+        {
+            get => _name;
+            set
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    throw new Exception("Name cannot be null or contain whitespace characters");
+                }
+                SetProperty(ref _name, value);
+            }
+        }
 
         public string? SingleDataFile
         {

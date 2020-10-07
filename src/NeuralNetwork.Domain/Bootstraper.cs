@@ -121,7 +121,7 @@ namespace NeuralNetwork.Domain
             return new MLPNetwork(
                 new PerceptronLayer(inputCount, inputCount, new LinearActivationFunction()),
                 new PerceptronLayer(inputCount, 5, new SigmoidActivationFunction()),
-                new PerceptronLayer(5, outputCount, new SigmoidActivationFunction()));
+                new PerceptronLayer(5, outputCount, new LinearActivationFunction()));
         }
     }
 
