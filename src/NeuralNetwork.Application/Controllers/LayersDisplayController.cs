@@ -141,8 +141,7 @@ namespace NeuralNetwork.Application.Controllers
         {
             Debug.Assert(_moduleState.ModelAdapter != null);
             
-            var neuralNetwork = _appState.ActiveSession!.Network!;
-            _service.CreateLayers(neuralNetwork.Layers);
+            _service.CreateLayers(_appState.ActiveSession!.Network!.Layers);
             _moduleState.ModelAdapter.Controller?.ClearHighlight();
         }
 

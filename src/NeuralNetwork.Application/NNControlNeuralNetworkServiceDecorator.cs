@@ -77,7 +77,7 @@ namespace NeuralNetwork.Application
         public Layer InsertAfter(int layerIndex)
         {
             var layer = _service.InsertAfter(layerIndex);
-            ModelAdapter.InsertAfter(layerIndex, layer);
+            ModelAdapter.InsertAfter(layerIndex + 1, layer);
             _moduleState.RaiseNetworkStructureChanged();
             return layer;
         }
@@ -85,7 +85,7 @@ namespace NeuralNetwork.Application
         public Layer InsertBefore(int layerIndex)
         {
             var layer = _service.InsertBefore(layerIndex);
-            ModelAdapter.InsertBefore(layerIndex, layer);
+            ModelAdapter.InsertBefore(layerIndex + 1, layer);
             _moduleState.RaiseNetworkStructureChanged();
             return layer;
         }
