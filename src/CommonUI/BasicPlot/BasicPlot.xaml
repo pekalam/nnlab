@@ -5,7 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:regions="http://prismlibrary.com/"
              xmlns:basicPlot="clr-namespace:SharedUI.BasicPlot" 
-             xmlns:wpf="http://oxyplot.org/skiawpf"
+             xmlns:skia="http://oxyplot.org/skiawpf" 
+             xmlns:wpf="http://oxyplot.org/wpf"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800" Name="root">
     <UserControl.Resources>
@@ -22,9 +23,34 @@
                                    HorizontalAlignment="Right"
                                    Visibility="{Binding ElementName=root,Path=IsMouseOver,Converter={StaticResource boolToVisConverter}}" />
         </StackPanel>
-        <wpf:PlotView x:Name="plot" Grid.Row="1" Visibility="Visible" Margin="0,0,30,0"
-                      Model="{Binding Path=PlotModel.Model, ElementName=root}"
-                      Controller="{Binding Path=PlotModel.Controller, ElementName=root}" />
+
+        <ContentControl Grid.Row="1" Margin="0,0,30,0" Name="PlotContainer" DataContext="{Binding Path=PlotModel, ElementName=root}">
+            <ContentControl.Style>
+                <Style TargetType="ContentControl">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Wpf}" Value="False">
+                            <Setter Property="Content">
+                                <Setter.Value>
+                                    <skia:PlotView
+                                                   Model="{Binding Model}"
+                                                   Controller="{Binding Controller}" />
+                                </Setter.Value>
+                            </Setter>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Wpf}" Value="True">
+                            <Setter Property="Content">
+                                <Setter.Value>
+                                    <wpf:PlotView
+                                        Model="{Binding Model}"
+                                        Controller="{Binding Controller}" />
+                                </Setter.Value>
+                            </Setter>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>    
+            </ContentControl.Style>
+        </ContentControl>
+
         <Rectangle x:Name="plotPlaceholder" Grid.Row="1" Visibility="Collapsed" Fill="#3FB4B4B4" />
         <Border x:Name="SettingsContainer" Grid.Row="1" BorderBrush="Gray" Background="White" BorderThickness="1"
                 HorizontalAlignment="Right"

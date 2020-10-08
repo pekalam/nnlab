@@ -64,6 +64,8 @@ namespace SharedUI.BasicPlot
             plotOverlay.OnAsPhotoClicked = OnAsPhotoClicked;
         }
 
+        private PlotViewBase Plot => PlotContainer.Content as PlotViewBase;
+
         private void OnAsPhotoClicked()
         {
             Debug.Assert(PlotModel != null, nameof(PlotModel) + " != null");
@@ -74,7 +76,7 @@ namespace SharedUI.BasicPlot
             if (saveFileDialog.ShowDialog() == true)
             {
                 var stream = File.OpenWrite(saveFileDialog.FileName);
-                var pngExporter = new PngExporter { Width = ImgSz[saveFileDialog.FilterIndex].w, Height = ImgSz[saveFileDialog.FilterIndex].h, /*Background = PlotModel.Model.Background*/ };
+                var pngExporter = new OxyPlot.Wpf.PngExporter { Width = ImgSz[saveFileDialog.FilterIndex].w, Height = ImgSz[saveFileDialog.FilterIndex].h, /*Background = PlotModel.Model.Background*/ };
                 pngExporter.Export(PlotModel.Model, stream);
                 stream.Close();
             }
@@ -143,7 +145,7 @@ namespace SharedUI.BasicPlot
 
             model.DisplayNewWindow = false;
             PlotModel = null;
-            plot.Visibility = Visibility.Hidden;
+            Plot.Visibility = Visibility.Hidden;
             plotPlaceholder.Visibility = Visibility.Visible;
 
             ExternalWindow w = new ExternalWindow(model);
@@ -154,7 +156,7 @@ namespace SharedUI.BasicPlot
 
         private void OnExternalPlotModelClosed(BasicPlotModel model)
         {
-            plot.Visibility = Visibility.Visible;
+            Plot.Visibility = Visibility.Visible;
             plotPlaceholder.Visibility = Visibility.Collapsed;
             model.DisplayNewWindow = true;
             PlotModel = model;
@@ -185,5 +187,7 @@ namespace SharedUI.BasicPlot
         public Action<string>? SetSettingsRegion { get; internal set; }
         public Action<string>? RemoveSettingsRegion { get; internal set; }
         public bool DisplaySettingsRegion { get; set; } = true;
+
+        public bool Wpf { get; set; } = false;
     }
 }

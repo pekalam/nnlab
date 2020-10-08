@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <PackageReference Include="OxyPlot.SkiaSharp.Wpf" Version="2.1.0-unstable.1440" />
+    <PackageReference Include="OxyPlot.Wpf" Version="2.1.0-unstable.1440" />
   </ItemGroup>
 
 </Project>
