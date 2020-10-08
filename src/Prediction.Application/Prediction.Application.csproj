@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="NNLibAdapter" Version="1.0.1" />
+    <PackageReference Include="NNLibAdapter" Version="1.0.42" />
   </ItemGroup>
 
 </Project>

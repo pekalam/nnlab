@@ -107,7 +107,7 @@ namespace Prediction.Application.Controllers
             var network = _appState.ActiveSession!.Network!;
 
             network.CalculateOutput(_moduleState.CurrentInputMatrix);
-            _service.UpdateMatrix(network, _moduleState.CurrentInputMatrix);
+            _service.UpdateMatrix(network, _appState.ActiveSession!.TrainingData!, _moduleState.CurrentInputMatrix);
         }
     }
 }

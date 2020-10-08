@@ -42,6 +42,7 @@ namespace Prediction.Application.Services
 
         public void UpdateNetworkAndMatrix(MLPNetwork network, TrainingData data, Matrix<double> inputMatrix)
         {
+
             var vm = _accessor.Get<PredictViewModel>()!;
 
             var adapter = new NNLibModelAdapter();
@@ -51,15 +52,19 @@ namespace Prediction.Application.Services
             vm.ModelAdapter.SetInputLabels(data.Variables.InputVariableNames);
             vm.ModelAdapter.SetOutputLabels(data.Variables.TargetVariableNames);
 
-            vm.InputMatrixVm.Controller.AssignMatrix(inputMatrix);
-            vm.OutputMatrixVm.Controller.AssignMatrix(network.Layers[^1].Output);
+            vm.InputMatrixVm.Controller.AssignMatrix(inputMatrix, new []{"Value"}, i => data.Variables.InputVariableNames[i]);
+            if (network.Layers[^1].Output == null) return;
+            vm.OutputMatrixVm.Controller.AssignMatrix(network.Layers[^1].Output!, new[] { "Value" }, i => data.Variables.TargetVariableNames[i]);
         }
 
-        public void UpdateMatrix(MLPNetwork network, Matrix<double> inputMatrix)
+        public void UpdateMatrix(MLPNetwork network, TrainingData data, Matrix<double> inputMatrix)
         {
+            if (network.Layers[^1].Output == null) return;
+
             var vm = _accessor.Get<PredictViewModel>()!;
-            vm.InputMatrixVm.Controller.AssignMatrix(inputMatrix);
-            vm.OutputMatrixVm.Controller.AssignMatrix(network.Layers[^1].Output);
+            vm.InputMatrixVm.Controller.AssignMatrix(inputMatrix, new[] { "Value" }, i => data.Variables.InputVariableNames[i]);
+            if (network.Layers[^1].Output == null) return;
+            vm.OutputMatrixVm.Controller.AssignMatrix(network.Layers[^1].Output!, new[] { "Value" }, i => data.Variables.TargetVariableNames[i]);
         }
     }
 }
