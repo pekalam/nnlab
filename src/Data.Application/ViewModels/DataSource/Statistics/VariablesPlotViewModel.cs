@@ -22,6 +22,7 @@ namespace Data.Application.ViewModels.DataSource.Statistics
                 Position = AxisPosition.Left,
                 Title = "Value",
             });
+            PlotModel.Model.IsLegendVisible = true;
             PlotModel.DisplaySettingsRegion = false;
             Controller = new VariablesPlotController(this);
         }

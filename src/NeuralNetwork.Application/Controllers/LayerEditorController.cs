@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Text;
 using Common.Domain;
 using Common.Framework;
+using ControlzEx.Standard;
 using NeuralNetwork.Application.Controllers;
 using NeuralNetwork.Application.Services;
 using NeuralNetwork.Application.ViewModels;
@@ -32,35 +33,33 @@ namespace NeuralNetwork.Application.Services
 
 namespace NeuralNetwork.Application.Controllers
 {
-    internal class LayerEditorController : ITransientController, ILayerEditorService
+    internal class LayerEditorController : ControllerBase<LayerEditorViewModel>,ITransientController, ILayerEditorService
     {
-        private INeuralNetworkShellService _shellService;
-        private readonly IViewModelAccessor _accessor;
         private readonly INeuralNetworkService _networkService;
         private readonly IEventAggregator _ea;
 
+        private MLPNetwork? _assignedNetwork;
         private int _layerNum;
 
-        public LayerEditorController(INeuralNetworkShellService shellService, IViewModelAccessor accessor, INeuralNetworkService networkService, IEventAggregator ea)
+        public LayerEditorController(INeuralNetworkShellService shellService, IViewModelAccessor accessor, INeuralNetworkService networkService, IEventAggregator ea) : base(accessor)
         {
-            _shellService = shellService;
-            _accessor = accessor;
             _networkService = networkService;
             _ea = ea;
+
             Navigated = OnNavigated;
             ExitCommand = shellService.CloseLayerEditorCommand;
+            InitializeParametersCommand = new DelegateCommand(InitializeParameters);
         }
 
         public DelegateCommand ExitCommand { get; set; }
-        public DelegateCommand InitializeParametersCommand { get; set; } = null!;
+        public DelegateCommand InitializeParametersCommand { get; set; }
         public Action<LayerEditorNavParams> Navigated { get; set; }
-
 
         private void OnNavigated(LayerEditorNavParams navParams)
         {
-            var vm = _accessor.Get<LayerEditorViewModel>()!;
             var layer = navParams.Layer;
             _layerNum = navParams.LayerNum;
+            _assignedNetwork = navParams.Network;
             var model = new LayerDetailsModel(layer)
             {
                 NeuronsCount = layer.NeuronsCount,
@@ -71,15 +70,14 @@ namespace NeuralNetwork.Application.Controllers
             };
             model.PropertyChanged += OnLayerDetailsModelPropertyChanged;
 
-            vm.Layer = model;
+            Vm!.Layer = model;
 
-            vm.MatrixPreview.Controller.AssignNetwork(navParams.Network);
-            vm.MatrixPreview.Controller.SelectMatrix(navParams.LayerNum, MatrixTypes.Weights);
+            Vm!.MatrixPreview.Controller.AssignNetwork(navParams.Network);
+            Vm!.MatrixPreview.Controller.SelectMatrix(navParams.LayerNum, MatrixTypes.Weights);
         }
 
         private void OnLayerDetailsModelPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            var vm = _accessor.Get<LayerEditorViewModel>()!;
             var model = (LayerDetailsModel)sender;
 
             switch (e.PropertyName)
@@ -91,33 +89,58 @@ namespace NeuralNetwork.Application.Controllers
                 case nameof(model.NeuronsCount):
                     if (!_networkService.SetNeuronsCount(model.Layer, model.NeuronsCount))
                     {
-                        _ea.GetEvent<ShowErrorNotification>().Publish(new ErrorNotificationArgs()
-                        {
-                            Message = "Invalid network architecture"
-                        });
+                        PublishInvalidArch();
                     }
                     else
                     {
-                        _ea.GetEvent<HideErrorNotification>().Publish();
+                        PublishValidArch();
                     }
 
-                    vm.MatrixPreview.Controller.InvalidateDisplayedMatrix();
+                    Vm!.MatrixPreview.Controller.InvalidateDisplayedMatrix();
                     break;
                 case nameof(model.InputsCount):
                     if (!_networkService.SetInputsCount(model.InputsCount))
                     {
-                        _ea.GetEvent<ShowErrorNotification>().Publish(new ErrorNotificationArgs()
-                        {
-                            Message = "Invalid network architecture"
-                        });
+                        PublishInvalidArch();
                     }
                     else
                     {
-                        _ea.GetEvent<HideErrorNotification>().Publish();
+                        PublishValidArch();
                     }
-                    vm.MatrixPreview.Controller.InvalidateDisplayedMatrix();
+                    Vm!.MatrixPreview.Controller.InvalidateDisplayedMatrix();
+                    break;
+                case nameof(model.ParamsInitMethod):
+                    _networkService.ChangeParamsInitMethod(Vm!.Layer!.ParamsInitMethod);
+                    Vm!.MatrixPreview.Controller.AssignNetwork(_assignedNetwork!);
+                    Vm!.MatrixPreview.Controller.SelectMatrix(_layerNum, MatrixTypes.Weights);
                     break;
             }
+        }
+
+        private void InitializeParameters()
+        {
+            _networkService.ResetWeights(_assignedNetwork!.Layers[_layerNum]);
+            Vm!.MatrixPreview.Controller.AssignNetwork(_assignedNetwork!);
+            Vm!.MatrixPreview.Controller.SelectMatrix(_layerNum, MatrixTypes.Weights);
+        }
+
+        private void PublishInvalidArch()
+        {
+            _ea.GetEvent<ShowErrorNotification>().Publish(new ErrorNotificationArgs()
+            {
+                Message = "Invalid network architecture"
+            });
+            _ea.GetEvent<DisableNavMenuItem>().Publish(ModuleIds.Data);
+            _ea.GetEvent<DisableNavMenuItem>().Publish(ModuleIds.Training);
+            _ea.GetEvent<DisableNavMenuItem>().Publish(ModuleIds.Prediction);
+        }
+
+        private void PublishValidArch()
+        {
+            _ea.GetEvent<HideErrorNotification>().Publish();
+            _ea.GetEvent<EnableNavMenuItem>().Publish(ModuleIds.Data);
+            _ea.GetEvent<EnableNavMenuItem>().Publish(ModuleIds.Training);
+            _ea.GetEvent<EnableNavMenuItem>().Publish(ModuleIds.Prediction);
         }
     }
 }

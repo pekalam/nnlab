@@ -95,5 +95,10 @@ namespace NeuralNetwork.Application
             var network = _service.CreateNeuralNetwork(trainingData);
             return network;
         }
+
+        public void ChangeParamsInitMethod(ParamsInitMethod newMethod)
+        {
+            _service.ChangeParamsInitMethod(newMethod);
+        }
     }
 }

@@ -24,6 +24,7 @@ namespace NeuralNetwork.Domain
         Layer InsertAfter(int layerIndex);
         Layer InsertBefore(int layerIndex);
         MLPNetwork CreateNeuralNetwork(TrainingData trainingData);
+        void ChangeParamsInitMethod(ParamsInitMethod newMethod);
     }
 
     public class NeuralNetworkService : INeuralNetworkService
@@ -91,12 +92,14 @@ namespace NeuralNetwork.Domain
 
         public void ResetWeights(Layer layer)
         {
-            layer.RebuildMatrices();
+            layer.ResetParameters();
+            _appState.ActiveSession?.RaiseNetworkParametersChanged();
         }
 
         public void ResetNeuralNetworkWeights()
         {
-            NeuralNetwork.RebuildMatrices();
+            NeuralNetwork.ResetParameters();
+            _appState.ActiveSession?.RaiseNetworkParametersChanged();
         }
 
         public Layer InsertAfter(int layerIndex)
@@ -122,6 +125,17 @@ namespace NeuralNetwork.Domain
                 new PerceptronLayer(inputCount, inputCount, new LinearActivationFunction()),
                 new PerceptronLayer(inputCount, 5, new SigmoidActivationFunction()),
                 new PerceptronLayer(5, outputCount, new LinearActivationFunction()));
+        }
+
+        public void ChangeParamsInitMethod(ParamsInitMethod newMethod)
+        {
+            if(_appState.ActiveSession?.Network == null) return;
+            foreach (var layer in _appState.ActiveSession.Network.Layers)
+            {
+                layer.MatrixBuilder = new XavierMatrixBuilder();
+                layer.ResetParameters();
+            }
+            _appState.ActiveSession?.RaiseNetworkParametersChanged();
         }
     }
 

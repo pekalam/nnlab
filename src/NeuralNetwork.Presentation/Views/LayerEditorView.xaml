@@ -42,7 +42,7 @@
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <UniformGrid Grid.Row="0" Grid.ColumnSpan="2" Columns="2" Margin="0,0,0,10">
             <TextBlock Text="Neurons" HorizontalAlignment="Left" VerticalAlignment="Center"
@@ -77,9 +77,9 @@
             </UniformGrid>
 
         </UniformGrid>
-
-
-        <matrixPreview:MatrixPreviewView Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Editable="True"
-                                         LayerSelectPanelVisibility="Collapsed" DataContext="{Binding MatrixPreview}" />
+        <ScrollViewer Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" VerticalScrollBarVisibility="Visible">
+            <matrixPreview:MatrixPreviewView Editable="True" MaxHeight="600"
+                                             LayerSelectPanelVisibility="Collapsed" DataContext="{Binding MatrixPreview}" />
+        </ScrollViewer>
     </Grid>
 </UserControl>

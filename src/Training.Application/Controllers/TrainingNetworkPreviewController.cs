@@ -97,10 +97,15 @@ namespace Training.Application.Controllers
 
         private void ActiveSessionOnNetworkStructureChanged(MLPNetwork obj)
         {
+            var trainingData = _appState.ActiveSession!.TrainingData!;
             Vm!.ModelAdapter!.SetNeuralNetwork(obj);
             Vm!.ModelAdapter.NeuralNetworkModel.BackgroundColor = "#cce6ff";
-            Vm!.ModelAdapter.SetInputLabels(_appState.ActiveSession!.TrainingData!.Variables.InputVariableNames);
-            Vm!.ModelAdapter.SetOutputLabels(_appState.ActiveSession.TrainingData.Variables.TargetVariableNames);
+
+            if (Vm!.ModelAdapter.LayerModelAdapters[0].LayerModel.NeuronModels.Count != trainingData.Variables.InputVariableNames.Length ||
+                Vm!.ModelAdapter.LayerModelAdapters[^1].LayerModel.NeuronModels.Count != trainingData.Variables.TargetVariableNames.Length) return;
+
+            Vm!.ModelAdapter.SetInputLabels(trainingData.Variables.InputVariableNames);
+            Vm!.ModelAdapter.SetOutputLabels(trainingData.Variables.TargetVariableNames);
         }
 
 

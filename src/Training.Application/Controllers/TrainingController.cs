@@ -117,7 +117,7 @@ namespace Training.Application.Controllers
         private void ResetParameters()
         {
             Debug.Assert(_moduleState.ActiveSession?.Network != null);
-            _moduleState.ActiveSession!.Network.RebuildMatrices();
+            _moduleState.ActiveSession!.Network.ResetParameters();
         }
 
         private async void PauseTrainingSession()

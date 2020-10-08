@@ -122,10 +122,11 @@ namespace Training.Application.Controllers
 
             Vm!.Series.Points.Clear();
 
-            var points = e.next.EpochEndEvents.TakeLast(2000).Select(end => new DataPoint(end.Epoch, end.Error))
+            var points = e.next.EpochEndEvents.Skip(e.next.EpochEndEvents.Count / 2000 * 2000).Select(end => new DataPoint(end.Epoch, end.Error))
                 .ToArray();
 
-            var newMin = e.next.EpochEndEvents.Count - 2000;
+
+            double newMin = e.next.EpochEndEvents.Count / 2000 * 2000;
             Vm!.BasicPlotModel.Model.Axes[0].AbsoluteMinimum = newMin;
             Vm!.Series.Points.AddRange(points);
 

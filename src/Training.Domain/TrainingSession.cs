@@ -177,7 +177,7 @@ namespace Training.Domain
         {
             if (Started) await Stop();
 
-            _session.ResetNetwork();
+            _session.ResetNetworkToInitial();
             Trainer = new MLPTrainer(_session.Network!, _session.TrainingData!.Sets, SelectAlgorithm(),
                 new QuadraticLossFunction());
             IsValid = true;
@@ -346,7 +346,7 @@ namespace Training.Domain
         {
             Debug.Assert(Network != null);
 
-            Network.RebuildMatrices();
+            Network.ResetParameters();
             _reseted = true;
         }
     }

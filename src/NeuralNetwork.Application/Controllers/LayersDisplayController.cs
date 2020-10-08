@@ -127,14 +127,11 @@ namespace NeuralNetwork.Application.Controllers
             var removed = _networkService.RemoveLayer(model.LayerIndex);
             if (removed.HasValue && !removed.Value)
             {
-                _ea.GetEvent<ShowErrorNotification>().Publish(new ErrorNotificationArgs()
-                {
-                    Message = "Invalid network architecture"
-                });
+                PublishInvalidArch();
             }
             else
             {
-                _ea.GetEvent<HideErrorNotification>().Publish();
+                PublishValidArch();
             }
             //TODO remove
             SetLayers();
@@ -154,16 +151,32 @@ namespace NeuralNetwork.Application.Controllers
             var neuralNetwork = _appState.ActiveSession!.Network!;
             if (!_networkService.AddLayer())
             {
-                _ea.GetEvent<ShowErrorNotification>().Publish(new ErrorNotificationArgs()
-                {
-                    Message = "Invalid network architecture"
-                });
+                PublishInvalidArch();
             }
             else
             {
-                _ea.GetEvent<HideErrorNotification>().Publish();
+                PublishValidArch();
             }
             _service.AddLayer(neuralNetwork.BaseLayers[^1], neuralNetwork.TotalLayers - 1);
+        }
+
+        private void PublishInvalidArch()
+        {
+            _ea.GetEvent<ShowErrorNotification>().Publish(new ErrorNotificationArgs()
+            {
+                Message = "Invalid network architecture"
+            });
+            _ea.GetEvent<DisableNavMenuItem>().Publish(ModuleIds.Data);
+            _ea.GetEvent<DisableNavMenuItem>().Publish(ModuleIds.Training);
+            _ea.GetEvent<DisableNavMenuItem>().Publish(ModuleIds.Prediction);
+        }
+
+        private void PublishValidArch()
+        {
+            _ea.GetEvent<HideErrorNotification>().Publish();
+            _ea.GetEvent<EnableNavMenuItem>().Publish(ModuleIds.Data);
+            _ea.GetEvent<EnableNavMenuItem>().Publish(ModuleIds.Training);
+            _ea.GetEvent<EnableNavMenuItem>().Publish(ModuleIds.Prediction);
         }
     }
 }

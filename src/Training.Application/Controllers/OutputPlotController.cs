@@ -83,6 +83,7 @@ namespace Training.Application.Controllers
         {
             _rm = rm;
             _moduleState = moduleState;
+            _moduleState.ActiveSessionChanged += ModuleStateOnActiveSessionChanged;
         }
 
         protected override void VmCreated()
@@ -102,6 +103,12 @@ namespace Training.Application.Controllers
         public void Initialize(OutputPlotService service)
         {
             service.Navigated = OnNavigated;
+        }
+
+        private void ModuleStateOnActiveSessionChanged(object? sender, (TrainingSession? prev, TrainingSession next) e)
+        {
+            Vm!.BasicPlotModel.Model.Series.Clear();
+            Vm!.BasicPlotModel.Model.InvalidatePlot(true);
         }
 
         private void InvalidatePlot()

@@ -214,6 +214,7 @@ namespace Common.Domain
         private string _name;
 
         public event Action<MLPNetwork>? NetworkStructureChanged;
+        public event Action<MLPNetwork>? NetworkParametersChanged;
 
         public Session(string name)
         {
@@ -316,10 +317,18 @@ namespace Common.Domain
         public void RaiseNetworkStructureChanged()
         {
             Debug.Assert(Network != null);
+            _initialNetwork = Network.Clone();
             NetworkStructureChanged?.Invoke(Network);
         }
 
-        public void ResetNetwork()
+        public void RaiseNetworkParametersChanged()
+        {
+            Debug.Assert(Network != null);
+            _initialNetwork = Network.Clone();
+            NetworkParametersChanged?.Invoke(Network);
+        }
+
+        public void ResetNetworkToInitial()
         {
             Network = _initialNetwork;
             TrainingReports = new TrainingReportsCollection();
