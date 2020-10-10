@@ -64,7 +64,7 @@ namespace SharedUI.BasicPlot
             plotOverlay.OnAsPhotoClicked = OnAsPhotoClicked;
         }
 
-        private PlotViewBase Plot => PlotContainer.Content as PlotViewBase;
+        private PlotViewBase Plot => (PlotContainer.Content as PlotViewBase)!;
 
         private void OnAsPhotoClicked()
         {

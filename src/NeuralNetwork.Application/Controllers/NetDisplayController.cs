@@ -47,7 +47,7 @@ namespace NeuralNetwork.Application.Controllers
 
             NeuronClickCommand = new DelegateCommand<NeuronClickedEventArgs>(args =>
             {
-                _ea.GetEvent<IntNeuronClicked>().Publish((((NNLibLayerAdapter)args.LayerAdapter).Layer, args.NeuronIndex));
+                _ea.GetEvent<IntNeuronClicked>().Publish((((NNLibLayerAdapter)args.LayerAdapter).Layer, args.NeuronIndex)!);
             });
 
             ea.GetEvent<IntLayerClicked>().Subscribe(arg =>

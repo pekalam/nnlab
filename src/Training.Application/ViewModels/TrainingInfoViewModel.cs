@@ -18,8 +18,6 @@ namespace Training.Application.ViewModels
     {
         private readonly Timer _timer = new Timer(1000);
         private DateTime _timerDate;
-        private double? _validationError;
-        private double? _testError;
 
 #pragma warning disable 8618
         public TrainingInfoViewModel()
@@ -80,17 +78,5 @@ namespace Training.Application.ViewModels
         public AppState AppState { get; }
 
         public int? IterationsPerEpoch => (ModuleState.ActiveSession!.Trainer!.Algorithm as GradientDescentAlgorithm)?.BatchTrainer?.IterationsPerEpoch ?? 0;
-
-        public double? ValidationError
-        {
-            get => _validationError;
-            set => SetProperty(ref _validationError, value);
-        }
-
-        public double? TestError
-        {
-            get => _testError;
-            set => SetProperty(ref _testError, value);
-        }
     }
 }

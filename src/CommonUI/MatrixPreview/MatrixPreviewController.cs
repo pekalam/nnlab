@@ -100,7 +100,7 @@ namespace SharedUI.MatrixPreview
         {
             lock (_vm)
             {
-                var matrix = GetSelectedMatrix();
+                var matrix = GetSelectedMatrix(_selectedType);
                 if (matrix == null) return;
                 _matrixGridRenderer.ApplyUpdate(matrix);
             }
@@ -139,12 +139,20 @@ namespace SharedUI.MatrixPreview
             if (e.PropertyName == nameof(MatrixPreviewViewModel.SelectedMatrixType))
             {
                 _cachedSelection[_vm.SelectedLayerNum] = _vm.SelectedMatrixType;
+                if (GetSelectedMatrix(_vm.SelectedMatrixType) == null)
+                {
+                    _vm.PropertyChanged -= VmOnPropertyChanged;
+                    _vm.SelectedMatrixType = _selectedType;
+                    _vm.PropertyChanged += VmOnPropertyChanged;
+                    return;
+                }
 
                 lock (_vm)
                 {
                     _disableUpdate = true;
                     _selectedLayerNum = _vm.SelectedLayerNum;
                     _selectedType = _vm.SelectedMatrixType;
+  
                     CreateGrid();
                     UpdatePreview();
                     ApplyUpdate();
@@ -233,7 +241,7 @@ namespace SharedUI.MatrixPreview
             }
         }
 
-        private Matrix<double> GetSelectedMatrix()
+        private Matrix<double>? GetSelectedMatrix(MatrixTypes matrixType)
         {
             if (_network == null)
             {
@@ -241,17 +249,17 @@ namespace SharedUI.MatrixPreview
                 return _assignedMatrix;
             }
             
-            if (_selectedType == MatrixTypes.Biases)
+            if (matrixType == MatrixTypes.Biases)
             {
                 return _network.Layers[_selectedLayerNum].Biases;
             }
 
-            if (_selectedType == MatrixTypes.Output)
+            if (matrixType == MatrixTypes.Output)
             {
                 return _network.Layers[_selectedLayerNum].Output;
             }
 
-            if (_selectedType == MatrixTypes.Weights)
+            if (matrixType == MatrixTypes.Weights)
             {
                 return _network.Layers[_selectedLayerNum].Weights;
             }
@@ -275,7 +283,8 @@ namespace SharedUI.MatrixPreview
                     break;
             }
 
-            var matrix = GetSelectedMatrix();
+            var matrix = GetSelectedMatrix(_selectedType);
+            Debug.Assert(matrix != null);
             Func<int, string>? columnFunc = null;
             if (_customColumns == null)
             {
@@ -296,7 +305,7 @@ namespace SharedUI.MatrixPreview
 
         private void UpdatePreview()
         {
-            var matrix = GetSelectedMatrix();
+            var matrix = GetSelectedMatrix(_selectedType);
             if(matrix == null) return;
             _matrixGridRenderer.Update(matrix, _numFormat);
         }

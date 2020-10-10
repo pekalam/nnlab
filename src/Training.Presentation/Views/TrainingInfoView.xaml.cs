@@ -45,17 +45,19 @@ namespace Training.Presentation.Views
             Dispatcher.InvokeAsync(() => TimerText.Text = txt, DispatcherPriority.Normal);
         }
 
-        public void UpdateTraining(double error, int epochs, int iterations)
+        public void UpdateTraining(double error, int epochs, int iterations, double? validationError)
         {
             var e = error.ToString();
             var ep = epochs.ToString();
             var it = iterations.ToString();
+            var val = validationError?.ToString();
             Dispatcher.InvokeAsync(() =>
             {
                 Error.Text = e;
                 Epoch.Text = ep;
                 Iterations.Text = it;
-            }, DispatcherPriority.Normal);
+                ValidationError.Text = val;
+            }, DispatcherPriority.Render);
         }
 
         public void ResetProgress()
@@ -64,6 +66,7 @@ namespace Training.Presentation.Views
             Error.Text = "-";
             Epoch.Text = "-";
             Iterations.Text = "-";
+            ValidationError.Text = null;
         }
     }
 }

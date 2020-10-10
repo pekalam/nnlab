@@ -79,7 +79,7 @@ namespace Training.Application
 
         private void AppStateOnSessionCreated(object? sender, Session e)
         {
-            BindingOperations.EnableCollectionSynchronization(e.TrainingReports, this);
+            BindingOperations.EnableCollectionSynchronization(e.TrainingReports, e);
         }
 
         private void SendNavMenuItemEvents()

@@ -14,9 +14,10 @@ namespace Common.Domain
 {
     public class EpochEndArgs
     {
-        public int Epoch { get; set; }
-        public double Error { get; set; }
-        public int Iterations { get; set; }
+        public int Epoch;
+        public double Error;
+        public int Iterations;
+        public double? ValidationError;
     }
 
     public enum SessionEndType
@@ -38,6 +39,11 @@ namespace Common.Domain
             {
                 throw new InvalidOperationException("Cannot clear session reports because last session is of type " + Items[^1].SessionEndType);
             }
+            base.ClearItems();
+        }
+
+        internal void Reset()
+        {
             base.ClearItems();
         }
 

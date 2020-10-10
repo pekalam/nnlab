@@ -28,6 +28,7 @@ namespace Training.Domain
         private DateTime? _startTime;
         private bool _stopped;
         private MLPTrainer? _trainer;
+        private int _validationThresholdCount;
 
         public TrainingSession(AppState appState)
         {
@@ -41,7 +42,7 @@ namespace Training.Domain
         }
 
 
-        public List<EpochEndArgs> EpochEndEvents { get; } = new List<EpochEndArgs>();
+        public List<EpochEndArgs> EpochEndEvents { get; } = new List<EpochEndArgs>(100_000);
         public MLPNetwork? Network => _session.Network;
         public TrainingParameters? Parameters => _session.TrainingParameters;
         public TrainingData? TrainingData => _session.TrainingData;
@@ -88,8 +89,6 @@ namespace Training.Domain
             get => _startTime;
             set => SetProperty(ref _startTime, value);
         }
-
-        public bool AddReportOnPause { get; set; } = true;
 
         public event EventHandler<EpochEndArgs>? EpochEnd;
 
@@ -178,6 +177,7 @@ namespace Training.Domain
             if (Started) await Stop();
 
             _session.ResetNetworkToInitial();
+            EpochEndEvents.Clear();
             Trainer = new MLPTrainer(_session.Network!, _session.TrainingData!.Sets, SelectAlgorithm(),
                 new QuadraticLossFunction());
             IsValid = true;
@@ -232,9 +232,12 @@ namespace Training.Domain
                 else Paused = true;
 
                 CurrentReport = t.Result;
-                if (AddReportOnPause)
+                if (Parameters!.AddReportOnPause)
                 {
-                    _session.TrainingReports.Add(CurrentReport);
+                    lock (_session)
+                    {
+                        _session.TrainingReports.Add(CurrentReport);
+                    }
                 }
 
                 return CurrentReport;
@@ -272,11 +275,21 @@ namespace Training.Domain
 
             _reseted = false;
             double error = 0;
+            double? validationError = null;
             do
             {
                 try
                 {
                     error = await Trainer.DoEpochAsync(_epochCts.Token);
+                    if (Parameters.RunValidation)
+                    {
+                        _validationThresholdCount++;
+                        if (_validationThresholdCount == Parameters.ValidationEpochThreshold)
+                        {
+                            _validationThresholdCount = 0;
+                            validationError = Trainer.RunValidation(_epochCts.Token);
+                        }
+                    }
                 }
                 catch (OperationCanceledException)
                 {
@@ -296,7 +309,8 @@ namespace Training.Domain
                 {
                     Epoch = Trainer.Epochs,
                     Error = error,
-                    Iterations = Trainer.Iterations
+                    Iterations = Trainer.Iterations,
+                    ValidationError = validationError,
                 };
                 EpochEnd?.Invoke(this, arg);
                 EpochEndEvents.Add(arg);

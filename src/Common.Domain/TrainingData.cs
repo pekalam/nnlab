@@ -78,7 +78,7 @@ namespace Common.Domain
                 case DataSetType.Test: return Sets.TestSet;
                 case DataSetType.Training: return Sets.TrainingSet;
                 case DataSetType.Validation: return Sets.ValidationSet;
-                default: return Sets.TrainingSet;
+                default: return null;
             }
         }
 

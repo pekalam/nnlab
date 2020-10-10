@@ -13,37 +13,35 @@ namespace Common.Domain
 
     public class GradientDescentParamsModel : BindableBase
     {
-        private readonly GradientDescentParams _params;
-
         public GradientDescentParamsModel()
         {
-            _params = new GradientDescentParams();
+            Params = new GradientDescentParams();
         }
 
         private GradientDescentParamsModel(GradientDescentParams para)
         {
-            _params = para;
+            Params = para;
         }
 
-        public GradientDescentParams Params => _params;
+        public GradientDescentParams Params { get; }
 
 
         public double LearningRate
         {
-            get => _params.LearningRate;
+            get => Params.LearningRate;
             set
             {
-                _params.LearningRate = value;
+                Params.LearningRate = value;
                 RaisePropertyChanged();
             }
         }
 
         public double Momentum
         {
-            get => _params.Momentum;
+            get => Params.Momentum;
             set
             {
-                _params.Momentum = value;
+                Params.Momentum = value;
                 RaisePropertyChanged();
             }
         }
@@ -51,22 +49,22 @@ namespace Common.Domain
 
         public int BatchSize
         {
-            get => _params.BatchSize;
+            get => Params.BatchSize;
             set
             {
-                _params.BatchSize = value;
+                Params.BatchSize = value;
                 RaisePropertyChanged();
             }
         }
 
         public bool Equals(GradientDescentParamsModel obj)
         {
-            return _params.Equals(obj._params);
+            return Params.Equals(obj.Params);
         }
 
-        public object Clone()
+        public GradientDescentParamsModel Clone()
         {
-            return new GradientDescentParamsModel((_params.Clone() as GradientDescentParams)!);
+            return new GradientDescentParamsModel((Params.Clone() as GradientDescentParams)!);
         }
     }
 
@@ -111,7 +109,7 @@ namespace Common.Domain
             return _params.Equals(obj._params);
         }
 
-        public object Clone()
+        public LevenbergMarquardtParamsModel Clone()
         {
             return new LevenbergMarquardtParamsModel((_params.Clone() as LevenbergMarquardtParams)!);
         }
@@ -123,6 +121,16 @@ namespace Common.Domain
         private TimeSpan _maxLearningTime = TimeSpan.MaxValue;
         private double _targetError = 0.000001;
         private TrainingAlgorithm _algorithm = TrainingAlgorithm.GradientDescent;
+        private bool _runValidation;
+        private int _validationEpochThreshold = 1;
+        private bool _addReportOnPause = true;
+        private bool _canRunValidation;
+
+        public TrainingParameters(bool canRunValidation)
+        {
+            CanRunValidation = canRunValidation;
+            if (CanRunValidation) RunValidation = true;
+        }
 
         public GradientDescentParamsModel GDParams { get; set; } = new GradientDescentParamsModel();
         public LevenbergMarquardtParamsModel LMParams { get; set; } = new LevenbergMarquardtParamsModel();
@@ -151,10 +159,41 @@ namespace Common.Domain
             set => SetProperty(ref _maxEpochs, value);
         }
 
+        public bool RunValidation
+        {
+            get => _runValidation;
+            set
+            {
+                if(!CanRunValidation && value) throw new ArgumentException($"Cannot set {nameof(RunValidation)} to true if {nameof(CanRunValidation)}=false");
+                SetProperty(ref _runValidation, value);
+            }
+        }
+
+        public int ValidationEpochThreshold
+        {
+            get => _validationEpochThreshold;
+            set => SetProperty(ref _validationEpochThreshold, value);
+        }
+
+        public bool AddReportOnPause
+        {
+            get => _addReportOnPause;
+            set => SetProperty(ref _addReportOnPause, value);
+        }
+
+        public bool CanRunValidation
+        {
+            get => _canRunValidation;
+            internal set
+            {
+                SetProperty(ref _canRunValidation, value);
+                if (value) RunValidation = true;
+            }
+        }
 
         protected bool Equals(TrainingParameters other)
         {
-            return _maxEpochs == other._maxEpochs && _maxLearningTime.Equals(other._maxLearningTime) && _targetError.Equals(other._targetError) && _algorithm == other._algorithm && GDParams.Equals(other.GDParams) && LMParams.Equals(other.LMParams);
+            return _maxEpochs == other._maxEpochs && _maxLearningTime.Equals(other._maxLearningTime) && _targetError.Equals(other._targetError) && _algorithm == other._algorithm && _runValidation == other._runValidation && _validationEpochThreshold == other._validationEpochThreshold && _addReportOnPause == other._addReportOnPause && GDParams.Equals(other.GDParams) && LMParams.Equals(other.LMParams) && CanRunValidation == other.CanRunValidation;
         }
 
         public override bool Equals(object? obj)
@@ -173,22 +212,28 @@ namespace Common.Domain
                 hashCode = (hashCode * 397) ^ _maxLearningTime.GetHashCode();
                 hashCode = (hashCode * 397) ^ _targetError.GetHashCode();
                 hashCode = (hashCode * 397) ^ (int) _algorithm;
+                hashCode = (hashCode * 397) ^ _runValidation.GetHashCode();
+                hashCode = (hashCode * 397) ^ _validationEpochThreshold;
+                hashCode = (hashCode * 397) ^ _addReportOnPause.GetHashCode();
                 hashCode = (hashCode * 397) ^ GDParams.GetHashCode();
                 hashCode = (hashCode * 397) ^ LMParams.GetHashCode();
+                hashCode = (hashCode * 397) ^ CanRunValidation.GetHashCode();
                 return hashCode;
             }
         }
 
         public TrainingParameters Clone()
         {
-            return new TrainingParameters()
+            return new TrainingParameters(this.CanRunValidation)
             {
-                Algorithm = Algorithm, 
-                GDParams = (GradientDescentParamsModel) GDParams.Clone(),
-                LMParams = (LevenbergMarquardtParamsModel) LMParams.Clone(),
+                GDParams = GDParams.Clone(),LMParams = LMParams.Clone(),
+                Algorithm = Algorithm,
+                AddReportOnPause = AddReportOnPause,
                 MaxEpochs = MaxEpochs,
                 MaxLearningTime = MaxLearningTime,
+                RunValidation = RunValidation,
                 TargetError = TargetError,
+                ValidationEpochThreshold = ValidationEpochThreshold,
             };
         }
     }

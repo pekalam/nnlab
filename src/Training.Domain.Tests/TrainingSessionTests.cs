@@ -46,7 +46,7 @@ namespace Training.Domain.Tests
         [Fact]
         public async Task Start_when_max_epoch_params_returns_valid_report()
         {
-            var param = new TrainingParameters()
+            var param = new TrainingParameters(true)
             {
                 MaxEpochs = 10
             };
@@ -71,7 +71,7 @@ namespace Training.Domain.Tests
         [Fact]
         public async Task Start_when_target_reached_params_returns_valid_report()
         {
-            var param = new TrainingParameters()
+            var param = new TrainingParameters(true)
             {
                 TargetError = 10000000,
             };
@@ -95,7 +95,7 @@ namespace Training.Domain.Tests
         [Fact]
         public async void Stop_when_called_stops_session_and_resets()
         {
-            var param = new TrainingParameters()
+            var param = new TrainingParameters(true)
             {
                 MaxEpochs = 100
             };
@@ -128,7 +128,7 @@ namespace Training.Domain.Tests
         [Fact]
         public async void Stop_when_called_stops_session_and_next_start_call_throws()
         {
-            var param = new TrainingParameters()
+            var param = new TrainingParameters(true)
             {
                 MaxEpochs = 100
             };
@@ -152,7 +152,7 @@ namespace Training.Domain.Tests
         [Fact]
         public async void Pause_does_not_reset_epochs()
         {
-            var param = new TrainingParameters()
+            var param = new TrainingParameters(true)
             {
                 MaxEpochs = 100000000
             };
@@ -184,7 +184,7 @@ namespace Training.Domain.Tests
         [Fact]
         public async void Stop_when_called_after_pause_returns()
         {
-            var param = new TrainingParameters()
+            var param = new TrainingParameters(true)
             {
                 MaxEpochs = 100
             };
@@ -213,7 +213,7 @@ namespace Training.Domain.Tests
         [Fact]
         public async void Stop_when_not_started_returns_report()
         {
-            var param = new TrainingParameters()
+            var param = new TrainingParameters(true)
             {
                 MaxEpochs = 100
             };
@@ -233,7 +233,7 @@ namespace Training.Domain.Tests
         [Fact]
         public async void When_max_epochs_reached_returns_valid_report()
         {
-            var param = new TrainingParameters()
+            var param = new TrainingParameters(true)
             {
                 MaxEpochs = 1
             };
@@ -251,7 +251,7 @@ namespace Training.Domain.Tests
         [Fact]
         public async void When_max_learning_time_reached_returns_valid_report()
         {
-            var param = new TrainingParameters()
+            var param = new TrainingParameters(true)
             {
                 MaxEpochs = 1_000_000,
                 MaxLearningTime = TimeSpan.FromSeconds(1)
@@ -286,7 +286,7 @@ namespace Training.Domain.Tests
         [Fact]
         public void Algorithm_is_changed_when_new_parameters_are_set()
         {
-            var param = new TrainingParameters()
+            var param = new TrainingParameters(true)
             {
                 Algorithm = TrainingAlgorithm.LevenbergMarquardt,
             };

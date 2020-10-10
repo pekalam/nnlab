@@ -47,6 +47,7 @@
         <converters1:FloatingPointTextConverter x:Key="FloatingPointText"/>
         <converters1:TrainingAlgorithmTextConverter x:Key="TrainingAlgorithmText"/>
         <converters:NullToVisibilityConverter x:Key="NullToVisConverter"/>
+        <converters:StringNullToVisibilityConverter x:Key="StringNullToVisConverter"/>
     </UserControl.Resources>
     <StackPanel Margin="10,20,5,5">
         <TextBlock Text="Training" Margin="0,0,0,10" Style="{StaticResource StatsTitle}"/>
@@ -80,10 +81,8 @@
             <TextBlock Text="{Binding IterationsPerEpoch}" Style="{StaticResource GdPanel}"/>
             <TextBlock Text="Error:" Style="{StaticResource StatsText}"/>
             <TextBlock x:Name="Error" Style="{StaticResource StatsText}"/>
-            <TextBlock Text="Validation set error" Visibility="{Binding ValidationError,Converter={StaticResource NullToVisConverter},ConverterParameter=1}" Style="{StaticResource StatsText}"/>
-            <TextBlock Text="{Binding ValidationError}" Style="{StaticResource StatsText}" Visibility="{Binding ValidationError,Converter={StaticResource NullToVisConverter},ConverterParameter=1}"/>
-            <TextBlock Text="Test set error" Visibility="{Binding TestError,Converter={StaticResource NullToVisConverter},ConverterParameter=1}" Style="{StaticResource StatsText}"/>
-            <TextBlock Text="{Binding TestError}" Style="{StaticResource StatsText}" Visibility="{Binding TestError,Converter={StaticResource NullToVisConverter},ConverterParameter=1}"/>
+            <TextBlock Text="Validation set error" Visibility="{Binding Text,ElementName=ValidationError,Converter={StaticResource StringNullToVisConverter}}" Style="{StaticResource StatsText}"/>
+            <TextBlock x:Name="ValidationError" Style="{StaticResource StatsText}" Visibility="{Binding Text,RelativeSource={RelativeSource Self},Converter={StaticResource StringNullToVisConverter}}"/>
         </UniformGrid>
     </StackPanel>
 </UserControl>

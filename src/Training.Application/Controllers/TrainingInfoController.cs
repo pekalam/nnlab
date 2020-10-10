@@ -30,15 +30,13 @@ namespace Training.Application.Controllers
                 (args, session) =>
                 {
 
-                    var last = args.Last();
+                    var last = args[^1];
 
-                    Vm!.View!.UpdateTraining(last.Error, last.Epoch, last.Iterations);
+                    Vm!.View!.UpdateTraining(last.Error, last.Epoch, last.Iterations, last.ValidationError);
                 },
                 trainingSession =>
                 {
                     Vm!.RestartTimer();
-                    Vm!.TestError = null;
-                    Vm!.ValidationError = null;
                 },
                 trainingSession =>
                 {
@@ -48,16 +46,6 @@ namespace Training.Application.Controllers
                     Vm!.StopTimer();
                 });
 
-            
-            ea.GetEvent<TrainingValidationFinished>().Subscribe(d =>
-            {
-                Vm!.ValidationError = d;
-            });
-
-            ea.GetEvent<TrainingTestFinished>().Subscribe(d =>
-            {
-                Vm!.TestError = d;
-            });
 
 
             _epochEndConsumer.Initialize();
@@ -70,9 +58,9 @@ namespace Training.Application.Controllers
                 if (!args.next.StartTime.HasValue) Vm!.View!.ResetProgress();
                 else
                 {
-                    var last = args.next.EpochEndEvents.Last();
+                    var last = args.next.EpochEndEvents[^1];
                     Vm!.View!.UpdateTimer(args.next.CurrentReport!.Duration);
-                    Vm!.View!.UpdateTraining(last.Error, last.Epoch, last.Iterations);
+                    Vm!.View!.UpdateTraining(last.Error, last.Epoch, last.Iterations, last.ValidationError);
                 }
 
                 args.next.PropertyChanged -= SessionOnPropertyChanged;
