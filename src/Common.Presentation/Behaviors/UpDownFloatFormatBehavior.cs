@@ -44,11 +44,17 @@ namespace Common.Presentation.Behaviors
         }
     }
 
-    public class TextBoxKeyDownValidationBehavior : Behavior<TextBox>
+    public abstract class DebounceKeyDownBehaviorBase<T> : Behavior<T> where T : UIElement
     {
-        private const int DebounceDelay = 200;
+        private readonly int _debounceDelay;
         private bool _keyDown;
         private bool _taskStarted;
+
+        protected DebounceKeyDownBehaviorBase(int debounceDelay)
+        {
+            _debounceDelay = debounceDelay;
+        }
+
         protected override void OnAttached()
         {
             AssociatedObject.KeyUp += OnKeyUp;
@@ -62,7 +68,7 @@ namespace Common.Presentation.Behaviors
 
         private void OnKeyUp(object sender, KeyEventArgs e)
         {
-            if(_taskStarted) return;
+            if (_taskStarted) return;
 
             _taskStarted = true;
             Task.Run(async () =>
@@ -70,7 +76,7 @@ namespace Common.Presentation.Behaviors
                 while (true)
                 {
                     _keyDown = false;
-                    await Task.Delay(DebounceDelay);
+                    await Task.Delay(_debounceDelay);
                     if (_keyDown)
                     {
                         continue;
@@ -79,10 +85,7 @@ namespace Common.Presentation.Behaviors
                     break;
                 }
 
-                Application.Current?.Dispatcher.Invoke(() =>
-                {
-                    AssociatedObject.GetBindingExpression(TextBox.TextProperty)!.ValidateWithoutUpdate();
-                });
+                Invoke();
                 _taskStarted = false;
             });
         }
@@ -91,6 +94,38 @@ namespace Common.Presentation.Behaviors
         {
             AssociatedObject.KeyUp -= OnKeyUp;
             AssociatedObject.KeyUp -= OnKeyDown;
+        }
+
+        protected abstract void Invoke();
+    }
+
+    public class TextBoxKeyDownValidationBehavior : DebounceKeyDownBehaviorBase<TextBox>
+    {
+        public TextBoxKeyDownValidationBehavior() : base(200)
+        {
+        }
+
+        protected override void Invoke()
+        {
+            Application.Current?.Dispatcher.Invoke(() =>
+            {
+                AssociatedObject.GetBindingExpression(TextBox.TextProperty)!.ValidateWithoutUpdate();
+            });
+        }
+    }
+    
+    public class SubmitNumericUpDownKeyDownSubmitBehavior : DebounceKeyDownBehaviorBase<SubmitNumericUpDown>
+    {
+        public SubmitNumericUpDownKeyDownSubmitBehavior() : base(100)
+        {
+        }
+
+        protected override void Invoke()
+        {
+            Application.Current?.Dispatcher.Invoke(() =>
+            {
+                AssociatedObject.GetBindingExpression(NumericUpDown.ValueProperty)!.UpdateSource();
+            });
         }
     }
 }

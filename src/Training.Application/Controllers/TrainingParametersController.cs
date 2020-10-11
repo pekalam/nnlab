@@ -113,7 +113,19 @@ namespace Training.Application.Controllers
         private void AttachHandlersToParameters(TrainingParameters parameters)
         {
             parameters.PropertyChanged += (_, __) => RaiseCommandsCanExec();
-            parameters.GDParams.PropertyChanged += (_, __) => RaiseCommandsCanExec();
+            parameters.GDParams.PropertyChanged += (_, e) =>
+            {
+                if (e.PropertyName == nameof(GradientDescentParamsModel.BatchSize))
+                {
+                    var trainingSet = _appState.ActiveSession!.TrainingData!.Sets.TrainingSet;
+                    if (trainingSet.Input.Count % parameters.GDParams.BatchSize != 0)
+                    {
+                        throw new Exception($"Number of training examples ({trainingSet.Input.Count}) is not divisible by {parameters.GDParams.BatchSize}");
+                    }
+                }
+
+                RaiseCommandsCanExec();
+            };
             parameters.LMParams.PropertyChanged += (_, __) => RaiseCommandsCanExec();
         }
 

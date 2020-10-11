@@ -151,7 +151,11 @@ namespace Training.Domain
 
         private void SessionOnTrainingParametersChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(Session.TrainingParameters)) Trainer!.Algorithm = SelectAlgorithm();
+            if (e.PropertyName == nameof(Session.TrainingParameters))
+            {
+                Trainer!.Algorithm = SelectAlgorithm();
+                TrainerUpdated?.Invoke();
+            }
         }
 
         private AlgorithmBase SelectAlgorithm()

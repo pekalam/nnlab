@@ -74,6 +74,7 @@
                                                               HorizontalContentAlignment="Stretch">
                                 <b:Interaction.Behaviors>
                                     <behaviors:UpDownFloatFormatBehavior />
+                                    <behaviors:SubmitNumericUpDownKeyDownSubmitBehavior />
                                 </b:Interaction.Behaviors>
                             </presentation:SubmitNumericUpDown>
 
@@ -91,6 +92,7 @@
                                                               HorizontalContentAlignment="Stretch">
                                 <b:Interaction.Behaviors>
                                     <behaviors:UpDownFloatFormatBehavior />
+                                    <behaviors:SubmitNumericUpDownKeyDownSubmitBehavior />
                                 </b:Interaction.Behaviors>
                             </presentation:SubmitNumericUpDown>
                             <TextBlock Grid.Column="0" Grid.Row="4" Text="Batch size" HorizontalAlignment="Left"
@@ -103,9 +105,14 @@
                                                               StringFormat="0"
                                                               Speedup="True"
                                                               Interval="1"
-                                                              Value="{Binding TrainingParameters.GDParams.BatchSize, Mode=TwoWay, UpdateSourceTrigger=Explicit, ValidatesOnDataErrors=True}"
+                                                              Value="{Binding TrainingParameters.GDParams.BatchSize, Mode=TwoWay, UpdateSourceTrigger=Explicit, ValidatesOnDataErrors=True, ValidatesOnExceptions=True}"
                                                               HorizontalAlignment="Stretch"
-                                                              HorizontalContentAlignment="Stretch" />
+                                                              HorizontalContentAlignment="Stretch">
+
+                                <b:Interaction.Behaviors>
+                                    <behaviors:SubmitNumericUpDownKeyDownSubmitBehavior />
+                                </b:Interaction.Behaviors>
+                            </presentation:SubmitNumericUpDown>
                         </Grid>
 
                         <Grid Margin="12,14,20,20">
@@ -145,6 +152,7 @@
                                                               HorizontalContentAlignment="Stretch">
                                 <b:Interaction.Behaviors>
                                     <behaviors:UpDownFloatFormatBehavior />
+                                    <behaviors:SubmitNumericUpDownKeyDownSubmitBehavior />
                                 </b:Interaction.Behaviors>
                             </presentation:SubmitNumericUpDown>
 
@@ -162,6 +170,7 @@
                                                               HorizontalContentAlignment="Stretch">
                                 <b:Interaction.Behaviors>
                                     <behaviors:UpDownFloatFormatBehavior />
+                                    <behaviors:SubmitNumericUpDownKeyDownSubmitBehavior />
                                 </b:Interaction.Behaviors>
                             </presentation:SubmitNumericUpDown>
                         </Grid>
@@ -193,6 +202,7 @@
                                                               HorizontalContentAlignment="Stretch">
                                 <b:Interaction.Behaviors>
                                     <behaviors:UpDownFloatFormatBehavior />
+                                    <behaviors:SubmitNumericUpDownKeyDownSubmitBehavior />
                                 </b:Interaction.Behaviors>
                             </presentation:SubmitNumericUpDown>
                             <TextBlock Grid.Column="0" Grid.Row="2" Text="Max learning time" HorizontalAlignment="Left"
