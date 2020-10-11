@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media.Animation;
 using Common.Domain;
 
@@ -43,7 +44,11 @@ namespace Shell.Presentation.Views
         private void SessionNameBox_OnLostFocus(object sender, RoutedEventArgs e)
         {
             var txt = (sender as TextBox)!;
-            if(Validation.GetErrors(txt).Count == 0) return;
+            txt.IsReadOnly = true;
+            if (Validation.GetErrors(txt).Count == 0)
+            {
+                return;
+            }
 
             for (int i = 0; i < _sessions!.Count; i++)
             {
@@ -55,6 +60,11 @@ namespace Shell.Presentation.Views
             }
 
             txt.GetBindingExpression(TextBox.TextProperty)!.UpdateSource();
+        }
+
+        private void SessionNameBox_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            (sender as TextBox)!.IsReadOnly = false;
         }
     }
 }

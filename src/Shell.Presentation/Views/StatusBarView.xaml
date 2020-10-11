@@ -84,16 +84,10 @@
                                     <Setter.Value>
                                         <DataTemplate DataType="{x:Type domain:Session}">
                                       
-                                            <TextBox Tag="{Binding}" Text="{Binding Name, ValidatesOnExceptions=True}" Name="SessionNameBox" LostFocus="SessionNameBox_OnLostFocus">
+                                            <TextBox IsReadOnly="True" MouseDoubleClick="SessionNameBox_OnMouseDoubleClick" Tag="{Binding}" Text="{Binding Name, ValidatesOnExceptions=True}" Name="SessionNameBox" LostFocus="SessionNameBox_OnLostFocus">
                                                 <TextBox.Style>
                                                     <Style TargetType="TextBox">
                                                         <Style.Triggers>
-                                                            <Trigger Property="IsMouseOver" Value="True">
-                                                                <Setter Property="IsReadOnly" Value="False"></Setter>
-                                                            </Trigger>
-                                                            <Trigger Property="IsMouseOver" Value="False">
-                                                                <Setter Property="IsReadOnly" Value="True"></Setter>
-                                                            </Trigger>
                                                             <Trigger Property="IsFocused" Value="True">
                                                                 <Setter Property="IsReadOnly" Value="False"></Setter>
                                                             </Trigger>
