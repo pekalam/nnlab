@@ -20,9 +20,23 @@ namespace Common.Domain
 
         private PropertyChangedEventHandler? _dataPropertyChanged = null!;
 
+        public event EventHandler<(Session? prev, Session next)>? _activeSessionChanged;
+
         public AppStateHelper(AppState appState)
         {
             _appState = appState;
+        }
+
+        public void OnSessionChangedOrSet(Action<Session> sessionChangedOrSet)
+        {
+            _activeSessionChanged = (_, args) => sessionChangedOrSet(args.next);
+            _appState.ActiveSessionChanged -= _activeSessionChanged;
+            _appState.ActiveSessionChanged += _activeSessionChanged;
+
+            if (_appState.ActiveSession != null)
+            {
+                sessionChangedOrSet(_appState.ActiveSession);
+            }
         }
 
         public void OnNetworkInSession(Action<MLPNetwork?> networkChanged)

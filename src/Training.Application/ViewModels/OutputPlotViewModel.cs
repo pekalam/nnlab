@@ -193,7 +193,7 @@ namespace Training.Application.ViewModels
             for (int i = 0; i < input.Count; i++)
             {
                 network.CalculateOutput(input[i]);
-                dataPoints.Add(new DataPoint(input[i][0, 0], network.Output![0, 0]));
+                dataPoints.Add(new DataPoint(input[i].At(0, 0), network.Output!.At(0, 0)));
             }
             _output!.Points.Clear();
             _output.Points.AddRange(dataPoints.OrderBy(p => p.X));
@@ -285,10 +285,10 @@ namespace Training.Application.ViewModels
             for (int i = 0; i < input.Count; i++)
             {
                 net.CalculateOutput(input[i]);
-                dataPoints.Add(new DataPoint(input[i][0, 0], net.Output![0, 0]));
+                dataPoints.Add(new DataPoint(input[i].At(0, 0), net.Output!.At(0, 0)));
             }
             _output.Points.Clear();
-            _output.Points.AddRange(dataPoints.OrderBy(p => p.X));
+            _output.Points.AddRange(dataPoints);
         }
     }
 }

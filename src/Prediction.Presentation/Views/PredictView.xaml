@@ -8,24 +8,28 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:designData="clr-namespace:Prediction.Presentation.__DesignData"
              xmlns:interface="clr-namespace:Shell.Interface;assembly=Shell.Interface"
+             xmlns:basicPlot="clr-namespace:SharedUI.BasicPlot;assembly=SharedUI" xmlns:sharedui="clr-namespace:SharedUI;assembly=SharedUI"
+             xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:behaviors="clr-namespace:Common.Presentation.Behaviors;assembly=Common.Presentation"
              mc:Ignorable="d" 
              d:DesignHeight="1200" d:DesignWidth="800"
              d:DataContext="{d:DesignInstance designData:DesignPredictVm, IsDesignTimeCreatable=True}"
              prism:ViewModelLocator.AutoWireViewModel="True" Style="{StaticResource ContentUserControl}"
              interface:BreadcrumbsHelper.Breadcrumb="Predict">
     <ContentControl Style="{StaticResource ContentPanel}">
+        <ScrollViewer>
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <nnControl:NeuralNetworkControl ModelAdapter="{Binding Path=ModelAdapter}" Grid.ColumnSpan="2"/>
+            <nnControl:NeuralNetworkControl MinHeight="400" ModelAdapter="{Binding Path=ModelAdapter}" Grid.ColumnSpan="2"/>
 
-            <Grid Grid.Row="1" Margin="5,5,5,10">
+            <Grid Grid.Row="1" Margin="5,5,5,40">
                 <Grid.RowDefinitions>
                     <RowDefinition/>
-                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
@@ -42,12 +46,81 @@
                     <TextBlock Text="Output" HorizontalAlignment="Center" FontSize="22"/>
                     <matrixPreview:MatrixPreviewView DataContext="{Binding OutputMatrixVm}" Editable="True" LayerSelectPanelVisibility="Collapsed"/>
                 </StackPanel>
-                <Rectangle Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1" Fill="LightGray" Height="2" Margin="0,0,0,10"/>
-                <Button Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="2" HorizontalAlignment="Center" Command="{Binding Service.PredictCommand}">Predict</Button>
+                <Button Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1" Margin="0,16,0,0" HorizontalAlignment="Center" Height="40" Width="100" Command="{Binding Service.PredictCommand}">Predict</Button>
             </Grid>
 
+            <StackPanel Grid.Row="2">
+                <StackPanel.Style>
+                    <Style TargetType="StackPanel">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ShowPlotPrediction}" Value="True">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding ShowPlotPrediction}" Value="False">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </StackPanel.Style>
+                    <basicPlot:BasicPlot MinHeight="400" PlotModel="{Binding PlotModel}"/>
+                    <StackPanel Orientation="Vertical" Margin="10,20,10,10">
+                        <TextBlock Text="Dataset type"/>
+                        <ComboBox Width="200" HorizontalAlignment="Left" Name="PlotSetTypesCombobox" SelectedIndex="0" SelectedItem="{Binding SelectedPlotSetType}" ItemsSource="{Binding PlotSetTypes}"></ComboBox>
+                    </StackPanel>
 
+                    <UniformGrid Columns="4" Margin="0,14,0,0">
+                        
+                        <StackPanel Margin="10">
+                            <TextBlock Text="Start value"/>
+                            <TextBox>
+                                <b:Interaction.Behaviors>
+                                    <behaviors:TextBoxKeyDownValidationBehavior/>
+                                </b:Interaction.Behaviors>
+                                <TextBox.Text>
+                                    <Binding Path="StartValue">
+                                        <Binding.ValidationRules>
+                                            <sharedui:DoubleValidationRule/>
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
+                        </StackPanel>
+                        <StackPanel Margin="10">
+                            <TextBlock Text="End value"/>
+                            <TextBox>
+                                <b:Interaction.Behaviors>
+                                    <behaviors:TextBoxKeyDownValidationBehavior/>
+                                </b:Interaction.Behaviors>
+                                <TextBox.Text>
+                                    <Binding Path="EndValue">
+                                        <Binding.ValidationRules>
+                                            <sharedui:DoubleValidationRule/>
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
+                        </StackPanel>
+                        <StackPanel Margin="10">
+                            <TextBlock Text="Interval"/>
+                            <TextBox>
+                                <b:Interaction.Behaviors>
+                                    <behaviors:TextBoxKeyDownValidationBehavior/>
+                                </b:Interaction.Behaviors>
+                                <TextBox.Text>
+                                    <Binding Path="Interval" ValidatesOnExceptions="True">
+                                        <Binding.ValidationRules>
+                                            <sharedui:DoubleValidationRule/>
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
+                        </StackPanel>
+                        <Button Content="Plot prediction" Command="{Binding Service.PredictPlotCommand}"
+                                 CommandParameter="{Binding SelectedPlotSetType}" Margin="10" Height="40" Width="120"/>
+                    </UniformGrid>
+                </StackPanel>
         </Grid>
+        </ScrollViewer>
     </ContentControl>
     
 </UserControl>
