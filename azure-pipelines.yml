@@ -36,14 +36,14 @@ steps:
   inputs:
     command: 'publish'
     publishWebProjects: false
-    projects: 'NNLab\Assembler.csproj'
+    projects: 'src\NNLab\Assembler.csproj'
     arguments: '-c Release -r win-x64 -o x64AppRelease'
 - task: DotNetCoreCLI@2
   displayName: 'Run dotnet publish win-x86'
   inputs:
     command: 'publish'
     publishWebProjects: false
-    projects: 'NNLab\Assembler.csproj'
+    projects: 'src\NNLab\Assembler.csproj'
     arguments: '-c Release -r win-x86 -o x86AppRelease'
 - task: PublishBuildArtifacts@1
   displayName: 'Publish x64 build artifacts'
