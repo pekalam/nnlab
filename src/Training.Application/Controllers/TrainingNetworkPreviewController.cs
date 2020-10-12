@@ -101,7 +101,7 @@ namespace Training.Application.Controllers
             Vm!.ModelAdapter!.SetNeuralNetwork(obj);
             Vm!.ModelAdapter.NeuralNetworkModel.BackgroundColor = "#cce6ff";
 
-            if (Vm!.ModelAdapter.LayerModelAdapters[0].LayerModel.NeuronModels.Count != trainingData.Variables.InputVariableNames.Length ||
+            if (obj.Layers[0].InputsCount != trainingData.Variables.InputVariableNames.Length ||
                 Vm!.ModelAdapter.LayerModelAdapters[^1].LayerModel.NeuronModels.Count != trainingData.Variables.TargetVariableNames.Length) return;
 
             Vm!.ModelAdapter.SetInputLabels(trainingData.Variables.InputVariableNames);

@@ -230,10 +230,8 @@ namespace Training.Domain
             var sessionTask = InternalStart().ContinueWith(t =>
             {
                 _elapsed += Time.Now - StartTime.Value;
-                Started = false;
-                if (Stopped)
-                    Trainer!.Reset();
-                else Paused = true;
+                if (!Stopped)
+                    Paused = true;
 
                 CurrentReport = t.Result;
                 if (Parameters!.AddReportOnPause)
@@ -243,7 +241,7 @@ namespace Training.Domain
                         _session.TrainingReports.Add(CurrentReport);
                     }
                 }
-
+                Started = false;
                 return CurrentReport;
             });
             _sessionTask = sessionTask;
