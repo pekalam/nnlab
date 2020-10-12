@@ -21,13 +21,6 @@ steps:
     packageType: 'sdk'
     version: '3.1.301'
 - task: DotNetCoreCLI@2
-  displayName: 'Run dotnet publish win-x64'
-  inputs:
-    command: 'publish'
-    publishWebProjects: false
-    projects: 'src\NNLab\*.csproj'
-    arguments: '--no-restore -c Release -r win-x64 -o x64AppRelease'
-- task: DotNetCoreCLI@2
   displayName: 'Restore packages'
   inputs:
     command: 'restore'
@@ -44,15 +37,15 @@ steps:
   inputs:
     command: 'publish'
     publishWebProjects: false
-    projects: 'src\NNLab\Assembler.csproj'
-    arguments: '-c Release -r win-x64 -o x64AppRelease'
+    projects: 'src\NNLab\*.csproj'
+    arguments: '--no-restore -c Release -r win-x64 -o x64AppRelease'
 - task: DotNetCoreCLI@2
   displayName: 'Run dotnet publish win-x86'
   inputs:
     command: 'publish'
     publishWebProjects: false
     projects: 'src\NNLab\Assembler.csproj'
-    arguments: '-c Release -r win-x86 -o x86AppRelease'
+    arguments: '--no-restore -c Release -r win-x86 -o x86AppRelease'
 - task: PublishBuildArtifacts@1
   displayName: 'Publish x64 build artifacts'
   inputs:
