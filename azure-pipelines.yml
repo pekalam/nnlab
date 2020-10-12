@@ -30,4 +30,30 @@ steps:
   displayName: 'Build solution'
   inputs:
     solution: 'src\NNLab.sln'
-    vsVersion: '16.0'
+    vsVersion: '16.0'      
+- task: DotNetCoreCLI@2
+  displayName: 'Publish win-x64 executable'
+  inputs:
+    command: 'publish'
+    publishWebProjects: false
+    projects: 'Application\Application.csproj'
+    arguments: '-c Release -r win-x64 -o x64AppRelease'
+- task: DotNetCoreCLI@2
+  displayName: 'Publish win-x86 executable'
+  inputs:
+    command: 'publish'
+    publishWebProjects: false
+    projects: 'Application\Application.csproj'
+    arguments: '-c Release -r win-x86 -o x86AppRelease'
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish x64 build artifacts'
+  inputs:
+    PathtoPublish: '$(System.DefaultWorkingDirectory)\x64AppRelease'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish x86 build artifacts'  
+  inputs:
+    PathtoPublish: '$(System.DefaultWorkingDirectory)\x86AppRelease'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'
