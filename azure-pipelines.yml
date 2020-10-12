@@ -32,18 +32,18 @@ steps:
     solution: 'src\NNLab.sln'
     vsVersion: '16.0'      
 - task: DotNetCoreCLI@2
-  displayName: 'Publish win-x64 executable'
+  displayName: 'Run dotnet publish win-x64'
   inputs:
     command: 'publish'
     publishWebProjects: false
-    projects: 'Application\Application.csproj'
+    projects: 'NNLab\Assembler.csproj'
     arguments: '-c Release -r win-x64 -o x64AppRelease'
 - task: DotNetCoreCLI@2
-  displayName: 'Publish win-x86 executable'
+  displayName: 'Run dotnet publish win-x86'
   inputs:
     command: 'publish'
     publishWebProjects: false
-    projects: 'Application\Application.csproj'
+    projects: 'NNLab\Assembler.csproj'
     arguments: '-c Release -r win-x86 -o x86AppRelease'
 - task: PublishBuildArtifacts@1
   displayName: 'Publish x64 build artifacts'
