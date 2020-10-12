@@ -24,6 +24,7 @@ steps:
   inputs:
     command: 'restore'
     projects: 'src\**\*.csproj'
+    restoreArguments: '--source https://www.myget.org/F/oxyplot/api/v3/index.json --source https://api.nuget.org/v3/index.json'
     feedsToUse: 'select'
 - task: VSBuild@1
   displayName: 'Build solution'
