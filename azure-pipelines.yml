@@ -24,7 +24,7 @@ steps:
   inputs:
     command: 'publish'
     publishWebProjects: false
-    projects: 'src\NNLab\Assembler.csproj'
+    projects: 'src\NNLab\*.csproj'
     arguments: '-c Release -r win-x64 -o x64AppRelease'
 - task: DotNetCoreCLI@2
   displayName: 'Restore packages'
