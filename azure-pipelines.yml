@@ -46,15 +46,22 @@ steps:
     publishWebProjects: false
     projects: 'src\NNLab\*.csproj'
     arguments: '-c Release -r win-x86 -o x86AppRelease -p:PublishSingleFile=true'
+- task: CmdLine@2
+  inputs:
+    script: |
+      cd .\src\NNLab\x64AppRelease\
+      ren .\Assembler.exe NNLab.exe
+      cd ..\x86AppRelease
+      ren .\Assembler.exe NNLab.exe
 - task: PublishBuildArtifacts@1
   displayName: 'Publish x64 build artifacts'
   inputs:
     PathtoPublish: '$(System.DefaultWorkingDirectory)\x64AppRelease'
-    ArtifactName: 'drop'
+    ArtifactName: 'x64AppRelease'
     publishLocation: 'Container'
 - task: PublishBuildArtifacts@1
   displayName: 'Publish x86 build artifacts'  
   inputs:
     PathtoPublish: '$(System.DefaultWorkingDirectory)\x86AppRelease'
-    ArtifactName: 'drop'
+    ArtifactName: 'x86AppRelease'
     publishLocation: 'Container'
