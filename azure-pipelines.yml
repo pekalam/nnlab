@@ -10,6 +10,7 @@ pool:
   vmImage: 'windows-latest'
 
 variables:
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
 
@@ -25,7 +26,7 @@ steps:
     command: 'publish'
     publishWebProjects: false
     projects: 'src\NNLab\*.csproj'
-    arguments: '-c Release -r win-x64 -o x64AppRelease'
+    arguments: '--no-restore -c Release -r win-x64 -o x64AppRelease'
 - task: DotNetCoreCLI@2
   displayName: 'Restore packages'
   inputs:
