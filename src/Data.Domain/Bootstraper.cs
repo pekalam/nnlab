@@ -9,8 +9,7 @@ namespace Data.Domain
         {
             cr.Register<ITrainingDataService, TrainingDataService>()
                 .Register<ICsvValidationService, CsvValidationService>()
-                .Register<INormalizationDomainService, NormalizationDomainService>()
-                .RegisterSingleton<ModuleState>();
+                .Register<INormalizationDomainService, NormalizationDomainService>();
         }
     }
 }

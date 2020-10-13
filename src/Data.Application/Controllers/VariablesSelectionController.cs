@@ -22,44 +22,50 @@ namespace Data.Application.Services
 
         public static void Register(IContainerRegistry cr)
         {
-            cr.RegisterSingleton<IVariablesSelectionService, VariablesSelectionController>();
+            cr.Register<IVariablesSelectionService, VariablesSelectionController>();
         }
     }
 }
 
 namespace Data.Application.Controllers
 {
-    internal class VariablesSelectionController : IVariablesSelectionService
+    internal class VariablesSelectionController : ControllerBase<VariablesSelectionViewModel>,ITransientController,IVariablesSelectionService
     {
         private readonly AppState _appState;
         private SupervisedSetVariableIndexes _currentIndexes = null!;
         private readonly ITrainingDataService _dsService;
-        private readonly ModuleState _moduleState;
+        private readonly INormalizationDomainService _normalizationService;
 
-        public VariablesSelectionController(AppState appState, ITrainingDataService dsService, ModuleState moduleState)
+        public VariablesSelectionController(AppState appState, ITrainingDataService dsService, INormalizationDomainService normalizationService, IViewModelAccessor accessor) : base(accessor)
         {
             _appState = appState;
             _dsService = dsService;
-            _moduleState = moduleState;
+            _normalizationService = normalizationService;
 
             IgnoreAllCommand = new DelegateCommand(IgnoreAll);
-
-            VariablesSelectionViewModel.Created += () =>
-            {
-                Debug.Assert(_appState.ActiveSession?.TrainingData != null);
-
-                _currentIndexes = _appState.ActiveSession!.TrainingData!.Variables.Indexes;
-
-                InitVmWithData();
-            };
         }
 
         public ICommand IgnoreAllCommand { get; set; }
 
+        protected override void VmCreated()
+        {
+            Vm!.IsActiveChanged += VmOnIsActiveChanged;
+        }
+
+        private void VmOnIsActiveChanged(object? sender, EventArgs e)
+        {
+            if(!Vm!.IsActive) return;
+
+            Debug.Assert(_appState.ActiveSession?.TrainingData != null);
+
+            _currentIndexes = _appState.ActiveSession!.TrainingData!.Variables.Indexes;
+
+            InitVmWithData();
+        }
+
         private void InitVmWithData()
         {
             var trainingData = _appState.ActiveSession!.TrainingData!;
-            var vm = VariablesSelectionViewModel.Instance;
 
             var variables = VariableTableModel.FromTrainingData(trainingData);
 
@@ -68,10 +74,10 @@ namespace Data.Application.Controllers
                 model.OnVariableUseSet = OnVariableUseSet;
             }
 
-            vm!.Variables = variables;
+            Vm!.Variables = variables;
         }
 
-        private void OnVariableUseSet(VariableTableModel model)
+        private async void OnVariableUseSet(VariableTableModel model)
         {
             var inputIndexes = new List<int>();
             var targetIndexes = new List<int>();
@@ -93,23 +99,30 @@ namespace Data.Application.Controllers
 
             _currentIndexes = newIndexes;
 
-            _dsService.ChangeVariables(_currentIndexes, trainingData);
-            if (_moduleState.OriginalSets != null)
+            var normalization = trainingData.NormalizationMethod;
+
+            if (normalization != NormalizationMethod.None)
             {
-                _dsService.ChangeVariables(_currentIndexes, _moduleState.OriginalSets, trainingData.Source);
+                _dsService.ChangeVariables(_currentIndexes, trainingData.OriginalSets, trainingData.Source);
+                trainingData.RestoreOriginalSets();
+                await _normalizationService.Normalize(normalization);
+                _dsService.ChangeVariables(_currentIndexes, trainingData);
+            }
+            else
+            {
+                _dsService.ChangeVariables(_currentIndexes, trainingData);
+                _dsService.ChangeVariables(_currentIndexes, trainingData.OriginalSets, trainingData.Source);
             }
         }
 
         private void IgnoreAll()
         {
-            var vm = VariablesSelectionViewModel.Instance!;
-
-            foreach (var model in vm.Variables)
+            foreach (var model in Vm!.Variables)
             {
                 model.OnVariableUseSet = null;
             }
 
-            foreach (var model in vm.Variables)
+            foreach (var model in Vm!.Variables)
             {
                 model.VariableUse = VariableUses.Ignore;
                 if (model.Error == null)
@@ -121,11 +134,10 @@ namespace Data.Application.Controllers
             //var trainingData = _appState.ActiveSession!.TrainingData;
             //_dsService.ChangeVariables(_currentIndexes, trainingData!);
 
-            foreach (var model in vm.Variables)
+            foreach (var model in Vm!.Variables)
             {
                 model.OnVariableUseSet = OnVariableUseSet;
             }
         }
-
     }
 }

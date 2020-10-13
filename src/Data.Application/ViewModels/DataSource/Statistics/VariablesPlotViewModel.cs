@@ -42,6 +42,6 @@ namespace Data.Application.ViewModels.DataSource.Statistics
 
         public VariablesPlotController Controller { get; }
 
-        public BasicPlotModel PlotModel { get; set; } = new BasicPlotModel(){Wpf = true};
+        public BasicPlotModel PlotModel { get; set; } = new BasicPlotModel();
     }
 }

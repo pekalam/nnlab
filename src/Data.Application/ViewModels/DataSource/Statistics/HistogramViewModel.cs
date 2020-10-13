@@ -20,7 +20,7 @@ namespace Data.Application.ViewModels.DataSource.Statistics
             HistogramModel.Model.Axes.Add(new LinearAxis { Position = AxisPosition.Bottom, Title = "x" });
         }
 
-        public BasicPlotModel HistogramModel { get; set; } = new BasicPlotModel(){Wpf = true};
+        public BasicPlotModel HistogramModel { get; set; } = new BasicPlotModel();
 
         public string[]? Variables
         {

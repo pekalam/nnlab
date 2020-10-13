@@ -36,10 +36,7 @@ namespace Prediction.Application.ViewModels
         public PredictViewModel(IPredictService service)
         {
             Service = service;
-            PlotModel = new BasicPlotModel()
-            {
-                Wpf = true,
-            };
+            PlotModel = new BasicPlotModel();
             PlotModel.Model.Series.Add(DataPredictionLineSeries);
             PlotModel.Model.Series.Add(DataScatterSeries);
             PlotModel.Model.Series.Add(PredictionLineSeries);

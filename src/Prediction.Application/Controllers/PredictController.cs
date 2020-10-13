@@ -49,15 +49,17 @@ namespace Prediction.Application.Controllers
         private readonly AppState _appState;
         private readonly ModuleState _moduleState;
         private readonly AppStateHelper _helper;
+        private readonly NormalizationService _normalizationService;
 
         private bool _initialized;
 
-        public PredictController(IViewModelAccessor accessor, AppState appState, ModuleState moduleState) :
+        public PredictController(IViewModelAccessor accessor, AppState appState, ModuleState moduleState, NormalizationService normalizationService) :
             base(accessor)
         {
             _appState = appState;
             _helper = new AppStateHelper(appState);
             _moduleState = moduleState;
+            _normalizationService = normalizationService;
         }
 
         public void Initialize(PredictService service)
@@ -193,7 +195,7 @@ namespace Prediction.Application.Controllers
 
                 var x = Matrix<double>.Build.Dense(1, 1, Vm!.StartValue);
 
-                if (Vm!.StartValue != setStart && Vm!.EndValue != setEnd)
+                if (Vm!.StartValue != setStart || Vm!.EndValue != setEnd)
                 {
                     while (x.At(0, 0) <= Vm!.EndValue)
                     {
@@ -214,9 +216,10 @@ namespace Prediction.Application.Controllers
         {
             var network = _appState.ActiveSession!.Network!;
             var inputMatrix = Vm!.InputMatrixVm.Controller.AssignedMatrix!;
+            var inputNormalized = _normalizationService.ToNetworkDataNormalization(inputMatrix);
 
-            network.CalculateOutput(inputMatrix);
-            _service.UpdateMatrix(network, _appState.ActiveSession!.TrainingData!, inputMatrix);
+            network.CalculateOutput(inputNormalized);
+            _service.UpdateMatrix(network.Output!, _appState.ActiveSession!.TrainingData!, inputMatrix);
         }
 
 

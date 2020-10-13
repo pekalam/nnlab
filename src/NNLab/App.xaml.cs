@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
-using System.Windows;
 using Data;
+using MathNet.Numerics;
 using NeuralNetwork;
 using Prediction;
 using Prism.Ioc;
@@ -10,11 +10,17 @@ using Prism.Mvvm;
 using Shell;
 using Shell.Presentation.Views;
 using Training;
+using Window = System.Windows.Window;
 
 namespace Assemlber
 {
     public partial class App
     {
+        public App()
+        {
+            Control.TryUseNativeMKL();
+        }
+
         protected override Window CreateShell()
         {
             return Container.Resolve<MainWindowView>();

@@ -96,6 +96,7 @@ namespace Common.Domain
             {
                 SetProperty(ref _trainingData, value);
                 if (value == null || _network == null) return;
+                
                 if (TrainingParameters == null)
                     TrainingParameters = new TrainingParameters(TrainingData?.GetSet(DataSetType.Validation) != null);
             }

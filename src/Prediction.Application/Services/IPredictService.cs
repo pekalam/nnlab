@@ -65,14 +65,11 @@ namespace Prediction.Application.Services
             vm.OutputMatrixVm.Controller.AssignMatrix(network.Layers[^1].Output!, new[] { "Value" }, i => data.Variables.TargetVariableNames[i]);
         }
 
-        public void UpdateMatrix(MLPNetwork network, TrainingData data, Matrix<double> inputMatrix)
+        public void UpdateMatrix(Matrix<double> output, TrainingData data, Matrix<double> inputMatrix)
         {
-            if (network.Layers[^1].Output == null) return;
-
             var vm = _accessor.Get<PredictViewModel>()!;
             vm.InputMatrixVm.Controller.AssignMatrix(inputMatrix, new[] { "Value" }, i => data.Variables.InputVariableNames[i]);
-            if (network.Layers[^1].Output == null) return;
-            vm.OutputMatrixVm.Controller.AssignMatrix(network.Layers[^1].Output!, new[] { "Value" }, i => data.Variables.TargetVariableNames[i]);
+            vm.OutputMatrixVm.Controller.AssignMatrix(output, new[] { "Value" }, i => data.Variables.TargetVariableNames[i]);
         }
 
 

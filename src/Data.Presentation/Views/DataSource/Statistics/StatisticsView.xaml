@@ -35,7 +35,7 @@
         </StackPanel>
 
 
-        <basicPlot:BasicPlot PlotModel="{Binding VariablesPlotVm.PlotModel}" MinHeight="400" Grid.Row="1" />
+        <basicPlot:BasicPlot Wpf="True" PlotModel="{Binding VariablesPlotVm.PlotModel}" MinHeight="400" Grid.Row="1" />
 
         <Grid Grid.Row="2" Margin="0,48,0,0">
             <Grid.RowDefinitions>
@@ -57,7 +57,7 @@
 
             </StackPanel>
 
-<basicPlot:BasicPlot Grid.Row="1" DockPanel.Dock="Top"
+<basicPlot:BasicPlot Grid.Row="1" DockPanel.Dock="Top" Wpf="True"
                                      PlotModel="{Binding Path=HistogramVm.HistogramModel}" MinHeight="400"
                                      VerticalAlignment="Stretch" />
 

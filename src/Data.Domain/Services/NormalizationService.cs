@@ -14,27 +14,21 @@ namespace Data.Domain.Services
         Task MeanNormalization();
         Task StdNormalization();
         void NoNormalization();
+
+        Task Normalize(NormalizationMethod method);
     }
 
     internal class NormalizationDomainService : INormalizationDomainService
     {
-        private ModuleState _moduleState;
         private AppState _appState;
 
-        public NormalizationDomainService(ModuleState moduleState, AppState appState)
+        public NormalizationDomainService(AppState appState)
         {
-            _moduleState = moduleState;
             _appState = appState;
         }
 
         public async Task MinMaxNormalization()
         {
-            if (_moduleState.OriginalSets == null)
-            {
-                _moduleState.StoreOriginalSets();
-            }
-
-
             void MinMax(SupervisedSet set)
             {
                 void MinMaxVec(IVectorSet vec)
@@ -70,7 +64,6 @@ namespace Data.Domain.Services
                     }
                 }
                 MinMaxVec(set.Input);
-                MinMaxVec(set.Target);
             }
 
             var trainingData = _appState.ActiveSession!.TrainingData!;
@@ -89,11 +82,6 @@ namespace Data.Domain.Services
 
         public async Task MeanNormalization()
         {
-            if (_moduleState.OriginalSets == null)
-            {
-                _moduleState.StoreOriginalSets();
-            }
-
             void Mean(SupervisedSet set)
             {
                 void MeanVec(IVectorSet vec)
@@ -131,7 +119,6 @@ namespace Data.Domain.Services
                     }
                 }
                 MeanVec(set.Input);
-                MeanVec(set.Target);
             }
 
 
@@ -150,11 +137,6 @@ namespace Data.Domain.Services
 
         public async Task StdNormalization()
         {
-            if (_moduleState.OriginalSets == null)
-            {
-                _moduleState.StoreOriginalSets();
-            }
-
             void Std(SupervisedSet set)
             {
                 void StdVec(IVectorSet vec)
@@ -191,7 +173,6 @@ namespace Data.Domain.Services
                     }
                 }
                 StdVec(set.Input);
-                StdVec(set.Target);
             }
 
             var trainingData = _appState.ActiveSession!.TrainingData!;
@@ -209,9 +190,26 @@ namespace Data.Domain.Services
 
         public void NoNormalization()
         {
-            var trainingData = _appState.ActiveSession!.TrainingData!;
-            trainingData.Sets = _moduleState.OriginalSets ?? throw new NullReferenceException("No original sets stored");
-            trainingData.NormalizationMethod = NormalizationMethod.None;
+            _appState.ActiveSession!.TrainingData!.RestoreOriginalSets();
+        }
+
+        public async Task Normalize(NormalizationMethod method)
+        {
+            switch (method)
+            {
+                case NormalizationMethod.None:
+                    NoNormalization();
+                    break;
+                case NormalizationMethod.Mean:
+                    await MeanNormalization();
+                    break;
+                case NormalizationMethod.MinMax:
+                    await MinMaxNormalization();
+                    break;
+                case NormalizationMethod.Std:
+                    await StdNormalization();
+                    break;
+            }
         }
     }
 }

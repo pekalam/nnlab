@@ -21,21 +21,18 @@ namespace Data.Application
         //Instantiate singleton controllers
         private readonly IFileController _fileController;
         private readonly IDataSetDivisionController _dataSetDivisionController;
-        private readonly IVariablesSelectionService _variablesSelectionController;
         private readonly IFileDataSourceController _fileDataSourceController;
 
         private SubscriptionToken? _firstNavToken;
 
         public ModuleController(IRegionManager rm, AppState appState, IFileController fileController,
             IDataSetDivisionController dataSetDivisionController,
-            IVariablesSelectionService variablesSelectionController,
             IFileDataSourceController fileDataSourceController, IEventAggregator ea)
         {
             _rm = rm;
             _appState = appState;
             _fileController = fileController;
             _dataSetDivisionController = dataSetDivisionController;
-            _variablesSelectionController = variablesSelectionController;
             _fileDataSourceController = fileDataSourceController;
             _ea = ea;
 

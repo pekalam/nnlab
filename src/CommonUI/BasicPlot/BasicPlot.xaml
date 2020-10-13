@@ -24,7 +24,7 @@
                                    Visibility="{Binding ElementName=root,Path=IsMouseOver,Converter={StaticResource boolToVisConverter}}" />
         </StackPanel>
 
-        <ContentControl Grid.Row="1" Margin="0,0,30,0" Name="PlotContainer" DataContext="{Binding Path=PlotModel, ElementName=root}">
+        <ContentControl Grid.Row="1" Margin="0,0,30,0" Name="PlotContainer" DataContext="{Binding ElementName=root}">
             <ContentControl.Style>
                 <Style TargetType="ContentControl">
                     <Style.Triggers>
@@ -32,8 +32,8 @@
                             <Setter Property="Content">
                                 <Setter.Value>
                                     <skia:PlotView
-                                                   Model="{Binding Model}"
-                                                   Controller="{Binding Controller}" />
+                                                   Model="{Binding PlotModel.Model}"
+                                                   Controller="{Binding PlotModel.Controller}" />
                                 </Setter.Value>
                             </Setter>
                         </DataTrigger>
@@ -41,8 +41,8 @@
                             <Setter Property="Content">
                                 <Setter.Value>
                                     <wpf:PlotView
-                                        Model="{Binding Model}"
-                                        Controller="{Binding Controller}" />
+                                        Model="{Binding PlotModel.Model}"
+                                        Controller="{Binding PlotModel.Controller}" />
                                 </Setter.Value>
                             </Setter>
                         </DataTrigger>

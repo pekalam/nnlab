@@ -27,7 +27,6 @@ namespace Data.Application.Tests.VariablesSelection
             _mocker.UseTestRm();
 
             _appState = _mocker.UseImpl<AppState>();
-            _mocker.UseImpl<ModuleState>();
             _mocker.UseImpl<ITrainingDataService,TrainingDataService>();
             _session = _appState.CreateSession();
             _session.TrainingData = TrainingDataMocks.ValidData4;

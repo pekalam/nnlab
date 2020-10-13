@@ -56,6 +56,15 @@ namespace SharedUI.BasicPlot
             set => SetValue(PlotModelProperty, value);
         }
 
+        public static readonly DependencyProperty WpfProperty = DependencyProperty.Register(
+            "Wpf", typeof(bool), typeof(BasicPlot), new PropertyMetadata(default(bool)));
+
+        public bool Wpf
+        {
+            get => (bool) GetValue(WpfProperty);
+            set => SetValue(WpfProperty, value);
+        }
+
         public BasicPlot()
         {
             InitializeComponent();
@@ -148,6 +157,7 @@ namespace SharedUI.BasicPlot
             Plot.Visibility = Visibility.Hidden;
             plotPlaceholder.Visibility = Visibility.Visible;
 
+
             ExternalWindow w = new ExternalWindow(model);
             w.Show();
 
@@ -187,7 +197,5 @@ namespace SharedUI.BasicPlot
         public Action<string>? SetSettingsRegion { get; internal set; }
         public Action<string>? RemoveSettingsRegion { get; internal set; }
         public bool DisplaySettingsRegion { get; set; } = true;
-
-        public bool Wpf { get; set; } = false;
     }
 }

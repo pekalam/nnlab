@@ -29,6 +29,8 @@ namespace Common.Domain
             set => SetProperty(ref _sets, value);
         }
 
+        public SupervisedTrainingSets OriginalSets { get; }
+
         public NormalizationMethod NormalizationMethod
         {
             get => _normalizationMethod;
@@ -47,6 +49,7 @@ namespace Common.Domain
             _variables = variables;
             Source = source;
             _normalizationMethod = normalizationMethod;
+            OriginalSets = CloneSets();
         }
 
         public DataSetType[] SetTypes
@@ -80,6 +83,12 @@ namespace Common.Domain
                 case DataSetType.Validation: return Sets.ValidationSet;
                 default: return null;
             }
+        }
+
+        public void RestoreOriginalSets()
+        {
+            Sets = OriginalSets;
+            NormalizationMethod = NormalizationMethod.None;
         }
 
 
