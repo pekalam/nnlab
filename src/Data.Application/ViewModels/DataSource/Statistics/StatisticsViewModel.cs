@@ -9,7 +9,8 @@ namespace Data.Application.ViewModels.DataSource.Statistics
     public class StatisticsViewModel : ViewModelBase<StatisticsViewModel>
     {
         private DataSetType[]? _dataSetTypes;
-        
+        private DataSetType _selectedDataSetType;
+
 #pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
         public StatisticsViewModel() { }
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
@@ -31,6 +32,17 @@ namespace Data.Application.ViewModels.DataSource.Statistics
         {
             get => _dataSetTypes;
             set => SetProperty(ref _dataSetTypes, value);
+        }
+
+
+        public DataSetType SelectedDataSetType
+        {
+            get => _selectedDataSetType;
+            set
+            {
+                _selectedDataSetType = value;
+                RaisePropertyChanged();
+            }
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.ComponentModel;
+using System.Diagnostics;
 using Common.Domain;
 using NNLib.Common;
 using OxyPlot;
@@ -76,34 +77,40 @@ namespace Data.Application.ViewModels.DataSource.Statistics
 
             _vm.PlotModel.Model.Series.Clear();
 
-            if (args.GetSet(dataSetType)!.Input.Count > 5000)
+            // if (args.GetSet(dataSetType)!.Input.Count > 5000)
+            // {
+            //     //Log.Logger.Debug("Ignoring loading plot for more than 5000 items (actual count: {count})", args.GetSet(dataSetType).Input.Count);
+            //     return;
+            // }
+
+            if (_vm.SelectedVariablePlotType == VariablePlotType.Input)
             {
-                //Log.Logger.Debug("Ignoring loading plot for more than 5000 items (actual count: {count})", args.GetSet(dataSetType).Input.Count);
-                return;
+                for (int i = 0; i < args.Variables.Indexes.InputVarIndexes.Length; i++)
+                {
+                    var s = createLineSeries(args.Variables.Indexes.InputVarIndexes[i]);
+
+                    for (int j = 0; j < args.GetSet(dataSetType)!.Input.Count; j++)
+                    {
+                        s.Points.Add(new DataPoint(j, args.GetSet(dataSetType)!.Input[j][i, 0]));
+                    }
+
+                    _vm.PlotModel.Model.Series.Add(s);
+                }
             }
 
-            for (int i = 0; i < args.Variables.Indexes.InputVarIndexes.Length; i++)
+            if (_vm.SelectedVariablePlotType == VariablePlotType.Target)
             {
-                var s = createLineSeries(args.Variables.Indexes.InputVarIndexes[i]);
-
-                for (int j = 0; j < args.GetSet(dataSetType)!.Input.Count; j++)
+                for (int i = 0; i < args.Variables.Indexes.TargetVarIndexes.Length; i++)
                 {
-                    s.Points.Add(new DataPoint(j, args.GetSet(dataSetType)!.Input[j][i, 0]));
+                    var s = createLineSeries(args.Variables.Indexes.TargetVarIndexes[i]);
+
+                    for (int j = 0; j < args.GetSet(dataSetType)!.Target.Count; j++)
+                    {
+                        s.Points.Add(new DataPoint(j, args.GetSet(dataSetType)!.Target[j][i, 0]));
+                    }
+
+                    _vm.PlotModel.Model.Series.Add(s);
                 }
-
-                _vm.PlotModel.Model.Series.Add(s);
-            }
-
-            for (int i = 0; i < args.Variables.Indexes.TargetVarIndexes.Length; i++)
-            {
-                var s = createLineSeries(args.Variables.Indexes.TargetVarIndexes[i]);
-
-                for (int j = 0; j < args.GetSet(dataSetType)!.Target.Count; j++)
-                {
-                    s.Points.Add(new DataPoint(j, args.GetSet(dataSetType)!.Target[j][i, 0]));
-                }
-
-                _vm.PlotModel.Model.Series.Add(s);
             }
 
             _vm.PlotModel.Model.InvalidatePlot(true);

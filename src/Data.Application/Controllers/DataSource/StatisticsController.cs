@@ -14,8 +14,6 @@ namespace Data.Application.Services
 {
     public interface IStatisticsService
     {
-        DelegateCommand<DataSetType?> SelectDataSet { get; set; }
-
         public static void Register(IContainerRegistry cr)
         {
             cr.Register<IStatisticsService, StatisticsController>();
@@ -38,10 +36,10 @@ namespace Data.Application.Controllers.DataSource
             _helper = new AppStateHelper(appState);
         }
 
-        public DelegateCommand<DataSetType?> SelectDataSet { get; set; } = null!;
-
         protected override void VmCreated()
         {
+            Vm!.VariablesPlotVm.PropertyChanged += VariablesPlotVmOnPropertyChanged;
+            Vm!.PropertyChanged += VmOnPropertyChanged;
             _histogramCtrl = new HistogramController(Vm!.HistogramVm, _appState);
             _variablesPlotCtrl = new VariablesPlotController(Vm!.VariablesPlotVm);
 
@@ -52,8 +50,8 @@ namespace Data.Application.Controllers.DataSource
 
             _helper.OnTrainingDataPropertyChanged(data =>
             {
-                Vm.DataSetTypes = data.SetTypes;
-                _variablesPlotCtrl.Plot(data, DataSetType.Training);
+                Vm!.DataSetTypes = data.SetTypes;
+                Vm!.SelectedDataSetType = DataSetType.Training;
             }, s => s switch
             {
                 nameof(TrainingData.Variables) => true,
@@ -62,7 +60,22 @@ namespace Data.Application.Controllers.DataSource
             });
 
             SetTrainingData();
-            SelectDataSet = new DelegateCommand<DataSetType?>(SelectDataSetExecute);
+        }
+
+        private void VmOnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(StatisticsViewModel.SelectedDataSetType))
+            {
+                _variablesPlotCtrl.Plot(_appState.ActiveSession!.TrainingData!, Vm!.SelectedDataSetType);
+            }
+        }
+
+        private void VariablesPlotVmOnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(VariablesPlotViewModel.SelectedVariablePlotType))
+            {
+                _variablesPlotCtrl.Plot(_appState.ActiveSession!.TrainingData!, Vm!.SelectedDataSetType);
+            }
         }
 
 
@@ -74,13 +87,9 @@ namespace Data.Application.Controllers.DataSource
             if (trainingData.Sets.TestSet != null) setTypes.Add(DataSetType.Test);
             if (trainingData.Sets.ValidationSet != null) setTypes.Add(DataSetType.Validation);
             Vm!.DataSetTypes = setTypes.ToArray();
+            Vm!.SelectedDataSetType = DataSetType.Training;
 
-            _variablesPlotCtrl.Plot(trainingData, DataSetType.Training);
-        }
-
-        private void SelectDataSetExecute(DataSetType? set)
-        {
-            _variablesPlotCtrl.Plot(_appState.ActiveSession!.TrainingData!, set!.Value);
+            _variablesPlotCtrl.Plot(_appState.ActiveSession!.TrainingData!, Vm!.SelectedDataSetType);
         }
     }
 }

@@ -22,20 +22,18 @@
         <StackPanel Grid.Row="0" Margin="0,0,0,12">
             <TextBlock Text="Visualizations" FontSize="24" />
             <TextBlock Text="Data set" Margin="0,20,0,8" />
-            <ComboBox MinWidth="180" HorizontalAlignment="Left" Margin="0,0,0,10"
+            <ComboBox MinWidth="180" HorizontalAlignment="Left" Margin="0,0,0,4"
                       SelectedIndex="0"
-                      ItemsSource="{Binding DataSetTypes}">
-                <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="SelectionChanged">
-                        <i:InvokeCommandAction Command="{Binding Service.SelectDataSet}"
-                                               CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=ComboBox},Path=SelectedItem}" />
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>
+                      ItemsSource="{Binding DataSetTypes}" SelectedItem="{Binding SelectedDataSetType}">
             </ComboBox>
         </StackPanel>
 
-
-        <basicPlot:BasicPlot Wpf="True" PlotModel="{Binding VariablesPlotVm.PlotModel}" MinHeight="400" Grid.Row="1" />
+        <StackPanel Grid.Row="1">
+            <TextBlock Text="Variables" Margin="0,0,0,8" />
+            <ComboBox MinWidth="180" HorizontalAlignment="Left" Margin="0,0,0,10"
+                      SelectedItem="{Binding VariablesPlotVm.SelectedVariablePlotType}" ItemsSource="{Binding VariablesPlotVm.VariablePlotTypes}"></ComboBox>
+            <basicPlot:BasicPlot Wpf="True" PlotModel="{Binding VariablesPlotVm.PlotModel}" MinHeight="400" />
+        </StackPanel>
 
         <Grid Grid.Row="2" Margin="0,48,0,0">
             <Grid.RowDefinitions>

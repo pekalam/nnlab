@@ -131,9 +131,6 @@ namespace Data.Application.Controllers
                 }
             }
 
-            //var trainingData = _appState.ActiveSession!.TrainingData;
-            //_dsService.ChangeVariables(_currentIndexes, trainingData!);
-
             foreach (var model in Vm!.Variables)
             {
                 model.OnVariableUseSet = OnVariableUseSet;

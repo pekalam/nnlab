@@ -6,8 +6,12 @@ using SharedUI.BasicPlot;
 
 namespace Data.Application.ViewModels.DataSource.Statistics
 {
+    public enum VariablePlotType{Input,Target}
+
     public class VariablesPlotViewModel : BindableBase
     {
+        private VariablePlotType _selectedVariablePlotType;
+
         public VariablesPlotViewModel()
         {
             PlotModel.Model.Title = "Variables plot";
@@ -41,6 +45,14 @@ namespace Data.Application.ViewModels.DataSource.Statistics
         }
 
         public VariablesPlotController Controller { get; }
+
+        public VariablePlotType[] VariablePlotTypes { get; } = new[] {VariablePlotType.Input, VariablePlotType.Target};
+
+        public VariablePlotType SelectedVariablePlotType
+        {
+            get => _selectedVariablePlotType;
+            set => SetProperty(ref _selectedVariablePlotType, value);
+        }
 
         public BasicPlotModel PlotModel { get; set; } = new BasicPlotModel();
     }
