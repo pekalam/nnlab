@@ -69,12 +69,12 @@ namespace Prediction.Application.Services
 
         private Matrix<double> ToMean(Matrix<double> inputMat)
         {
-            var input = _appState.ActiveSession!.TrainingData!.OriginalSets.TrainingSet.Input;
+            var trainingInput = _appState.ActiveSession!.TrainingData!.OriginalSets.TrainingSet.Input;
             var y = inputMat.Clone();
 
             for (int i = 0; i < inputMat.RowCount; i++)
             {
-                var (avg, min, max) = FindMean(input, i);
+                var (avg, min, max) = FindMean(trainingInput, i);
 
                 y[i, 0] = (y[i, 0] - avg) / (max - min);
             }
@@ -83,6 +83,27 @@ namespace Prediction.Application.Services
         }
 
 
+        private Matrix<double> ToStd(Matrix<double> inputMat)
+        {
+            var trainingInput = _appState.ActiveSession!.TrainingData!.OriginalSets.TrainingSet.Input;
+            var y = inputMat.Clone();
+
+            double stddev = 0;
+            for (int i = 0; i < inputMat.RowCount; i++)
+            {
+                var (avg, min, max) = FindMean(trainingInput, i);
+
+                for (int j = 0; j < trainingInput.Count; j++)
+                {
+                    stddev += Math.Pow(trainingInput[j][i, 0] - avg, 2.0d) / (trainingInput.Count - 1);
+                }
+                stddev = Math.Sqrt(stddev);
+
+                y[i,0] = (y[i, 0] - avg) / (stddev == 0d ? 1 : stddev);
+            }
+
+            return y;
+        }
 
         public Matrix<double> ToNetworkDataNormalization(Matrix<double> input)
         {
@@ -91,6 +112,7 @@ namespace Prediction.Application.Services
                 {
                     NormalizationMethod.MinMax => ToMinMax(input),
                     NormalizationMethod.Mean => ToMean(input),
+                    NormalizationMethod.Std => ToStd(input),
                     NormalizationMethod.None => input,
                     _ => throw new Exception(),
                 };

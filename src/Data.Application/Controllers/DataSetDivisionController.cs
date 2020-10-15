@@ -171,7 +171,7 @@ namespace Data.Application.Controllers
             Vm!.UpdateRatio();
             Vm!.PropertyChanged += VmOnPropertyChanged;
 
-            _appState.ActiveSession!.TrainingData!.Sets = sets;
+            _appState.ActiveSession!.TrainingData!.StoreNewSets(sets);
             _appState.ActiveSession.RaiseTrainingDataUpdated();
         }
 
@@ -179,7 +179,8 @@ namespace Data.Application.Controllers
         {
             var existingData = _appState.ActiveSession!.TrainingData!;
             var opt = ConstructDivOptions();
-            _appState.ActiveSession.TrainingData!.Sets = _dataService.LoadSets(path, new LinearDataSetDivider(), opt, existingData.Variables.Indexes);
+            var sets = _dataService.LoadSets(path, new LinearDataSetDivider(), opt, existingData.Variables.Indexes);
+            _appState.ActiveSession.TrainingData!.StoreNewSets(sets);
             _appState.ActiveSession.RaiseTrainingDataUpdated();
 
             Vm!.PropertyChanged -= VmOnPropertyChanged;

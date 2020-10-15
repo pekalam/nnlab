@@ -267,7 +267,7 @@ namespace Data.Application.Controllers
                 var sets = new SupervisedTrainingData(SupervisedTrainingSamples.FromArrays(_input.ToArray(),
                     _target.ToArray()));
 
-                _appState.ActiveSession!.TrainingData!.Sets = sets;
+                _appState.ActiveSession!.TrainingData!.StoreNewSets(sets);
                 
                 OpenDivisionViewCommand.RaiseCanExecuteChanged();
                 SelectVariablesCommand.RaiseCanExecuteChanged();

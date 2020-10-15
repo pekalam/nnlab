@@ -6,7 +6,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:dd="clr-namespace:Data.Presentation.__DesignData"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:common1="clr-namespace:NNLib.Common;assembly=NNLib"
+             xmlns:common="clr-namespace:NNLib.Common;assembly=NNLib.Csv"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance dd:DesignVariablesSelectionVm, IsDesignTimeCreatable=True}"
              prism:ViewModelLocator.AutoWireViewModel="True">
@@ -14,7 +14,7 @@
         <ObjectDataProvider x:Key="variableUses"
                             MethodName="GetValues" ObjectType="{x:Type System:Enum}">
             <ObjectDataProvider.MethodParameters>
-                <x:Type TypeName="common1:VariableUses" />
+                <x:Type TypeName="common:VariableUses" />
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
     </UserControl.Resources>

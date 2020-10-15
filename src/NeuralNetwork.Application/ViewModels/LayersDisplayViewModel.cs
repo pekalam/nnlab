@@ -29,10 +29,10 @@ namespace NeuralNetwork.Application.ViewModels
         {
             get
             {
-                if (IsInputLayer)
-                {
-                    return "(input)";
-                }
+                // if (IsInputLayer)
+                // {
+                //     return "(input)";
+                // }
                 if (IsOutputLayer)
                 {
                     return "(output)";

@@ -80,6 +80,9 @@ namespace Prediction.Application.Controllers
         {
             if (e.PropertyName == nameof(PredictViewModel.SelectedPlotSetType))
             {
+                var data = _appState.ActiveSession!.TrainingData!.GetOriginalSet(Vm!.SelectedPlotSetType)!;
+                Vm!.StartValue = data.Input.GetEnumerator().IterateEnumerator().Min(m => m[0, 0]);
+                Vm!.EndValue = data.Input.GetEnumerator().IterateEnumerator().Max(m => m[0, 0]);
             }
         }
 
@@ -148,9 +151,10 @@ namespace Prediction.Application.Controllers
                 data.Sets.TrainingSet.Target[0].RowCount == 1)
             {
                 Vm!.ShowPlotPrediction = true;
-                Vm!.StartValue = data.Sets.TrainingSet.Input.GetEnumerator().IterateEnumerator().Min(m => m[0, 0]);
-                Vm!.EndValue = data.Sets.TrainingSet.Input.GetEnumerator().IterateEnumerator().Max(m => m[0, 0]);
+                Vm!.StartValue = data.OriginalSets.TrainingSet.Input.GetEnumerator().IterateEnumerator().Min(m => m[0, 0]);
+                Vm!.EndValue = data.OriginalSets.TrainingSet.Input.GetEnumerator().IterateEnumerator().Max(m => m[0, 0]);
                 Vm!.PlotSetTypes = data.SetTypes;
+                Vm!.SelectedPlotSetType = DataSetType.Training;
             }
             else
             {
@@ -169,29 +173,31 @@ namespace Prediction.Application.Controllers
         {
             Debug.Assert(setType != null, nameof(setType) + " != null");
 
+            var orgSet = _appState.ActiveSession!.TrainingData!.GetOriginalSet(setType.Value);
             var set = _appState.ActiveSession!.TrainingData!.GetSet(setType.Value);
+            Debug.Assert(orgSet != null, nameof(orgSet) + " != null");
             Debug.Assert(set != null, nameof(set) + " != null");
 
             var network = _appState.ActiveSession!.Network!;
-            var dataScatter = new ScatterPoint[set.Input.Count];
-            var dataPredLine = new DataPoint[set.Input.Count];
+            var dataScatter = new ScatterPoint[orgSet.Input.Count];
+            var dataPredLine = new DataPoint[orgSet.Input.Count];
             var predLine = new List<DataPoint>(1000);
             var predScatter = new List<ScatterPoint>(1000);
-            var setStart = set.Input.GetEnumerator().IterateEnumerator().Min(m => m[0, 0]);
-            var setEnd = set.Input.GetEnumerator().IterateEnumerator().Max(m => m[0, 0]);
+            var setStart = orgSet.Input.GetEnumerator().IterateEnumerator().Min(m => m[0, 0]);
+            var setEnd = orgSet.Input.GetEnumerator().IterateEnumerator().Max(m => m[0, 0]);
 
 
-            for (int i = 0; i < set.Input.Count; i++)
+            for (int i = 0; i < orgSet.Input.Count; i++)
             {
-                dataScatter[i] = new ScatterPoint(set.Input[i][0, 0], set.Target[i][0, 0]);
+                dataScatter[i] = new ScatterPoint(orgSet.Input[i][0, 0], orgSet.Target[i][0, 0]);
             }
 
             await Task.Run(() =>
             {
-                for (int i = 0; i < set.Input.Count; i++)
+                for (int i = 0; i < orgSet.Input.Count; i++)
                 {
                     network.CalculateOutput(set.Input[i]);
-                    dataPredLine[i] = new DataPoint(set.Input[i].At(0, 0), network.Output!.At(0, 0));
+                    dataPredLine[i] = new DataPoint(orgSet.Input[i].At(0, 0), network.Output!.At(0, 0));
                 }
 
                 var x = Matrix<double>.Build.Dense(1, 1, Vm!.StartValue);
@@ -210,7 +216,10 @@ namespace Prediction.Application.Controllers
 
             });
 
-            _service.UpdatePlots(dataScatter, dataPredLine, predLine.ToArray(), predScatter.ToArray());
+            _service.UpdatePlots(dataScatter, 
+                dataPredLine.OrderBy(p => p.X).ToArray(),
+                predLine.OrderBy(p => p.X).ToArray(), 
+                predScatter.ToArray());
         }
 
         private void Predict()

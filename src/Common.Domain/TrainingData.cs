@@ -30,7 +30,7 @@ namespace Common.Domain
             set => SetProperty(ref _sets, value);
         }
 
-        public SupervisedTrainingData OriginalSets { get; }
+        public SupervisedTrainingData OriginalSets { get; private set; }
 
         public NormalizationMethod NormalizationMethod
         {
@@ -82,6 +82,17 @@ namespace Common.Domain
                 case DataSetType.Test: return Sets.TestSet;
                 case DataSetType.Training: return Sets.TrainingSet;
                 case DataSetType.Validation: return Sets.ValidationSet;
+                default: return null;
+            }
+        }
+        
+        public SupervisedTrainingSamples? GetOriginalSet(DataSetType type)
+        {
+            switch (type)
+            {
+                case DataSetType.Test: return OriginalSets.TestSet;
+                case DataSetType.Training: return OriginalSets.TrainingSet;
+                case DataSetType.Validation: return OriginalSets.ValidationSet;
                 default: return null;
             }
         }
@@ -143,6 +154,12 @@ namespace Common.Domain
             }
 
             return setsCpy;
+        }
+
+        public void StoreNewSets(SupervisedTrainingData sets)
+        {
+            Sets = sets;
+            OriginalSets = CloneSets();
         }
     }
 }
