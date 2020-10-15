@@ -2,6 +2,7 @@
 using Common.Framework;
 using NeuralNetwork.Application.Services;
 using NNLib;
+using NNLib.MLP;
 using Prism.Mvvm;
 using Prism.Regions;
 using SharedUI.MatrixPreview;

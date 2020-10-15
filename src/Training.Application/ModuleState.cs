@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Common.Domain;
 using ControlzEx.Standard;
 using NNLib;
+using NNLib.MLP;
 using Prism.Mvvm;
 using Training.Application.Plots;
 using Training.Domain;

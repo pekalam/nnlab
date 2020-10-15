@@ -2,6 +2,7 @@
 using Data.Application.Controllers.DataSource;
 using Data.Application.Services;
 using NNLib.Common;
+using NNLib.Data;
 using Unity;
 
 namespace Data.Application.ViewModels.DataSource.Statistics

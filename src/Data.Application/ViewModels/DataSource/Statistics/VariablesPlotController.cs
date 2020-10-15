@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using Common.Domain;
 using NNLib.Common;
+using NNLib.Data;
 using OxyPlot;
 using OxyPlot.Series;
 

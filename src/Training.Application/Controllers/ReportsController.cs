@@ -7,6 +7,7 @@ using System.Threading;
 using Common.Domain;
 using Common.Framework;
 using NNLib.Common;
+using NNLib.Data;
 using OxyPlot;
 using Prism.Commands;
 using Prism.Events;

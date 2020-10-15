@@ -6,6 +6,8 @@ using Common.Framework;
 using MathNet.Numerics.LinearAlgebra;
 using NNLib;
 using NNLib.Common;
+using NNLib.Data;
+using NNLib.MLP;
 using NNLibAdapter;
 using OxyPlot;
 using OxyPlot.Axes;

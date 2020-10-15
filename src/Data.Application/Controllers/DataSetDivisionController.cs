@@ -9,6 +9,7 @@ using System.ComponentModel;
 using System.Linq;
 using Common.Domain;
 using Common.Framework;
+using NNLib.Data;
 using Prism.Ioc;
 
 namespace Data.Application.Controllers
@@ -123,9 +124,9 @@ namespace Data.Application.Controllers
             var opt = ConstructDivOptions();
             var divs = method.Divide(pos, opt);
 
-            SupervisedSet? training = null;
-            SupervisedSet? test = null;
-            SupervisedSet? validation = null;
+            SupervisedTrainingSamples? training = null;
+            SupervisedTrainingSamples? test = null;
+            SupervisedTrainingSamples? validation = null;
 
             foreach (var div in divs)
             {
@@ -134,23 +135,23 @@ namespace Data.Application.Controllers
 
                 if (div.setType == DataSetType.Training)
                 {
-                    training = SupervisedSet.FromArrays(input, target);
+                    training = SupervisedTrainingSamples.FromArrays(input, target);
                 }
 
                 if (div.setType == DataSetType.Test)
                 {
-                    test = SupervisedSet.FromArrays(input, target);
+                    test = SupervisedTrainingSamples.FromArrays(input, target);
                 }
 
                 if (div.setType == DataSetType.Validation)
                 {
-                    validation = SupervisedSet.FromArrays(input, target);
+                    validation = SupervisedTrainingSamples.FromArrays(input, target);
                 }
             }
 
             if (training == null) throw new Exception("Training set not present after data set division");
 
-            var sets = new SupervisedTrainingSets(training)
+            var sets = new SupervisedTrainingData(training)
             {
                 TestSet = test,
                 ValidationSet = validation

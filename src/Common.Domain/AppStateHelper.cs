@@ -1,6 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
-using NNLib;
+using NNLib.MLP;
 
 namespace Common.Domain
 {

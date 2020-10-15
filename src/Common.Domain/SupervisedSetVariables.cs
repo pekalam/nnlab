@@ -5,9 +5,9 @@ using NNLib.Common;
 
 namespace Common.Domain
 {
-    public class SupervisedSetVariables
+    public class SupervisedTrainingSamplesVariables
     {
-        public SupervisedSetVariables(SupervisedSetVariableIndexes variableIndexes, VariableName[] variableNames)
+        public SupervisedTrainingSamplesVariables(SupervisedSetVariableIndexes variableIndexes, VariableName[] variableNames)
         {
             ValidateCtorParams(variableIndexes, variableNames);
             Indexes = variableIndexes;
@@ -60,6 +60,6 @@ namespace Common.Domain
             }
         }
 
-        public SupervisedSetVariables Clone() => new SupervisedSetVariables(Indexes.Clone(), Names.Select(v => new VariableName(v.ToString())).ToArray());
+        public SupervisedTrainingSamplesVariables Clone() => new SupervisedTrainingSamplesVariables(Indexes.Clone(), Names.Select(v => new VariableName(v.ToString())).ToArray());
     }
 }

@@ -6,6 +6,7 @@ using Data.Domain.Services;
 using FluentAssertions;
 using Moq.AutoMock;
 using NNLib.Common;
+using NNLib.Data;
 using TestUtils;
 using Xunit;
 

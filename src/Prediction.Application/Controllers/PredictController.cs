@@ -11,6 +11,8 @@ using Common.Framework;
 using MathNet.Numerics.LinearAlgebra;
 using NNLib;
 using NNLib.Common;
+using NNLib.Data;
+using NNLib.MLP;
 using OxyPlot;
 using OxyPlot.Series;
 using Prediction.Application.Services;
@@ -34,13 +36,12 @@ namespace Prediction.Application.Controllers
     public class PredictControllerMemento
     {
         public double Interval { get; set; }
-        public Matrix<double> InputMatrix { get; set; }
-        public DataPoint[] DataPredictionPoints { get; set; }
-        public ScatterPoint[] DataScatterPoints { get; set; }
-        public ScatterPoint[] PredictionScatterPoints { get; set; }
+        public Matrix<double> InputMatrix { get; set; } = null!;
+        public DataPoint[] DataPredictionPoints { get; set; } = null!;
+        public ScatterPoint[] DataScatterPoints { get; set; } = null!;
+        public ScatterPoint[] PredictionScatterPoints { get; set; } = null!;
 
-        public DataPoint[] PredictionPoints { get; set; }
-
+        public DataPoint[] PredictionPoints { get; set; } = null!;
     }
 
     class PredictController : ControllerBase<PredictViewModel>, ITransientController<PredictService>

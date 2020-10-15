@@ -4,6 +4,7 @@ using System.Text;
 using Common.Domain;
 using Common.Framework;
 using NNLib.Common;
+using NNLib.Data;
 using NNLibAdapter;
 using OxyPlot;
 using OxyPlot.Legends;
@@ -22,7 +23,7 @@ namespace Prediction.Application.ViewModels
         private double _startValue;
         private double _endValue;
         private double _interval = 0.25;
-        private DataSetType[] _plotSetTypes;
+        private DataSetType[]? _plotSetTypes;
         private DataSetType _selectedPlotSetType;
         private MatrixPreviewViewModel _outputMatrixVm = new MatrixPreviewViewModel();
 
@@ -98,7 +99,7 @@ namespace Prediction.Application.ViewModels
             MarkerFill = OxyColor.FromRgb(0, 255, 0),
         };
 
-        public DataSetType[] PlotSetTypes
+        public DataSetType[]? PlotSetTypes
         {
             get => _plotSetTypes;
             set => SetProperty(ref _plotSetTypes,value);

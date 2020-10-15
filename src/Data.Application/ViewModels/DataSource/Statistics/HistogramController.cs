@@ -8,6 +8,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using Common.Domain;
+using NNLib.Data;
 
 namespace Data.Application.ViewModels.DataSource.Statistics
 {

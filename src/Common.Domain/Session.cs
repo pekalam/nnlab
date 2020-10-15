@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
-using NNLib;
-using NNLib.Common;
+using NNLib.Data;
+using NNLib.MLP;
 using Prism.Mvvm;
 
 namespace Common.Domain

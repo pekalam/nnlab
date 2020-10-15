@@ -25,6 +25,7 @@ namespace Data.Application.Tests.VariablesSelection
         public VariablesSelectionTest()
         {
             _mocker.UseTestRm();
+            _mocker.UseTestVmAccessor();
 
             _appState = _mocker.UseImpl<AppState>();
             _mocker.UseImpl<ITrainingDataService,TrainingDataService>();
@@ -34,7 +35,8 @@ namespace Data.Application.Tests.VariablesSelection
             _ctrl = _mocker.UseImpl<IVariablesSelectionService, VariablesSelectionController>();
             _service = _ctrl;
 
-            _vm = _mocker.CreateInstance<VariablesSelectionViewModel>();
+            _vm = _mocker.UseVm<VariablesSelectionViewModel>();
+            _vm.IsActive = true;
         }
 
 

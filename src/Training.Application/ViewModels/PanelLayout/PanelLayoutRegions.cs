@@ -28,7 +28,7 @@ namespace Training.Application.ViewModels.PanelLayout
                 case Panels.Accuracy: return "OutputPlotView";
                 case Panels.NetworkError: return "ErrorPlotView";
                 case Panels.NetworkVisualization: return "TrainingNetworkPreviewView";
-                case Panels.LiveEditPanel: return "ParametersEditView";
+                case Panels.ParametersEditPanel: return "ParametersEditView";
                 default: throw new Exception("Invalid panel type");
             }
         }

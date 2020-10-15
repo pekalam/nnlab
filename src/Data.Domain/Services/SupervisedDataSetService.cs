@@ -3,16 +3,17 @@ using System.Linq;
 using Common.Domain;
 using NNLib.Common;
 using NNLib.Csv;
+using NNLib.Data;
 
 namespace Data.Domain.Services
 {
     public interface ITrainingDataService
     {
         TrainingData LoadDefaultTrainingData(string fileName, IDataSetDivider? divider =null, DataSetDivisionOptions? divisionOptions=null, SupervisedSetVariableIndexes? variableIndexes=null);
-        SupervisedTrainingSets LoadSets(string fileName, IDataSetDivider? divider, DataSetDivisionOptions? divisionOptions, SupervisedSetVariableIndexes? variableIndexes);
+        SupervisedTrainingData LoadSets(string fileName, IDataSetDivider? divider, DataSetDivisionOptions? divisionOptions, SupervisedSetVariableIndexes? variableIndexes);
         TrainingData LoadDefaultTrainingDataFromFiles(string trainingSetFile, string validationSetFile, string testSetFile);
         void ChangeVariables(SupervisedSetVariableIndexes newVariableIndexes, TrainingData trainingData);
-        void ChangeVariables(SupervisedSetVariableIndexes newVariableIndexes, SupervisedTrainingSets sets, TrainingDataSource source);
+        void ChangeVariables(SupervisedSetVariableIndexes newVariableIndexes, SupervisedTrainingData sets, TrainingDataSource source);
     }
 
     internal class TrainingDataService : ITrainingDataService
@@ -21,12 +22,12 @@ namespace Data.Domain.Services
             DataSetDivisionOptions? divisionOptions = null, SupervisedSetVariableIndexes? indices = null)
         {
             var (sets,variableNames, variableIndexes) = CsvFacade.LoadSets(fileName, divider, divisionOptions, indices);
-            var variables = new SupervisedSetVariables(variableIndexes, variableNames.Select(v => (VariableName)v).ToArray());
+            var variables = new SupervisedTrainingSamplesVariables(variableIndexes, variableNames.Select(v => (VariableName)v).ToArray());
 
             return new TrainingData(sets,variables, TrainingDataSource.Csv, NormalizationMethod.None);
         }
 
-        public SupervisedTrainingSets LoadSets(string fileName, IDataSetDivider? divider,
+        public SupervisedTrainingData LoadSets(string fileName, IDataSetDivider? divider,
             DataSetDivisionOptions? divisionOptions, SupervisedSetVariableIndexes? variableIndexes)
         {
             var (sets, _, __) = CsvFacade.LoadSets(fileName, divider, divisionOptions, variableIndexes);
@@ -35,8 +36,8 @@ namespace Data.Domain.Services
 
         public TrainingData LoadDefaultTrainingDataFromFiles(string trainingSetFile, string validationSetFile, string testSetFile)
         {
-            SupervisedTrainingSets sets;
-            SupervisedSetVariables variables;
+            SupervisedTrainingData sets;
+            SupervisedTrainingSamplesVariables variables;
 
             if (string.IsNullOrWhiteSpace(trainingSetFile))
             {
@@ -45,7 +46,7 @@ namespace Data.Domain.Services
             else
             {
                 var data = LoadDefaultTrainingData(trainingSetFile);
-                sets = new SupervisedTrainingSets(data.Sets.TrainingSet);
+                sets = new SupervisedTrainingData(data.Sets.TrainingSet);
                 variables = data.Variables;
             }
 
@@ -77,11 +78,11 @@ namespace Data.Domain.Services
                 CsvFacade.ChangeVariableIndexes(newVariableIndexes, trainingData.Sets);
             }
 
-            var newVariables = new SupervisedSetVariables(newVariableIndexes, trainingData.Variables.Names);
+            var newVariables = new SupervisedTrainingSamplesVariables(newVariableIndexes, trainingData.Variables.Names);
             trainingData.Variables = newVariables;
         }
 
-        public void ChangeVariables(SupervisedSetVariableIndexes newVariableIndexes, SupervisedTrainingSets sets, TrainingDataSource source)
+        public void ChangeVariables(SupervisedSetVariableIndexes newVariableIndexes, SupervisedTrainingData sets, TrainingDataSource source)
         {
             if (source == TrainingDataSource.Csv)
             {

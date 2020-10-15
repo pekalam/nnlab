@@ -194,7 +194,7 @@ namespace NeuralNetwork.Application.Tests
 
 
             //act
-            session.TrainingData.Variables = new SupervisedSetVariables(new SupervisedSetVariableIndexes(
+            session.TrainingData.Variables = new SupervisedTrainingSamplesVariables(new SupervisedSetVariableIndexes(
                 new []{0}, new []{1}, new []{2}
                 ), new []{new VariableName("x"), new VariableName("y"), new VariableName("z")});
 

@@ -2,6 +2,8 @@
 using Common.Domain;
 using NeuralNetwork.Domain;
 using NNLib;
+using NNLib.ActivationFunction;
+using NNLib.MLP;
 using NNLibAdapter;
 
 namespace NeuralNetwork.Application

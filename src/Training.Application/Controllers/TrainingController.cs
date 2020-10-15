@@ -6,6 +6,7 @@ using System.Linq;
 using Accessibility;
 using Common.Framework;
 using NNLib;
+using NNLib.Exceptions;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Regions;

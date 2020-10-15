@@ -8,6 +8,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using Common.Domain;
 using NNLib;
+using NNLib.Exceptions;
+using NNLib.LossFunction;
+using NNLib.MLP;
+using NNLib.Training;
+using NNLib.Training.GradientDescent;
+using NNLib.Training.LevenbergMarquardt;
 using Prism.Mvvm;
 
 namespace Training.Domain

@@ -1,5 +1,5 @@
 ﻿using System;
-using NNLib;
+using NNLib.ActivationFunction;
 
 namespace Common.Domain
 {

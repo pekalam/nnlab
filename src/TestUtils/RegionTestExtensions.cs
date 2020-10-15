@@ -3,7 +3,10 @@ using Castle.DynamicProxy;
 using Common.Domain;
 using Moq;
 using NNLib;
+using NNLib.ActivationFunction;
 using NNLib.Common;
+using NNLib.Data;
+using NNLib.MLP;
 using Prism.Regions;
 using Shell.Interface;
 
@@ -52,43 +55,43 @@ namespace TestUtils
     public static class TrainingDataMocks
     {
         public static TrainingData ValidData1 = new TrainingData(
-            new SupervisedTrainingSets(SupervisedSet.FromArrays(new[] {new[] {0d}}, new[] {new[] {0d}})),
-            new SupervisedSetVariables(new SupervisedSetVariableIndexes(new[] {0}, new[] {1}),
+            new SupervisedTrainingData(SupervisedTrainingSamples.FromArrays(new[] {new[] {0d}}, new[] {new[] {0d}})),
+            new SupervisedTrainingSamplesVariables(new SupervisedSetVariableIndexes(new[] {0}, new[] {1}),
                 new[] {new VariableName("x"), new VariableName("y")}), TrainingDataSource.Memory, NormalizationMethod.None);
 
 
         public static TrainingData ValidData2 = new TrainingData(
-            new SupervisedTrainingSets(SupervisedSet.FromArrays(new[] {new[] {0d}, new[] {1d}, new[] {2d}, new[] {3d}},
+            new SupervisedTrainingData(SupervisedTrainingSamples.FromArrays(new[] {new[] {0d}, new[] {1d}, new[] {2d}, new[] {3d}},
                 new[] {new[] {0d}, new[] {1d}, new[] {2d}, new[] {3d}})),
-            new SupervisedSetVariables(new SupervisedSetVariableIndexes(new[] {0}, new[] {1}),
+            new SupervisedTrainingSamplesVariables(new SupervisedSetVariableIndexes(new[] {0}, new[] {1}),
                 new[] {new VariableName("x"), new VariableName("y")}), TrainingDataSource.Memory, NormalizationMethod.None);
 
 
         public static TrainingData ValidData3 = new TrainingData(
-            new SupervisedTrainingSets(SupervisedSet.FromArrays(new[] {new[] {0d}, new[] {0d}},
+            new SupervisedTrainingData(SupervisedTrainingSamples.FromArrays(new[] {new[] {0d}, new[] {0d}},
                 new[] {new[] {0d}, new[] {0d}}))
             {
-                TestSet = SupervisedSet.FromArrays(new[] {new[] {0d}}, new[] {new[] {0d}}),
-                ValidationSet = SupervisedSet.FromArrays(new[] {new[] {0d}}, new[] {new[] {0d}}),
+                TestSet = SupervisedTrainingSamples.FromArrays(new[] {new[] {0d}}, new[] {new[] {0d}}),
+                ValidationSet = SupervisedTrainingSamples.FromArrays(new[] {new[] {0d}}, new[] {new[] {0d}}),
             },
-            new SupervisedSetVariables(new SupervisedSetVariableIndexes(new[] {0}, new[] {1}),
+            new SupervisedTrainingSamplesVariables(new SupervisedSetVariableIndexes(new[] {0}, new[] {1}),
                 new[] {new VariableName("x"), new VariableName("y")}), TrainingDataSource.Memory, NormalizationMethod.None);
 
 
         public static TrainingData ValidData4 = new TrainingData(
-            new SupervisedTrainingSets(SupervisedSet.FromArrays(new[] {new[] {0d}}, new[] {new[] {0d, 1d}})),
-            new SupervisedSetVariables(new SupervisedSetVariableIndexes(new[] {0}, new[] {1, 2}),
+            new SupervisedTrainingData(SupervisedTrainingSamples.FromArrays(new[] {new[] {0d}}, new[] {new[] {0d, 1d}})),
+            new SupervisedTrainingSamplesVariables(new SupervisedSetVariableIndexes(new[] {0}, new[] {1, 2}),
                 new[] {new VariableName("x"), new VariableName("y"), new VariableName("z"),}),
             TrainingDataSource.Memory, NormalizationMethod.None);
 
         public static TrainingData ValidFileData4 = new TrainingData(
-            new SupervisedTrainingSets(SupervisedSet.FromArrays(new[] { new[] { 0d } }, new[] { new[] { 0d, 1d } })),
-            new SupervisedSetVariables(new SupervisedSetVariableIndexes(new[] { 0 }, new[] { 1, 2 }),
+            new SupervisedTrainingData(SupervisedTrainingSamples.FromArrays(new[] { new[] { 0d } }, new[] { new[] { 0d, 1d } })),
+            new SupervisedTrainingSamplesVariables(new SupervisedSetVariableIndexes(new[] { 0 }, new[] { 1, 2 }),
                 new[] { new VariableName("x"), new VariableName("y"), new VariableName("z"), }),
             TrainingDataSource.Memory, NormalizationMethod.None);
 
 
-        public static SupervisedSet AndGateSet()
+        public static SupervisedTrainingSamples AndGateSet()
         {
             var input = new[]
             {
@@ -106,14 +109,14 @@ namespace TestUtils
                 new[] {1d},
             };
 
-            return SupervisedSet.FromArrays(input, expected);
+            return SupervisedTrainingSamples.FromArrays(input, expected);
         }
 
         public static TrainingData AndGateTrainingData()
         {
             var set = AndGateSet();
-            var data = new TrainingData(new SupervisedTrainingSets(set),
-                new SupervisedSetVariables(new SupervisedSetVariableIndexes(new[] { 0 }, new[] { 1 }),
+            var data = new TrainingData(new SupervisedTrainingData(set),
+                new SupervisedTrainingSamplesVariables(new SupervisedSetVariableIndexes(new[] { 0 }, new[] { 1 }),
                     new VariableName[] { "x", "y" }), TrainingDataSource.Memory, NormalizationMethod.None);
             return data;
         }

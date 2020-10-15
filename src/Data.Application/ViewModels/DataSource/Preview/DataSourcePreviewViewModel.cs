@@ -7,6 +7,7 @@ using System.Data;
 using System.Windows;
 using System.Windows.Input;
 using Common.Domain;
+using NNLib.Data;
 
 namespace Data.Application.ViewModels.DataSource.Preview
 {

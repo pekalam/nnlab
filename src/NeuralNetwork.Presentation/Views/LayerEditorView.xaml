@@ -30,6 +30,7 @@
         <Style x:Key="Title" TargetType="TextBlock">
             <Setter Property="Margin" Value="0,10,0,12" />
         </Style>
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
     </UserControl.Resources>
     <UserControl.InputBindings>
         <KeyBinding Key="Esc" Command="{Binding Service.ExitCommand}" />
@@ -44,7 +45,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <UniformGrid Grid.Row="0" Grid.ColumnSpan="2" Columns="2" Margin="0,0,0,10">
+        <UniformGrid Grid.Row="0" Grid.ColumnSpan="2" Columns="2" Margin="0,0,0,12">
             <TextBlock Text="Neurons" HorizontalAlignment="Left" VerticalAlignment="Center"
                        Style="{StaticResource Title}" />
             <mah:NumericUpDown Grid.Row="0" Grid.Column="1" Minimum="1" HorizontalAlignment="Stretch" MinWidth="120"
@@ -77,9 +78,30 @@
             </UniformGrid>
 
         </UniformGrid>
-        <ScrollViewer Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" VerticalScrollBarVisibility="Visible">
-            <matrixPreview:MatrixPreviewView Editable="True" MaxHeight="600"
-                                             LayerSelectPanelVisibility="Collapsed" DataContext="{Binding MatrixPreview}" />
-        </ScrollViewer>
+        <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Center">
+            <ToggleButton Name="MatrixViewToggle" IsChecked="False" MaxWidth="100">
+                <ToggleButton.Style>
+                    <Style TargetType="ToggleButton">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Visibility,ElementName=MatrixView}"
+                                         Value="Visible">
+                                <Setter Property="Content" Value="Hide matrix"></Setter>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Visibility,ElementName=MatrixView}"
+                                         Value="Collapsed">
+                                <Setter Property="Content" Value="Show matrix"></Setter>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ToggleButton.Style>
+
+            </ToggleButton>
+
+            <ScrollViewer Margin="0,12,0,0" VerticalScrollBarVisibility="Visible" Name="MatrixView" Visibility="{Binding IsChecked,ElementName=MatrixViewToggle, Converter={StaticResource BoolToVis}}">
+                <matrixPreview:MatrixPreviewView Editable="True" MaxHeight="600"
+                                                 LayerSelectPanelVisibility="Collapsed" DataContext="{Binding MatrixPreview}" />
+            </ScrollViewer>
+        </StackPanel>
+
     </Grid>
 </UserControl>

@@ -8,6 +8,7 @@ using System.Windows.Threading;
 using Common.Domain;
 using Common.Framework;
 using NNLib;
+using NNLib.Training.GradientDescent;
 using Training.Application.Views;
 using Training.Domain;
 using Unity;

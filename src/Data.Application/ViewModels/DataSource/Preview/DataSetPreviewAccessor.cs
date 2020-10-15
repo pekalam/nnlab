@@ -3,12 +3,13 @@ using System.Data;
 using System.Diagnostics;
 using System.Linq;
 using Common.Domain;
+using NNLib.Data;
 
 namespace Data.Application.ViewModels.DataSource.Preview
 {
     public class DataSetPreviewAccessor
     {
-        private SupervisedSet _set;
+        private SupervisedTrainingSamples _set;
         private readonly DataTable _dataTable;
         private readonly AppState _appState;
 

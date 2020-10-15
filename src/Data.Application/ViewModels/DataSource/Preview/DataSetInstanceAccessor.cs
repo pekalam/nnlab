@@ -3,6 +3,7 @@ using System.Data;
 using System.Diagnostics;
 using System.Linq;
 using Common.Domain;
+using NNLib.Data;
 
 namespace Data.Application.ViewModels.DataSource.Preview
 {
@@ -10,7 +11,7 @@ namespace Data.Application.ViewModels.DataSource.Preview
     {
         private readonly DataTable _dataTable;
         private readonly AppState _appState;
-        private SupervisedSet _set;
+        private SupervisedTrainingSamples _set;
 
 
         public DataSetInstanceAccessor(AppState appState, DataSetType defaultDataSetType = DataSetType.Training)

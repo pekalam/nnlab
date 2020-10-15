@@ -52,7 +52,7 @@ namespace Training.Application.ViewModels
         {
             new PanelSelectModel()
             {
-                PanelType = Application.Panels.LiveEditPanel,
+                PanelType = Application.Panels.ParametersEditPanel,
             },
             new PanelSelectModel()
             {

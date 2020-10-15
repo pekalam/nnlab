@@ -10,6 +10,7 @@ using NeuralNetwork.Application.Services;
 using NeuralNetwork.Application.ViewModels;
 using NeuralNetwork.Domain;
 using NNLib;
+using NNLib.MLP;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Ioc;

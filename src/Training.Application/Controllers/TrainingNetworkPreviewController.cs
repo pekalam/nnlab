@@ -7,6 +7,7 @@ using System.Windows.Threading;
 using Common.Domain;
 using Common.Framework;
 using NNLib;
+using NNLib.MLP;
 using NNLibAdapter;
 using Prism.Commands;
 using Prism.Ioc;

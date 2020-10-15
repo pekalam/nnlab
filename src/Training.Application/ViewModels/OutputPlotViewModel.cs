@@ -6,8 +6,6 @@ using System.Threading;
 using Common.Domain;
 using Common.Framework;
 using MathNet.Numerics.LinearAlgebra;
-using NNLib;
-using NNLib.Common;
 using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Series;
@@ -16,6 +14,10 @@ using SharedUI.BasicPlot;
 using Training.Application.Services;
 using Training.Domain;
 using System.Linq;
+using NNLib;
+using NNLib.Common;
+using NNLib.Data;
+using NNLib.MLP;
 
 namespace Training.Application.ViewModels
 {
@@ -153,7 +155,7 @@ namespace Training.Application.ViewModels
             throw new System.NotImplementedException();
         }
 
-        public void SetOutput(SupervisedSet set, Matrix<double>[] output)
+        public void SetOutput(SupervisedTrainingSamples set, Matrix<double>[] output)
         {
             throw new System.NotImplementedException();
         }

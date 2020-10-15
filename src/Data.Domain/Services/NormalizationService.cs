@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Common.Domain;
 using NNLib.Common;
 using NNLib.Csv;
+using NNLib.Data;
 
 namespace Data.Domain.Services
 {
@@ -29,7 +30,7 @@ namespace Data.Domain.Services
 
         public async Task MinMaxNormalization()
         {
-            void MinMax(SupervisedSet set)
+            void MinMax(SupervisedTrainingSamples set)
             {
                 void MinMaxVec(IVectorSet vec)
                 {
@@ -67,7 +68,7 @@ namespace Data.Domain.Services
             }
 
             var trainingData = _appState.ActiveSession!.TrainingData!;
-            SupervisedTrainingSets? sets = null;
+            SupervisedTrainingData? sets = null;
             await Task.Run(() =>
             {
                 sets = trainingData.CloneSets();
@@ -82,7 +83,7 @@ namespace Data.Domain.Services
 
         public async Task MeanNormalization()
         {
-            void Mean(SupervisedSet set)
+            void Mean(SupervisedTrainingSamples set)
             {
                 void MeanVec(IVectorSet vec)
                 {
@@ -123,7 +124,7 @@ namespace Data.Domain.Services
 
 
             var trainingData = _appState.ActiveSession!.TrainingData!;
-            SupervisedTrainingSets? sets = null;
+            SupervisedTrainingData? sets = null;
             await Task.Run(() =>
             {
                 sets = trainingData.CloneSets();
@@ -137,7 +138,7 @@ namespace Data.Domain.Services
 
         public async Task StdNormalization()
         {
-            void Std(SupervisedSet set)
+            void Std(SupervisedTrainingSamples set)
             {
                 void StdVec(IVectorSet vec)
                 {
@@ -176,7 +177,7 @@ namespace Data.Domain.Services
             }
 
             var trainingData = _appState.ActiveSession!.TrainingData!;
-            SupervisedTrainingSets? sets = null;
+            SupervisedTrainingData? sets = null;
             await Task.Run(() =>
             {
                 sets = trainingData.CloneSets();

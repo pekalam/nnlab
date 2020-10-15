@@ -19,6 +19,7 @@ using System.Linq;
 using Data.Application.Controllers;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Complex;
+using NNLib.Data;
 using Prism.Ioc;
 
 
@@ -94,7 +95,7 @@ namespace Data.Application.Controllers
             {
                 if (_appState.ActiveSession!.TrainingData == null)
                 {
-                    var sets = new SupervisedTrainingSets(SupervisedSet.FromArrays(new []
+                    var sets = new SupervisedTrainingData(SupervisedTrainingSamples.FromArrays(new []
                         {
                             new []{0d},
                             new []{1d},
@@ -107,7 +108,7 @@ namespace Data.Application.Controllers
                             new []{2d},
                         }));
                     var trainingData = _assignedData = new TrainingData(sets,
-                        new SupervisedSetVariables(new SupervisedSetVariableIndexes(new[] { 0 }, new[] { 1 }),
+                        new SupervisedTrainingSamplesVariables(new SupervisedSetVariableIndexes(new[] { 0 }, new[] { 1 }),
                             new[] { new VariableName("x"), new VariableName("y"), }), TrainingDataSource.Memory, NormalizationMethod.None);
 
                     _appState.ActiveSession!.TrainingData = trainingData;
@@ -263,7 +264,7 @@ namespace Data.Application.Controllers
 
             if (_input.Count >= 3)
             {
-                var sets = new SupervisedTrainingSets(SupervisedSet.FromArrays(_input.ToArray(),
+                var sets = new SupervisedTrainingData(SupervisedTrainingSamples.FromArrays(_input.ToArray(),
                     _target.ToArray()));
 
                 _appState.ActiveSession!.TrainingData!.Sets = sets;

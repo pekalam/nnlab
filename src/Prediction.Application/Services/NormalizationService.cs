@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using Common.Domain;
 using MathNet.Numerics.LinearAlgebra;
-using NNLib.Common;
+using NNLib.Data;
 
-namespace Prediction.Application
+namespace Prediction.Application.Services
 {
     internal class NormalizationService
     {

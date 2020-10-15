@@ -11,6 +11,8 @@ using Common.Framework.Extensions;
 using CommonServiceLocator;
 using NNLib;
 using NNLib.Common;
+using NNLib.Data;
+using NNLib.MLP;
 using Prism.Events;
 using Prism.Ioc;
 using Prism.Regions;

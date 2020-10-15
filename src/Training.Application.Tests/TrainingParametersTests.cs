@@ -4,6 +4,8 @@ using Common.Framework;
 using FluentAssertions;
 using Moq.AutoMock;
 using NNLib;
+using NNLib.Training.GradientDescent;
+using NNLib.Training.LevenbergMarquardt;
 using TestUtils;
 using Training.Application.Controllers;
 using Training.Application.Services;

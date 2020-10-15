@@ -20,7 +20,7 @@ namespace Training.Application
 
     public enum Panels
     {
-        LiveEditPanel,
+        ParametersEditPanel,
         NetworkError,
         Accuracy,
         NetworkVisualization,

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using NNLib.Common;
 using NNLib.Csv;
+using NNLib.Data;
 using Prism.Mvvm;
 
 namespace Common.Domain
@@ -18,18 +19,18 @@ namespace Common.Domain
 
     public class TrainingData : BindableBase
     {
-        private SupervisedSetVariables _variables;
+        private SupervisedTrainingSamplesVariables _variables;
         private NormalizationMethod _normalizationMethod;
-        private SupervisedTrainingSets _sets;
+        private SupervisedTrainingData _sets;
         public TrainingDataSource Source { get; }
 
-        public SupervisedTrainingSets Sets
+        public SupervisedTrainingData Sets
         {
             get => _sets;
             set => SetProperty(ref _sets, value);
         }
 
-        public SupervisedTrainingSets OriginalSets { get; }
+        public SupervisedTrainingData OriginalSets { get; }
 
         public NormalizationMethod NormalizationMethod
         {
@@ -37,13 +38,13 @@ namespace Common.Domain
             set => SetProperty(ref _normalizationMethod, value);
         }
 
-        public SupervisedSetVariables Variables
+        public SupervisedTrainingSamplesVariables Variables
         {
             get => _variables;
             set => SetProperty(ref _variables, value ?? throw new NullReferenceException("Null Variables"));
         }
 
-        public TrainingData(SupervisedTrainingSets sets, SupervisedSetVariables variables, TrainingDataSource source, NormalizationMethod normalizationMethod)
+        public TrainingData(SupervisedTrainingData sets, SupervisedTrainingSamplesVariables variables, TrainingDataSource source, NormalizationMethod normalizationMethod)
         {
             _sets = sets;
             _variables = variables;
@@ -74,7 +75,7 @@ namespace Common.Domain
             }
         }
 
-        public SupervisedSet? GetSet(DataSetType type)
+        public SupervisedTrainingSamples? GetSet(DataSetType type)
         {
             switch (type)
             {
@@ -105,23 +106,23 @@ namespace Common.Domain
             }
         }
 
-        private SupervisedSet CloneMemorySet(SupervisedSet set)
+        private SupervisedTrainingSamples CloneMemorySet(SupervisedTrainingSamples set)
         {
-            return new SupervisedSet((set.Input as DefaultVectorSet)!.Clone(),
+            return new SupervisedTrainingSamples((set.Input as DefaultVectorSet)!.Clone(),
                 (set.Target as DefaultVectorSet)!.Clone());
         }
 
         public TrainingData Clone()
         {
-            SupervisedTrainingSets setsCpy = CloneSets();
+            SupervisedTrainingData setsCpy = CloneSets();
 
             return new TrainingData(setsCpy!, Variables.Clone(), Source, NormalizationMethod);
         }
 
 
-        public SupervisedTrainingSets CloneSets()
+        public SupervisedTrainingData CloneSets()
         {
-            SupervisedTrainingSets? setsCpy = null;
+            SupervisedTrainingData? setsCpy = null;
 
             if (Source == TrainingDataSource.Csv)
             {
@@ -131,7 +132,7 @@ namespace Common.Domain
             {
                 var training = CloneMemorySet(Sets.TrainingSet);
 
-                setsCpy = new SupervisedTrainingSets(training)
+                setsCpy = new SupervisedTrainingData(training)
                 {
                     TestSet = Sets.TestSet != null ? CloneMemorySet(Sets.TestSet) : null,
                     ValidationSet = Sets.ValidationSet != null ? CloneMemorySet(Sets.ValidationSet) : null,
