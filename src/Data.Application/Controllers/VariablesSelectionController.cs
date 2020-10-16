@@ -110,8 +110,8 @@ namespace Data.Application.Controllers
             }
             else
             {
-                _dsService.ChangeVariables(_currentIndexes, trainingData);
                 _dsService.ChangeVariables(_currentIndexes, trainingData.OriginalSets, trainingData.Source);
+                _dsService.ChangeVariables(_currentIndexes, trainingData);
             }
         }
 

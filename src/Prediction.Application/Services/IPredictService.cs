@@ -79,10 +79,7 @@ namespace Prediction.Application.Services
         {
             var vm = _accessor.Get<PredictViewModel>()!;
 
-            vm.DataScatterSeries.Points.Clear();
-            vm.DataPredictionLineSeries.Points.Clear();
-            vm.PredictionLineSeries.Points.Clear();
-            vm.PredictionScatterSeries.Points.Clear();
+            ClearPlots();
 
             vm.DataScatterSeries.Points.AddRange(dataScatter);
             vm.DataPredictionLineSeries.Points.AddRange(dataPredLine);
@@ -103,6 +100,7 @@ namespace Prediction.Application.Services
             vm.DataPredictionLineSeries.Points.Clear();
             vm.PredictionLineSeries.Points.Clear();
             vm.PredictionScatterSeries.Points.Clear();
+            vm.PlotModel.Model.InvalidatePlot(true);
         }
 
         public void UpdateAxes(TrainingData trainingData)
