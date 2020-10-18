@@ -10,6 +10,6 @@
 
     public enum ParamsInitMethod
     {
-        NormalDist, Xavier
+        DefaultNormalDist, NormalDist, Xavier
     }
 }

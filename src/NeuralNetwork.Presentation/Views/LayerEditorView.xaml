@@ -9,7 +9,8 @@
              xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:matrixPreview="clr-namespace:SharedUI.MatrixPreview;assembly=SharedUI"
              xmlns:designData="clr-namespace:NeuralNetwork.Presentation.__DesignData"
-             d:DesignHeight="450" d:DesignWidth="800"
+             xmlns:domain1="clr-namespace:Common.Domain;assembly=NeuralNetwork.Domain"
+             d:DesignHeight="450" d:DesignWidth="900"
              prism:ViewModelLocator.AutoWireViewModel="True"
              Focusable="True"
              mc:Ignorable="d" 
@@ -18,13 +19,13 @@
         <ObjectDataProvider x:Key="dataFromEnum" MethodName="GetValues"
                             ObjectType="{x:Type System:Enum}">
             <ObjectDataProvider.MethodParameters>
-                <x:Type TypeName="domain:ActivationFunctionName" />
+                <x:Type TypeName="domain1:ActivationFunctionName" />
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
         <ObjectDataProvider x:Key="paramsInitMethods" MethodName="GetValues"
                             ObjectType="{x:Type System:Enum}">
             <ObjectDataProvider.MethodParameters>
-                <x:Type TypeName="domain:ParamsInitMethod" />
+                <x:Type TypeName="domain1:ParamsInitMethod" />
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
         <Style x:Key="Title" TargetType="TextBlock">
@@ -42,6 +43,7 @@
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
@@ -71,14 +73,50 @@
                 <ComboBox MaxHeight="{Binding ElementName=Activation,Path=Height}"
                           ItemsSource="{Binding Source={StaticResource paramsInitMethods}}" 
                           SelectedValue="{Binding Path=Layer.ParamsInitMethod}"/>
-                <Button Margin="10,0,0,0" MaxWidth="160" HorizontalAlignment="Right" MaxHeight="40"
+                <Button Margin="10,0,0,0" HorizontalAlignment="Right" MaxHeight="40"
                         Command="{Binding Service.InitializeParametersCommand}">
                     Initialize parameters
                 </Button>
             </UniformGrid>
 
         </UniformGrid>
-        <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Center">
+        <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Vertical">
+            <Grid>
+                <Grid.Style>
+                    <Style TargetType="Grid">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Layer.ParamsInitMethod}" Value="{x:Static domain1:ParamsInitMethod.NormalDist}">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                        <Style.Setters>
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                        </Style.Setters>
+                    </Style>
+                </Grid.Style>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Row="0" Grid.Column="1" TextAlignment="Center" Text="Normal distribution parameters" Style="{StaticResource Title}"/>
+                <UniformGrid Grid.Row="1" Grid.Column="1" Columns="2">
+                    <TextBlock Text="Weights mean" HorizontalAlignment="Left" Style="{StaticResource Title}"/>
+                    <TextBox Height="26" Text="{Binding Layer.NormDistOptions.WMean}"/>
+                    <TextBlock Text="Weights standard deviation" HorizontalAlignment="Left" Style="{StaticResource Title}"/>
+                    <TextBox Height="26" Text="{Binding Layer.NormDistOptions.WStdDev}"/>
+                    <TextBlock Text="Biases mean" HorizontalAlignment="Left" Style="{StaticResource Title}"/>
+                    <TextBox Height="26" Text="{Binding Layer.NormDistOptions.BMean}"/>
+                    <TextBlock Text="Biases standard deviation" HorizontalAlignment="Left" Style="{StaticResource Title}"/>
+                    <TextBox Height="26" Text="{Binding Layer.NormDistOptions.BStdDev}"/>
+                </UniformGrid>
+
+            </Grid>
+        </StackPanel>
+        <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Center" Margin="0,42,0,0">
             <ToggleButton Name="MatrixViewToggle" IsChecked="False" MaxWidth="100">
                 <ToggleButton.Style>
                     <Style TargetType="ToggleButton">
@@ -97,7 +135,7 @@
 
             </ToggleButton>
 
-            <ScrollViewer Margin="0,12,0,0" VerticalScrollBarVisibility="Visible" Name="MatrixView" Visibility="{Binding IsChecked,ElementName=MatrixViewToggle, Converter={StaticResource BoolToVis}}">
+            <ScrollViewer VerticalScrollBarVisibility="Visible" Name="MatrixView" Visibility="{Binding IsChecked,ElementName=MatrixViewToggle, Converter={StaticResource BoolToVis}}">
                 <matrixPreview:MatrixPreviewView Editable="True" MaxHeight="600"
                                                  LayerSelectPanelVisibility="Collapsed" DataContext="{Binding MatrixPreview}" />
             </ScrollViewer>

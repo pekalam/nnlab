@@ -21,7 +21,7 @@ namespace NeuralNetwork.Domain
         Layer InsertAfter(int layerIndex);
         Layer InsertBefore(int layerIndex);
         MLPNetwork CreateNeuralNetwork(TrainingData trainingData);
-        void ChangeParamsInitMethod(ParamsInitMethod newMethod);
+        void ChangeParamsInitMethod<T>(ParamsInitMethod newMethod, T? options = null) where T : class;
     }
 
     public class NeuralNetworkService : INeuralNetworkService
@@ -49,7 +49,8 @@ namespace NeuralNetwork.Domain
 
         public bool AddLayer()
         {
-            var newLayer = new PerceptronLayer(NeuralNetwork.Layers[^1].NeuronsCount, 1, new LinearActivationFunction());
+            var newLayer =
+                new PerceptronLayer(NeuralNetwork.Layers[^1].NeuronsCount, 1, new LinearActivationFunction());
             NeuralNetwork.AddLayer(newLayer);
             _appState.ActiveSession?.RaiseNetworkStructureChanged();
             return Validate();
@@ -77,7 +78,7 @@ namespace NeuralNetwork.Domain
 
         public void SetActivationFunction(Layer layer, IActivationFunction activationFunction)
         {
-            ((PerceptronLayer)layer).ActivationFunction = activationFunction;
+            ((PerceptronLayer) layer).ActivationFunction = activationFunction;
             _appState.ActiveSession?.RaiseNetworkParametersChanged();
         }
 
@@ -124,19 +125,15 @@ namespace NeuralNetwork.Domain
                 new PerceptronLayer(5, outputCount, new LinearActivationFunction()));
         }
 
-        public void ChangeParamsInitMethod(ParamsInitMethod newMethod)
+        public void ChangeParamsInitMethod<T>(ParamsInitMethod newMethod, T? options = null) where T : class
         {
-            if(_appState.ActiveSession?.Network == null) return;
+            if (_appState.ActiveSession?.Network == null) return;
             foreach (var layer in _appState.ActiveSession.Network.Layers)
             {
-                layer.MatrixBuilder = newMethod switch
-                {
-                    ParamsInitMethod.Xavier => new XavierMatrixBuilder(),
-                    ParamsInitMethod.NormalDist => new NormDistMatrixBuilder(),
-                    _ => throw new NotImplementedException()
-                };
+                layer.MatrixBuilder = ParamsInitMethodAssembler.FromParamsInitMethod(newMethod, options);
                 layer.ResetParameters();
             }
+
             _appState.ActiveSession?.RaiseNetworkParametersChanged();
         }
     }

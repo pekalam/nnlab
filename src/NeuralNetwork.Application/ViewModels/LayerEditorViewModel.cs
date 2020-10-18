@@ -16,6 +16,10 @@ namespace NeuralNetwork.Application.ViewModels
         private int _neuronsCount;
         private int _inputsCount;
         private ParamsInitMethod _paramsInitMethod = ParamsInitMethod.NormalDist;
+        private NormDistMatrixBuilderOptions _normDistOptions = new NormDistMatrixBuilderOptions()
+        {
+            WMean = 0, WStdDev = 1, BMean = 0, BStdDev = 0,
+        };
 
 
         public LayerDetailsModel(Layer layer)
@@ -47,6 +51,12 @@ namespace NeuralNetwork.Application.ViewModels
         {
             get => _paramsInitMethod;
             set => SetProperty(ref _paramsInitMethod, value);
+        }
+
+        public NormDistMatrixBuilderOptions NormDistOptions
+        {
+            get => _normDistOptions;
+            set => SetProperty(ref _normDistOptions, value);
         }
 
         public bool ShowInputsCount => Layer.IsInputLayer;

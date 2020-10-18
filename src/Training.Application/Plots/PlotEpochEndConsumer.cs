@@ -67,6 +67,8 @@ namespace Training.Application.Plots
             _callback = callback;
         }
 
+        public bool IsRunning { get; private set; }
+
         public void Initialize()
         {
             if (_moduleState.ActiveSession != null) SetTrainingSessionHandlers(_moduleState.ActiveSession);
@@ -139,6 +141,7 @@ namespace Training.Application.Plots
             _bufSub?.Dispose();
             _onlineSub?.Dispose();
             _bufSub = _onlineSub = _subscription = null;
+            IsRunning = false;
         }
 
         private void SubscribeSession(TrainingSession session)
@@ -251,6 +254,7 @@ namespace Training.Application.Plots
             });
 
             InitSubscription();
+            IsRunning = true;
         }
     }
 }

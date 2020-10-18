@@ -75,6 +75,7 @@ namespace Data.Application.Controllers
         private readonly AppStateHelper _helper;
         private TrainingData? _assignedData;
         private Session? _currentSession;
+        private bool _initialized;
 
         public CustomDataSetController(AppState appState, IRegionManager rm, IEventAggregator ea, IViewModelAccessor accessor, CustomDataSetMemento memento) : base(accessor)
         {
@@ -114,7 +115,51 @@ namespace Data.Application.Controllers
                     _appState.ActiveSession!.TrainingData = trainingData;
                 }
 
+
+                if(_initialized) return;
+
+                _helper.OnTrainingDataChanged(OnTrainingDataChanged);
+
+                _initialized = true;
             };
+        }
+
+        private void OnTrainingDataChanged(TrainingData data)
+        {
+            if (_currentSession != null)
+            {
+                _memento.SaveForSession(this, _currentSession);
+                _currentSession = null;
+            }
+            Vm!.MatrixVm.RowRemoved -= MatrixVmOnRowRemoved;
+            Vm!.MatrixVm.MatrixElementChanged -= MatrixVmOnMatrixElementChanged;
+            if (data.Source != TrainingDataSource.Memory) return;
+
+            _currentSession = _appState.ActiveSession!;
+
+            if (_assignedData != data)
+            {
+                _input.Clear();
+                _target.Clear();
+            }
+
+
+            if (!_memento.TryRestoreForSession(this, _appState.ActiveSession!))
+            {
+                Vm!.Scatter.Points.Clear();
+
+                for (int i = 0; i < data.Sets.TrainingSet.Input.Count; i++)
+                {
+                    _input.Add(new[] { data.Sets.TrainingSet.Input[i][0, 0] });
+                    _target.Add(new[] { data.Sets.TrainingSet.Target[i][0, 0] });
+                    Vm!.Scatter.Points.Add(new ScatterPoint(data.Sets.TrainingSet.Input[i][0, 0], data.Sets.TrainingSet.Target[i][0, 0]));
+                }
+            }
+            BuildMatrixFromData();
+            Vm!.PlotModel.InvalidatePlot(true);
+
+            Vm!.MatrixVm.RowRemoved += MatrixVmOnRowRemoved;
+            Vm!.MatrixVm.MatrixElementChanged += MatrixVmOnMatrixElementChanged;
         }
 
         private void MatrixVmOnMatrixElementChanged(Matrix<double> obj)
@@ -140,47 +185,6 @@ namespace Data.Application.Controllers
                 Vm!.Scatter.Points.Add(new ScatterPoint(obj[i,0], obj[i,1]));
             }
             Vm!.PlotModel.InvalidatePlot(true);
-        }
-
-        protected override void VmCreated()
-        {
-            _helper.OnTrainingDataChanged(data =>
-            {
-                if (_currentSession != null)
-                {
-                    _memento.SaveForSession(this, _currentSession);
-                    _currentSession = null;
-                }
-                Vm!.MatrixVm.RowRemoved -= MatrixVmOnRowRemoved;
-                Vm!.MatrixVm.MatrixElementChanged -= MatrixVmOnMatrixElementChanged;
-                if (data.Source != TrainingDataSource.Memory) return;
-
-                _currentSession = _appState.ActiveSession!;
-
-                if (_assignedData != data)
-                {
-                    _input.Clear();
-                    _target.Clear();
-                }
-
-
-                if (!_memento.TryRestoreForSession(this, _appState.ActiveSession!))
-                {
-                    Vm!.Scatter.Points.Clear();
-
-                    for (int i = 0; i < data.Sets.TrainingSet.Input.Count; i++)
-                    {
-                        _input.Add(new []{ data.Sets.TrainingSet.Input[i][0, 0] });
-                        _target.Add(new []{ data.Sets.TrainingSet.Target[i][0, 0] });
-                        Vm!.Scatter.Points.Add(new ScatterPoint(data.Sets.TrainingSet.Input[i][0, 0], data.Sets.TrainingSet.Target[i][0, 0]));
-                    }
-                }
-                BuildMatrixFromData();
-                Vm!.PlotModel.InvalidatePlot(true);
-
-                Vm!.MatrixVm.RowRemoved += MatrixVmOnRowRemoved;
-                Vm!.MatrixVm.MatrixElementChanged += MatrixVmOnMatrixElementChanged;
-            });
         }
 
         ///memento getters / setters

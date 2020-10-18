@@ -90,7 +90,7 @@ namespace NeuralNetwork.Application.Controllers
 
         }
 
-        private void LayerClicked(LayerEditorItemModel obj)
+        private void LayerClicked(LayerEditorItemModel? obj)
         {
             if(obj == null || obj.IsAddLayerItem) return;
             //TODO fix

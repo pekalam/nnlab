@@ -68,6 +68,7 @@ namespace NeuralNetwork.Application.Controllers
                 ActivationFunction =
                     ActivationFunctionNameAssembler.FromActivationFunction(
                         ((PerceptronLayer)layer).ActivationFunction),
+                ParamsInitMethod = ParamsInitMethodAssembler.FromMatrixBuilder(layer.MatrixBuilder),
             };
             model.PropertyChanged += OnLayerDetailsModelPropertyChanged;
 
@@ -110,17 +111,12 @@ namespace NeuralNetwork.Application.Controllers
                     }
                     Vm!.MatrixPreview.Controller.InvalidateDisplayedMatrix();
                     break;
-                case nameof(model.ParamsInitMethod):
-                    _networkService.ChangeParamsInitMethod(Vm!.Layer!.ParamsInitMethod);
-                    Vm!.MatrixPreview.Controller.AssignNetwork(_assignedNetwork!);
-                    Vm!.MatrixPreview.Controller.SelectMatrix(_layerNum, MatrixTypes.Weights);
-                    break;
             }
         }
 
         private void InitializeParameters()
         {
-            _networkService.ResetWeights(_assignedNetwork!.Layers[_layerNum]);
+            _networkService.ChangeParamsInitMethod(Vm!.Layer!.ParamsInitMethod, Vm!.Layer.ParamsInitMethod == ParamsInitMethod.NormalDist ? Vm!.Layer.NormDistOptions : null);
             Vm!.MatrixPreview.Controller.AssignNetwork(_assignedNetwork!);
             Vm!.MatrixPreview.Controller.SelectMatrix(_layerNum, MatrixTypes.Weights);
         }

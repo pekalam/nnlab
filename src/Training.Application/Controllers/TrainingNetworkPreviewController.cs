@@ -119,9 +119,10 @@ namespace Training.Application.Controllers
 
         private void ModuleStateOnActiveSessionChanged(object? sender, (TrainingSession? prev, TrainingSession next) e)
         {
-            if (Vm!.ModelAdapter!.ColorAnimation.IsAnimating)
+            if (_epochEndConsumer!.IsRunning)
             {
-                Vm!.ModelAdapter.ColorAnimation.StopAnimation(true);
+                _epochEndCallback = null;
+                _epochEndConsumer?.ForceStop();
             }
         }
 
@@ -159,9 +160,10 @@ namespace Training.Application.Controllers
 
         private void ToggleAnimation()
         {
-            if (Vm!.ModelAdapter!.ColorAnimation.IsAnimating)
+            if (_epochEndConsumer!.IsRunning)
             {
-                Vm!.ModelAdapter.ColorAnimation.StopAnimation(false);
+                _epochEndCallback = null;
+                _epochEndConsumer?.ForceStop();
             }
             else
             {
