@@ -34,7 +34,7 @@
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <DockPanel>
-                    <TextBlock DockPanel.Dock="Top" Text="Reports: 20" FontSize="16" HorizontalAlignment="Stretch"
+                    <TextBlock DockPanel.Dock="Top" Text="Reports" FontSize="16" HorizontalAlignment="Stretch"
                                Padding="8" Background="{StaticResource StatusBarBackground}" />
                     <ListBox x:Name="ReportsList" DockPanel.Dock="Bottom" SelectedItem="{Binding SelectedReport}"
                              SelectedIndex="0" ItemsSource="{Binding AppState.ActiveSession.TrainingReports}" VirtualizingPanel.ScrollUnit="Pixel">

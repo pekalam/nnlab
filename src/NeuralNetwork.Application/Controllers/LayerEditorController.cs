@@ -111,12 +111,15 @@ namespace NeuralNetwork.Application.Controllers
                     }
                     Vm!.MatrixPreview.Controller.InvalidateDisplayedMatrix();
                     break;
+                case nameof(model.ParamsInitMethod):
+                    _networkService.ChangeParamsInitMethod(Vm!.Layer!.Layer, Vm!.Layer!.ParamsInitMethod, false, Vm!.Layer.ParamsInitMethod == ParamsInitMethod.NormalDist ? Vm!.Layer.NormDistOptions : null);
+                    break;
             }
         }
 
         private void InitializeParameters()
         {
-            _networkService.ChangeParamsInitMethod(Vm!.Layer!.ParamsInitMethod, Vm!.Layer.ParamsInitMethod == ParamsInitMethod.NormalDist ? Vm!.Layer.NormDistOptions : null);
+            _networkService.ChangeParamsInitMethod(Vm!.Layer!.Layer,Vm!.Layer!.ParamsInitMethod, true, Vm!.Layer.ParamsInitMethod == ParamsInitMethod.NormalDist ? Vm!.Layer.NormDistOptions : null);
             Vm!.MatrixPreview.Controller.AssignNetwork(_assignedNetwork!);
             Vm!.MatrixPreview.Controller.SelectMatrix(_layerNum, MatrixTypes.Weights);
         }

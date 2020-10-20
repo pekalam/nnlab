@@ -153,6 +153,7 @@ namespace Prediction.Application.Controllers
             _service.UpdateNetworkAndMatrix(_appState.ActiveSession!.Network!, _appState.ActiveSession.TrainingData!,
                 memento.InputMatrix);
             _service.UpdatePlots(memento.DataScatterPoints, memento.DataPredictionPoints, memento.PredictionPoints, memento.PredictionScatterPoints);
+            UpdateStartEndValue(memento.SelectedPlotSetType);
         }
 
         private void ActiveSessionOnNetworkStructureChanged(MLPNetwork network)

@@ -64,7 +64,7 @@ namespace Prediction.Application.Services
             vm.InputMatrixVm.Controller.AssignMatrix(inputMatrix, new []{"Value"}, i => data.Variables.InputVariableNames[i]);
             vm.OutputMatrixVm = new MatrixPreviewViewModel();
             if (network.Layers[^1].Output == null) return;
-            vm.OutputMatrixVm.Controller.AssignMatrix(network.Layers[^1].Output!, new[] { "Value" }, i => data.Variables.TargetVariableNames[i]);
+            vm.OutputMatrixVm.Controller.AssignMatrix(Matrix<double>.Build.Dense(network.Layers[^1].NeuronsCount,1,0), new[] { "Value" }, i => data.Variables.TargetVariableNames[i]);
         }
 
         public void UpdateMatrix(Matrix<double> output, TrainingData data, Matrix<double> inputMatrix)

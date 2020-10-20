@@ -20,7 +20,6 @@
   <ItemGroup>
     <ProjectReference Include="..\Common.Domain\Common.Domain.csproj" />
     <ProjectReference Include="..\Common.Framework\Common.Framework.csproj" />
-    <ProjectReference Include="..\Common.Infrastructure\Common.Infrastructure.csproj" />
     <ProjectReference Include="..\Data.Application\Data.Application.csproj" />
     <ProjectReference Include="..\Data.Domain\Data.Domain.csproj" />
     <ProjectReference Include="..\Data.Presentation\Data.Presentation.csproj" />

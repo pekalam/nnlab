@@ -98,9 +98,9 @@ namespace NeuralNetwork.Application
             return network;
         }
 
-        public void ChangeParamsInitMethod<T>(ParamsInitMethod newMethod, T? options = null) where T : class
+        public void ChangeParamsInitMethod<T>(Layer layer, ParamsInitMethod newMethod, bool reset, T? options = null) where T : class
         {
-            _service.ChangeParamsInitMethod(newMethod, options);
+            _service.ChangeParamsInitMethod(layer,newMethod, reset, options);
         }
     }
 }
