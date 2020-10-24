@@ -10,6 +10,11 @@ using Prism.Unity;
 
 namespace Shell.Interface
 {
+    public class ContentRestoredForModule : PubSubEvent<int>
+    {
+
+    }
+
     public class EnableModalNavigation : PubSubEvent<DelegateCommand>
     {
 

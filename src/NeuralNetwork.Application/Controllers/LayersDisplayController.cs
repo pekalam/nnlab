@@ -55,6 +55,7 @@ namespace NeuralNetwork.Application.Controllers
             {
                 SetLayers();
 
+                _moduleState.NetworkStructureChanged -= ModuleStateOnNetworkStructureChanged;
                 _moduleState.NetworkStructureChanged += ModuleStateOnNetworkStructureChanged;
             });
         }

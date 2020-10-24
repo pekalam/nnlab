@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Threading;
 using Common.Domain;
 using Common.Framework;
@@ -12,6 +13,7 @@ using NNLibAdapter;
 using Prism.Commands;
 using Prism.Ioc;
 using Prism.Regions;
+using Shell.Interface;
 using Training.Application.Controllers;
 using Training.Application.Plots;
 using Training.Application.Services;
@@ -107,6 +109,7 @@ namespace Training.Application.Controllers
 
             Vm!.ModelAdapter.SetInputLabels(trainingData.Variables.InputVariableNames);
             Vm!.ModelAdapter.SetOutputLabels(trainingData.Variables.TargetVariableNames);
+            Vm!.ModelAdapter.Controller.ForceDraw();
         }
 
 

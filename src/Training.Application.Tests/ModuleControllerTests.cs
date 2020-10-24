@@ -21,8 +21,8 @@ namespace Training.Application.Tests
     {
         public static void SetupValidAndGate(this Session session)
         {
-            session.Network = MLPMocks.AndGateNet;
             session.TrainingData = TrainingDataMocks.AndGateTrainingData();
+            session.Network = MLPMocks.AndGateNet;
         }
     }
 

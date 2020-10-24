@@ -5,6 +5,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using Common.Framework;
+using Prism.Events;
 using Prism.Regions;
 using Shell.Application;
 using Shell.Application.Interfaces;
@@ -15,13 +16,15 @@ namespace Shell.Presentation
     internal class ContentRegionHistoryService : IContentRegionHistoryService
     {
         private IRegionManager _rm;
+        private IEventAggregator _ea;
 
         //module identifier to previous content view
         private readonly Dictionary<int, object> _previousViews = new Dictionary<int, object>();
 
-        public ContentRegionHistoryService(IRegionManager rm)
+        public ContentRegionHistoryService(IRegionManager rm, IEventAggregator ea)
         {
             _rm = rm;
+            _ea = ea;
         }
 
         public void SaveContentForModule(int moduleNavId)
@@ -45,6 +48,7 @@ namespace Shell.Presentation
                     _rm.Regions[AppRegions.ContentRegion].Add(view);
                     _rm.Regions[AppRegions.ContentRegion].Activate(view);
                 }
+                _ea.GetEvent<ContentRestoredForModule>().Publish(moduleNavId);
             }
         }
 

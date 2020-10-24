@@ -30,8 +30,8 @@ namespace Training.Application.ViewModels
                         Title = "Error",
                         AbsoluteMinimum = 0,
                         AxisTitleDistance = 18,
+                        MinimumRange = 0.001,
                     };
-                    newAxis.LabelFormatter = ErrorPlotViewModel.CreateDefaultLabelFormatter(newAxis);
                     _plotModel!.Model.Axes[1] = newAxis;
                 }
                 else
@@ -42,8 +42,8 @@ namespace Training.Application.ViewModels
                         Title = "Error",
                         AbsoluteMinimum = 0,
                         AxisTitleDistance = 18,
+                        MinimumRange = 0.001,
                     };
-                    newAxis.LabelFormatter = ErrorPlotViewModel.CreateDefaultLabelFormatter(newAxis);
                     _plotModel!.Model.Axes[1] = newAxis;
                 }
             }

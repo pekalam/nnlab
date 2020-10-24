@@ -28,8 +28,5 @@ namespace Training.Application.ViewModels
         {
             Service.Navigated(navigationContext);
         }
-
-
-        public void StopAnimation(bool resetColors) => ModelAdapter?.ColorAnimation.StopAnimation(resetColors);
     }
 }
