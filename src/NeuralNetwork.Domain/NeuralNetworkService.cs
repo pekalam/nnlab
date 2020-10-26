@@ -22,6 +22,8 @@ namespace NeuralNetwork.Domain
         Layer InsertBefore(int layerIndex);
         MLPNetwork CreateNeuralNetwork(TrainingData trainingData);
         void ChangeParamsInitMethod<T>(Layer layer, ParamsInitMethod newMethod, bool reset, T? options = null) where T : class;
+
+        void AdjustNetworkToData(TrainingData data);
     }
 
     public class NeuralNetworkService : INeuralNetworkService
@@ -136,6 +138,13 @@ namespace NeuralNetwork.Domain
             }
 
             _appState.ActiveSession?.RaiseNetworkParametersChanged();
+        }
+
+        public void AdjustNetworkToData(TrainingData data)
+        {
+            _appState.ActiveSession!.Network!.Layers[0].InputsCount = data.Variables.InputVariableNames.Length;
+            _appState.ActiveSession!.Network!.Layers[^1].NeuronsCount = data.Variables.TargetVariableNames.Length;
+            _appState.ActiveSession?.RaiseNetworkStructureChanged();
         }
     }
 }

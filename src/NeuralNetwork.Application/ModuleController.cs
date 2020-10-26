@@ -74,9 +74,7 @@ namespace NeuralNetwork.Application
 
         private void AdjustNetworkToNewVariables(TrainingData trainingData)
         {
-            _networkService.SetInputsCount(trainingData.Variables.InputVariableNames.Length);
-            _networkService.SetNeuronsCount(_appState.ActiveSession!.Network!.Layers[^1],
-                trainingData.Variables.TargetVariableNames.Length);
+            _networkService.AdjustNetworkToData(trainingData);
             _moduleState.ModelAdapter!.SetInputLabels(trainingData.Variables.InputVariableNames);
             _moduleState.ModelAdapter.SetOutputLabels(trainingData.Variables.TargetVariableNames);
         }

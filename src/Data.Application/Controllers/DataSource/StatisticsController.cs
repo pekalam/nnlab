@@ -57,6 +57,7 @@ namespace Data.Application.Controllers.DataSource
             {
                 nameof(TrainingData.Variables) => true,
                 nameof(TrainingData.Sets) => true,
+                nameof(TrainingData.NormalizationMethod) => true,
                 _ => false,
             });
 

@@ -138,6 +138,7 @@ namespace Prediction.Application.Controllers
             }, s => s switch
             {
                 nameof(TrainingData.Sets) => true,
+                nameof(TrainingData.NormalizationMethod) => true,
                 nameof(TrainingData.Variables) => true,
                 _ => false,
             });

@@ -22,9 +22,10 @@ namespace NeuralNetwork.Application.ViewModels
         };
 
 
-        public LayerDetailsModel(Layer layer)
+        public LayerDetailsModel(Layer layer, bool isFirstLayer)
         {
             Layer = layer;
+            ShowInputsCount = isFirstLayer;
         }
 
         public Layer Layer { get; }
@@ -59,7 +60,7 @@ namespace NeuralNetwork.Application.ViewModels
             set => SetProperty(ref _normDistOptions, value);
         }
 
-        public bool ShowInputsCount => Layer.IsInputLayer;
+        public bool ShowInputsCount { get; }
     }
 
     public class LayerEditorNavParams : NavigationParameters

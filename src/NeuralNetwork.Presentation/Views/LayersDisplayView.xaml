@@ -25,17 +25,6 @@
                                 <Canvas.Style>
                                     <Style TargetType="Canvas">
                                         <Style.Triggers>
-                                            
-                                            <MultiDataTrigger>
-                                                <MultiDataTrigger.Conditions>
-                                                    <Condition Binding="{Binding IsInputLayer}" Value="False"/>
-                                                    <Condition Binding="{Binding IsAddLayerItem}" Value="False"/>
-                                                </MultiDataTrigger.Conditions>
-                                                <Setter Property="Visibility" Value="Visible"/>
-                                            </MultiDataTrigger>
-                                            <DataTrigger Binding="{Binding IsInputLayer}" Value="True">
-                                                <Setter Property="Visibility" Value="Collapsed"/>
-                                            </DataTrigger>
                                             <DataTrigger Binding="{Binding IsAddLayerItem}" Value="True">
                                                 <Setter Property="Visibility" Value="Collapsed"/>
                                             </DataTrigger>

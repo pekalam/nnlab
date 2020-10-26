@@ -105,10 +105,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Prediction.Presentation", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Prediction.Application", "Prediction.Application\Prediction.Application.csproj", "{B8F2D31D-AF3D-4F65-B0B7-FD557E155FB9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NNControl", "..\..\NNControl\NNControl\NNControl.csproj", "{978CBD5D-CC3C-4037-B620-A64620936ACC}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NNLibAdapter", "..\..\NNControl\NNLibAdapter\NNLibAdapter.csproj", "{4978BC51-DE43-49BF-87A9-4984D7AFDE89}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -267,14 +263,6 @@ Global
 		{B8F2D31D-AF3D-4F65-B0B7-FD557E155FB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B8F2D31D-AF3D-4F65-B0B7-FD557E155FB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B8F2D31D-AF3D-4F65-B0B7-FD557E155FB9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{978CBD5D-CC3C-4037-B620-A64620936ACC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{978CBD5D-CC3C-4037-B620-A64620936ACC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{978CBD5D-CC3C-4037-B620-A64620936ACC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{978CBD5D-CC3C-4037-B620-A64620936ACC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4978BC51-DE43-49BF-87A9-4984D7AFDE89}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4978BC51-DE43-49BF-87A9-4984D7AFDE89}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4978BC51-DE43-49BF-87A9-4984D7AFDE89}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4978BC51-DE43-49BF-87A9-4984D7AFDE89}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

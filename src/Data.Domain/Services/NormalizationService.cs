@@ -71,14 +71,13 @@ namespace Data.Domain.Services
             SupervisedTrainingData? sets = null;
             await Task.Run(() =>
             {
-                sets = trainingData.CloneSets();
+                sets = trainingData.CloneSets(true);
                 MinMax(sets.TrainingSet);
                 if (sets.ValidationSet != null) MinMax(sets.ValidationSet);
                 if (sets.TestSet != null) MinMax(sets.TestSet);
 
             });
-            trainingData.NormalizationMethod = NormalizationMethod.MinMax;
-            trainingData.Sets = sets!;
+            trainingData.ChangeNormalization(sets!, NormalizationMethod.MinMax);
         }
 
         public async Task MeanNormalization()
@@ -127,13 +126,12 @@ namespace Data.Domain.Services
             SupervisedTrainingData? sets = null;
             await Task.Run(() =>
             {
-                sets = trainingData.CloneSets();
+                sets = trainingData.CloneSets(true);
                 Mean(sets.TrainingSet);
                 if (sets.ValidationSet != null) Mean(sets.ValidationSet);
                 if (sets.TestSet != null) Mean(sets.TestSet);
             });
-            trainingData.NormalizationMethod = NormalizationMethod.Mean;
-            trainingData.Sets = sets!;
+            trainingData.ChangeNormalization(sets!, NormalizationMethod.Mean);
         }
 
         public async Task StdNormalization()
@@ -180,18 +178,18 @@ namespace Data.Domain.Services
             SupervisedTrainingData? sets = null;
             await Task.Run(() =>
             {
-                sets = trainingData.CloneSets();
+                sets = trainingData.CloneSets(true);
                 Std(sets.TrainingSet);
                 if (sets.ValidationSet != null) Std(sets.ValidationSet);
                 if (sets.TestSet != null) Std(sets.TestSet);
             });
-            trainingData.NormalizationMethod = NormalizationMethod.Std;
-            trainingData.Sets = sets!;
+            trainingData.ChangeNormalization(sets!, NormalizationMethod.Std);
         }
 
         public void NoNormalization()
         {
-            _appState.ActiveSession!.TrainingData!.RestoreOriginalSets();
+            var trainingData = _appState.ActiveSession!.TrainingData!;
+            trainingData.ChangeNormalization(trainingData.OriginalSets, NormalizationMethod.None);
         }
 
         public async Task Normalize(NormalizationMethod method)

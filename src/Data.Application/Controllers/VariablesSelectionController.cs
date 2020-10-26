@@ -104,7 +104,6 @@ namespace Data.Application.Controllers
             if (normalization != NormalizationMethod.None)
             {
                 _dsService.ChangeVariables(_currentIndexes, trainingData.OriginalSets, trainingData.Source);
-                trainingData.RestoreOriginalSets();
                 await _normalizationService.Normalize(normalization);
                 _dsService.ChangeVariables(_currentIndexes, trainingData);
             }

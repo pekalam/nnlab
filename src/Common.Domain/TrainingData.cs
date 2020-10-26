@@ -131,22 +131,23 @@ namespace Common.Domain
         }
 
 
-        public SupervisedTrainingData CloneSets()
+        public SupervisedTrainingData CloneSets(bool originalSets = false)
         {
             SupervisedTrainingData? setsCpy = null;
+            var toCpy = originalSets ? OriginalSets : Sets;
 
             if (Source == TrainingDataSource.Csv)
             {
-                setsCpy = CsvFacade.Copy(Sets);
+                setsCpy = CsvFacade.Copy(toCpy);
             }
             else if (Source == TrainingDataSource.Memory)
             {
-                var training = CloneMemorySet(Sets.TrainingSet);
+                var training = CloneMemorySet(toCpy.TrainingSet);
 
                 setsCpy = new SupervisedTrainingData(training)
                 {
-                    TestSet = Sets.TestSet != null ? CloneMemorySet(Sets.TestSet) : null,
-                    ValidationSet = Sets.ValidationSet != null ? CloneMemorySet(Sets.ValidationSet) : null,
+                    TestSet = toCpy.TestSet != null ? CloneMemorySet(toCpy.TestSet) : null,
+                    ValidationSet = toCpy.ValidationSet != null ? CloneMemorySet(toCpy.ValidationSet) : null,
                 };
             }else
             {
@@ -160,6 +161,12 @@ namespace Common.Domain
         {
             Sets = sets;
             OriginalSets = CloneSets();
+        }
+
+        public void ChangeNormalization(SupervisedTrainingData newData, NormalizationMethod newNormalization)
+        {
+            _sets = newData;
+            NormalizationMethod = newNormalization;
         }
     }
 }

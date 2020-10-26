@@ -102,5 +102,13 @@ namespace NeuralNetwork.Application
         {
             _service.ChangeParamsInitMethod(layer,newMethod, reset, options);
         }
+
+        public void AdjustNetworkToData(TrainingData data)
+        {
+            _service.AdjustNetworkToData(data);
+            ModelAdapter.LayerModelAdapters[0].SetNeuronsCount(_appState.ActiveSession!.Network!.Layers[0].InputsCount);
+            ModelAdapter.LayerModelAdapters[^1].SetNeuronsCount(_appState.ActiveSession!.Network!.Layers[^1].NeuronsCount);
+            _moduleState.RaiseNetworkStructureChanged();
+        }
     }
 }

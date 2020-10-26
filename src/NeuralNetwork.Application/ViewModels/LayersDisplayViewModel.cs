@@ -15,7 +15,6 @@ namespace NeuralNetwork.Application.ViewModels
 
         public int LayerIndex { get; set; }
         public int TotalNeurons { get; set; }
-        public bool IsInputLayer { get; set; }
         public bool IsOutputLayer { get; set; }
         public bool IsAddLayerItem { get; set; }
         public ICommand? AddLayer { get; set; }
@@ -29,10 +28,6 @@ namespace NeuralNetwork.Application.ViewModels
         {
             get
             {
-                // if (IsInputLayer)
-                // {
-                //     return "(input)";
-                // }
                 if (IsOutputLayer)
                 {
                     return "(output)";

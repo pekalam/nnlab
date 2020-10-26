@@ -63,7 +63,7 @@ namespace Data.Application.ViewModels.DataSource.Preview
             }, s => s switch
             {
                 nameof(TrainingData.Variables) => true,
-                nameof(TrainingData.Sets) => true,
+                nameof(TrainingData.NormalizationMethod) => true,
                 _ => false,
             });
         }

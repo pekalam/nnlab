@@ -58,7 +58,6 @@ namespace NeuralNetwork.Application.Services
             layers.Add(new LayerEditorItemModel()
             {
                 IsAddLayerItem = true,
-                IsInputLayer = false,
                 IsOutputLayer = false,
                 LayerIndex = layers.Count,
                 TotalNeurons = 0,
@@ -73,7 +72,6 @@ namespace NeuralNetwork.Application.Services
              collection.Add(new LayerEditorItemModel()
              {
                  IsAddLayerItem = true,
-                 IsInputLayer = false,
                  IsOutputLayer = false,
                  LayerIndex = collection.Count,
                  TotalNeurons = 0,
@@ -86,7 +84,6 @@ namespace NeuralNetwork.Application.Services
         {
             return new LayerEditorItemModel()
             {
-                IsInputLayer = layer.IsInputLayer,
                 IsOutputLayer = layer.IsOutputLayer,
                 LayerIndex = ind,
                 TotalNeurons = layer.NeuronsCount,

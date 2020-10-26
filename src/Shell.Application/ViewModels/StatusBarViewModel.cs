@@ -69,7 +69,7 @@ namespace Shell.Application.ViewModels
             for (int i = 0; i < network.Layers.Count; i++)
             {
                 var layer = network.Layers[i];
-                if (layer.IsInputLayer)
+                if (i == 0)
                 {
                     _bldr.Append(layer.InputsCount);
                     _bldr.Append(" x ");

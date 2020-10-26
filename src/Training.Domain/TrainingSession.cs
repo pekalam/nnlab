@@ -101,11 +101,11 @@ namespace Training.Domain
         public event Action? TrainerUpdated;
         public event Action? SessionReset;
 
-        private void TrainingDataOnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void SessionOnNetworkStructureChanged(MLPNetwork obj)
         {
-            if (e.PropertyName == nameof(TrainingData.Sets))
+            if (_trainer!.TrainingSets != _session.TrainingData!.Sets)
             {
-                _trainer!.TrainingSets= _session.TrainingData!.Sets;
+                _trainer!.TrainingSets = _session.TrainingData!.Sets;
                 TrainerUpdated?.Invoke();
             }
         }
@@ -122,11 +122,13 @@ namespace Training.Domain
         private void ConstructTrainer()
         {
             _session.TrainingParameters!.PropertyChanged += TrainingParametersOnPropertyChanged;
-            _session.TrainingData!.PropertyChanged += TrainingDataOnPropertyChanged;
+            _session.NetworkStructureChanged += SessionOnNetworkStructureChanged;
             Trainer = new MLPTrainer(_session.Network!, _session.TrainingData!.Sets, SelectAlgorithm(),
                 new QuadraticLossFunction());
             IsValid = true;
         }
+
+
 
         private void TrainingParametersOnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
