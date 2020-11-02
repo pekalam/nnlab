@@ -2,6 +2,6 @@
 {
     public enum DivisionMethod
     {
-        Normal
+        Random,Normal
     }
 }

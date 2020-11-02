@@ -9,6 +9,7 @@ using System.ComponentModel;
 using System.Linq;
 using Common.Domain;
 using Common.Framework;
+using Data.Domain;
 using NNLib.Data;
 using Prism.Ioc;
 
@@ -179,7 +180,12 @@ namespace Data.Application.Controllers
         {
             var existingData = _appState.ActiveSession!.TrainingData!;
             var opt = ConstructDivOptions();
-            var sets = _dataService.LoadSets(path, new LinearDataSetDivider(), opt, existingData.Variables.Indexes);
+            var sets = _dataService.LoadSets(path, Vm!.DivisionMethod switch
+            {
+                DivisionMethod.Random => new RandomDataSetDivider(),
+                DivisionMethod.Normal => new LinearDataSetDivider(),
+                _ => throw new NotImplementedException()
+            }, opt, existingData.Variables.Indexes);
             _appState.ActiveSession.TrainingData!.StoreNewSets(sets);
             _appState.ActiveSession.RaiseTrainingDataUpdated();
 

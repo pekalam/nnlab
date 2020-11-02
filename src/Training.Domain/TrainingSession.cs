@@ -110,6 +110,14 @@ namespace Training.Domain
             }
         }
 
+        private void TrainingDataOnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(TrainingData.Sets))
+            {
+                _trainer!.TrainingSets = _session.TrainingData!.Sets;
+                TrainerUpdated?.Invoke();
+            }
+        }
 
         /// <summary>
         ///     Test method
@@ -123,12 +131,11 @@ namespace Training.Domain
         {
             _session.TrainingParameters!.PropertyChanged += TrainingParametersOnPropertyChanged;
             _session.NetworkStructureChanged += SessionOnNetworkStructureChanged;
+            _session.TrainingData!.PropertyChanged += TrainingDataOnPropertyChanged;
             Trainer = new MLPTrainer(_session.Network!, _session.TrainingData!.Sets, SelectAlgorithm(),
                 new QuadraticLossFunction());
             IsValid = true;
         }
-
-
 
         private void TrainingParametersOnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
