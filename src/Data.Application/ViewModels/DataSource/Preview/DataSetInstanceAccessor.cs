@@ -28,7 +28,9 @@ namespace Data.Application.ViewModels.DataSource.Preview
             {
                 if (!trainingData.Variables.Indexes.Ignored.Contains(i))
                 {
-                    cols[ind++] = new DataColumn(trainingData.Variables.Names[i].ToString().Replace('.', '_'));
+                    var name = trainingData.Variables.Names[i].ToString().Replace('.', '_');
+                    cols[ind++] = new DataColumn(name);
+                    _dataTable.ExtendedProperties[name] = trainingData.Variables.Indexes.InputVarIndexes.Contains(i) ? VariableUses.Input : VariableUses.Target;
                 }
             }
             _dataTable.Columns.AddRange(cols);

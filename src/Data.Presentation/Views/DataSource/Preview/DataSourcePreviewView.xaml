@@ -6,6 +6,10 @@
              xmlns:converters="clr-namespace:Common.Presentation.Converters;assembly=Common.Presentation">
     <UserControl.Resources>
         <converters:BooleanNegToVisibilityConverter x:Key="BoolNegToVis"/>
+        <Style x:Key="TargetHeader" BasedOn="{StaticResource MahApps.Styles.DataGridColumnHeader}" TargetType="DataGridColumnHeader">
+            <Setter Property="Background" Value="#0078D7"></Setter>
+            <Setter Property="Foreground" Value="White"></Setter>
+        </Style>
     </UserControl.Resources>
     <Grid Visibility="{Binding ShowLoading, Converter={StaticResource BoolNegToVis}}">
         <Grid.RowDefinitions>
@@ -42,7 +46,8 @@
                       CanUserSortColumns="False"
                       GridLinesVisibility="Horizontal"
                       MaxHeight="400"
-                      Loaded="PreviewGrid_Loaded">
+                      Loaded="PreviewGrid_Loaded"
+                      AutoGeneratingColumn="PreviewGrid_OnAutoGeneratingColumn">
                 <DataGrid.Columns>
                     <DataGridTextColumn />
                 </DataGrid.Columns>
@@ -109,6 +114,7 @@
                               CanUserResizeColumns="True"
                               CanUserSortColumns="False"
                               GridLinesVisibility="Horizontal"
+                              AutoGeneratingColumn="InstancePreviewGrid_OnAutoGeneratingColumn"
                               Loaded="InstancePreviewGrid_Loaded" MaxWidth="{Binding ElementName=Ref2, Path=ActualWidth}">
                 <DataGrid.Columns>
                     <DataGridTextColumn />

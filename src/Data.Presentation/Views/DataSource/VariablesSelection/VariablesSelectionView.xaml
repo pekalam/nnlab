@@ -60,6 +60,35 @@
        
                                     </Binding>
                                 </ComboBox.SelectedItem>
+
+                                <ComboBox.ItemContainerStyle>
+                                    <Style TargetType="ComboBoxItem" BasedOn="{StaticResource MahApps.Styles.ComboBoxItem}">
+                                        <Style.Triggers>
+                                            <Trigger Property="Content" Value="{x:Static common:VariableUses.Ignore}">
+                                                <Setter Property="Foreground" Value="Red"></Setter>
+                                            </Trigger>
+                                            <Trigger Property="Content" Value="{x:Static common:VariableUses.Input}">
+                                                <Setter Property="Foreground" Value="White"></Setter>
+                                            </Trigger>
+                                            <Trigger Property="Content" Value="{x:Static common:VariableUses.Target}">
+                                                <Setter Property="Foreground" Value="#4fb1ff"></Setter>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ComboBox.ItemContainerStyle>
+                                <ComboBox.Style>
+                                    <Style TargetType="ComboBox" BasedOn="{StaticResource MahApps.Styles.ComboBox}">
+                                        <Style.Triggers>
+                                            <Trigger Property="SelectedItem" Value="{x:Static common:VariableUses.Ignore}">
+                                                <Setter Property="Foreground" Value="Red"></Setter>
+                                            </Trigger>
+                                            <Trigger Property="SelectedItem" Value="{x:Static common:VariableUses.Target}">
+                                                <Setter Property="Foreground" Value="#4fb1ff"></Setter>
+                                            </Trigger> 
+                                        </Style.Triggers>
+                                        
+                                    </Style>
+                                </ComboBox.Style>
                             </ComboBox>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
