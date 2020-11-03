@@ -276,6 +276,10 @@
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="8" />
                                     <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="8" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="8" />
+                                    <RowDefinition Height="Auto" />
                                 </Grid.RowDefinitions>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition />
@@ -293,6 +297,35 @@
                                 <mah:NumericUpDown Grid.Column="1" Grid.Row="2"
                                                    Value="{Binding TrainingParameters.ValidationEpochThreshold}"
                                                    IsEnabled="{Binding Path=IsChecked, ElementName=RunValidationCheckbox}" />
+
+
+                                <TextBlock Grid.Column="0" Grid.Row="4" Text="Stop when validation error reached" HorizontalAlignment="Left"
+                                           VerticalAlignment="Center"
+                                           Margin="0,10,0,10" />
+                                <CheckBox Grid.Row="4"  Grid.Column="1" Content=""
+                                          IsChecked="{Binding TrainingParameters.StopWhenValidationErrorReached}"
+                                          Name="StopWhenValidationErrorReached" Margin="0,0,10,0" />
+
+
+
+                                <TextBlock Grid.Column="0" Grid.Row="6" Text="Validation target error"
+                                           HorizontalAlignment="Left" VerticalAlignment="Center"
+                                           Margin="0,10,0,10" />
+                                <presentation:SubmitNumericUpDown MinWidth="120" IsEnabled="{Binding Path=IsChecked, ElementName=StopWhenValidationErrorReached}"
+                                                                  Grid.Row="6"
+                                                                  Grid.Column="1"
+                                                                  Minimum="0"
+                                                                  Interval="0.0001"
+                                                                  Value="{Binding TrainingParameters.ValidationTargetError, Mode=TwoWay, ValidatesOnDataErrors=True}"
+                                                                  HorizontalAlignment="Stretch"
+                                                                  HorizontalContentAlignment="Stretch">
+                                    <b:Interaction.Behaviors>
+                                        <behaviors:UpDownFloatFormatBehavior />
+                                        <behaviors:SubmitNumericUpDownKeyDownSubmitBehavior />
+                                    </b:Interaction.Behaviors>
+                                </presentation:SubmitNumericUpDown>
+
+
                             </Grid>
                         </StackPanel>
 

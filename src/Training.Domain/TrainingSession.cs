@@ -344,6 +344,12 @@ namespace Training.Domain
                 if (double.IsNaN(error))
                     return TrainingSessionReport.CreateNaNSessionReport(Trainer.Epochs, error, StartTime!.Value,
                         EpochEndEvents);
+
+                if (validationError.HasValue && Parameters.StopWhenValidationErrorReached && validationError.Value <= Parameters.ValidationTargetError)
+                {
+                    return TrainingSessionReport.CreateValidationErrorReachedSessionReport(Trainer.Epochs, error, StartTime!.Value,
+                        EpochEndEvents);
+                }
             } while (error > Parameters.TargetError);
 
             Stopped = true;

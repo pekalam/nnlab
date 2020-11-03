@@ -29,6 +29,7 @@ namespace Common.Domain
         NaNResult,
         AlgorithmError,
         Paused,
+        ValidationErrorReached,
     }
 
     public class TrainingReportsCollection : ObservableCollection<TrainingSessionReport>
@@ -113,8 +114,6 @@ namespace Common.Domain
 
         public TrainingSessionReport(SessionEndType sessionEndType, int totalEpochs, double error, DateTime startDate, TimeSpan duration, IEnumerable<EpochEndArgs> epochEndEventArgs)
         {
-            if(totalEpochs < 0) throw new ArgumentException("totalEpochs < 0");
-            if(error < 0d) throw new ArgumentException("error < 0");
             SessionEndType = sessionEndType;
             TotalEpochs = totalEpochs;
             Error = error;
@@ -147,5 +146,8 @@ namespace Common.Domain
 
         public static TrainingSessionReport CreateAlgorithmErrorSessionReport(int totalEpochs, double error, DateTime startTime, IEnumerable<EpochEndArgs> epochEndEventArgs) =>
             new TrainingSessionReport(SessionEndType.AlgorithmError, totalEpochs, error, startTime, Time.Now - startTime, epochEndEventArgs);
+        
+        public static TrainingSessionReport CreateValidationErrorReachedSessionReport(int totalEpochs, double error, DateTime startTime, IEnumerable<EpochEndArgs> epochEndEventArgs) =>
+            new TrainingSessionReport(SessionEndType.ValidationErrorReached, totalEpochs, error, startTime, Time.Now - startTime, epochEndEventArgs);
     }
 }

@@ -10,12 +10,6 @@
              d:DesignHeight="450" d:DesignWidth="800"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance dd:DesignTrainingVm, IsDesignTimeCreatable=True}">
-    <UserControl.Resources>
-        <Style TargetType="MenuItem" x:Key="CollapsingMenuItem">
-            <Style.Triggers>
-            </Style.Triggers>
-        </Style>
-    </UserControl.Resources>
     <StackPanel Orientation="Horizontal">
         <Button Style="{StaticResource ActionMenuButton}" >
                 <mah:DropDownButton Name="NetOption" Content="{x:Null}">
@@ -77,71 +71,6 @@
                 <iconPacks:PackIconFontAwesome Kind="SlidersHSolid" Width="20" Height="20" HorizontalAlignment="Center" />
                 <TextBlock>Parameters</TextBlock>
             </StackPanel>
-        </Button>
-        <Button Style="{StaticResource ActionMenuButton}">
-
-
-            <Grid>
-                <mah:DropDownButton Name="TestDropdown" Content="{x:Null}">
-                    <mah:DropDownButton.Style>
-                        <Style TargetType="mah:DropDownButton">
-                            <Setter Property="BorderThickness" Value="0" />
-                            <Setter Property="ArrowVisibility" Value="Collapsed" />
-                            <Setter Property="Padding" Value="0" />
-                            <Setter Property="Margin" Value="0" />
-                            <Setter Property="BorderBrush" Value="{x:Null}" />
-                            <Setter Property="Background" Value="Transparent" />
-
-                            <Style.Triggers>
-                                <MultiDataTrigger>
-                                    <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding Service.SessionOptionsDecorator.Session.Started}" Value="False"></Condition>
-                                        <Condition Binding="{Binding CanRunTests}" Value="True"></Condition>
-                                    </MultiDataTrigger.Conditions>
-                                    <MultiDataTrigger.Setters>
-                                        <Setter Property="IsEnabled" Value="True"></Setter>
-                                    </MultiDataTrigger.Setters>
-                                </MultiDataTrigger>
-                                <DataTrigger Binding="{Binding Service.SessionOptionsDecorator.Session.Started}"
-                                             Value="True">
-                                    <Setter Property="IsEnabled" Value="False"></Setter>
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding CanRunTests}"
-                                             Value="False">
-                                    <Setter Property="IsEnabled" Value="False"></Setter>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </mah:DropDownButton.Style>
-                    <mah:DropDownButton.ItemsSource>
-                        <CompositeCollection>
-                            <MenuItem Name="ValidationMenuItem" Header="Validation set" Command="{Binding Service.RunValidationCommand}" />
-                            <MenuItem Name="TestMenuItem" Header="Test set" Command="{Binding Service.RunTestCommand}" />
-                        </CompositeCollection>
-                    </mah:DropDownButton.ItemsSource>
-
-                    <mah:DropDownButton.ContentTemplate>
-                        <DataTemplate>
-                            <Button Style="{StaticResource ActionMenuButton}">
-
-                                <StackPanel x:Name="Container">
-
-                                    <iconPacks:PackIconFontAwesome Kind="CheckSolid" Width="20" Height="20"
-                                                                   HorizontalAlignment="Center" Margin="0,0,0,1" />
-                                    <TextBlock HorizontalAlignment="Center">Tests</TextBlock>
-
-                                </StackPanel>
-                            </Button>
-                        </DataTemplate>
-                    </mah:DropDownButton.ContentTemplate>
-
-                </mah:DropDownButton>
-
-
-            </Grid>
-
-
-
         </Button>
     </StackPanel>
 </UserControl>

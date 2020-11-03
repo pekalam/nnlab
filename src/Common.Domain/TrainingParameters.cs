@@ -127,6 +127,8 @@ namespace Common.Domain
         private int _validationEpochThreshold = 1;
         private bool _addReportOnPause = true;
         private bool _canRunValidation;
+        private bool _stopWhenValidationErrorReached;
+        private double _validationTargetError;
 
         public TrainingParameters(bool canRunValidation)
         {
@@ -193,9 +195,21 @@ namespace Common.Domain
             }
         }
 
+        public bool StopWhenValidationErrorReached
+        {
+            get => _stopWhenValidationErrorReached;
+            set => SetProperty(ref _stopWhenValidationErrorReached, value);
+        }
+
+        public double ValidationTargetError
+        {
+            get => _validationTargetError;
+            set => SetProperty(ref _validationTargetError, value);
+        }
+
         protected bool Equals(TrainingParameters other)
         {
-            return _maxEpochs == other._maxEpochs && _maxLearningTime.Equals(other._maxLearningTime) && _targetError.Equals(other._targetError) && _algorithm == other._algorithm && _runValidation == other._runValidation && _validationEpochThreshold == other._validationEpochThreshold && _addReportOnPause == other._addReportOnPause && GDParams.Equals(other.GDParams) && LMParams.Equals(other.LMParams) && CanRunValidation == other.CanRunValidation;
+            return _maxEpochs == other._maxEpochs && _maxLearningTime.Equals(other._maxLearningTime) && _targetError.Equals(other._targetError) && _algorithm == other._algorithm && _runValidation == other._runValidation && _validationEpochThreshold == other._validationEpochThreshold && _addReportOnPause == other._addReportOnPause && _canRunValidation == other._canRunValidation && _stopWhenValidationErrorReached == other._stopWhenValidationErrorReached && _validationTargetError == other._validationTargetError && GDParams.Equals(other.GDParams) && LMParams.Equals(other.LMParams);
         }
 
         public override bool Equals(object? obj)
@@ -208,20 +222,20 @@ namespace Common.Domain
 
         public override int GetHashCode()
         {
-            unchecked
-            {
-                var hashCode = _maxEpochs;
-                hashCode = (hashCode * 397) ^ _maxLearningTime.GetHashCode();
-                hashCode = (hashCode * 397) ^ _targetError.GetHashCode();
-                hashCode = (hashCode * 397) ^ (int) _algorithm;
-                hashCode = (hashCode * 397) ^ _runValidation.GetHashCode();
-                hashCode = (hashCode * 397) ^ _validationEpochThreshold;
-                hashCode = (hashCode * 397) ^ _addReportOnPause.GetHashCode();
-                hashCode = (hashCode * 397) ^ GDParams.GetHashCode();
-                hashCode = (hashCode * 397) ^ LMParams.GetHashCode();
-                hashCode = (hashCode * 397) ^ CanRunValidation.GetHashCode();
-                return hashCode;
-            }
+            var hashCode = new HashCode();
+            hashCode.Add(_maxEpochs);
+            hashCode.Add(_maxLearningTime);
+            hashCode.Add(_targetError);
+            hashCode.Add((int) _algorithm);
+            hashCode.Add(_runValidation);
+            hashCode.Add(_validationEpochThreshold);
+            hashCode.Add(_addReportOnPause);
+            hashCode.Add(_canRunValidation);
+            hashCode.Add(_stopWhenValidationErrorReached);
+            hashCode.Add(_validationTargetError);
+            hashCode.Add(GDParams);
+            hashCode.Add(LMParams);
+            return hashCode.ToHashCode();
         }
 
         public TrainingParameters Clone()
@@ -236,6 +250,8 @@ namespace Common.Domain
                 RunValidation = RunValidation,
                 TargetError = TargetError,
                 ValidationEpochThreshold = ValidationEpochThreshold,
+                StopWhenValidationErrorReached = StopWhenValidationErrorReached,
+                ValidationTargetError =  ValidationTargetError,
             };
         }
     }
