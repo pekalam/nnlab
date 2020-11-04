@@ -19,64 +19,46 @@ namespace NeuralNetwork.Application
         public ModuleState(AppState appState)
         {
             _appState = appState;
-
-            if (_appState.ActiveSession != null)
+            _appState.ActiveSessionChanged += (_, args) =>
             {
-                SetupActiveSession(_appState.ActiveSession);
-            }
-            _appState.ActiveSessionChanged += AppStateOnActiveSessionChanged;
+                if (args.prev != null)
+                {
+                    RaisePropertyChanged(nameof(ModelAdapter));
+                }
+            };
         }
 
         public NNLibModelAdapter? ModelAdapter
         {
             get
             {
-                if (_appState.ActiveSession?.Network == null) return null;
+                if (_appState.ActiveSession == null) return null;
                 if (_sessionToAdapter.ContainsKey(_appState.ActiveSession))
                 {
                     return _sessionToAdapter[_appState.ActiveSession];
                 }
-                else
-                {
-                    SetupActiveSession(_appState.ActiveSession);
-                    return _sessionToAdapter[_appState.ActiveSession];
-                }
+
+                return null;
             }
         }
 
-
-
-        private void AppStateOnActiveSessionChanged(object? sender, (Session? prev, Session next) e) => SetupActiveSession(e.next);
-
-        private void ActiveSessionOnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        public void SetupActiveSession()
         {
-            if (e.PropertyName == nameof(Session.Network))
-            {
-                var session = sender as Session;
-                SetAdapterIfNetworkNotNull(session!);
-            }
+            var session = _appState.ActiveSession;
+            Debug.Assert(session?.Network != null);
+
+            var adapter = new NNLibModelAdapter();
+            adapter.SetNeuralNetwork(session.Network);
+            adapter.NeuralNetworkModel.BackgroundColor = "#cce6ff";
+            _sessionToAdapter[session] = adapter;
+
+            RaisePropertyChanged(nameof(ModelAdapter));
         }
 
-        private void SetupActiveSession(Session session)
+        internal void AdjustNetworkLabels(TrainingData data)
         {
-            SetAdapterIfNetworkNotNull(session);
-            session.PropertyChanged += ActiveSessionOnPropertyChanged;
-        }
-
-        private void SetAdapterIfNetworkNotNull(Session session)
-        {
-            if (session.Network != null)
-            {
-                var adapter = new NNLibModelAdapter();
-                adapter.SetNeuralNetwork(session.Network);
-                adapter.NeuralNetworkModel.BackgroundColor = "#cce6ff";
-                _sessionToAdapter[session] = adapter;
-
-                adapter.SetInputLabels(session.TrainingData!.Variables.InputVariableNames);
-                adapter.SetOutputLabels(session.TrainingData.Variables.TargetVariableNames);
-
-                RaisePropertyChanged(nameof(ModelAdapter));
-            }
+            ModelAdapter!.SetInputLabels(data.Variables.InputVariableNames);
+            ModelAdapter.SetOutputLabels(data.Variables.TargetVariableNames);
         }
 
         public void RaiseNetworkStructureChanged()

@@ -39,6 +39,11 @@ namespace Common.Domain
             _trainingDataFile = trainingDataFile;
             _validationDataFile = validationDataFile;
             _testDataFile = testDataFile;
+
+            if (_trainingParameters == null && trainingData != null)
+            {
+                _trainingParameters = new TrainingParameters(trainingData?.GetSet(DataSetType.Validation) != null);
+            }
         }
 
         internal Session CloneWithName(string name, DuplicateOptions opt)

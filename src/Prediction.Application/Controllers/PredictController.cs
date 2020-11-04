@@ -101,28 +101,11 @@ namespace Prediction.Application.Controllers
 
             _helper.OnNetworkChanged(network =>
             {
-                if (_moduleState.GetSessionPredictMemento() != null)
-                {
-                    SetMemento(_moduleState.GetSessionPredictMemento()!);
-                }
-                else
-                {
-                    UpdateShowPlotPrediction(_appState.ActiveSession!.TrainingData!);
-                    if (Vm!.ShowPlotPrediction)
-                    {
-                        _service.UpdateAxes(_appState.ActiveSession!.TrainingData!);
-                        _service.ClearPlots();
-                    }
-
-
-                    var inputMatrix = Matrix<double>.Build.Dense(network.Layers[0].InputsCount, 1);
-                    _service.UpdateNetworkAndMatrix(network, _appState.ActiveSession!.TrainingData!, inputMatrix);
-                }
+                UpdateUi();   
 
                 _appState.ActiveSession!.NetworkStructureChanged -= ActiveSessionOnNetworkStructureChanged;
                 _appState.ActiveSession!.NetworkStructureChanged += ActiveSessionOnNetworkStructureChanged;
             });
-
 
             _helper.OnTrainingDataPropertyChanged(data =>
             {
@@ -144,6 +127,32 @@ namespace Prediction.Application.Controllers
             });
 
             _initialized = true;
+        }
+
+        private void UpdateUi()
+        {
+            if(_appState.ActiveSession!.TrainingData == null) return;
+            if(_appState.ActiveSession!.Network == null) return;
+
+            if (_moduleState.GetSessionPredictMemento() != null)
+            {
+                UpdateShowPlotPrediction(_appState.ActiveSession!.TrainingData!);
+                SetMemento(_moduleState.GetSessionPredictMemento()!);
+            }
+            else
+            {
+                UpdateShowPlotPrediction(_appState.ActiveSession!.TrainingData!);
+                if (Vm!.ShowPlotPrediction)
+                {
+                    _service.UpdateAxes(_appState.ActiveSession!.TrainingData!);
+                    _service.ClearPlots();
+                }
+
+
+                var inputMatrix = Matrix<double>.Build.Dense(_appState.ActiveSession.Network.Layers[0].InputsCount, 1);
+                _service.UpdateNetworkAndMatrix(_appState.ActiveSession.Network, _appState.ActiveSession!.TrainingData!, inputMatrix);
+            }
+
         }
 
         public void SetMemento(PredictControllerMemento memento)

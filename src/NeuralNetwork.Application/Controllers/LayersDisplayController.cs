@@ -27,6 +27,8 @@ namespace NeuralNetwork.Application.Controllers
         private readonly IEventAggregator _ea;
         private readonly AppStateHelper _helper;
 
+        private bool _initialized;
+
         public LayersDisplayController(INeuralNetworkShellService shellService, INeuralNetworkService networkService, AppState appState, IViewModelAccessor accessor, IEventAggregator ea, ModuleState moduleState) : base(accessor)
         {
             _shellService = shellService;
@@ -51,13 +53,25 @@ namespace NeuralNetwork.Application.Controllers
 
         protected override void VmCreated()
         {
+            if (_initialized) return;
+
             _helper.OnNetworkChanged(network =>
             {
                 SetLayers();
 
                 _moduleState.NetworkStructureChanged -= ModuleStateOnNetworkStructureChanged;
                 _moduleState.NetworkStructureChanged += ModuleStateOnNetworkStructureChanged;
+
+                _moduleState.PropertyChanged -= ModuleStateOnPropertyChanged;
+                _moduleState.PropertyChanged += ModuleStateOnPropertyChanged;
             });
+
+            _initialized = true;
+        }
+
+        private void ModuleStateOnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            SetLayers();
         }
 
         private void ModuleStateOnNetworkStructureChanged(NNLibModelAdapter obj)
@@ -140,7 +154,7 @@ namespace NeuralNetwork.Application.Controllers
 
         private void SetLayers()
         {
-            Debug.Assert(_moduleState.ModelAdapter != null);
+            if(_moduleState.ModelAdapter == null) return;
             
             _service.CreateLayers(_appState.ActiveSession!.Network!.Layers);
             _moduleState.ModelAdapter.Controller?.ClearHighlight();

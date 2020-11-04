@@ -41,6 +41,11 @@ namespace NeuralNetwork.Application
             {
                 if (data == null)
                 {
+                    if (_appState.ActiveSession!.Network != null)
+                    {
+                        _moduleState.SetupActiveSession();
+                    }
+
                     _ea.GetEvent<DisableNavMenuItem>().Publish(ModuleIds.NeuralNetwork);
                     return;
                 }
@@ -48,6 +53,16 @@ namespace NeuralNetwork.Application
                 if (_appState.ActiveSession!.Network == null)
                 {
                     CreateNetworkForSession(_appState.ActiveSession);
+                    _moduleState.SetupActiveSession();
+                    _moduleState.AdjustNetworkLabels(data);
+                }
+                else if (_moduleState.ModelAdapter == null)
+                {
+                    _moduleState.SetupActiveSession();
+                }
+                else
+                {
+                    AdjustNetworkToNewVariables(data);
                 }
                 _ea.GetEvent<EnableNavMenuItem>().Publish(ModuleIds.NeuralNetwork);
             });
@@ -75,8 +90,7 @@ namespace NeuralNetwork.Application
         private void AdjustNetworkToNewVariables(TrainingData trainingData)
         {
             _networkService.AdjustNetworkToData(trainingData);
-            _moduleState.ModelAdapter!.SetInputLabels(trainingData.Variables.InputVariableNames);
-            _moduleState.ModelAdapter.SetOutputLabels(trainingData.Variables.TargetVariableNames);
+            _moduleState.AdjustNetworkLabels(trainingData);
         }
 
         private void OnReloadContentForSession((int moduleId, Session prev, Session next) arg)

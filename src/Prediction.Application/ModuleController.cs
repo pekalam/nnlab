@@ -28,6 +28,7 @@ namespace Prediction.Application
                 SendEnabledDisabledForActiveSession();
             });
 
+            _helper.OnTrainingDataInSession(data => SendEnabledDisabledForActiveSession());
 
             _ea.OnFirstNavigation(ModuleIds.Prediction, () =>
             {
