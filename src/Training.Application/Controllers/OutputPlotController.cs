@@ -27,25 +27,14 @@ using Unity.Injection;
 
 namespace Training.Application.Services
 {
-    public interface IOutputPlotService : IService
+    public interface IOutputPlotService : ITransientController
     {
         Action<NavigationContext> Navigated { get; set; }
 
         public static void Register(IContainerRegistry cr)
         {
-            cr.Register<ITransientController<OutputPlotService>, OutputPlotController>()
-                .Register<IOutputPlotService, OutputPlotService>();
+            cr.Register<IOutputPlotService, OutputPlotController>();
         }
-    }
-
-    internal class OutputPlotService : IOutputPlotService
-    {
-        public OutputPlotService(ITransientController<OutputPlotService> ctrl)
-        {
-            ctrl.Initialize(this);
-        }
-
-        public Action<NavigationContext> Navigated { get; set; } = null!;
     }
 }
 
@@ -70,7 +59,7 @@ namespace Training.Application.Controllers
         public IOutputPlot? OutputPlot { get; private set; }
     }
 
-    class OutputPlotController : ControllerBase<OutputPlotViewModel>, ITransientController<OutputPlotService>
+    class OutputPlotController : ControllerBase<OutputPlotViewModel>, IOutputPlotService
     {
         private string _outputPlotSettingsRegion = null!;
 
@@ -80,12 +69,13 @@ namespace Training.Application.Controllers
         private readonly IRegionManager _rm;
         private readonly ModuleState _moduleState;
 
-        public OutputPlotController(IRegionManager rm, IViewModelAccessor accessor, ModuleState moduleState) :
-            base(accessor)
+        public OutputPlotController(IRegionManager rm, ModuleState moduleState)
         {
             _rm = rm;
             _moduleState = moduleState;
             _moduleState.ActiveSessionChanged += ModuleStateOnActiveSessionChanged;
+
+            Navigated = OnNavigated;
         }
 
         protected override void VmCreated()
@@ -100,11 +90,6 @@ namespace Training.Application.Controllers
                 _epochEndConsumer?.ForceStop();
                 Vm!.IsActiveChanged -= OnIsActiveChanged;
             }
-        }
-
-        public void Initialize(OutputPlotService service)
-        {
-            service.Navigated = OnNavigated;
         }
 
         private void ModuleStateOnActiveSessionChanged(object? sender, (TrainingSession? prev, TrainingSession next) e)
@@ -182,6 +167,8 @@ namespace Training.Application.Controllers
                     DispatcherPriority.Background, navParams.Cts.Token);
             }
         }
+
+        public Action<NavigationContext> Navigated { get; set; }
     }
 
     public class OutputPlotNavParams : NavigationParameters

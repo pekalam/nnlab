@@ -11,57 +11,44 @@ using Training.Domain;
 
 namespace Training.Application.Services
 {
-    public interface IReportErrorService : IService
+    public interface IReportErrorService : ITransientController
     {
         Action<NavigationContext> Navigated { get; }
 
         public static void Register(IContainerRegistry cr)
         {
-            cr.Register<IReportErrorService, ReportErrorService>().Register<ITransientController<ReportErrorService>, ReportErrorPlotController>();
+            cr.Register<IReportErrorService, ReportErrorPlotController>();
 
         }
-    }
-
-    internal class ReportErrorService : IReportErrorService
-    {
-        public ReportErrorService(ITransientController<ReportErrorService> ctrl)
-        {
-            ctrl.Initialize(this);
-        }
-
-        public Action<NavigationContext> Navigated { get; set; } = null!;
     }
 }
 
 namespace Training.Application.Controllers
 {
-    internal class ReportErrorPlotController : ITransientController<ReportErrorService>
+    internal class ReportErrorPlotController : ControllerBase<ReportErrorPlotViewModel>,IReportErrorService
     {
         private string? _reportErrorPlotSettingsRegion;
-        private readonly IViewModelAccessor _accessor;
 
-        public ReportErrorPlotController(IViewModelAccessor accessor)
+        public ReportErrorPlotController()
         {
-            _accessor = accessor;
+            Navigated = NavigatedAction;
         }
 
-        public void Initialize(ReportErrorService service)
+        public void Initialize()
         {
-            service.Navigated = Navigated;
         }
 
-        private void Navigated(NavigationContext ctx)
+        private void NavigatedAction(NavigationContext ctx)
         {
             var parameters = new ReportErrorPlotNavParams.ReportErrorPlotRecNavParams(ctx.Parameters);
 
-            var vm = _accessor.Get<ReportErrorPlotViewModel>()!;
-
             _reportErrorPlotSettingsRegion = nameof(_reportErrorPlotSettingsRegion) + parameters.ParentRegion;
-            vm.BasicPlotModel.SetSettingsRegion?.Invoke(_reportErrorPlotSettingsRegion);
-
-            vm.Series.Points.Clear();
-            vm.Series.Points.AddRange(parameters.Points);
-            vm.BasicPlotModel.Model.InvalidatePlot(true);
+            Vm!.BasicPlotModel.SetSettingsRegion?.Invoke(_reportErrorPlotSettingsRegion);
+            Vm!.Series.Points.Clear();
+            Vm!.Series.Points.AddRange(parameters.Points);
+            Vm!.BasicPlotModel.Model.InvalidatePlot(true);
         }
+
+        public Action<NavigationContext> Navigated { get; }
     }
 }

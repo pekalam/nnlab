@@ -62,6 +62,7 @@ namespace Training.Application.ViewModels
                 AxisTitleDistance = 18,
             });
             BasicPlotModel.Model.PlotMargins = new OxyThickness(80, Double.NaN, Double.NaN, Double.NaN);
+            service.Initialize(this);
         }
 
         public IReportErrorService Service { get; }

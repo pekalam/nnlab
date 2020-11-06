@@ -22,24 +22,13 @@ using Training.Domain;
 
 namespace Training.Application.Services
 {
-    public interface IErrorPlotService : IService
+    public interface IErrorPlotService : ITransientController
     {
         Action<NavigationContext> Navigated { get; }
 
         public static void Register(IContainerRegistry cr)
         {
-            cr.Register<IErrorPlotService, ErrorPlotService>()
-                .Register<ITransientController<ErrorPlotService>, ErrorPlotController>();
-        }
-    }
-
-    internal class ErrorPlotService : IErrorPlotService
-    {
-        public Action<NavigationContext> Navigated { get; set; } = null!;
-
-        public ErrorPlotService(ITransientController<ErrorPlotService> ctrl)
-        {
-            ctrl.Initialize(this);
+            cr.Register<IErrorPlotService, ErrorPlotController>();
         }
     }
 }
@@ -75,7 +64,7 @@ namespace Training.Application.Controllers
         }
     }
 
-    class ErrorPlotController : ControllerBase<ErrorPlotViewModel>,ITransientController<ErrorPlotService>
+    class ErrorPlotController : ControllerBase<ErrorPlotViewModel>,IErrorPlotService
     {
         private string _errorPlotSettingsRegion = null!;
         private readonly object _ptsLock = new object();
@@ -86,11 +75,13 @@ namespace Training.Application.Controllers
         private readonly ModuleState _moduleState;
 
 
-        public ErrorPlotController(IViewModelAccessor accessor, ModuleState moduleState, IRegionManager rm) : base(accessor)
+        public ErrorPlotController(ModuleState moduleState, IRegionManager rm)
         {
             _moduleState = moduleState;
             _rm = rm;
             _moduleState.ActiveSessionChanged += ModuleStateOnActiveSessionChanged;
+
+            Navigated = NavigatedAction;
         }
 
         protected override void VmCreated()
@@ -105,11 +96,6 @@ namespace Training.Application.Controllers
                 _epochEndConsumer?.ForceStop();
                 Vm!.IsActiveChanged -= OnIsActiveChanged;
             }
-        }
-
-        public void Initialize(ErrorPlotService service)
-        {
-            service.Navigated = Navigated;
         }
 
         private void ModuleStateOnActiveSessionChanged(object? sender, (TrainingSession? prev, TrainingSession next) e)
@@ -198,7 +184,7 @@ namespace Training.Application.Controllers
             _epochEndConsumer.Initialize();
         }
 
-        private void Navigated(NavigationContext ctx)
+        private void NavigatedAction(NavigationContext ctx)
         {
             var navParams = ErrorPlotNavParams.FromParams(ctx.Parameters);
 
@@ -216,5 +202,7 @@ namespace Training.Application.Controllers
                 Vm!.BasicPlotModel.Model.InvalidatePlot(true);
             }
         }
+
+        public Action<NavigationContext> Navigated { get; }
     }
 }

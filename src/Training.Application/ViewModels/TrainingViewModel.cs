@@ -5,6 +5,7 @@ using System.Windows;
 using Common.Framework;
 using Prism.Regions;
 using Training.Application.Services;
+using Training.Application.ViewModels.PanelLayout;
 using Training.Domain;
 using Unity;
 
@@ -15,7 +16,7 @@ namespace Training.Application.ViewModels
         private Visibility _selectPanelsButtonVisibility = Visibility.Visible;
         private Visibility _panelsContainerVisibility = Visibility.Hidden;
         private Visibility _upperSelectPanelsButtonVisibility = Visibility.Collapsed;
-
+        private IRegionManager _rm;
         
 #pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
         public TrainingViewModel()
@@ -24,14 +25,17 @@ namespace Training.Application.ViewModels
         }
 
         [InjectionConstructor]
-        public TrainingViewModel(ITrainingService service, ModuleState moduleState)
+        public TrainingViewModel(ITrainingService service, ModuleState moduleState, IRegionManager rm)
         {
             Service = service;
             ModuleState = moduleState;
+            _rm = rm;
             KeepAlive = true;
 
             Service.RunTestCommand.CanExecuteChanged += (sender, p) => RaisePropertyChanged(nameof(CanRunTests));
             Service.RunValidationCommand.CanExecuteChanged += (sender, p) => RaisePropertyChanged(nameof(CanRunTests));
+
+            service.Initialize(this);
         }
 
         public ModuleState ModuleState { get; }
@@ -55,6 +59,21 @@ namespace Training.Application.ViewModels
         {
             get => _upperSelectPanelsButtonVisibility;
             set => SetProperty(ref _upperSelectPanelsButtonVisibility, value);
+        }
+
+
+        public void ShowPanels(PanelLayoutNavigationParams navParams)
+        {
+            _rm.Regions[TrainingViewRegions.PanelLayoutRegion].RequestNavigate("PanelLayoutView", navParams);
+            SelectPanelsButtonVisibility = Visibility.Collapsed;
+            PanelsContainerVisibility = UpperSelectPanelsButtonVisibility = Visibility.Visible;
+        }
+
+        public void HidePanels()
+        {
+            SelectPanelsButtonVisibility = Visibility.Visible;
+            PanelsContainerVisibility = Visibility.Hidden;
+            UpperSelectPanelsButtonVisibility = Visibility.Collapsed;
         }
     }
 }

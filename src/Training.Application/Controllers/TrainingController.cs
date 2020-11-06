@@ -19,67 +19,58 @@ using Training.Domain;
 
 namespace Training.Application.Controllers
 {
-    internal interface ITrainingController : ISingletonController
+    class TrainingController : ControllerBase<TrainingViewModel>,ITrainingService
     {
-    }
-
-    class TrainingController : ITrainingController
-    {
-        private readonly TrainingService _service;
         private readonly IRegionManager _rm;
         private readonly IEventAggregator _ea;
-        private readonly IViewModelAccessor _accessor;
         private readonly IDialogService _dialogService;
         private List<PanelSelectModel> _lastSelectedPanels = new List<PanelSelectModel>();
 
         private readonly ModuleState _moduleState;
 
-        public TrainingController(TrainingService service, IRegionManager rm, IEventAggregator ea,
-            IViewModelAccessor accessor, IDialogService dialogService, ModuleState moduleState)
+        public TrainingController(IRegionManager rm, IEventAggregator ea, IDialogService dialogService, ModuleState moduleState)
         {
-            _service = service;
             _rm = rm;
             _ea = ea;
-            _accessor = accessor;
             _dialogService = dialogService;
             _moduleState = moduleState;
 
-            _service.OpenParametersCommand = new DelegateCommand(OpenParameters,
+            OpenParametersCommand = new DelegateCommand(OpenParameters,
                 () => _moduleState.ActiveSession != null && !_moduleState.ActiveSession.Started);
-            _service.OpenReportsCommand = new DelegateCommand(OpenReports,
+            OpenReportsCommand = new DelegateCommand(OpenReports,
                 () => _moduleState.ActiveSession?.CurrentReport != null && !_moduleState.ActiveSession.Started);
-            _service.SelectPanelsClickCommand = new DelegateCommand(SelectPanels,
+            SelectPanelsClickCommand = new DelegateCommand(SelectPanels,
                 () => _moduleState.ActiveSession != null && _moduleState.ActiveSession.IsValid);
-            _service.StartTrainingSessionCommand = new DelegateCommand(StartTrainingSession, () =>
+            StartTrainingSessionCommand = new DelegateCommand(StartTrainingSession, () =>
                 _moduleState.ActiveSession != null && _moduleState.ActiveSession.IsValid &&
                 !_moduleState.ActiveSession.Stopped && !_moduleState.ActiveSession.Started);
-            _service.StopTrainingSessionCommand = new DelegateCommand(StopTrainingSession, () =>
+            StopTrainingSessionCommand = new DelegateCommand(StopTrainingSession, () =>
                 _moduleState.ActiveSession != null && _moduleState.ActiveSession.IsValid &&
                 !_moduleState.ActiveSession.Stopped && _moduleState.ActiveSession.Started);
-            _service.PauseTrainingSessionCommand = new DelegateCommand(PauseTrainingSession, () =>
+            PauseTrainingSessionCommand = new DelegateCommand(PauseTrainingSession, () =>
                 _moduleState.ActiveSession != null && _moduleState.ActiveSession.IsValid &&
                 !_moduleState.ActiveSession.Stopped && _moduleState.ActiveSession.Started);
-            _service.ResetParametersCommand = new DelegateCommand(ResetParameters,
+            ResetParametersCommand = new DelegateCommand(ResetParameters,
                 () => _moduleState.ActiveSession != null && _moduleState.ActiveSession.IsValid);
-            _service.RunTestCommand = new DelegateCommand(RunTest, () =>
+            RunTestCommand = new DelegateCommand(RunTest, () =>
                 _moduleState.ActiveSession != null && _moduleState.ActiveSession.IsValid &&
                 _moduleState.ActiveSession.TrainingData!.Sets.TestSet != null && !_moduleState.ActiveSession.Started &&
                 _moduleState.ActiveSession.CurrentReport != null);
-            _service.RunValidationCommand = new DelegateCommand(RunValidation, () =>
+            RunValidationCommand = new DelegateCommand(RunValidation, () =>
                 _moduleState.ActiveSession != null && _moduleState.ActiveSession.IsValid &&
                 _moduleState.ActiveSession.TrainingData!.Sets.ValidationSet != null &&
                 !_moduleState.ActiveSession.Started && _moduleState.ActiveSession.CurrentReport != null);
 
             void CheckCommandsCanExec()
             {
-                _service.StartTrainingSessionCommand.RaiseCanExecuteChanged();
-                _service.StopTrainingSessionCommand.RaiseCanExecuteChanged();
-                _service.PauseTrainingSessionCommand.RaiseCanExecuteChanged();
-                _service.OpenReportsCommand.RaiseCanExecuteChanged();
-                _service.SelectPanelsClickCommand.RaiseCanExecuteChanged();
-                _service.OpenParametersCommand.RaiseCanExecuteChanged();
-                _service.RunTestCommand.RaiseCanExecuteChanged();
-                _service.RunValidationCommand.RaiseCanExecuteChanged();
+                StartTrainingSessionCommand.RaiseCanExecuteChanged();
+                StopTrainingSessionCommand.RaiseCanExecuteChanged();
+                PauseTrainingSessionCommand.RaiseCanExecuteChanged();
+                OpenReportsCommand.RaiseCanExecuteChanged();
+                SelectPanelsClickCommand.RaiseCanExecuteChanged();
+                OpenParametersCommand.RaiseCanExecuteChanged();
+                RunTestCommand.RaiseCanExecuteChanged();
+                RunValidationCommand.RaiseCanExecuteChanged();
             }
 
             _moduleState.ActiveSessionChanged += (_, args) =>
@@ -99,7 +90,7 @@ namespace Training.Application.Controllers
                 Session.PropertyChanged += (a, b) => CheckCommandsCanExec();
                 Session.SessionReset += () =>
                 {
-                    _service.HidePanels();
+                    Vm!.HidePanels();
                     CheckCommandsCanExec();
                 };
             };
@@ -193,7 +184,6 @@ namespace Training.Application.Controllers
 
         private void OnPanelsSelected(List<PanelSelectModel> list)
         {
-            var vm = _accessor.Get<TrainingViewModel>();
             _lastSelectedPanels = list;
 
             if (list.Count > 0)
@@ -202,11 +192,11 @@ namespace Training.Application.Controllers
                 {
                     ("ParentRegion", TrainingViewRegions.PanelLayoutRegion)
                 });
-                _service.ShowPanels(param);
+                Vm!.ShowPanels(param);
             }
             else
             {
-                _service.HidePanels();
+                Vm!.HidePanels();
             }
         }
 
@@ -220,8 +210,15 @@ namespace Training.Application.Controllers
             _rm.NavigateContentRegion("TrainingParametersView");
         }
 
-        public void Initialize()
-        {
-        }
+        public DelegateCommand StartTrainingSessionCommand { get; }
+        public DelegateCommand StopTrainingSessionCommand { get; }
+        public DelegateCommand PauseTrainingSessionCommand { get; }
+        public DelegateCommand RunValidationCommand { get; }
+        public DelegateCommand RunTestCommand { get; }
+        public DelegateCommand OpenReportsCommand { get; }
+        public DelegateCommand OpenParametersCommand { get; }
+        public DelegateCommand SelectPanelsClickCommand { get; }
+        public DelegateCommand ResetParametersCommand { get; }
+        public ModuleStateSessionOptionsDecorator SessionOptionsDecorator { get; }
     }
 }

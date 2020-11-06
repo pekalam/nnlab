@@ -16,7 +16,7 @@ using Training.Application.ViewModels;
 
 namespace Training.Application.Services
 {
-    public interface IPanelSelectService
+    public interface IPanelSelectService : ITransientController
     {
         DelegateCommand ApplySelectionCommand { get; }
         Action<IDialogParameters> Navigated { get; }
@@ -30,18 +30,14 @@ namespace Training.Application.Services
 
 namespace Training.Application.Controllers
 {
-    class PanelSelectController : IPanelSelectService, ITransientController
+    class PanelSelectController : ControllerBase<PanelSelectViewModel>,IPanelSelectService
     {
-        private IViewModelAccessor _accessor;
-
         private PanelSelectionResult _selectionResult = null!;
         private Panels? _startSelected;
         private bool _single;
 
-        public PanelSelectController(IViewModelAccessor accessor)
+        public PanelSelectController()
         {
-            _accessor = accessor;
-
             ApplySelectionCommand = new DelegateCommand(ApplySelection);
             
             Navigated = OnNavigated;
@@ -49,46 +45,43 @@ namespace Training.Application.Controllers
 
         private void OnNavigated(IDialogParameters parameters)
         {
-            var vm = _accessor.Get<PanelSelectViewModel>()!;
-
             _selectionResult = parameters.GetValue<PanelSelectionResult>(nameof(PanelSelectionResult));
             if (parameters.GetValue<bool>("single"))
             {
                 _single = true;
-                vm.SelectionMode = SelectionMode.Single;
+                Vm!.SelectionMode = SelectionMode.Single;
                 if (parameters.ContainsKey("selected"))
                 {
                     _startSelected = (Panels)parameters.GetValue<Panels>("selected");
-                    vm.SingleSelected = vm.Panels.Single(v => v.PanelType == _startSelected);
+                    Vm!.SingleSelected = Vm!.Panels.Single(v => v.PanelType == _startSelected);
                 }
             }
             else
             {
-                vm.SelectionMode = SelectionMode.Multiple;
+                Vm!.SelectionMode = SelectionMode.Multiple;
 
                 if (parameters.ContainsKey("maxSelected"))
                 {
-                    vm.MaxSelected = parameters.GetValue<int>("maxSelected");
+                    Vm!.MaxSelected = parameters.GetValue<int>("maxSelected");
                 }
 
                 if (parameters.ContainsKey("selected"))
                 {
                     var panels = parameters.GetValue<Panels[]>("selected");
-                    vm.SetSelectedItems?.Invoke(vm.Panels.Where(v => panels.Contains(v.PanelType)).ToList()!);
+                    Vm!.SetSelectedItems?.Invoke(Vm!.Panels.Where(v => panels.Contains(v.PanelType)).ToList()!);
                 }
             }
         }
 
         private void ApplySelection()
         {
-            var vm = _accessor.Get<PanelSelectViewModel>()!;
 
-            if (_single && vm.Selected?[0].PanelType == _startSelected)
+            if (_single && Vm!.Selected?[0].PanelType == _startSelected)
             {
                 return;
             }
-            _selectionResult.SetResult(vm.Selected ?? new List<PanelSelectModel>());
-            vm.CloseDialog(ButtonResult.OK);
+            _selectionResult.SetResult(Vm!.Selected ?? new List<PanelSelectModel>());
+            Vm!.CloseDialog(ButtonResult.OK);
         }
 
         public DelegateCommand ApplySelectionCommand { get; }

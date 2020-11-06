@@ -10,7 +10,7 @@ namespace Training.Application
         {
             cr.RegisterSingleton<ModuleState>();
 
-            cr.RegisterSingleton<ITrainingController, TrainingController>()
+            cr.RegisterSingleton<ITrainingService, TrainingController>()
                 .RegisterSingleton<ITrainingInfoController, TrainingInfoController>();
 
             IPanelSelectService.Register(cr);

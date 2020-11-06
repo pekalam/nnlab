@@ -39,6 +39,7 @@ namespace Training.Application.ViewModels
             AppState = appState;
             ModuleState = moduleState;
             Service = service;
+            service.Initialize(this);
         }
 
         public AppState AppState { get;  }

@@ -23,7 +23,7 @@ using Training.Domain;
 
 namespace Training.Application.Services
 {
-    public interface ITrainingNetworkPreviewService : IService
+    public interface ITrainingNetworkPreviewService : ITransientController
     {
         DelegateCommand ToggleAnimationCommand { get; }
         DelegateCommand ClearColorsCommand { get; }
@@ -31,28 +31,14 @@ namespace Training.Application.Services
 
         public static void Register(IContainerRegistry cr)
         {
-            cr.Register<ITrainingNetworkPreviewService, TrainingNetworkPreviewService>()
-                .Register<ITransientController<TrainingNetworkPreviewService>, TrainingNetworkPreviewController>();
+            cr.Register<ITrainingNetworkPreviewService, TrainingNetworkPreviewController>();
         }
-    }
-
-    internal class TrainingNetworkPreviewService : ITrainingNetworkPreviewService
-    {
-        public TrainingNetworkPreviewService(ITransientController<TrainingNetworkPreviewService> ctrl)
-        {
-            ctrl.Initialize(this);
-        }
-
-        public DelegateCommand ToggleAnimationCommand { get; set; } = null!;
-        public DelegateCommand ClearColorsCommand { get; set; } = null!;
-        public Action<NavigationContext> Navigated { get; set; } = null!;
     }
 }
 
 namespace Training.Application.Controllers
 {
-    class TrainingNetworkPreviewController : ControllerBase<TrainingNetworkPreviewViewModel>,
-        ITransientController<TrainingNetworkPreviewService>
+    class TrainingNetworkPreviewController : ControllerBase<TrainingNetworkPreviewViewModel>, ITrainingNetworkPreviewService
     {
         private PlotEpochEndConsumer? _epochEndConsumer;
         private Action? _epochEndCallback;
@@ -60,12 +46,15 @@ namespace Training.Application.Controllers
         private readonly AppStateHelper _helper;
         private readonly AppState _appState;
 
-        public TrainingNetworkPreviewController(IViewModelAccessor accessor, ModuleState moduleState, AppState appState)
-            : base(accessor)
+        public TrainingNetworkPreviewController(ModuleState moduleState, AppState appState)
         {
             _moduleState = moduleState;
             _appState = appState;
             _helper = new AppStateHelper(appState);
+
+            ToggleAnimationCommand = new DelegateCommand(ToggleAnimation);
+            ClearColorsCommand = new DelegateCommand(ClearColors);
+            Navigated = Navigated;
         }
 
         protected override void VmCreated()
@@ -129,14 +118,7 @@ namespace Training.Application.Controllers
             }
         }
 
-        public void Initialize(TrainingNetworkPreviewService service)
-        {
-            service.ToggleAnimationCommand = new DelegateCommand(ToggleAnimation);
-            service.ClearColorsCommand = new DelegateCommand(ClearColors);
-            service.Navigated = Navigated;
-        }
-
-        private void Navigated(NavigationContext obj)
+        private void NavigatedAction(NavigationContext obj)
         {
             _epochEndConsumer = new PlotEpochEndConsumer(_moduleState, (_, __) => _epochEndCallback!(),
                 session => { SetupAnimation(); },
@@ -173,5 +155,9 @@ namespace Training.Application.Controllers
                 SetupAnimation();
             }
         }
+
+        public DelegateCommand ToggleAnimationCommand { get; }
+        public DelegateCommand ClearColorsCommand { get; }
+        public Action<NavigationContext> Navigated { get; }
     }
 }

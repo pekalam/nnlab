@@ -22,6 +22,7 @@ namespace Training.Application.ViewModels
         public TrainingParametersViewModel(ITrainingParametersService service)
         {
             Service = service;
+            service.Initialize(this);
         }
 
         public ITrainingParametersService Service { get; }

@@ -16,14 +16,14 @@ using Training.Interface;
 
 namespace Training.Application.Controllers
 {
-    internal interface ITrainingInfoController : ISingletonController { }
+    public interface ITrainingInfoController : ITransientController { }
 
-    class TrainingInfoController : ControllerBase<TrainingInfoViewModel>,ITrainingInfoController
+    internal class TrainingInfoController : ControllerBase<TrainingInfoViewModel>,ITrainingInfoController
     {
         private readonly PlotEpochEndConsumer _epochEndConsumer;
         private readonly ModuleState _moduleState;
 
-        public TrainingInfoController(IEventAggregator ea, IViewModelAccessor accessor, ModuleState moduleState) : base(accessor)
+        public TrainingInfoController(IEventAggregator ea, ModuleState moduleState)
         {
             _moduleState = moduleState;
             _epochEndConsumer = new PlotEpochEndConsumer(moduleState,

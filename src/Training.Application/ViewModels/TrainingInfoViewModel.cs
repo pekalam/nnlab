@@ -9,6 +9,7 @@ using Common.Domain;
 using Common.Framework;
 using NNLib;
 using NNLib.Training.GradientDescent;
+using Training.Application.Controllers;
 using Training.Application.Views;
 using Training.Domain;
 using Unity;
@@ -27,7 +28,7 @@ namespace Training.Application.ViewModels
         }
 
         [InjectionConstructor]
-        public TrainingInfoViewModel(ModuleState moduleState, AppState appState)
+        public TrainingInfoViewModel(ITrainingInfoController controller,ModuleState moduleState, AppState appState)
         {
             ModuleState = moduleState;
             AppState = appState;
@@ -46,6 +47,8 @@ namespace Training.Application.ViewModels
                 session.SessionReset -= SessionOnSessionReset;
                 session.SessionReset += SessionOnSessionReset;
             });
+
+            controller.Initialize(this);
         }
 
         private void SessionOnSessionReset()

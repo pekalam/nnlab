@@ -17,7 +17,7 @@ using Training.Domain;
 
 namespace Training.Application.Services
 {
-    public interface ITrainingParametersService : IService
+    public interface ITrainingParametersService : ITransientController
     {
         DelegateCommand OkCommand { get; }
         DelegateCommand ResetCommand { get; }
@@ -25,38 +25,45 @@ namespace Training.Application.Services
 
         public static void Register(IContainerRegistry cr)
         {
-            cr.Register<ITrainingParametersService, TrainingParametersService>()
-                .Register<ITransientController<TrainingParametersService>, TrainingParametersController>();
+            cr.Register<ITrainingParametersService, TrainingParametersController>();
         }
-    }
-
-    internal class TrainingParametersService : ITrainingParametersService
-    {
-        public TrainingParametersService(ITransientController<TrainingParametersService> ctrl)
-        {
-            ctrl.Initialize(this);
-        }
-
-        public DelegateCommand OkCommand { get; set; } = null!;
-        public DelegateCommand ResetCommand { get; set; } = null!;
-        public DelegateCommand ReturnCommand { get; set; } = null!;
     }
 }
 
 namespace Training.Application.Controllers
 {
-    internal class TrainingParametersController : ControllerBase<TrainingParametersViewModel>,ITransientController<TrainingParametersService>
+    internal class TrainingParametersController : ControllerBase<TrainingParametersViewModel>,ITrainingParametersService
     {
         private readonly AppState _appState;
-        private TrainingParametersService _service = null!;
         private readonly IRegionManager _rm;
         private readonly IEventAggregator _ea;
 
-        public TrainingParametersController(IViewModelAccessor accessor, AppState appState, IRegionManager rm, IEventAggregator ea) : base(accessor)
+        public TrainingParametersController(AppState appState, IRegionManager rm, IEventAggregator ea)
         {
             _appState = appState;
             _rm = rm;
             _ea = ea;
+
+            OkCommand = new DelegateCommand(() =>
+                {
+                    var param = Vm!.TrainingParameters!.Clone();
+                    _appState.ActiveSession!.TrainingParameters = param;
+                    RaiseCommandsCanExec();
+                },
+                () => !Vm!.TrainingParameters!
+                    .Equals(_appState.ActiveSession!.TrainingParameters));
+
+            ResetCommand = new DelegateCommand(() =>
+                {
+                    var newParams = _appState.ActiveSession!.TrainingParameters!.Clone();
+                    Vm!.TrainingParameters = newParams;
+                    AttachHandlersToParameters(newParams);
+                },
+                () => !Vm!.TrainingParameters!
+                    .Equals(_appState.ActiveSession!.TrainingParameters));
+
+
+            ReturnCommand = new DelegateCommand(Return);
         }
 
         protected override void VmCreated()
@@ -107,7 +114,7 @@ namespace Training.Application.Controllers
             }
 
 
-            _ea.GetEvent<EnableModalNavigation>().Publish(_service.ReturnCommand);
+            _ea.GetEvent<EnableModalNavigation>().Publish(ReturnCommand);
         }
 
         private void AttachHandlersToParameters(TrainingParameters parameters)
@@ -131,8 +138,8 @@ namespace Training.Application.Controllers
 
         private void RaiseCommandsCanExec()
         {
-            _service.ResetCommand.RaiseCanExecuteChanged();
-            _service.OkCommand.RaiseCanExecuteChanged();
+            ResetCommand.RaiseCanExecuteChanged();
+            OkCommand.RaiseCanExecuteChanged();
         }
 
         private void VmOnPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -158,34 +165,13 @@ namespace Training.Application.Controllers
             }
         }
 
-        public void Initialize(TrainingParametersService service)
-        {
-            _service = service;
-            service.OkCommand = new DelegateCommand(() =>
-                {
-                    var param = Vm!.TrainingParameters!.Clone();
-                    _appState.ActiveSession!.TrainingParameters = param;
-                    RaiseCommandsCanExec();
-                },
-                () => !Vm!.TrainingParameters!
-                    .Equals(_appState.ActiveSession!.TrainingParameters));
-
-            service.ResetCommand = new DelegateCommand(() =>
-                {
-                    var newParams = _appState.ActiveSession!.TrainingParameters!.Clone();
-                    Vm!.TrainingParameters = newParams;
-                    AttachHandlersToParameters(newParams);
-                },
-                () => !Vm!.TrainingParameters!
-                    .Equals(_appState.ActiveSession!.TrainingParameters));
-
-
-            service.ReturnCommand = new DelegateCommand(Return);
-        }
-
         private void Return()
         {
             _rm.NavigateContentRegion("TrainingView");
         }
+
+        public DelegateCommand OkCommand { get; }
+        public DelegateCommand ResetCommand { get; }
+        public DelegateCommand ReturnCommand { get; }
     }
 }

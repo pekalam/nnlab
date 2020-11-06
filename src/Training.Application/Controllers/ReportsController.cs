@@ -21,7 +21,7 @@ using Training.Domain;
 
 namespace Training.Application.Services
 {
-    public interface IReportsService : IService
+    public interface IReportsService : ITransientController
     {
         DelegateCommand<TrainingSessionReport> SelectionChangedCommand { get; }
         Action<NavigationContext> Navigated { get; }
@@ -31,42 +31,32 @@ namespace Training.Application.Services
 
         public static void Register(IContainerRegistry cr)
         {
-            cr.Register<IReportsService, ReportsService>().Register<ITransientController<ReportsService>, ReportsController>();
+            cr.Register<IReportsService, ReportsController>();
         }
-    }
-
-    internal class ReportsService : IReportsService
-    {
-        public ReportsService(ITransientController<ReportsService> ctrl)
-        {
-            ctrl.Initialize(this);
-        }
-
-        public DelegateCommand<TrainingSessionReport> SelectionChangedCommand { get; set; } = null!;
-        public Action<NavigationContext> Navigated { get; set; } = null!;
-        public DelegateCommand GenerateValidationPlotCommand { get; set; } = null!;
-        public DelegateCommand GenerateTestPlotCommand { get; set; } = null!;
     }
 }
 
 namespace Training.Application.Controllers
 {
-    class ReportsController : ITransientController<ReportsService>
+    class ReportsController : ControllerBase<ReportsViewModel>,IReportsService
     {
-        private readonly IViewModelAccessor _accessor;
         private readonly IRegionManager _rm;
         private readonly AppState _appState;
         private readonly ModuleState _moduleState;
         private readonly IEventAggregator _ea;
 
-        public ReportsController(IViewModelAccessor accessor, IRegionManager rm, AppState appState, ModuleState moduleState, IEventAggregator ea)
+        public ReportsController(IRegionManager rm, AppState appState, ModuleState moduleState, IEventAggregator ea)
         {
-            _accessor = accessor;
             _rm = rm;
             _appState = appState;
             _moduleState = moduleState;
             _ea = ea;
             CloseReportsCommand = new DelegateCommand(CloseReports);
+
+            SelectionChangedCommand = new DelegateCommand<TrainingSessionReport>(SelectionChanged);
+            GenerateValidationPlotCommand = new DelegateCommand(() => DisplayTVOutputPlot(DataSetType.Validation));
+            GenerateTestPlotCommand = new DelegateCommand(() => DisplayTVOutputPlot(DataSetType.Test));
+            Navigated = Navigated;
         }
 
         private DelegateCommand CloseReportsCommand { get; }
@@ -85,20 +75,18 @@ namespace Training.Application.Controllers
 
         private async void DisplayTVOutputPlot(DataSetType setType)
         {
-            var vm = _accessor.Get<ReportsViewModel>()!;
-
             if (setType == DataSetType.Validation)
             {
-                if (vm.SelectedReport!.ValidationError == null)
+                if (Vm!.SelectedReport!.ValidationError == null)
                 {
-                    await _moduleState.ActiveSession!.RunValidation(vm.SelectedReport);
+                    await _moduleState.ActiveSession!.RunValidation(Vm!.SelectedReport);
                 }
             }
             else if (setType == DataSetType.Test)
             {
-                if (vm.SelectedReport!.TestError == null)
+                if (Vm!.SelectedReport!.TestError == null)
                 {
-                    await _moduleState.ActiveSession!.RunTest(vm.SelectedReport);
+                    await _moduleState.ActiveSession!.RunTest(Vm!.SelectedReport);
                 }
             }
 
@@ -127,19 +115,10 @@ namespace Training.Application.Controllers
             _rm.NavigateContentRegion("TrainingView");
         }
 
-        public void Initialize(ReportsService service)
-        {
-            service.SelectionChangedCommand = new DelegateCommand<TrainingSessionReport>(SelectionChanged);
-            service.GenerateValidationPlotCommand = new DelegateCommand(() => DisplayTVOutputPlot(DataSetType.Validation));
-            service.GenerateTestPlotCommand = new DelegateCommand(() => DisplayTVOutputPlot(DataSetType.Test));
-            service.Navigated = Navigated;
-        }
-
         private void InitHyperlinksText()
         {
-            var vm = _accessor.Get<ReportsViewModel>()!;
-            vm.TestHyperlinkText = vm.SelectedReport!.TestError != null ? "Generate output plot" : "Calculate error and generate output plot";
-            vm.ValidationHyperlinkText = vm.SelectedReport.ValidationError != null ? "Generate output plot" : "Calculate error and generate output plot";
+            Vm!.TestHyperlinkText = Vm!.SelectedReport!.TestError != null ? "Generate output plot" : "Calculate error and generate output plot";
+            Vm!.ValidationHyperlinkText = Vm!.SelectedReport.ValidationError != null ? "Generate output plot" : "Calculate error and generate output plot";
         }
 
         private void ClearTestValidationRegions()
@@ -148,7 +127,7 @@ namespace Training.Application.Controllers
             _rm.Regions[TrainingReportRegions.ReportTestPlotRegion].RemoveAll();
         }
 
-        private void Navigated(NavigationContext ctx)
+        private void NavigatedAction(NavigationContext ctx)
         {
             _ea.GetEvent<EnableModalNavigation>().Publish(CloseReportsCommand);
             ShowErrorPlot(_appState.ActiveSession!.TrainingReports[0]);
@@ -162,5 +141,10 @@ namespace Training.Application.Controllers
             ClearTestValidationRegions();
             InitHyperlinksText();
         }
+
+        public Action<NavigationContext> Navigated { get; }
+        public DelegateCommand GenerateValidationPlotCommand { get; }
+        public DelegateCommand GenerateTestPlotCommand { get; }
+        public DelegateCommand<TrainingSessionReport> SelectionChangedCommand { get; }
     }
 }

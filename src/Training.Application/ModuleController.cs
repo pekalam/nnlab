@@ -39,19 +39,12 @@ namespace Training.Application
         private AppState _appState;
         private ModuleState _moduleState;
 
-        private ITrainingInfoController _trainingInfoController;
-        private ITrainingController _trainingController;
-        private IViewModelAccessor _accessor;
-
-        public ModuleController(IEventAggregator ea, IRegionManager rm, AppState appState, ITrainingInfoController trainingInfoController, ITrainingController trainingController, ModuleState moduleState, IViewModelAccessor accessor)
+        public ModuleController(IEventAggregator ea, IRegionManager rm, AppState appState, ITrainingInfoController trainingInfoController, ModuleState moduleState)
         {
             _ea = ea;
             _rm = rm;
             _appState = appState;
-            _trainingInfoController = trainingInfoController;
-            _trainingController = trainingController;
             _moduleState = moduleState;
-            _accessor = accessor;
 
             _moduleState.PropertyChanged += ModuleStateOnPropertyChanged;
 

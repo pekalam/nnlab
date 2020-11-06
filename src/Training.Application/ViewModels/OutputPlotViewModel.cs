@@ -33,6 +33,7 @@ namespace Training.Application.ViewModels
         public OutputPlotViewModel(IOutputPlotService service)
         {
             Service = service;
+            service.Initialize(this);
         }
 
         public IOutputPlotService Service { get; }

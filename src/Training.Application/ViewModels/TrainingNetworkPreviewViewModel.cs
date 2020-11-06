@@ -14,6 +14,7 @@ namespace Training.Application.ViewModels
         public TrainingNetworkPreviewViewModel(ModuleState moduleState, ITrainingNetworkPreviewService service)
         {
             Service = service;
+            service.Initialize(this);
         }
 
         public ITrainingNetworkPreviewService Service { get; }

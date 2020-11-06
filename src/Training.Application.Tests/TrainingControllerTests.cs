@@ -16,7 +16,7 @@ namespace Training.Application.Tests
         private AutoMocker _mocker = new AutoMocker();
         private TrainingController _ctrl;
         private TrainingViewModel _vm;
-        private TrainingService _service;
+        private TrainingController _service;
         private AppState _appState;
         private ModuleState _moduleState;
 
@@ -24,14 +24,13 @@ namespace Training.Application.Tests
         {
             _mocker.UseTestEa();
             _mocker.UseTestRm();
-            _mocker.UseTestVmAccessor();
 
             _appState = _mocker.UseImpl<AppState>();
             _moduleState = _mocker.UseImpl<ModuleState>();
             _mocker.UseImpl<ModuleStateHelper>();
             _mocker.UseImpl<ModuleStateSessionOptionsDecorator>();
 
-            _service = _mocker.UseImpl<ITrainingService,TrainingService>();
+            _service = _mocker.UseImpl<ITrainingService,TrainingController>();
 
             _ctrl = _mocker.UseImpl<TrainingController>();
             _vm = _mocker.UseVm<TrainingViewModel>();

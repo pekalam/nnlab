@@ -39,7 +39,6 @@ namespace Training.Application.Tests
         {
             _ea = _mocker.UseTestEa();
             (_rm,_) = _mocker.UseTestRm();
-            _mocker.UseTestVmAccessor();
             _appState = _mocker.UseImpl<AppState>();
             _moduleState =_mocker.UseImpl<ModuleState>();
 

@@ -40,7 +40,7 @@ namespace Training.Application.ViewModels
         public PanelSelectViewModel(IPanelSelectService service)
         {
             Service = service;
-            //ApplySelection = controller.ApplySelection;
+            service.Initialize(this);
         }
 
         public IPanelSelectService Service { get; }

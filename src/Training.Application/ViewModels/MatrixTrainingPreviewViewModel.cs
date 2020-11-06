@@ -13,6 +13,7 @@ namespace Training.Application.ViewModels
         public MatrixTrainingPreviewViewModel(IMatrixTrainingPreviewService service)
         {
             Service = service;
+            service.Initialize(this);
         }
 
         public IMatrixTrainingPreviewService Service { get; }

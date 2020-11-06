@@ -37,6 +37,7 @@ namespace Training.Application.ViewModels
 
             BasicPlotModel.Model.Axes.Add(yAxis);
             BasicPlotModel.Model.PlotMargins = new OxyThickness(80, Double.NaN, Double.NaN, Double.NaN);
+            service.Initialize(this);
         }
 
         public IErrorPlotService Service { get; }

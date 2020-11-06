@@ -22,17 +22,16 @@ namespace Training.Application.Tests
         private ModuleState _moduleState;
         private TrainingParametersViewModel _vm;
         private TrainingParametersController _ctrl;
-        private TrainingParametersService _service;
+        private TrainingParametersController _service;
         
         public TrainingParametersTests()
         {
             _mocker.UseTestRm();
             _mocker.UseTestEa();
-            _mocker.UseTestVmAccessor();
             _appState = _mocker.UseImpl<AppState>();
             _moduleState = _mocker.UseImpl<ModuleState>();
-            _ctrl = _mocker.UseImpl<ITransientController<TrainingParametersService>,TrainingParametersController>();
-            _service = _mocker.UseImpl<ITrainingParametersService, TrainingParametersService>();
+            _ctrl = _mocker.UseImpl<ITrainingParametersService,TrainingParametersController>();
+            _service = _ctrl;
 
 
             _vm = _mocker.UseVm<TrainingParametersViewModel>();
