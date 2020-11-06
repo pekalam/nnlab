@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.Text;
 using Common.Domain;
 using Common.Framework;
+using MathNet.Numerics.LinearAlgebra;
 using NNLib.Common;
 using NNLib.Data;
+using NNLib.MLP;
 using NNLibAdapter;
 using OxyPlot;
+using OxyPlot.Axes;
 using OxyPlot.Legends;
 using OxyPlot.Series;
 using Prediction.Application.Services;
@@ -52,6 +55,8 @@ namespace Prediction.Application.ViewModels
             };
 
             PlotModel.Model.Legends.Add(l);
+
+            service.Initialize(this);
         }
 
         public NNLibModelAdapter? ModelAdapter
@@ -142,6 +147,75 @@ namespace Prediction.Application.ViewModels
         public override void OnNavigatedTo(NavigationContext navigationContext)
         {
             Service.Navigated?.Invoke(navigationContext);
+        }
+
+
+        public void UpdateNetworkAndMatrix(MLPNetwork network, TrainingData data, Matrix<double> inputMatrix)
+        {
+
+
+            var adapter = new NNLibModelAdapter();
+            adapter.SetNeuralNetwork(network);
+            adapter.NeuralNetworkModel.BackgroundColor = "#cce6ff";
+            ModelAdapter = adapter;
+            ModelAdapter.SetInputLabels(data.Variables.InputVariableNames);
+            ModelAdapter.SetOutputLabels(data.Variables.TargetVariableNames);
+
+            InputMatrixVm.Controller.AssignMatrix(inputMatrix, new[] { "Value" }, i => data.Variables.InputVariableNames[i]);
+            OutputMatrixVm = new MatrixPreviewViewModel();
+            if (network.Layers[^1].Output == null) return;
+            OutputMatrixVm.Controller.AssignMatrix(Matrix<double>.Build.Dense(network.Layers[^1].NeuronsCount, 1, 0), new[] { "Value" }, i => data.Variables.TargetVariableNames[i]);
+        }
+
+        public void UpdateMatrix(Matrix<double> output, TrainingData data, Matrix<double> inputMatrix)
+        {
+            InputMatrixVm.Controller.AssignMatrix(inputMatrix, new[] { "Value" }, i => data.Variables.InputVariableNames[i]);
+            OutputMatrixVm.Controller.AssignMatrix(output, new[] { "Value" }, i => data.Variables.TargetVariableNames[i]);
+        }
+
+
+        public void UpdatePlots(ScatterPoint[] dataScatter, DataPoint[] dataPredLine, DataPoint[] predLine, ScatterPoint[] predScatter)
+        {
+
+            ClearPlots();
+
+            DataScatterSeries.Points.AddRange(dataScatter);
+            DataPredictionLineSeries.Points.AddRange(dataPredLine);
+            PredictionLineSeries.Points.AddRange(predLine);
+            PredictionScatterSeries.Points.AddRange(predScatter);
+
+            PlotModel.Model.DefaultXAxis.Reset();
+            PlotModel.Model.DefaultYAxis.Reset();
+
+            PlotModel.Model.InvalidatePlot(true);
+        }
+
+        public void ClearPlots()
+        {
+
+            DataScatterSeries.Points.Clear();
+            DataPredictionLineSeries.Points.Clear();
+            PredictionLineSeries.Points.Clear();
+            PredictionScatterSeries.Points.Clear();
+            PlotModel.Model.InvalidatePlot(true);
+        }
+
+        public void UpdateAxes(TrainingData trainingData)
+        {
+            PlotModel.Model.Axes.Clear();
+            var inputVarInd = trainingData.Variables.Indexes.InputVarIndexes[0];
+            var targetVarInd = trainingData.Variables.Indexes.TargetVarIndexes[0];
+
+            PlotModel.Model.Axes.Add(new LinearAxis()
+            {
+                Title = trainingData.Variables.Names[inputVarInd],
+                Position = AxisPosition.Bottom,
+            });
+            PlotModel.Model.Axes.Add(new LinearAxis()
+            {
+                Title = trainingData.Variables.Names[targetVarInd],
+                Position = AxisPosition.Left
+            });
         }
     }
 }

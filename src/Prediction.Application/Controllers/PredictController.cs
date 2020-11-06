@@ -47,9 +47,8 @@ namespace Prediction.Application.Controllers
         public DataSetType[]? PlotSetTypes { get; set; } 
     }
 
-    class PredictController : ControllerBase<PredictViewModel>, ITransientController<PredictService>
+    class PredictController : ControllerBase<PredictViewModel>, IPredictService
     {
-        private PredictService _service = null!;
         private readonly AppState _appState;
         private readonly ModuleState _moduleState;
         private readonly AppStateHelper _helper;
@@ -57,23 +56,18 @@ namespace Prediction.Application.Controllers
 
         private bool _initialized;
 
-        public PredictController(IViewModelAccessor accessor, AppState appState, ModuleState moduleState, NormalizationService normalizationService) :
-            base(accessor)
+        public PredictController(AppState appState, ModuleState moduleState, NormalizationService normalizationService)
         {
             _appState = appState;
             _helper = new AppStateHelper(appState);
             _moduleState = moduleState;
             _normalizationService = normalizationService;
-        }
 
-        public void Initialize(PredictService service)
-        {
-            _service = service;
-            service.PredictCommand = new DelegateCommand(Predict);
-            service.Navigated = Navigated;
-            service.PredictPlotCommand = new DelegateCommand<DataSetType?>(PredictPlot);
+            PredictCommand = new DelegateCommand(Predict);
+            Navigated = NavigatedAction;
+            PredictPlotCommand = new DelegateCommand<DataSetType?>(PredictPlot);
         }
-
+        
         protected override void VmCreated()
         {
             Vm!.PropertyChanged += VmOnPropertyChanged;
@@ -87,7 +81,7 @@ namespace Prediction.Application.Controllers
             }
         }
 
-        private void Navigated(NavigationContext obj)
+        private void NavigatedAction(NavigationContext obj)
         {
             if(_initialized) return;
 
@@ -113,7 +107,7 @@ namespace Prediction.Application.Controllers
 
                 if (Vm!.ShowPlotPrediction)
                 {
-                    _service.UpdateAxes(data);
+                    Vm!.UpdateAxes(data);
                     Vm!.PlotSetTypes = data.SetTypes;
                     Vm!.SelectedPlotSetType = DataSetType.Training;
                     UpdateStartEndValue(DataSetType.Training);
@@ -144,13 +138,13 @@ namespace Prediction.Application.Controllers
                 UpdateShowPlotPrediction(_appState.ActiveSession!.TrainingData!);
                 if (Vm!.ShowPlotPrediction)
                 {
-                    _service.UpdateAxes(_appState.ActiveSession!.TrainingData!);
-                    _service.ClearPlots();
+                    Vm!.UpdateAxes(_appState.ActiveSession!.TrainingData!);
+                    Vm!.ClearPlots();
                 }
 
 
                 var inputMatrix = Matrix<double>.Build.Dense(_appState.ActiveSession.Network.Layers[0].InputsCount, 1);
-                _service.UpdateNetworkAndMatrix(_appState.ActiveSession.Network, _appState.ActiveSession!.TrainingData!, inputMatrix);
+                Vm!.UpdateNetworkAndMatrix(_appState.ActiveSession.Network, _appState.ActiveSession!.TrainingData!, inputMatrix);
             }
 
         }
@@ -160,15 +154,15 @@ namespace Prediction.Application.Controllers
             Vm!.Interval = memento.Interval;
             Vm!.PlotSetTypes = memento.PlotSetTypes;
             Vm!.SelectedPlotSetType = memento.SelectedPlotSetType;
-            _service.UpdateNetworkAndMatrix(_appState.ActiveSession!.Network!, _appState.ActiveSession.TrainingData!,
+            Vm!.UpdateNetworkAndMatrix(_appState.ActiveSession!.Network!, _appState.ActiveSession.TrainingData!,
                 memento.InputMatrix);
-            _service.UpdatePlots(memento.DataScatterPoints, memento.DataPredictionPoints, memento.PredictionPoints, memento.PredictionScatterPoints);
+            Vm!.UpdatePlots(memento.DataScatterPoints, memento.DataPredictionPoints, memento.PredictionPoints, memento.PredictionScatterPoints);
             UpdateStartEndValue(memento.SelectedPlotSetType);
         }
 
         private void ActiveSessionOnNetworkStructureChanged(MLPNetwork network)
         {
-            _service.UpdateNetworkAndMatrix(_appState.ActiveSession!.Network!, _appState.ActiveSession!.TrainingData!,
+            Vm!.UpdateNetworkAndMatrix(_appState.ActiveSession!.Network!, _appState.ActiveSession!.TrainingData!,
                 Matrix<double>.Build.Dense(network.Layers[0].InputsCount, 1));
             UpdateShowPlotPrediction(_appState.ActiveSession!.TrainingData!);
         }
@@ -246,7 +240,7 @@ namespace Prediction.Application.Controllers
 
             });
 
-            _service.UpdatePlots(dataScatter, 
+            Vm!.UpdatePlots(dataScatter, 
                 dataPredLine.OrderBy(p => p.X).ToArray(),
                 predLine.OrderBy(p => p.X).ToArray(), 
                 predScatter.ToArray());
@@ -259,7 +253,7 @@ namespace Prediction.Application.Controllers
             var inputNormalized = _normalizationService.ToNetworkDataNormalization(inputMatrix);
 
             network.CalculateOutput(inputNormalized);
-            _service.UpdateMatrix(network.Output!, _appState.ActiveSession!.TrainingData!, inputMatrix);
+            Vm!.UpdateMatrix(network.Output!, _appState.ActiveSession!.TrainingData!, inputMatrix);
         }
 
 
@@ -277,5 +271,9 @@ namespace Prediction.Application.Controllers
                 PlotSetTypes = Vm!.PlotSetTypes,
             };
         }
+
+        public DelegateCommand PredictCommand { get; }
+        public Action<NavigationContext> Navigated { get; set; }
+        public DelegateCommand<DataSetType?> PredictPlotCommand { get; }
     }
 }
