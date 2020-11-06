@@ -8,7 +8,6 @@ namespace Data.Application.ViewModels
         public SelectDataSourceViewModel(IFileService fileService)
         {
             FileService = fileService;
-
         }
 
         public IFileService FileService { get; set; }

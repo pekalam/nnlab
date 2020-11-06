@@ -9,7 +9,7 @@ using Prism.Ioc;
 
 namespace Data.Application.Services
 {
-    public interface INormalizationService : IService
+    public interface INormalizationService : IService, ITransientController
     {
         DelegateCommand NoNormalizationCommand { get;  }
         DelegateCommand MinMaxNormalizationCommand { get;  }
@@ -18,34 +18,21 @@ namespace Data.Application.Services
 
         public static void Register(IContainerRegistry cr)
         {
-            cr.Register<INormalizationService, NormalizationService>().Register<ITransientController<NormalizationService>, NormalizationController>();
+            cr.Register<INormalizationService, NormalizationController>();
         }
-    }
-
-    public class NormalizationService : INormalizationService
-    {
-        public NormalizationService(ITransientController<NormalizationService> ctrl)
-        {
-            ctrl.Initialize(this);
-        }
-
-        public DelegateCommand NoNormalizationCommand { get; set; } = null!;
-        public DelegateCommand MinMaxNormalizationCommand { get; set; } = null!;
-        public DelegateCommand MeanNormalizationCommand { get; set; } = null!;
-        public DelegateCommand StdNormalizationCommand { get; set; } = null!;
     }
 }
 
 namespace Data.Application.Controllers.DataSource
 {
-    internal class NormalizationController : ControllerBase<NormalizationViewModel>,ITransientController<NormalizationService>
+    internal class NormalizationController : ControllerBase<NormalizationViewModel>, INormalizationService
     {
         private readonly INormalizationDomainService _normalizationService;
         private readonly AppStateHelper _helper;
         private bool _ignoreCmd;
         private bool _cmdCall;
 
-        public NormalizationController(INormalizationDomainService normalizationService, AppState appState, IViewModelAccessor accessor) : base(accessor)
+        public NormalizationController(INormalizationDomainService normalizationService, AppState appState)
         {
             _normalizationService = normalizationService;
             _helper = new AppStateHelper(appState);
@@ -79,14 +66,12 @@ namespace Data.Application.Controllers.DataSource
                 nameof(TrainingData.NormalizationMethod) => true,
                 _ => false,
             });
-        }
 
-        public void Initialize(NormalizationService service)
-        {
-            service.NoNormalizationCommand = new DelegateCommand(NoNormalization);
-            service.MinMaxNormalizationCommand = new DelegateCommand(MinMaxNormalization);
-            service.MeanNormalizationCommand = new DelegateCommand(MeanNormalization);
-            service.StdNormalizationCommand = new DelegateCommand(StdNormalization);
+
+            NoNormalizationCommand = new DelegateCommand(NoNormalization);
+            MinMaxNormalizationCommand = new DelegateCommand(MinMaxNormalization);
+            MeanNormalizationCommand = new DelegateCommand(MeanNormalization);
+            StdNormalizationCommand = new DelegateCommand(StdNormalization);
         }
 
         protected override void VmCreated()
@@ -143,5 +128,10 @@ namespace Data.Application.Controllers.DataSource
             _cmdCall = true;
             _normalizationService.NoNormalization();
         }
+
+        public DelegateCommand NoNormalizationCommand { get; }
+        public DelegateCommand MinMaxNormalizationCommand { get; }
+        public DelegateCommand MeanNormalizationCommand { get; }
+        public DelegateCommand StdNormalizationCommand { get; }
     }
 }

@@ -17,6 +17,7 @@ namespace Data.Application.ViewModels
             NormalizationVm = normalizationVm;
             KeepAlive = true;
 
+            service.Initialize(this);
             service.Initialized?.Invoke();
         }
 

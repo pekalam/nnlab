@@ -56,35 +56,6 @@ namespace TestUtils
 
     }
 
-    public class TestViewModelAccessor : IViewModelAccessor
-    {
-        private readonly Dictionary<Type,object> _vms = new Dictionary<Type, object>();
-        private readonly Dictionary<Type,Action> _onCreated = new Dictionary<Type, Action>();
-
-        public TestViewModelAccessor()
-        {
-            
-        }
-
-        public virtual T Get<T>() where T : ViewModelBase<T>
-        {
-            _vms.TryGetValue(typeof(T), out var vm);
-            return (vm as T)!;
-        }
-
-        public void OnCreated<T>(Action action) where T : ViewModelBase<T>
-        {
-            _onCreated[typeof(T)] = action;
-        }
-
-        public virtual void Register<T>(T vm) where T : ViewModelBase<T>
-        {
-            _vms[typeof(T)] = vm; 
-            _onCreated.TryGetValue(typeof(T), out var action);
-            action?.Invoke();
-        }
-    }
-
     public static class AutoMockerExtensions
     {
         public static Mock<T> UseMock<T>(this AutoMocker mocker) where T : class
@@ -137,18 +108,9 @@ namespace TestUtils
             return (rm, regions);
         }
 
-        public static void UseTestVmAccessor(this AutoMocker mocker)
-        {
-            var accessor = new TestViewModelAccessor();
-            mocker.Use<IViewModelAccessor>(accessor);
-            mocker.Use(accessor);
-        }
-
         public static T UseVm<T>(this AutoMocker mocker) where T : ViewModelBase<T>
         {
-            var accessor = mocker.Get<TestViewModelAccessor>();
             var vm = mocker.UseImpl<T>();
-            accessor.Register(vm);
 
             return vm;
         }

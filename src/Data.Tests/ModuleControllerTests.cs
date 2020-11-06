@@ -27,7 +27,6 @@ namespace Data.Application.Tests
             _ea = _mocker.UseTestEa();
             (_rm, _) = _mocker.UseTestRm();
             _appState = _mocker.UseImpl<AppState>();
-            _mocker.UseTestVmAccessor();
 
             _ctrl = _mocker.CreateInstance<ModuleController>();
 

@@ -16,7 +16,7 @@ using Prism.Ioc;
 
 namespace Data.Application.Services
 {
-    public interface IVariablesSelectionService
+    public interface IVariablesSelectionService : ITransientController
     {
         ICommand IgnoreAllCommand { get; set; }
 
@@ -29,14 +29,14 @@ namespace Data.Application.Services
 
 namespace Data.Application.Controllers
 {
-    internal class VariablesSelectionController : ControllerBase<VariablesSelectionViewModel>,ITransientController,IVariablesSelectionService
+    internal class VariablesSelectionController : ControllerBase<VariablesSelectionViewModel>,IVariablesSelectionService
     {
         private readonly AppState _appState;
         private SupervisedSetVariableIndexes _currentIndexes = null!;
         private readonly ITrainingDataService _dsService;
         private readonly INormalizationDomainService _normalizationService;
 
-        public VariablesSelectionController(AppState appState, ITrainingDataService dsService, INormalizationDomainService normalizationService, IViewModelAccessor accessor) : base(accessor)
+        public VariablesSelectionController(AppState appState, ITrainingDataService dsService, INormalizationDomainService normalizationService)
         {
             _appState = appState;
             _dsService = dsService;

@@ -20,6 +20,8 @@ namespace Data.Application.ViewModels
         public StatisticsViewModel(IStatisticsService service)
         {
             Service = service;
+
+            service.Initialize(this);
         }
 
         public IStatisticsService Service { get; }

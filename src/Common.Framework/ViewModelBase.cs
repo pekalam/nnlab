@@ -7,22 +7,23 @@ using Microsoft.VisualBasic;
 
 namespace Common.Framework
 {
+    public interface IViewModel{}
+
     /// <summary>
     /// Base class of view models.
     /// </summary>
     /// <typeparam name="T">Inheriting class type</typeparam>
-    public class ViewModelBase<T> : BindableBase, INavigationAware, IRegionMemberLifetime, IActiveAware, IJournalAware
+    public class ViewModelBase<T> : BindableBase, IViewModel, INavigationAware, IRegionMemberLifetime, IActiveAware, IJournalAware
         where T : ViewModelBase<T>
     {
         private bool _isActive;
-        public static T? Instance { get; private set; }
-        public static event Action? Created;
 
         public ViewModelBase()
         {
             Instance = this as T;
-            Created?.Invoke();
         }
+
+        public static T? Instance { get; private set; }
 
         public bool KeepAlive { get; set; }
 
@@ -32,18 +33,6 @@ namespace Common.Framework
             set
             {
                 _isActive = value;
-                if (!value)
-                {
-                    Created = null;
-                }
-                // if (!value)
-                // {
-                //     Instance = null;
-                // }
-                // else
-                // {
-                //     Instance = this as T;
-                // }
                 IsActiveChanged?.Invoke(this, null!);
             }
         }
@@ -106,26 +95,6 @@ namespace Common.Framework
 
         public override void OnNavigatedFrom(NavigationContext navigationContext)
         {
-        }
-    }
-
-
-    public interface IViewModelAccessor 
-    {
-        T? Get<T>() where T : ViewModelBase<T>;
-        void OnCreated<T>(Action action) where T : ViewModelBase<T>;
-    }
-
-    internal class DefaultViewModelAccessor : IViewModelAccessor
-    {
-        public T? Get<T>() where T : ViewModelBase<T>
-        {
-            return ViewModelBase<T>.Instance;
-        }
-
-        public void OnCreated<T>(Action action) where T : ViewModelBase<T>
-        {
-            ViewModelBase<T>.Created += action;
         }
     }
 }

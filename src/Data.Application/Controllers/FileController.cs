@@ -10,7 +10,7 @@ using Shell.Interface;
 
 namespace Data.Application.Controllers
 {
-    internal interface IFileController : ISingletonController
+    internal interface IFileController : ITransientController, IFileService
     {
         public static void Register(IContainerRegistry cr)
         {
@@ -18,23 +18,21 @@ namespace Data.Application.Controllers
         }
     }
 
-    internal class FileController : IFileController
+    internal class FileController : ControllerBase<FileDataSourceViewModel>,IFileController
     {
         private readonly IRegionManager _rm;
-        private readonly FileService _fileService;
         private readonly IFileDialogService _fileDialogService;
         private readonly AppState _appState;
 
-        public FileController(IRegionManager rm, FileService fileService, IFileDialogService fileDialogService, AppState appState)
+        public FileController(IRegionManager rm, IFileDialogService fileDialogService, AppState appState)
         {
             _rm = rm;
-            _fileService = fileService;
             _fileDialogService = fileDialogService;
             _appState = appState;
 
-            _fileService.CreateDataSetCommand = new DelegateCommand(CreateDataSet);
-            _fileService.SelectFileCommand = new DelegateCommand(SelectFile);
-            _fileService.LoadFilesCommand = new DelegateCommand(SelectFiles);
+            CreateDataSetCommand = new DelegateCommand(CreateDataSet);
+            SelectFileCommand = new DelegateCommand(SelectFile);
+            LoadFilesCommand = new DelegateCommand(SelectFiles);
         }
 
         public void Initialize() { }
@@ -63,5 +61,9 @@ namespace Data.Application.Controllers
             }
             _rm.NavigateContentRegion("CustomDataSetView");
         }
+
+        public DelegateCommand CreateDataSetCommand { get; set; }
+        public DelegateCommand SelectFileCommand { get; set; }
+        public DelegateCommand LoadFilesCommand { get; set; }
     }
 }

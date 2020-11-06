@@ -18,8 +18,7 @@ namespace Data.Application.Tests
     {
         private AutoMocker _mocker = new AutoMocker();
 
-        private DataSetDivisionService _service;
-        private DataSetDivisionController _ctrl;
+        private DataSetDivisionController _service;
         private DataSetDivisionViewModel _vm;
         private AppState _appState;
 
@@ -28,9 +27,7 @@ namespace Data.Application.Tests
             _mocker.UseTestEa();
             _mocker.UseTestRm();
             _appState = _mocker.UseImpl<AppState>();
-            _service = _mocker.UseMock<IDataSetDivisionService, DataSetDivisionService>().Object;
-            _mocker.UseTestVmAccessor();
-            _ctrl = _mocker.CreateInstance<DataSetDivisionController>();
+            _service = _mocker.UseImpl<IDataSetDivisionService, DataSetDivisionController>();
             _vm = _mocker.UseVm<DataSetDivisionViewModel>();
         }
 

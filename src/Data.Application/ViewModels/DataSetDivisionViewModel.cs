@@ -59,6 +59,8 @@ namespace Data.Application.ViewModels
 
                 UpdateRatio();
             }
+
+            service.Initialize(this);
         }
 
         public void UpdateRatio()

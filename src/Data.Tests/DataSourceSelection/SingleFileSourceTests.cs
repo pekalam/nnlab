@@ -18,10 +18,9 @@ namespace Data.Application.Tests.DataSourceSelection
     {
         private AutoMocker _mocker = new AutoMocker();
         private Mock<ICsvValidationService> _csvValidation;
-        private SingleFileService _singleFileService;
+        private SingleFileSourceController _singleFileService;
         private Mock<ITrainingDataService> _dataSetService;
 
-        private SingleFileSourceController _ctrl;
         private SingleFileSourceViewModel _vm;
         private AppState _appState;
 
@@ -29,12 +28,10 @@ namespace Data.Application.Tests.DataSourceSelection
         {
             _mocker.UseTestRm();
             _mocker.UseTestEa();
-            _mocker.UseTestVmAccessor();
             _appState = _mocker.UseImpl<AppState>();
             _csvValidation = _mocker.UseMock<ICsvValidationService>();
             _dataSetService = _mocker.UseMock<ITrainingDataService>();
-            _ctrl = _mocker.UseImpl<ITransientController<SingleFileService>, SingleFileSourceController>();
-            _singleFileService = _mocker.UseImpl<ISingleFileService, SingleFileService>();
+            _singleFileService = _mocker.UseImpl<ISingleFileService, SingleFileSourceController>();
 
             _vm = _mocker.UseVm<SingleFileSourceViewModel>();
         }
@@ -63,7 +60,7 @@ namespace Data.Application.Tests.DataSourceSelection
             singleFileService.LoadCommand = prev;
 
             //file is valid
-            singleFileService.FileValidationResult.IsFileValid.Should().BeTrue();
+            _vm.FileValidationResult.IsFileValid.Should().BeTrue();
             //can run validate cmd
             singleFileService.ValidateCommand.CanExecute("file.csv").Should().BeTrue();
             //can run load cmd
@@ -90,7 +87,7 @@ namespace Data.Application.Tests.DataSourceSelection
             //wait for async call completion
             await Task.Delay(500);
 
-            singleFileService.FileValidationResult.IsFileValid.Should().BeFalse();
+            _vm.FileValidationResult.IsFileValid.Should().BeFalse();
 
             singleFileService.ValidateCommand.CanExecute("file.csv").Should().BeTrue();
             singleFileService.LoadCommand.CanExecute("file.csv").Should().BeFalse();

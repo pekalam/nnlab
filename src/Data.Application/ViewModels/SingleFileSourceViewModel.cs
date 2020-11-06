@@ -3,6 +3,8 @@ using Data.Application.Services;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Linq;
+using Common.Domain;
 
 namespace Data.Application.ViewModels
 {
@@ -17,6 +19,8 @@ namespace Data.Application.ViewModels
             SingleFileService = singleFileService;
             KeepAlive = false;
             FileValidationResult.PropertyChanged += FileValidationResultOnPropertyChanged;
+
+            singleFileService.Initialize(this);
         }
 
         private void FileValidationResultOnPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -61,6 +65,44 @@ namespace Data.Application.ViewModels
         {
             get => _selectedFileName;
             set => SetProperty(ref _selectedFileName, value);
+        }
+
+
+        public void SetLoading()
+        {
+            Debug.Assert(FileValidationResult != null, nameof(FileValidationResult) + " != null");
+            FileValidationResult.IsValidatingFile = false;
+            FileValidationResult.IsLoadingFile = true;
+        }
+
+        public void SetValidating()
+        {
+            Debug.Assert(FileValidationResult != null, nameof(FileValidationResult) + " != null");
+            FileValidationResult.IsLoadingFile = false;
+            FileValidationResult.IsValidatingFile = true;
+        }
+
+        public void SetLoaded(TrainingData trainingData)
+        {
+            Debug.Assert(FileValidationResult != null, nameof(FileValidationResult) + " != null");
+            FileValidationResult.IsValidatingFile = FileValidationResult.IsLoadingFile = false;
+            FileValidationResult.IsLoaded = true;
+                Variables = trainingData.Variables.InputVariableNames.Union(trainingData.Variables.TargetVariableNames)
+                .Select((s, i) => new VariablesTableModel()
+                {
+                    Column = i + 1,
+                    Name = s
+                }).ToArray();
+        }
+
+        public void SetValidated(bool result, int rows, int cols, string? error)
+        {
+            Debug.Assert(FileValidationResult != null, nameof(FileValidationResult) + " != null");
+            FileValidationResult.IsValidatingFile = FileValidationResult.IsLoadingFile = false;
+            FileValidationResult.FileValidationError = error;
+            FileValidationResult.IsFileValid = result;
+            FileValidationResult.Rows = rows;
+            FileValidationResult.Cols = cols;
         }
     }
 }

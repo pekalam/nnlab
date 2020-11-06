@@ -27,7 +27,6 @@ namespace Data.Application.Tests.CustomDataSet
         {
             _mocker.UseTestRm();
             _mocker.UseTestEa();
-            _mocker.UseTestVmAccessor();
             _appState = _mocker.UseImpl<AppState>();
             _appState.CreateSession();
 

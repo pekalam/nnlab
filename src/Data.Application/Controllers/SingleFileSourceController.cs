@@ -12,9 +12,8 @@ using Data.Application.ViewModels;
 
 namespace Data.Application.Controllers
 {
-    internal class SingleFileSourceController : ITransientController<SingleFileService>
+    internal class SingleFileSourceController : ControllerBase<SingleFileSourceViewModel>,ISingleFileService
     {
-        private SingleFileService _singleFileService = null!;
         private bool _canLoad;
         private bool _canReturn = true;
         private TrainingData? _loadedTrainingData;
@@ -31,47 +30,41 @@ namespace Data.Application.Controllers
             _rm = rm;
             _appState = appState;
             _ea = ea;
-        }
 
-        public void Initialize(SingleFileService service)
-        {
-            _singleFileService = service;
-
-            _singleFileService.ContinueCommand = new DelegateCommand(Continue, () => _loadedTrainingData != null);
-            _singleFileService.ValidateCommand = new DelegateCommand<string>(ValidateSingleFile);
-            _singleFileService.LoadCommand = new DelegateCommand<string>(LoadSingleFile, _ => _canLoad);
-            _singleFileService.ReturnCommand = new DelegateCommand(() =>
+            ContinueCommand = new DelegateCommand(Continue, () => _loadedTrainingData != null);
+            ValidateCommand = new DelegateCommand<string>(ValidateSingleFile);
+            LoadCommand = new DelegateCommand<string>(LoadSingleFile, _ => _canLoad);
+            ReturnCommand = new DelegateCommand(() =>
             {
                 _loadedTrainingData = null;
                 _rm.NavigateContentRegion("SelectDataSourceView");
             }, () => _canReturn);
 
-            _ea.GetEvent<EnableModalNavigation>().Publish(_singleFileService.ReturnCommand);
+            _ea.GetEvent<EnableModalNavigation>().Publish(ReturnCommand);
         }
-
 
         private void SetCanReturn(bool can)
         {
             _canReturn = can; 
-            _singleFileService.ReturnCommand.RaiseCanExecuteChanged();
+            ReturnCommand.RaiseCanExecuteChanged();
 
         }
 
         private async void LoadSingleFile(string path)
         {
             SetCanReturn(false);
-            _singleFileService.SetLoading();
+            Vm!.SetLoading();
             await Task.Run(() => _loadedTrainingData = _dataService.LoadDefaultTrainingData(path));
             Debug.Assert(_loadedTrainingData != null);
-            _singleFileService.SetLoaded(_loadedTrainingData);
+            Vm!.SetLoaded(_loadedTrainingData);
             SetCanReturn(true);
-            _singleFileService.ContinueCommand.RaiseCanExecuteChanged();
+            ContinueCommand.RaiseCanExecuteChanged();
         }
 
         private async void ValidateSingleFile(string path)
         {
             SetCanReturn(false);
-            _singleFileService.SetValidating();
+            Vm!.SetValidating();
 
             bool result = false;
             string? error = null;
@@ -84,10 +77,10 @@ namespace Data.Application.Controllers
             if (result)
             {
                 _canLoad = true;
-                _singleFileService.LoadCommand.RaiseCanExecuteChanged();
+                LoadCommand.RaiseCanExecuteChanged();
             }
 
-            _singleFileService.SetValidated(result, r, c, error);
+            Vm!.SetValidated(result, r, c, error);
             
         }
 
@@ -105,5 +98,10 @@ namespace Data.Application.Controllers
             _ea.GetEvent<DisableModalNavigation>().Publish();
             _rm.NavigateContentRegion("FileDataSourceView");
         }
+
+        public DelegateCommand ReturnCommand { get; set; }
+        public DelegateCommand ContinueCommand { get; set; }
+        public DelegateCommand<string> ValidateCommand { get; set; }
+        public DelegateCommand<string> LoadCommand { get; set; }
     }
 }

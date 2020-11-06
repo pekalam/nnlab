@@ -85,10 +85,6 @@ namespace Data.Application
 
         public void Run()
         {
-            //Initialize singleton controllers
-            _fileController.Initialize();
-
-
             _ea.GetEvent<EnableNavMenuItem>().Publish(ModuleIds.Data);
             _ea.GetEvent<CheckNavMenuItem>().Publish(ModuleIds.Data);
             _rm.NavigateContentRegion("SelectDataSourceView");

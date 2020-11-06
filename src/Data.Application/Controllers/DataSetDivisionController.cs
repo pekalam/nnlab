@@ -15,7 +15,7 @@ using Prism.Ioc;
 
 namespace Data.Application.Controllers
 {
-    internal interface IDataSetDivisionController : ISingletonController
+    internal interface IDataSetDivisionController : ITransientController, IDataSetDivisionService
     {
         public static void Register(IContainerRegistry cr)
         {
@@ -27,18 +27,16 @@ namespace Data.Application.Controllers
     {
         private readonly AppState _appState;
         private readonly ITrainingDataService _dataService;
-        private readonly DataSetDivisionService _service;
 
-        public DataSetDivisionController(DataSetDivisionService service, ITrainingDataService dataService, AppState appState, IViewModelAccessor accessor) : base(accessor)
+        public DataSetDivisionController( ITrainingDataService dataService, AppState appState)
         {
-            _service = service;
             _dataService = dataService;
             _appState = appState;
 
-            service.DivideFileDataCommand =
+            DivideFileDataCommand =
                 new DelegateCommand<string>(DivideFileData, _ => CanDivide());
 
-            service.DivideMemoryDataCommand = new DelegateCommand<(List<double[]> input, List<double[]> target)?>(DivideMemoryData, _ => CanDivide());
+            DivideMemoryDataCommand = new DelegateCommand<(List<double[]> input, List<double[]> target)?>(DivideMemoryData, _ => CanDivide());
         }
 
         protected override void VmCreated()
@@ -61,8 +59,8 @@ namespace Data.Application.Controllers
 
         private void CalcHasSufficientSize()
         {
-            _service.DivideFileDataCommand.RaiseCanExecuteChanged();
-            _service.DivideMemoryDataCommand.RaiseCanExecuteChanged();
+            DivideFileDataCommand.RaiseCanExecuteChanged();
+            DivideMemoryDataCommand.RaiseCanExecuteChanged();
             if (!CanDivide()) return;
 
             if (_appState.ActiveSession?.TrainingData != null)
@@ -201,5 +199,8 @@ namespace Data.Application.Controllers
         {
             
         }
+
+        public DelegateCommand<string> DivideFileDataCommand { get; set; }
+        public DelegateCommand<(List<double[]> input, List<double[]> target)?> DivideMemoryDataCommand { get; set; }
     }
 }

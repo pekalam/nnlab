@@ -1,6 +1,7 @@
 ﻿using Prism.Commands;
 using Prism.Mvvm;
 using System.ComponentModel;
+using Data.Application.Controllers;
 using Prism.Ioc;
 
 namespace Data.Application.Services
@@ -13,14 +14,7 @@ namespace Data.Application.Services
 
         public static void Register(IContainerRegistry cr)
         {
-            cr.RegisterSingleton<IFileService, FileService>();
+            cr.RegisterSingleton<IFileService, FileController>();
         }
-    }
-
-    public class FileService : IFileService
-    {
-        public DelegateCommand CreateDataSetCommand { get; set; } = null!;
-        public DelegateCommand SelectFileCommand { get; set; } = null!;
-        public DelegateCommand LoadFilesCommand { get; set; } = null!;
     }
 }

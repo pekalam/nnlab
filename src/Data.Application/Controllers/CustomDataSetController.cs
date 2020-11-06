@@ -23,7 +23,7 @@ using Prism.Ioc;
 
 namespace Data.Application.Services
 {
-    public interface ICustomDataSetService
+    public interface ICustomDataSetService : ITransientController
     {
         DelegateCommand<OxyMouseDownEventArgs> PlotMouseDownCommand { get; set; }
         DelegateCommand OpenDivisionViewCommand { get; set; }
@@ -62,7 +62,7 @@ namespace Data.Application.Controllers
         }
     }
 
-    internal class CustomDataSetController : ControllerBase<CustomDataSetViewModel>,ICustomDataSetService, ITransientController
+    internal class CustomDataSetController : ControllerBase<CustomDataSetViewModel>, ICustomDataSetService
     {
         private readonly AppState _appState;
         private List<double[]> _input = new List<double[]>();
@@ -75,7 +75,7 @@ namespace Data.Application.Controllers
         private Session? _currentSession;
         private bool _initialized;
 
-        public CustomDataSetController(AppState appState, IRegionManager rm, IEventAggregator ea, IViewModelAccessor accessor, CustomDataSetMemento memento) : base(accessor)
+        public CustomDataSetController(AppState appState, IRegionManager rm, IEventAggregator ea, CustomDataSetMemento memento)
         {
             _appState = appState;
             _rm = rm;

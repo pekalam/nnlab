@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using Data.Application.Services;
 using Prism.Commands;
 using Prism.Events;
@@ -12,7 +13,7 @@ using Prism.Ioc;
 
 namespace Data.Application.Controllers.DataSource
 {
-    public interface IFileDataSourceController : ISingletonController
+    public interface IFileDataSourceController : ITransientController
     {
         public static void Register(IContainerRegistry cr)
         {
@@ -20,13 +21,13 @@ namespace Data.Application.Controllers.DataSource
         }
     }
 
-    internal class FileDataSourceController : IFileDataSourceController
+    internal class FileDataSourceController : ControllerBase<FileDataSourceViewModel>,IFileDataSourceController, IFileDataSourceService
     {
         private IRegionManager _rm;
         private IEventAggregator _ea;
         private AppState _appState;
 
-        public FileDataSourceController(FileDataSourceService service, IRegionManager rm, IEventAggregator ea,
+        public FileDataSourceController(IRegionManager rm, IEventAggregator ea,
             AppState appState)
         {
             _rm = rm;
@@ -34,12 +35,12 @@ namespace Data.Application.Controllers.DataSource
             _appState = appState;
 
 
-            service.SelectVariablesCommand = new DelegateCommand(SelectVariables);
-            service.DivideDatasetCommand = new DelegateCommand(DivideDataset);
+            SelectVariablesCommand = new DelegateCommand(SelectVariables);
+            DivideDatasetCommand = new DelegateCommand(DivideDataset);
 
-            service.Navigated = Navigated;
+            Navigated = NavigatedAction;
 
-            service.Initialized += () =>
+            Initialized += () =>
             {
                 var vm = FileDataSourceViewModel.Instance!;
 
@@ -47,7 +48,7 @@ namespace Data.Application.Controllers.DataSource
             };
         }
 
-        private void Navigated(NavigationContext ctx)
+        private void NavigatedAction(NavigationContext ctx)
         {
             var vm = FileDataSourceViewModel.Instance!;
 
@@ -76,8 +77,9 @@ namespace Data.Application.Controllers.DataSource
             _rm.Regions[AppRegions.FlyoutRegion].RequestNavigate("VariablesSelectionView");
         }
 
-        public void Initialize()
-        {
-        }
+        public Action Initialized { get; set; }
+        public DelegateCommand SelectVariablesCommand { get; set; }
+        public DelegateCommand DivideDatasetCommand { get; set; }
+        public Action<NavigationContext> Navigated { get; }
     }
 }

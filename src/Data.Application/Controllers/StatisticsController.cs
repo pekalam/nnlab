@@ -13,7 +13,7 @@ using Prism.Ioc;
 
 namespace Data.Application.Services
 {
-    public interface IStatisticsService
+    public interface IStatisticsService : ITransientController
     {
         public static void Register(IContainerRegistry cr)
         {
@@ -24,14 +24,14 @@ namespace Data.Application.Services
 
 namespace Data.Application.Controllers.DataSource
 {
-    internal class StatisticsController : ControllerBase<StatisticsViewModel>,IStatisticsService, ITransientController
+    internal class StatisticsController : ControllerBase<StatisticsViewModel>,IStatisticsService
     {
         private HistogramController _histogramCtrl = null!;
         private VariablesPlotController _variablesPlotCtrl = null!;
         private readonly AppState _appState;
         private readonly AppStateHelper _helper;
 
-        public StatisticsController(AppState appState, IViewModelAccessor accessor) : base(accessor)
+        public StatisticsController(AppState appState)
         {
             _appState = appState;
             _helper = new AppStateHelper(appState);

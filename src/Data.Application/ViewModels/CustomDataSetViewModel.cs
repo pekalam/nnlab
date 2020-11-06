@@ -29,6 +29,8 @@ namespace Data.Application.ViewModels
 
             PlotModel.Series.Add(Scatter);
             PlotModel.Series.Add(Line);
+
+            customDataSetService.Initialize(this);
         }
 
         public ICustomDataSetService Service { get; set; }

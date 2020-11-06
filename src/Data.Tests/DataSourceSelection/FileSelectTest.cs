@@ -20,9 +20,8 @@ namespace Data.Application.Tests.DataSourceSelection
     {
         private readonly AutoMocker _mocker = new AutoMocker();
         private AppState _appState;
-        private SingleFileService _singleFileService;
-        private MultiFileService _multiFileService;
-        private Mock<FileService> _fileService;
+        private ISingleFileService _singleFileService;
+        private IMultiFileService _multiFileService;
         private Mock<IFileDialogService> _dialogService;
         private Mock<IRegionManager> _rm;
 
@@ -32,17 +31,13 @@ namespace Data.Application.Tests.DataSourceSelection
         {
             (_rm, _) = _mocker.UseTestRm();
             _mocker.UseTestEa();
-            _mocker.UseTestVmAccessor();
             _appState = _mocker.UseImpl<AppState>();
             _dialogService = _mocker.UseMock<IFileDialogService>();
-            _fileService = _mocker.UseMock<IFileService, FileService>();
-            _mocker.UseImpl<ITransientController<SingleFileService>, SingleFileSourceController>();
-            _singleFileService = _mocker.UseImpl<ISingleFileService, SingleFileService>();
-            _mocker.UseImpl<ITransientController<MultiFileService>,MultiFileSourceController>();
-            _multiFileService = _mocker.UseImpl<IMultiFileService, MultiFileService>();
+            _singleFileService = _mocker.UseImpl<ISingleFileService, SingleFileSourceController>();
+            _multiFileService = _mocker.UseImpl<IMultiFileService, MultiFileSourceController>();
 
 
-            _ctrl= _mocker.CreateInstance<FileController>();
+            _ctrl= _mocker.UseImpl<IFileService,FileController>();
         }
 
         [Fact]
@@ -132,7 +127,7 @@ namespace Data.Application.Tests.DataSourceSelection
         [Fact]
         public void CreateDataSetCommand_creates_new_session_if_0_sessions()
         {
-            _fileService.Object.CreateDataSetCommand.Execute();
+            _ctrl.CreateDataSetCommand.Execute();
 
             _appState.Sessions.Should().HaveCount(1);
         }

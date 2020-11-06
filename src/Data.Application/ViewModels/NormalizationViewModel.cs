@@ -24,6 +24,8 @@ namespace Data.Application.ViewModels
         public NormalizationViewModel(INormalizationService service)
         {
             Service = service;
+
+            service.Initialize(this);
         }
 
         public INormalizationService? Service

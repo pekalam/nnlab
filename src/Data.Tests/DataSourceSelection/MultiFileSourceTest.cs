@@ -19,10 +19,9 @@ namespace Data.Application.Tests.DataSourceSelection
     {
         private AutoMocker _mocker = new AutoMocker();
         private Mock<ICsvValidationService> _csvValidation;
-        private MultiFileService _multiFileService;
+        private MultiFileSourceController _multiFileService;
         private Mock<ITrainingDataService> _dataSetService;
         private Mock<IFileDialogService> _dialogService;
-        private Mock<FileService> _fileService;
 
         private AppState _appState;
         private MultiFileSourceController _ctrl;
@@ -35,17 +34,15 @@ namespace Data.Application.Tests.DataSourceSelection
             _testOutput = testOutput;
             _mocker.UseTestRm();
             _mocker.UseTestEa();
-            _mocker.UseTestVmAccessor();
             _appState = _mocker.UseImpl<AppState>();
             _dataSetService = _mocker.UseMock<ITrainingDataService>();
             _dialogService = _mocker.UseMock<IFileDialogService>();
             _csvValidation = _mocker.UseMock<ICsvValidationService>();
-            _ctrl = _mocker.UseImpl<ITransientController<MultiFileService>, MultiFileSourceController>();
-            _multiFileService = _mocker.UseImpl<IMultiFileService, MultiFileService>();
-            _fileService = _mocker.UseMock<IFileService, FileService>();
+            _ctrl = _mocker.UseImpl<IMultiFileService, MultiFileSourceController>();
+            _multiFileService = _mocker.UseImpl<IMultiFileService, MultiFileSourceController>();
 
             _vm = _mocker.UseVm<MultiFileSourceViewModel>();
-            _fileController = _mocker.CreateInstance<FileController>();
+            _fileController = _mocker.UseImpl<IFileService, FileController>();
         }
 
         [Fact]
@@ -148,7 +145,7 @@ namespace Data.Application.Tests.DataSourceSelection
 
             multiFileService.ValidateTrainingFile.Execute("training.csv");
 
-            multiFileService.TrainingValidationResult.IsFileValid.Should().BeTrue();
+            _vm.TrainingValidationResult.IsFileValid.Should().BeTrue();
 
 
 
@@ -159,8 +156,8 @@ namespace Data.Application.Tests.DataSourceSelection
 
             multiFileService.ValidateTestFile.Execute("test.csv");
 
-            multiFileService.TestValidationResult.IsFileValid.Should().BeFalse();
-            multiFileService.TrainingValidationResult.IsFileValid.Should().BeFalse();
+            _vm.TestValidationResult.IsFileValid.Should().BeFalse();
+            _vm.TrainingValidationResult.IsFileValid.Should().BeFalse();
 
 
             _csvValidation.Setup(f => f.Validate(It.IsAny<string>())).Returns((true, null, 2, 2));
@@ -168,15 +165,15 @@ namespace Data.Application.Tests.DataSourceSelection
             multiFileService.ValidateTestFile.Execute("test.csv");
 
 
-            multiFileService.TestValidationResult.IsFileValid.Should().BeTrue();
-            multiFileService.TrainingValidationResult.IsFileValid.Should().BeTrue();
+            _vm.TestValidationResult.IsFileValid.Should().BeTrue();
+            _vm.TrainingValidationResult.IsFileValid.Should().BeTrue();
 
             multiFileService.ValidateValidationFile.Execute("test.csv");
 
 
-            multiFileService.TestValidationResult.IsFileValid.Should().BeTrue();
-            multiFileService.TrainingValidationResult.IsFileValid.Should().BeTrue();
-            multiFileService.ValidationValidationResult.IsFileValid.Should().BeTrue();
+            _vm.TestValidationResult.IsFileValid.Should().BeTrue();
+            _vm.TrainingValidationResult.IsFileValid.Should().BeTrue();
+            _vm.ValidationValidationResult.IsFileValid.Should().BeTrue();
 
         }
 
@@ -194,12 +191,12 @@ namespace Data.Application.Tests.DataSourceSelection
 
             multiFileService.ValidateTrainingFile.Execute("training.csv");
 
-            var previous = multiFileService.TrainingValidationResult;
+            var previous = _vm.TrainingValidationResult;
 
             multiFileService.SelectTrainingFileCommand.Execute();
 
 
-            multiFileService.TrainingValidationResult.Should().NotBe(previous);
+            _vm.TrainingValidationResult.Should().NotBe(previous);
         }
 
 

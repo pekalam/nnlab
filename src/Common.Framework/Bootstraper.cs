@@ -10,7 +10,6 @@ namespace Common.Framework
     {
         public static void RegisterTypes(IContainerRegistry cr)
         {
-            cr.Register<IViewModelAccessor, DefaultViewModelAccessor>();
         }
     }
 }

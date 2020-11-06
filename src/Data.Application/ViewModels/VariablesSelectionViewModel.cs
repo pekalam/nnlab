@@ -22,6 +22,7 @@ namespace Data.Application.ViewModels
         public VariablesSelectionViewModel(IVariablesSelectionService service)
         {
             Service = service;
+            service.Initialize(this);
         }
 
 

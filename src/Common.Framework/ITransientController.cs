@@ -18,25 +18,21 @@
     /// </summary>
     public interface ITransientController
     {
+        void Initialize(IViewModel vm);
     }
 
 
-    public class ControllerBase<TVm> where TVm : ViewModelBase<TVm>
+    public class ControllerBase<TVm> : ITransientController where TVm : ViewModelBase<TVm>
     {
-        protected IViewModelAccessor viewModelAccessor;
         protected TVm? Vm;
 
-        public ControllerBase(IViewModelAccessor viewModelAccessor)
+        public void Initialize(IViewModel vm)
         {
-            this.viewModelAccessor = viewModelAccessor;
-
-            viewModelAccessor.OnCreated<TVm>(() =>
-            {
-                Vm = viewModelAccessor.Get<TVm>()!;
-                VmCreated();
-            });
+            Vm = vm as TVm;
+            VmCreated();
         }
 
         protected virtual void VmCreated() { }
+
     }
 }
