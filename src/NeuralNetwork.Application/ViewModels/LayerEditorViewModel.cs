@@ -92,6 +92,7 @@ namespace NeuralNetwork.Application.ViewModels
         public LayerEditorViewModel(ILayerEditorService service)
         {
             Service = service;
+            service.Initialize(this);
         }
 
         public ILayerEditorService Service { get; }
