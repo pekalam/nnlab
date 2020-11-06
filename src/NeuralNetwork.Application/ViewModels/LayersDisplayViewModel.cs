@@ -1,7 +1,11 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows.Input;
 using Common.Framework;
+using NeuralNetwork.Application.Controllers;
 using NeuralNetwork.Application.Services;
+using NNLib;
 using Unity;
 
 namespace NeuralNetwork.Application.ViewModels
@@ -51,12 +55,13 @@ namespace NeuralNetwork.Application.ViewModels
         }
 
         [InjectionConstructor]
-        public LayersDisplayViewModel(ILayersDisplayService service)
+        public LayersDisplayViewModel(ILayersDisplayController service)
         {
             Service = service;
+            service.Initialize(this);
         }
 
-        public ILayersDisplayService Service { get; }
+        public ILayersDisplayController Service { get; }
 
         public ObservableCollection<LayerEditorItemModel> Layers
         {
@@ -68,6 +73,53 @@ namespace NeuralNetwork.Application.ViewModels
         {
             get => _selectedLayer;
             set => SetProperty(ref _selectedLayer, value);
+        }
+
+
+        public void AddLayer(Layer layer, int ind)
+        {
+            var layers = Layers;
+            var layerItem = CreateLayerModel(layer, ind);
+
+            layers.RemoveAt(layers.Count - 1);
+            layers.Add(layerItem);
+            layers.Add(new LayerEditorItemModel()
+            {
+                IsAddLayerItem = true,
+                IsOutputLayer = false,
+                LayerIndex = layers.Count,
+                TotalNeurons = 0,
+                AddLayer = Service.AddLayerCommand
+            });
+
+        }
+
+        public void CreateLayers(IEnumerable<Layer> lauers)
+        {
+            var collection = new ObservableCollection<LayerEditorItemModel>(lauers.Select(CreateLayerModel));
+            collection.Add(new LayerEditorItemModel()
+            {
+                IsAddLayerItem = true,
+                IsOutputLayer = false,
+                LayerIndex = collection.Count,
+                TotalNeurons = 0,
+                AddLayer = Service.AddLayerCommand
+            });
+            Layers = collection;
+        }
+
+        private LayerEditorItemModel CreateLayerModel(Layer layer, int ind)
+        {
+            return new LayerEditorItemModel()
+            {
+                IsOutputLayer = layer.IsOutputLayer,
+                LayerIndex = ind,
+                TotalNeurons = layer.NeuronsCount,
+                RemoveLayer = Service.RemoveLayerCommand,
+                EditLayer = Service.EditLayerCommand,
+                InsertAfter = Service.InsertAfterCommand,
+                InsertBefore = Service.InsertBeforeCommand
+            };
         }
     }
 }

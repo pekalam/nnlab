@@ -21,7 +21,7 @@ namespace NeuralNetwork.Application
             _appState = appState;
             _appState.ActiveSessionChanged += (_, args) =>
             {
-                if (args.prev != null)
+                if (args.prev != null && _sessionToAdapter.ContainsKey(args.next))
                 {
                     RaisePropertyChanged(nameof(ModelAdapter));
                 }

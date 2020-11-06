@@ -19,7 +19,7 @@ using Shell.Interface;
 
 namespace NeuralNetwork.Application.Services
 {
-    public interface ILayerEditorService : IService
+    public interface ILayerEditorService : ITransientController
     {
         Action<LayerEditorNavParams> Navigated { get; set; }
         DelegateCommand ExitCommand { get; set; }
@@ -34,7 +34,7 @@ namespace NeuralNetwork.Application.Services
 
 namespace NeuralNetwork.Application.Controllers
 {
-    internal class LayerEditorController : ControllerBase<LayerEditorViewModel>,ITransientController, ILayerEditorService
+    internal class LayerEditorController : ControllerBase<LayerEditorViewModel>,ILayerEditorService
     {
         private readonly INeuralNetworkService _networkService;
         private readonly IEventAggregator _ea;
@@ -42,7 +42,7 @@ namespace NeuralNetwork.Application.Controllers
         private MLPNetwork? _assignedNetwork;
         private int _layerNum;
 
-        public LayerEditorController(INeuralNetworkShellService shellService, IViewModelAccessor accessor, INeuralNetworkService networkService, IEventAggregator ea) : base(accessor)
+        public LayerEditorController(INeuralNetworkShellService shellService, INeuralNetworkService networkService, IEventAggregator ea)
         {
             _networkService = networkService;
             _ea = ea;

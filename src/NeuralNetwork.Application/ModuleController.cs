@@ -13,21 +13,17 @@ namespace NeuralNetwork.Application
         private readonly IEventAggregator _ea;
         private readonly IRegionManager _rm;
         private readonly INeuralNetworkService _networkService;
-        private readonly NeuralNetworkShellController _shellController;
-        private NetDisplayController _netDisplayController;
         private readonly AppState _appState;
         private readonly AppStateHelper _helper;
         private bool _firstNav;
         private ModuleState _moduleState;
 
-        public ModuleController(IEventAggregator ea, IRegionManager rm, NeuralNetworkShellController shellController, AppState appState, INeuralNetworkService networkService, NetDisplayController netDisplayController, ModuleState moduleState)
+        public ModuleController(IEventAggregator ea, IRegionManager rm, AppState appState, INeuralNetworkService networkService, ModuleState moduleState)
         {
             _ea = ea;
             _rm = rm;
-            _shellController = shellController;
             _appState = appState;
             _networkService = networkService;
-            _netDisplayController = netDisplayController;
             _moduleState = moduleState;
             _helper = new AppStateHelper(appState);
 
@@ -69,7 +65,6 @@ namespace NeuralNetwork.Application
 
             _helper.OnTrainingDataPropertyChanged(AdjustNetworkToNewVariables, s => s == nameof(TrainingData.Variables));
 
-            _shellController.Initialize();
 
 
             _ea.OnFirstNavigation(ModuleIds.NeuralNetwork, () =>

@@ -17,7 +17,7 @@ using Shell.Interface;
 
 namespace NeuralNetwork.Application.Services
 {
-    public interface INeuralNetworkShellService : IService
+    public interface INeuralNetworkShellService : ISingletonController
     {
         DelegateCommand<LayerEditorItemModel> OpenLayerEditorCommand { get; set; }
         DelegateCommand CloseLayerEditorCommand { get; set; }
@@ -32,7 +32,7 @@ namespace NeuralNetwork.Application.Services
 
 namespace NeuralNetwork.Application.Controllers
 {
-    internal class NeuralNetworkShellController : ISingletonController, INeuralNetworkShellService
+    internal class NeuralNetworkShellController : INeuralNetworkShellService
     {
         private readonly IRegionManager _rm;
         private readonly AppState _appState;

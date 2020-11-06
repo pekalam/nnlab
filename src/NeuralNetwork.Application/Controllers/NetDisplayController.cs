@@ -18,7 +18,7 @@ using Prism.Ioc;
 
 namespace NeuralNetwork.Application.Services
 {
-    public interface INetDisplayService : IService
+    public interface INetDisplayService : ISingletonController
     {
         DelegateCommand<NeuronClickedEventArgs> NeuronClickCommand { get; set; }
 

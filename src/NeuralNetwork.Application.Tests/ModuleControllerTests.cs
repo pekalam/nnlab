@@ -241,11 +241,19 @@ namespace NeuralNetwork.Application.Tests
         private AutoMocker _mocker = new AutoMocker();
         private AppState _appState;
         private ModuleState _moduleState;
+        private ModuleController _controller;
 
 
         public ModuleStateTests()
         {
+            _mocker.UseTestEa();
+            _mocker.UseTestRm();
             _appState = _mocker.UseImpl<AppState>();
+            _moduleState = _mocker.UseImpl<ModuleState>();
+            _mocker.UseImpl<INeuralNetworkService, NeuralNetworkService>();
+            _controller = _mocker.UseImpl<ModuleController>();
+
+            _controller.Run();
         }
 
         [Fact]
@@ -256,8 +264,6 @@ namespace NeuralNetwork.Application.Tests
             session.TrainingData = TrainingDataMocks.ValidData1;
             session.Network = MLPMocks.ValidNet1;
 
-            //act
-            _moduleState = _mocker.UseImpl<ModuleState>();
 
             //assert
             _moduleState.ModelAdapter.Should().NotBeNull();
@@ -267,10 +273,8 @@ namespace NeuralNetwork.Application.Tests
         public void State_when_session_duplicated_sets_new_model_adapter()
         {
             //arrange
-            _moduleState = _mocker.UseImpl<ModuleState>();
             var sesion = _appState.CreateSession();
             sesion.TrainingData = TrainingDataMocks.ValidData1;
-            sesion.Network = MLPMocks.ValidNet1;
 
             var adapter = _moduleState.ModelAdapter;
             //additional check
@@ -288,14 +292,12 @@ namespace NeuralNetwork.Application.Tests
         [Fact]
         public void PropertyChanged_event_is_sent_after_active_session_is_set()
         {
-            _moduleState = _mocker.UseImpl<ModuleState>();
             int called = 0;
             _moduleState.PropertyChanged += (sender, args) =>
                 called += (args.PropertyName == nameof(ModuleState.ModelAdapter) ? 1 : 0);
 
             var sesion = _appState.CreateSession();
             sesion.TrainingData = TrainingDataMocks.ValidData1;
-            sesion.Network = MLPMocks.ValidNet1;
 
             called.Should().Be(1);
 

@@ -14,25 +14,24 @@ namespace NeuralNetwork.Application.Tests
     public class LayersDisplayTests
     {
         private AutoMocker _mocker = new AutoMocker();
+        private ModuleController _moduleController;
         private AppState _appState;
         private ModuleState _moduleState;
         private LayersDisplayViewModel _vm;
-        private LayersDisplayService _service;
 
         public LayersDisplayTests()
         {
             _mocker.UseTestRm();
             _mocker.UseTestEa();
-            _mocker.UseTestVmAccessor();
             _appState = _mocker.UseImpl<AppState>();
             _moduleState = _mocker.UseImpl<ModuleState>();
             _mocker.UseImpl<NeuralNetworkService>();
             _mocker.UseImpl<INeuralNetworkService, NNControlNeuralNetworkServiceDecorator>();
+            _moduleController = _mocker.UseImpl<ModuleController>();
             _mocker.UseImpl<NeuralNetworkShellController>();
-            _mocker.UseImpl<ITransientController<LayersDisplayService>, LayersDisplayController>();
-            _service = _mocker.UseImpl<ILayersDisplayService, LayersDisplayService>();
+            _mocker.UseImpl<ILayersDisplayController, LayersDisplayController>();
 
-
+            _moduleController.Run();
         }
 
         [Fact]
