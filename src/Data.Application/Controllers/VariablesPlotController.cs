@@ -1,12 +1,10 @@
-﻿using System.ComponentModel;
-using System.Diagnostics;
-using Common.Domain;
-using NNLib.Common;
+﻿using Common.Domain;
+using Data.Application.ViewModels;
 using NNLib.Data;
 using OxyPlot;
 using OxyPlot.Series;
 
-namespace Data.Application.ViewModels
+namespace Data.Application.Controllers
 {
     public class VariablesPlotController
     {

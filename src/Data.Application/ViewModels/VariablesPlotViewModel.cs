@@ -1,4 +1,5 @@
-﻿using OxyPlot;
+﻿using Data.Application.Controllers;
+using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Legends;
 using Prism.Mvvm;

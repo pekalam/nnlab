@@ -1,11 +1,11 @@
-﻿using NNLib.Common;
-using System.Data;
+﻿using System.Data;
 using System.Diagnostics;
 using System.Linq;
 using Common.Domain;
+using NNLib.Common;
 using NNLib.Data;
 
-namespace Data.Application.ViewModels
+namespace Data.Application.ViewModels.DataSourcePreview
 {
     public class DataSetInstanceAccessor
     {
