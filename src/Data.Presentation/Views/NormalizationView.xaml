@@ -1,0 +1,51 @@
+﻿<UserControl x:Class="Data.Presentation.Views.NormalizationView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:prism="http://prismlibrary.com/"            
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:dd="clr-namespace:Data.Presentation.__DesignData"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance dd:DesignNormalizationViewModel, IsDesignTimeCreatable=True}">
+    <StackPanel>
+        <TextBlock Text="Normalization" FontSize="24"/>
+        <StackPanel Orientation="Horizontal" Margin="0,20,0,0">
+            <StackPanel.Resources>
+                <Style TargetType="RadioButton">
+                    <Setter Property="Margin" Value="0,0,20,0"/>
+                </Style>
+            </StackPanel.Resources>
+
+
+            <RadioButton Content="None" IsChecked="{Binding NoneChecked}">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="Checked">
+                        <i:InvokeCommandAction Command="{Binding Service.NoNormalizationCommand}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </RadioButton>
+            <RadioButton Content="Max-min" IsChecked="{Binding MinMaxChecked}">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="Checked">
+                        <i:InvokeCommandAction Command="{Binding Service.MinMaxNormalizationCommand}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </RadioButton>
+            <RadioButton Content="Mean" IsChecked="{Binding MeanChecked}">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="Checked">
+                        <i:InvokeCommandAction Command="{Binding Service.MeanNormalizationCommand}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </RadioButton>
+            <RadioButton Content="Std" IsChecked="{Binding StdChecked}">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="Checked">
+                        <i:InvokeCommandAction Command="{Binding Service.StdNormalizationCommand}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </RadioButton>
+        </StackPanel>
+    </StackPanel>
+</UserControl>

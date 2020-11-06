@@ -1,6 +1,5 @@
 ﻿using Common.Framework;
 using Data.Application.Services;
-using Data.Application.ViewModels.DataSource.VariablesSelection;
 using Data.Domain;
 using Data.Domain.Services;
 using NNLib.Common;
@@ -12,6 +11,7 @@ using System.Linq;
 using System.Windows.Input;
 using Common.Domain;
 using Data.Application.Controllers;
+using Data.Application.ViewModels;
 using Prism.Ioc;
 
 namespace Data.Application.Services

@@ -2,8 +2,7 @@
 using Common.Framework;
 using Data.Application.Interfaces;
 using Data.Application.Services;
-using Data.Application.ViewModels.CustomDataSet;
-using Data.Application.ViewModels.DataSourceSelection;
+using Data.Application.ViewModels;
 using Prism.Commands;
 using Prism.Ioc;
 using Prism.Regions;

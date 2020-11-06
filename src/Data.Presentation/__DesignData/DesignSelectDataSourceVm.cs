@@ -5,15 +5,6 @@ using System.Collections.Generic;
 using System.Text;
 using Data.Application.Services;
 using Data.Application.ViewModels;
-using Data.Application.ViewModels.CustomDataSet;
-using Data.Application.ViewModels.DataSetDivision;
-using Data.Application.ViewModels.DataSource.FileDataSource;
-using Data.Application.ViewModels.DataSource.Normalization;
-using Data.Application.ViewModels.DataSource.Preview;
-using Data.Application.ViewModels.DataSource.Statistics;
-using Data.Application.ViewModels.DataSource.VariablesSelection;
-using Data.Application.ViewModels.DataSourceSelection;
-using Data.Presentation.Views.DataSource.FileDataSource;
 
 
 namespace Data.Presentation.__DesignData

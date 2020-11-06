@@ -1,6 +1,5 @@
 ﻿#pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
 using Common.Framework;
-using Data.Application.ViewModels.DataSourceSelection;
 using Prism.Commands;
 using Prism.Mvvm;
 using System.ComponentModel;

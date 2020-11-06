@@ -1,0 +1,57 @@
+﻿<UserControl x:Class="Data.Presentation.Views.FileDataSourceView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:prism="http://prismlibrary.com/"
+             xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:dd="clr-namespace:Data.Presentation.__DesignData"
+             xmlns:interface="clr-namespace:Shell.Interface;assembly=Shell.Interface"
+             xmlns:views="clr-namespace:Data.Presentation.Views"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance dd:DesignFileDataSourceVm, IsDesignTimeCreatable=True}"
+             prism:ViewModelLocator.AutoWireViewModel="True"
+             interface:BreadcrumbsHelper.Breadcrumb="File data source">
+    <UserControl.Resources>
+        <views:FileDataSourceActionMenuLeftView x:Key="ActionMenuLeft"/>
+    </UserControl.Resources>
+    <Grid interface:ActionMenuHelpers.LeftMenuView="{StaticResource ActionMenuLeft}">
+        <ScrollViewer>
+
+        
+            <Grid>
+                <Grid.Style>
+                    <Style TargetType="Grid" BasedOn="{StaticResource ContentGrid}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ShowLoadingVisibility}" Value="Visible">
+                                <Setter Property="Visibility" Value="Hidden"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Grid.Style>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                
+                <ContentControl Style="{StaticResource ContentPanel}">
+                    <views:DataSourcePreviewView DataContext="{Binding DataSourcePreviewVm}"/>
+                </ContentControl>
+
+                <ContentControl Grid.Row="1" Margin="0,30,0,0" Style="{StaticResource ContentPanel}">
+                    <views:NormalizationView DataContext="{Binding NormalizationVm}"/>
+                </ContentControl>
+
+                <ContentControl Grid.Row="2" Margin="0,30,0,0" Style="{StaticResource ContentPanel}">
+                    <views:StatisticsView/>
+                </ContentControl>
+            </Grid>
+        </ScrollViewer>
+        <mah:ProgressRing Width="80"
+                               Height="80"
+                               IsActive="True"
+                               ToolTip="Loading file"
+                               Visibility="{Binding ShowLoadingVisibility}" Panel.ZIndex="1000" />
+    </Grid>
+</UserControl>

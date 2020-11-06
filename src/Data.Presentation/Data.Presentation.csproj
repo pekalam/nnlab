@@ -16,48 +16,48 @@
     <ProjectReference Include="..\Data.Application\Data.Application.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="Views\CustomDataSet\ActionMenuLeftView.xaml.cs">
+    <Compile Update="Views\CustomDataSetActionMenuLeftView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Views\DataSource\FileDataSource\ActionMenuLeftView.xaml.cs">
+    <Compile Update="Views\FileDataSourceActionMenuLeftView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Views\DataSource\FileDataSource\FileDataSourceView.xaml.cs">
+    <Compile Update="Views\FileDataSourceView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Views\DataSource\Normalization\NormalizationView.xaml.cs">
+    <Compile Update="Views\NormalizationView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Views\DataSource\Preview\DataSourcePreviewView.xaml.cs">
+    <Compile Update="Views\DataSourcePreviewView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Views\DataSource\Statistics\StatisticsView.xaml.cs">
+    <Compile Update="Views\StatisticsView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Views\DataSource\VariablesSelection\VariablesSelectionView.xaml.cs">
+    <Compile Update="Views\VariablesSelectionView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Page Update="Views\CustomDataSet\ActionMenuLeftView.xaml">
+    <Page Update="Views\CustomDataSetActionMenuLeftView.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Views\DataSource\FileDataSource\ActionMenuLeftView.xaml">
+    <Page Update="Views\FileDataSourceActionMenuLeftView.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Views\DataSource\FileDataSource\FileDataSourceView.xaml">
+    <Page Update="Views\FileDataSourceView.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Views\DataSource\Normalization\NormalizationView.xaml">
+    <Page Update="Views\NormalizationView.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Views\DataSource\Preview\DataSourcePreviewView.xaml">
+    <Page Update="Views\DataSourcePreviewView.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Views\DataSource\Statistics\StatisticsView.xaml">
+    <Page Update="Views\StatisticsView.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Views\DataSource\VariablesSelection\VariablesSelectionView.xaml">
+    <Page Update="Views\VariablesSelectionView.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>

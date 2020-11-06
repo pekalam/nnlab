@@ -2,9 +2,6 @@
 using Common.Domain;
 using Common.Framework;
 using Data.Application.Services;
-using Data.Application.ViewModels.CustomDataSet;
-using Data.Application.ViewModels.DataSetDivision;
-using Data.Application.ViewModels.DataSource.VariablesSelection;
 using NNLib.Common;
 using OxyPlot;
 using OxyPlot.Axes;
@@ -17,6 +14,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Data.Application.Controllers;
+using Data.Application.ViewModels;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Complex;
 using NNLib.Data;

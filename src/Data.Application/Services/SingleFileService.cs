@@ -1,5 +1,4 @@
 ﻿using Common.Framework;
-using Data.Application.ViewModels.DataSourceSelection;
 using Prism.Commands;
 using Prism.Mvvm;
 using System.ComponentModel;

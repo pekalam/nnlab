@@ -1,5 +1,4 @@
 ﻿using Data.Application.Services;
-using Data.Application.ViewModels.DataSetDivision;
 using Data.Domain.Services;
 using NNLib.Common;
 using Prism.Commands;
@@ -9,6 +8,7 @@ using System.ComponentModel;
 using System.Linq;
 using Common.Domain;
 using Common.Framework;
+using Data.Application.ViewModels;
 using Data.Domain;
 using NNLib.Data;
 using Prism.Ioc;
