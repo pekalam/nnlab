@@ -10,8 +10,12 @@ using Shell.Interface;
 
 namespace Data.Application.Controllers
 {
-    internal interface IFileController : ITransientController, IFileService
+    public interface IFileController : ITransientController
     {
+        DelegateCommand CreateDataSetCommand { get; set; }
+        DelegateCommand SelectFileCommand { get; set; }
+        DelegateCommand LoadFilesCommand { get; set; }
+
         public static void Register(IContainerRegistry cr)
         {
             cr.Register<IFileController, FileController>();

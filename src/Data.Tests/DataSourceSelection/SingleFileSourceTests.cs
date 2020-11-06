@@ -31,7 +31,7 @@ namespace Data.Application.Tests.DataSourceSelection
             _appState = _mocker.UseImpl<AppState>();
             _csvValidation = _mocker.UseMock<ICsvValidationService>();
             _dataSetService = _mocker.UseMock<ITrainingDataService>();
-            _singleFileService = _mocker.UseImpl<ISingleFileService, SingleFileSourceController>();
+            _singleFileService = _mocker.UseImpl<ISingleFileController, SingleFileSourceController>();
 
             _vm = _mocker.UseVm<SingleFileSourceViewModel>();
         }

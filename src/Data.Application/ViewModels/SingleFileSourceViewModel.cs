@@ -5,16 +5,23 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using Common.Domain;
+using Data.Application.Controllers;
 
 namespace Data.Application.ViewModels
 {
+    public class VariablesTableModel
+    {
+        public int Column { get; set; }
+        public string Name { get; set; } = null!;
+    }
+
     public class SingleFileSourceViewModel : ViewModelBase<SingleFileSourceViewModel>
     {
         private string? _selectedFilePath;
         private string? _selectedFileName;
         private VariablesTableModel[]? _variables;
 
-        public SingleFileSourceViewModel(ISingleFileService singleFileService)
+        public SingleFileSourceViewModel(ISingleFileController singleFileService)
         {
             SingleFileService = singleFileService;
             KeepAlive = false;
@@ -36,7 +43,7 @@ namespace Data.Application.ViewModels
             }
         }
 
-        public ISingleFileService SingleFileService { get; }
+        public ISingleFileController SingleFileService { get; }
 
         public FileValidationResult FileValidationResult { get; set; } = new FileValidationResult();
         public VariablesTableModel[]? Variables

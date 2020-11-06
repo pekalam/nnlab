@@ -8,6 +8,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows.Input;
 using Common.Domain;
+using Data.Application.Controllers;
 
 namespace Data.Application.ViewModels
 {
@@ -43,7 +44,7 @@ namespace Data.Application.ViewModels
         private string? _insufficientSizeMsg;
 
 
-        public DataSetDivisionViewModel(IDataSetDivisionService service, AppState appState)
+        public DataSetDivisionViewModel(IDataSetDivisionController service, AppState appState)
         {
             Service = service;
             KeepAlive = false;
@@ -74,7 +75,7 @@ namespace Data.Application.ViewModels
             else Service.DivideMemoryDataCommand.RaiseCanExecuteChanged();
         }
 
-        public IDataSetDivisionService Service { get; set; }
+        public IDataSetDivisionController Service { get; set; }
 
         public string? Ratio
         {

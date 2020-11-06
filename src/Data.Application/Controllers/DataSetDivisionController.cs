@@ -15,8 +15,11 @@ using Prism.Ioc;
 
 namespace Data.Application.Controllers
 {
-    internal interface IDataSetDivisionController : ITransientController, IDataSetDivisionService
+    public interface IDataSetDivisionController : ITransientController
     {
+        DelegateCommand<string> DivideFileDataCommand { get; set; }
+        DelegateCommand<(List<double[]> input, List<double[]> target)?> DivideMemoryDataCommand { get; set; }
+
         public static void Register(IContainerRegistry cr)
         {
             cr.RegisterSingleton<IDataSetDivisionController, DataSetDivisionController>();

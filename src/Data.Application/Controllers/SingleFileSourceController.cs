@@ -12,7 +12,15 @@ using Data.Application.ViewModels;
 
 namespace Data.Application.Controllers
 {
-    internal class SingleFileSourceController : ControllerBase<SingleFileSourceViewModel>,ISingleFileService
+    public interface ISingleFileController : ITransientController
+    {
+        DelegateCommand ReturnCommand { get; set; }
+        DelegateCommand ContinueCommand { get; set; }
+        DelegateCommand<string> ValidateCommand { get; set; }
+        DelegateCommand<string> LoadCommand { get; set; }
+    }
+
+    internal class SingleFileSourceController : ControllerBase<SingleFileSourceViewModel>,ISingleFileController
     {
         private bool _canLoad;
         private bool _canReturn = true;

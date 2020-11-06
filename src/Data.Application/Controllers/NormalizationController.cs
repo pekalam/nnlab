@@ -9,7 +9,7 @@ using Prism.Ioc;
 
 namespace Data.Application.Services
 {
-    public interface INormalizationService : IService, ITransientController
+    public interface INormalizationService : ITransientController
     {
         DelegateCommand NoNormalizationCommand { get;  }
         DelegateCommand MinMaxNormalizationCommand { get;  }

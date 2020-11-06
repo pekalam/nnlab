@@ -15,13 +15,18 @@ namespace Data.Application.Controllers.DataSource
 {
     public interface IFileDataSourceController : ITransientController
     {
+        Action Initialized { get; set; }
+        DelegateCommand SelectVariablesCommand { get; set; }
+        DelegateCommand DivideDatasetCommand { get; set; }
+        Action<NavigationContext> Navigated { get; }
+
         public static void Register(IContainerRegistry cr)
         {
             cr.RegisterSingleton<IFileDataSourceController, FileDataSourceController>();
         }
     }
 
-    internal class FileDataSourceController : ControllerBase<FileDataSourceViewModel>,IFileDataSourceController, IFileDataSourceService
+    internal class FileDataSourceController : ControllerBase<FileDataSourceViewModel>,IFileDataSourceController
     {
         private IRegionManager _rm;
         private IEventAggregator _ea;

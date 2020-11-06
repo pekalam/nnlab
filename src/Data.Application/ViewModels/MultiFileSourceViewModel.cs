@@ -6,6 +6,7 @@ using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Linq;
 using Common.Domain;
+using Data.Application.Controllers;
 
 namespace Data.Application.ViewModels
 {
@@ -21,7 +22,7 @@ namespace Data.Application.ViewModels
         private string? _ratio;
         private VariablesTableModel[]? _variables;
 
-        public MultiFileSourceViewModel(IMultiFileService multiFileService)
+        public MultiFileSourceViewModel(IMultiFileSourceController multiFileService)
         {
             MultiFileValidationResult = new ObservableCollection<FileValidationResult>(Enumerable.Repeat(new FileValidationResult(), 3));
             MultiFileService = multiFileService;
@@ -77,7 +78,7 @@ namespace Data.Application.ViewModels
             };
         }
 
-        public IMultiFileService MultiFileService { get; }
+        public IMultiFileSourceController MultiFileService { get; }
 
         public ObservableCollection<FileValidationResult> MultiFileValidationResult { get; set; }
 

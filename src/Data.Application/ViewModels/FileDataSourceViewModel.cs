@@ -1,6 +1,7 @@
 ﻿using Common.Framework;
 using Data.Application.Services;
 using System.Windows;
+using Data.Application.Controllers.DataSource;
 using Prism.Regions;
 
 namespace Data.Application.ViewModels
@@ -10,7 +11,7 @@ namespace Data.Application.ViewModels
         private Visibility _showLoadingVisibility = Visibility.Visible;
         private bool _isDivideDataSetEnabled;
 
-        public FileDataSourceViewModel(IFileDataSourceService service,DataSourcePreviewViewModel dataSourcePreviewVm, NormalizationViewModel normalizationVm)
+        public FileDataSourceViewModel(IFileDataSourceController service,DataSourcePreviewViewModel dataSourcePreviewVm, NormalizationViewModel normalizationVm)
         {
             Service = service;
             DataSourcePreviewVm = dataSourcePreviewVm;
@@ -21,7 +22,7 @@ namespace Data.Application.ViewModels
             service.Initialized?.Invoke();
         }
 
-        public IFileDataSourceService Service { get; }
+        public IFileDataSourceController Service { get; }
 
         public Visibility ShowLoadingVisibility
         {

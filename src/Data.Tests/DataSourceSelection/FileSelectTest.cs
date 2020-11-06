@@ -20,8 +20,8 @@ namespace Data.Application.Tests.DataSourceSelection
     {
         private readonly AutoMocker _mocker = new AutoMocker();
         private AppState _appState;
-        private ISingleFileService _singleFileService;
-        private IMultiFileService _multiFileService;
+        private ISingleFileController _singleFileService;
+        private IMultiFileSourceController _multiFileService;
         private Mock<IFileDialogService> _dialogService;
         private Mock<IRegionManager> _rm;
 
@@ -33,11 +33,11 @@ namespace Data.Application.Tests.DataSourceSelection
             _mocker.UseTestEa();
             _appState = _mocker.UseImpl<AppState>();
             _dialogService = _mocker.UseMock<IFileDialogService>();
-            _singleFileService = _mocker.UseImpl<ISingleFileService, SingleFileSourceController>();
-            _multiFileService = _mocker.UseImpl<IMultiFileService, MultiFileSourceController>();
+            _singleFileService = _mocker.UseImpl<ISingleFileController, SingleFileSourceController>();
+            _multiFileService = _mocker.UseImpl<IMultiFileSourceController, MultiFileSourceController>();
 
 
-            _ctrl= _mocker.UseImpl<IFileService,FileController>();
+            _ctrl= _mocker.UseImpl<IFileController,FileController>();
         }
 
         [Fact]

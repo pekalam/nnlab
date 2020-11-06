@@ -38,11 +38,11 @@ namespace Data.Application.Tests.DataSourceSelection
             _dataSetService = _mocker.UseMock<ITrainingDataService>();
             _dialogService = _mocker.UseMock<IFileDialogService>();
             _csvValidation = _mocker.UseMock<ICsvValidationService>();
-            _ctrl = _mocker.UseImpl<IMultiFileService, MultiFileSourceController>();
-            _multiFileService = _mocker.UseImpl<IMultiFileService, MultiFileSourceController>();
+            _ctrl = _mocker.UseImpl<IMultiFileSourceController, MultiFileSourceController>();
+            _multiFileService = _mocker.UseImpl<IMultiFileSourceController, MultiFileSourceController>();
 
             _vm = _mocker.UseVm<MultiFileSourceViewModel>();
-            _fileController = _mocker.UseImpl<IFileService, FileController>();
+            _fileController = _mocker.UseImpl<IFileController, FileController>();
         }
 
         [Fact]

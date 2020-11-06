@@ -27,7 +27,7 @@ namespace Data.Application.Tests
             _mocker.UseTestEa();
             _mocker.UseTestRm();
             _appState = _mocker.UseImpl<AppState>();
-            _service = _mocker.UseImpl<IDataSetDivisionService, DataSetDivisionController>();
+            _service = _mocker.UseImpl<IDataSetDivisionController, DataSetDivisionController>();
             _vm = _mocker.UseVm<DataSetDivisionViewModel>();
         }
 

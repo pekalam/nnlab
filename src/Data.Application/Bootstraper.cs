@@ -13,9 +13,8 @@ namespace Data.Application
         public static void RegisterTypes(IContainerRegistry cr)
         {
             cr
-                .RegisterSingleton<IFileService, FileController>()
-                .RegisterSingleton<IDataSetDivisionService, DataSetDivisionController>()
-                .RegisterSingleton<IFileDataSourceService, FileDataSourceController>();
+                .RegisterSingleton<IDataSetDivisionController, DataSetDivisionController>()
+                .RegisterSingleton<IFileDataSourceController, FileDataSourceController>();
 
                 INormalizationService.Register(cr);
                 IStatisticsService.Register(cr);
@@ -26,9 +25,9 @@ namespace Data.Application
                 IFileDataSourceController.Register(cr);
                 IDataSetDivisionController.Register(cr);
 
-                cr.Register<ISingleFileService, SingleFileSourceController>()
+                cr.Register<ISingleFileController, SingleFileSourceController>()
 
-                    .Register<IMultiFileService, MultiFileSourceController>();
+                    .Register<IMultiFileSourceController, MultiFileSourceController>();
         }
     }
 }

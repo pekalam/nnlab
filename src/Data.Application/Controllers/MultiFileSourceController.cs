@@ -13,7 +13,23 @@ using Data.Application.ViewModels;
 
 namespace Data.Application.Controllers
 {
-    internal class MultiFileSourceController : ControllerBase<MultiFileSourceViewModel>, IMultiFileService
+    public interface IMultiFileSourceController : ITransientController
+    {
+        DelegateCommand SelectTrainingFileCommand { get; set; }
+        DelegateCommand SelectValidationFileCommand { get; set; }
+        DelegateCommand SelectTestFileCommand { get; set; }
+
+        DelegateCommand ReturnCommand { get; set; }
+        DelegateCommand ContinueCommand { get; set; }
+
+        DelegateCommand<string> ValidateTrainingFile { get; set; }
+        DelegateCommand<string> ValidateTestFile { get; set; }
+        DelegateCommand<string> ValidateValidationFile { get; set; }
+
+        DelegateCommand<(string trainingFile, string validationFile, string testFile)?> LoadFiles { get; set; }
+    }
+
+    internal class MultiFileSourceController : ControllerBase<MultiFileSourceViewModel>, IMultiFileSourceController
     {
         private readonly IEventAggregator _ea;
         private readonly IRegionManager _rm;
