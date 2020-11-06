@@ -18,7 +18,7 @@ using Training.Interface;
 
 namespace Shell.Application.Services
 {
-    public interface IStatusBarService : IService
+    public interface IStatusBarService : ITransientController
     {
         DelegateCommand AddSessionCommand { get; set; }
         DelegateCommand DuplicateSessionCommand { get; set; }
@@ -32,7 +32,7 @@ namespace Shell.Application.Services
 
 namespace Shell.Application.Controllers
 {
-    internal class StatusBarController : IStatusBarService, ISingletonController
+    internal class StatusBarController : ControllerBase<StatusBarViewModel>,IStatusBarService
     {
         private readonly AppState _appState;
         private readonly IDialogService _dialogService;
@@ -54,10 +54,6 @@ namespace Shell.Application.Controllers
 
         public DelegateCommand AddSessionCommand { get; set; }
         public DelegateCommand DuplicateSessionCommand { get; set; }
-
-        public void Initialize()
-        {
-        }
 
         private void DuplicateSession()
         {
@@ -94,38 +90,33 @@ namespace Shell.Application.Controllers
 
         private void TrainingPaused()
         {
-            var vm = StatusBarViewModel.Instance!;
-            vm.CanModifyActiveSession = true;
+            Vm!.CanModifyActiveSession = true;
             RaiseCommandsCanExec();
         }
 
 
         private void TrainingStopped()
         {
-            var vm = StatusBarViewModel.Instance!;
-            vm.CanModifyActiveSession = true;
+            Vm!.CanModifyActiveSession = true;
             RaiseCommandsCanExec();
         }
 
         private void TrainingStarted()
         {
-            var vm = StatusBarViewModel.Instance!;
-            vm.CanModifyActiveSession = false;
+            Vm!.CanModifyActiveSession = false;
             RaiseCommandsCanExec();
         }
 
         private void OnHideErrorNotification()
         {
-            var vm = StatusBarViewModel.Instance!;
-            vm.ErrorNotificationVisibility = Visibility.Collapsed;
+            Vm!.ErrorNotificationVisibility = Visibility.Collapsed;
         }
 
         private void OnShowErrorNotification(ErrorNotificationArgs args)
         {
-            var vm = StatusBarViewModel.Instance!;
 
-            vm.ErrorNotificationVisibility = Visibility.Visible;
-            vm.ErrorMessage = args.Message;
+            Vm!.ErrorNotificationVisibility = Visibility.Visible;
+            Vm!.ErrorMessage = args.Message;
         }
     }
 }

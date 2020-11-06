@@ -57,6 +57,8 @@ namespace Shell.Application.ViewModels
                     _appState.ActiveSession.PropertyChanged += ActiveSessionOnPropertyChanged;
                 }
             };
+
+            serivce.Initialize(this);
         }
 
         private void UpdateNetworkInfo()

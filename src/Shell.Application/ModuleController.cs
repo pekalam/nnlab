@@ -12,13 +12,11 @@ namespace Shell.Application
     class ModuleController
     {
         private AppState _appState;
-        private StatusBarController _statusBarController;
         private IEventAggregator _ea;
 
 
-        public ModuleController(IRegionManager rm, StatusBarController statusBarController, AppState appState, IEventAggregator ea)
+        public ModuleController(IRegionManager rm, AppState appState, IEventAggregator ea)
         {
-            _statusBarController = statusBarController;
             _appState = appState;
             _ea = ea;
             ActionMenuHelpers.RegionManager = rm;
@@ -27,7 +25,6 @@ namespace Shell.Application
 
         public void Run()
         {
-            _statusBarController.Initialize();
         }
     }
 }
