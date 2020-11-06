@@ -1,7 +1,7 @@
 ﻿using Common.Domain;
 using Data.Application.Controllers;
 using Data.Application.Services;
-using Data.Application.ViewModels.DataSource.VariablesSelection;
+using Data.Application.ViewModels;
 using Data.Domain;
 using Data.Domain.Services;
 using FluentAssertions;

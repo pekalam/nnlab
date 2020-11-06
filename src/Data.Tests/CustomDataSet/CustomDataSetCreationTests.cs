@@ -3,7 +3,7 @@ using System.Linq;
 using Common.Domain;
 using Data.Application.Controllers;
 using Data.Application.Services;
-using Data.Application.ViewModels.CustomDataSet;
+using Data.Application.ViewModels;
 using FluentAssertions;
 using MahApps.Metro.IconPacks.Converter;
 using Moq.AutoMock;

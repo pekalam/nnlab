@@ -1,5 +1,5 @@
 using Common.Domain;
-using Data.Application.ViewModels.DataSource.Preview;
+using Data.Application.ViewModels;
 using Data.Domain.Services;
 using FluentAssertions;
 using NNLib.Common;

@@ -3,7 +3,7 @@ using Common.Domain;
 using Common.Framework;
 using Data.Application.Controllers;
 using Data.Application.Services;
-using Data.Application.ViewModels.DataSourceSelection;
+using Data.Application.ViewModels;
 using Data.Domain.Services;
 using FluentAssertions;
 using Moq;
