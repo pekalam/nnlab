@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="NNLibAdapter" Version="1.0.51" />
+    <PackageReference Include="NNLibAdapter" Version="1.0.52" />
   </ItemGroup>
 
   <ItemGroup>

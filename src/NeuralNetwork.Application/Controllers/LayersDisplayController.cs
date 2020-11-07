@@ -174,7 +174,6 @@ namespace NeuralNetwork.Application.Controllers
 
         private void AddLayer()
         {
-            var neuralNetwork = _appState.ActiveSession!.Network!;
             if (!_networkService.AddLayer())
             {
                 PublishInvalidArch();
@@ -183,7 +182,7 @@ namespace NeuralNetwork.Application.Controllers
             {
                 PublishValidArch();
             }
-            Vm!.AddLayer(neuralNetwork.BaseLayers[^1], neuralNetwork.TotalLayers - 1);
+            SetLayers();
         }
 
         private void PublishInvalidArch()

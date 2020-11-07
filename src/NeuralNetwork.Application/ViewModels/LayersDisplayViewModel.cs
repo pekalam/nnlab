@@ -75,25 +75,6 @@ namespace NeuralNetwork.Application.ViewModels
             set => SetProperty(ref _selectedLayer, value);
         }
 
-
-        public void AddLayer(Layer layer, int ind)
-        {
-            var layers = Layers;
-            var layerItem = CreateLayerModel(layer, ind);
-
-            layers.RemoveAt(layers.Count - 1);
-            layers.Add(layerItem);
-            layers.Add(new LayerEditorItemModel()
-            {
-                IsAddLayerItem = true,
-                IsOutputLayer = false,
-                LayerIndex = layers.Count,
-                TotalNeurons = 0,
-                AddLayer = Service.AddLayerCommand
-            });
-
-        }
-
         public void CreateLayers(IEnumerable<Layer> lauers)
         {
             var collection = new ObservableCollection<LayerEditorItemModel>(lauers.Select(CreateLayerModel));

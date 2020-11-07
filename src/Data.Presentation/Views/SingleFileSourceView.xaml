@@ -41,7 +41,7 @@
                     </TextBlock.ToolTip>
                 </TextBlock>
 
-                <ContentControl Style="{StaticResource FileValidationControl}" Content="{Binding SingleFileService.FileValidationResult}"/>
+                <ContentControl Style="{StaticResource FileValidationControl}" Content="{Binding FileValidationResult}"/>
             </StackPanel>
 
             <Grid Grid.Column="1">
