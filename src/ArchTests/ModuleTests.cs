@@ -184,28 +184,8 @@ namespace ArchTests
             Assert.False(fail);
         }
 
-
         [Fact]
-        public void Services_from_application_layer_reside_in_services_namespace()
-        {
-            foreach (var package in _packages)
-            {
-                var result = Types
-                    .InAssemblies(GetAssembliesFromPackage(package, new[] {".Application"}))
-                    .That()
-                    .HaveNameEndingWith("Service")
-                    .Should()
-                    .ResideInNamespaceContaining("Services")
-                    .Or()
-                    .ResideInNamespaceContaining("Interfaces")
-                    .GetResult();
-
-                AssertArchTest(result, _output);
-            }
-        }
-
-        [Fact]
-        public void Interfaces_that_reside_in_services_controllers_or_interfaces_namespace_are_registered_by_bootstraper()
+        public void Interfaces_that_reside_in_controllers_or_interfaces_namespace_are_registered_by_bootstraper()
         {
             var container = new UnityContainerExtension(new UnityContainer());
 
@@ -217,9 +197,6 @@ namespace ArchTests
                     .That()
                     .AreInterfaces().And()
                     .ResideInNamespaceContaining("Interfaces")
-                    .Or()
-                    .AreInterfaces().And()
-                    .ResideInNamespaceContaining("Services")
                     .Or()
                     .AreInterfaces().And()
                     .ResideInNamespaceContaining("Controllers")
