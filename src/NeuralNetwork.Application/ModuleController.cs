@@ -58,7 +58,13 @@ namespace NeuralNetwork.Application
                 }
                 else
                 {
-                    AdjustNetworkToNewVariables(data);
+                    if (_appState.ActiveSession!.Network.Layers[^1].NeuronsCount !=
+                        data.Variables.TargetVariableNames.Length ||
+                        _appState.ActiveSession!.Network.Layers[0].InputsCount !=
+                        data.Variables.InputVariableNames.Length)
+                    {
+                        AdjustNetworkToNewVariables(data);
+                    }
                 }
                 _ea.GetEvent<EnableNavMenuItem>().Publish(ModuleIds.NeuralNetwork);
             });

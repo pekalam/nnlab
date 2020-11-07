@@ -56,7 +56,7 @@ namespace Training.Application.Controllers
             SelectionChangedCommand = new DelegateCommand<TrainingSessionReport>(SelectionChanged);
             GenerateValidationPlotCommand = new DelegateCommand(() => DisplayTVOutputPlot(DataSetType.Validation));
             GenerateTestPlotCommand = new DelegateCommand(() => DisplayTVOutputPlot(DataSetType.Test));
-            Navigated = Navigated;
+            Navigated = NavigatedAction;
         }
 
         private DelegateCommand CloseReportsCommand { get; }

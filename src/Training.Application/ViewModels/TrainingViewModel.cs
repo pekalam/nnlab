@@ -32,16 +32,12 @@ namespace Training.Application.ViewModels
             _rm = rm;
             KeepAlive = true;
 
-            Service.RunTestCommand.CanExecuteChanged += (sender, p) => RaisePropertyChanged(nameof(CanRunTests));
-            Service.RunValidationCommand.CanExecuteChanged += (sender, p) => RaisePropertyChanged(nameof(CanRunTests));
-
             service.Initialize(this);
         }
 
         public ModuleState ModuleState { get; }
 
         public ITrainingService Service { get; }
-        public bool CanRunTests => Service.RunTestCommand.CanExecute() || Service.RunValidationCommand.CanExecute();
 
         public Visibility SelectPanelsButtonVisibility
         {

@@ -27,14 +27,16 @@ namespace Training.Application.Controllers
         private List<PanelSelectModel> _lastSelectedPanels = new List<PanelSelectModel>();
 
         private readonly ModuleState _moduleState;
+        private readonly ModuleStateHelper _helper;
 
-        public TrainingController(IRegionManager rm, IEventAggregator ea, IDialogService dialogService, ModuleState moduleState)
+        public TrainingController(IRegionManager rm, IEventAggregator ea, IDialogService dialogService, ModuleState moduleState, ModuleStateSessionOptionsDecorator sessionOptionsDecorator)
         {
             _rm = rm;
             _ea = ea;
             _dialogService = dialogService;
             _moduleState = moduleState;
 
+            SessionOptionsDecorator = sessionOptionsDecorator;
             OpenParametersCommand = new DelegateCommand(OpenParameters,
                 () => _moduleState.ActiveSession != null && !_moduleState.ActiveSession.Started);
             OpenReportsCommand = new DelegateCommand(OpenReports,
@@ -52,14 +54,6 @@ namespace Training.Application.Controllers
                 !_moduleState.ActiveSession.Stopped && _moduleState.ActiveSession.Started);
             ResetParametersCommand = new DelegateCommand(ResetParameters,
                 () => _moduleState.ActiveSession != null && _moduleState.ActiveSession.IsValid);
-            RunTestCommand = new DelegateCommand(RunTest, () =>
-                _moduleState.ActiveSession != null && _moduleState.ActiveSession.IsValid &&
-                _moduleState.ActiveSession.TrainingData!.Sets.TestSet != null && !_moduleState.ActiveSession.Started &&
-                _moduleState.ActiveSession.CurrentReport != null);
-            RunValidationCommand = new DelegateCommand(RunValidation, () =>
-                _moduleState.ActiveSession != null && _moduleState.ActiveSession.IsValid &&
-                _moduleState.ActiveSession.TrainingData!.Sets.ValidationSet != null &&
-                !_moduleState.ActiveSession.Started && _moduleState.ActiveSession.CurrentReport != null);
 
             void CheckCommandsCanExec()
             {
@@ -69,23 +63,30 @@ namespace Training.Application.Controllers
                 OpenReportsCommand.RaiseCanExecuteChanged();
                 SelectPanelsClickCommand.RaiseCanExecuteChanged();
                 OpenParametersCommand.RaiseCanExecuteChanged();
-                RunTestCommand.RaiseCanExecuteChanged();
-                RunValidationCommand.RaiseCanExecuteChanged();
             }
 
-            _moduleState.ActiveSessionChanged += (_, args) =>
+            // _moduleState.ActiveSessionChanged += (_, args) =>
+            // {
+            //     CheckCommandsCanExec();
+            //
+            //     if (args.prev != null)
+            //     {
+            //         //TODO epoch end consumer
+            //         if (_rm.Regions.ContainsRegionWithName(TrainingViewRegions.PanelLayoutRegion))
+            //         {
+            //             //_rm.Regions[TrainingViewRegions.PanelLayoutRegion].RemoveAll();
+            //             // _service.HidePanels();
+            //         }
+            //     }
+            //
+            //
+            // };
+
+            _helper = new ModuleStateHelper(moduleState);
+
+            _helper.OnActiveSessionChanged(session =>
             {
                 CheckCommandsCanExec();
-
-                if (args.prev != null)
-                {
-                    //TODO epoch end consumer
-                    if (_rm.Regions.ContainsRegionWithName(TrainingViewRegions.PanelLayoutRegion))
-                    {
-                        //_rm.Regions[TrainingViewRegions.PanelLayoutRegion].RemoveAll();
-                        // _service.HidePanels();
-                    }
-                }
 
                 Session.PropertyChanged += (a, b) => CheckCommandsCanExec();
                 Session.SessionReset += () =>
@@ -93,17 +94,8 @@ namespace Training.Application.Controllers
                     Vm!.HidePanels();
                     CheckCommandsCanExec();
                 };
-            };
-        }
+            });
 
-        private void RunValidation()
-        {
-            throw new NotImplementedException();
-        }
-
-        private void RunTest()
-        {
-            throw new NotImplementedException();
         }
 
         private void ResetParameters()
@@ -114,55 +106,26 @@ namespace Training.Application.Controllers
 
         private async void PauseTrainingSession()
         {
-            try
-            {
-                await Session.Pause();
-            }
-            catch (OperationCanceledException)
-            {
-            }
-            catch (TrainingCanceledException)
-            {
-            }
+            await Session.Pause();
         }
 
         private async void StopTrainingSession()
         {
-            try
-            {
-                await Session.Stop();
-            }
-            catch (OperationCanceledException)
-            {
-            }
-            catch (TrainingCanceledException)
-            {
-            }
+            await Session.Stop();
         }
 
         private TrainingSession Session => _moduleState.ActiveSession!;
 
         private async void StartTrainingSession()
         {
-            try
-            {
-                _ea.GetEvent<ShowProgressArea>().Publish(new ProgressAreaArgs()
+            _ea.GetEvent<ShowProgressArea>().Publish(new ProgressAreaArgs
                 {
                     Tooltip = "Training in progress",
                     Message = "Training"
                 });
-                await Session.Start();
-            }
-            catch (OperationCanceledException)
-            {
-            }
-            catch (TrainingCanceledException)
-            {
-            }
-            finally
-            {
-                _ea.GetEvent<HideProgressArea>().Publish(null);
-            }
+            await Session.Start();
+
+            _ea.GetEvent<HideProgressArea>().Publish(null);
         }
 
         private void SelectPanels()
@@ -213,8 +176,6 @@ namespace Training.Application.Controllers
         public DelegateCommand StartTrainingSessionCommand { get; }
         public DelegateCommand StopTrainingSessionCommand { get; }
         public DelegateCommand PauseTrainingSessionCommand { get; }
-        public DelegateCommand RunValidationCommand { get; }
-        public DelegateCommand RunTestCommand { get; }
         public DelegateCommand OpenReportsCommand { get; }
         public DelegateCommand OpenParametersCommand { get; }
         public DelegateCommand SelectPanelsClickCommand { get; }
