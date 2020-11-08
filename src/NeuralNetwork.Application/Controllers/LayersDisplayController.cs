@@ -6,7 +6,6 @@ using System.Linq;
 using Common.Domain;
 using Common.Framework;
 using NeuralNetwork.Application.Messaging;
-using NeuralNetwork.Application.Services;
 using NeuralNetwork.Application.ViewModels;
 using NeuralNetwork.Domain;
 using NNLib;
@@ -36,7 +35,7 @@ namespace NeuralNetwork.Application.Controllers
 
     internal class LayersDisplayController : ControllerBase<LayersDisplayViewModel>,ILayersDisplayController
     {
-        private readonly INeuralNetworkShellService _shellService;
+        private readonly INeuralNetworkShellController _shellService;
         private readonly INeuralNetworkService _networkService;
         private readonly AppState _appState;
         private readonly ModuleState _moduleState;
@@ -45,7 +44,7 @@ namespace NeuralNetwork.Application.Controllers
 
         private bool _initialized;
 
-        public LayersDisplayController(INeuralNetworkShellService shellService, INeuralNetworkService networkService, AppState appState, IEventAggregator ea, ModuleState moduleState)
+        public LayersDisplayController(INeuralNetworkShellController shellService, INeuralNetworkService networkService, AppState appState, IEventAggregator ea, ModuleState moduleState)
         {
             _shellService = shellService;
             _networkService = networkService;

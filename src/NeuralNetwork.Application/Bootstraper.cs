@@ -1,5 +1,4 @@
 ﻿using NeuralNetwork.Application.Controllers;
-using NeuralNetwork.Application.Services;
 using NeuralNetwork.Domain;
 using Prism.Ioc;
 
@@ -13,10 +12,10 @@ namespace NeuralNetwork.Application
 
             cr.Register<INeuralNetworkService, NNControlNeuralNetworkServiceDecorator>();
 
-            INetDisplayService.Register(cr);
-            ILayerEditorService.Register(cr);
+            INetDisplayController.Register(cr);
+            ILayerEditorController.Register(cr);
             ILayersDisplayController.Register(cr);
-            INeuralNetworkShellService.Register(cr);
+            INeuralNetworkShellController.Register(cr);
         }
     }
 }

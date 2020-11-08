@@ -5,7 +5,6 @@ using System.Windows.Controls.Ribbon;
 using Common.Domain;
 using Common.Framework;
 using NeuralNetwork.Application.Controllers;
-using NeuralNetwork.Application.Services;
 using NeuralNetwork.Application.View;
 using NeuralNetwork.Application.ViewModels;
 using NeuralNetwork.Domain;
@@ -15,9 +14,9 @@ using Prism.Ioc;
 using Prism.Regions;
 using Shell.Interface;
 
-namespace NeuralNetwork.Application.Services
+namespace NeuralNetwork.Application.Controllers
 {
-    public interface INeuralNetworkShellService : ISingletonController
+    public interface INeuralNetworkShellController : ISingletonController
     {
         DelegateCommand<LayerEditorItemModel> OpenLayerEditorCommand { get; set; }
         DelegateCommand CloseLayerEditorCommand { get; set; }
@@ -25,14 +24,10 @@ namespace NeuralNetwork.Application.Services
 
         public static void Register(IContainerRegistry cr)
         {
-            cr.RegisterSingleton<NeuralNetworkShellController>().RegisterSingleton<INeuralNetworkShellService, NeuralNetworkShellController>();
+            cr.RegisterSingleton<NeuralNetworkShellController>().RegisterSingleton<INeuralNetworkShellController, NeuralNetworkShellController>();
         }
     }
-}
-
-namespace NeuralNetwork.Application.Controllers
-{
-    internal class NeuralNetworkShellController : INeuralNetworkShellService
+    internal class NeuralNetworkShellController : INeuralNetworkShellController
     {
         private readonly IRegionManager _rm;
         private readonly AppState _appState;

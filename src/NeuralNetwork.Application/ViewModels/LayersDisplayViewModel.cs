@@ -4,7 +4,6 @@ using System.Linq;
 using System.Windows.Input;
 using Common.Framework;
 using NeuralNetwork.Application.Controllers;
-using NeuralNetwork.Application.Services;
 using NNLib;
 using Unity;
 

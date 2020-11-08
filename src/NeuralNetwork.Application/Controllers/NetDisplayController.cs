@@ -6,7 +6,6 @@ using Common.Domain;
 using Common.Framework;
 using NeuralNetwork.Application.Controllers;
 using NeuralNetwork.Application.Messaging;
-using NeuralNetwork.Application.Services;
 using NeuralNetwork.Application.ViewModels;
 using NNControl;
 using NNLib;
@@ -16,22 +15,20 @@ using Prism.Events;
 using Prism.Ioc;
 
 
-namespace NeuralNetwork.Application.Services
+namespace NeuralNetwork.Application.Controllers
 {
-    public interface INetDisplayService : ISingletonController
+    public interface INetDisplayController : ISingletonController
     {
         DelegateCommand<NeuronClickedEventArgs> NeuronClickCommand { get; set; }
 
         public static void Register(IContainerRegistry cr)
         {
-            cr.RegisterSingleton<NetDisplayController>().RegisterSingleton<INetDisplayService, NetDisplayController>();
+            cr.RegisterSingleton<NetDisplayController>().RegisterSingleton<INetDisplayController, NetDisplayController>();
         }
     }
-}
 
-namespace NeuralNetwork.Application.Controllers
-{
-    public class NetDisplayController : ISingletonController, INetDisplayService
+
+    internal class NetDisplayController : INetDisplayController
     {
         private readonly AppState _appState;
         private readonly AppStateHelper _helper;

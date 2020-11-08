@@ -4,7 +4,6 @@ using FluentAssertions;
 using Moq;
 using Moq.AutoMock;
 using NeuralNetwork.Application.Controllers;
-using NeuralNetwork.Application.Services;
 using NeuralNetwork.Application.ViewModels;
 using NeuralNetwork.Domain;
 using NNLib.Common;

@@ -1,5 +1,5 @@
 ﻿using Common.Framework;
-using NeuralNetwork.Application.Services;
+using NeuralNetwork.Application.Controllers;
 using NNLibAdapter;
 using Unity;
 
@@ -17,13 +17,13 @@ namespace NeuralNetwork.Application.ViewModels
         }
 
         [InjectionConstructor]
-        public NetDisplayViewModel(INetDisplayService service, ModuleState moduleState)
+        public NetDisplayViewModel(INetDisplayController service, ModuleState moduleState)
         {
             Service = service;
             ModuleState = moduleState;
         }
 
-        public INetDisplayService Service { get; }
+        public INetDisplayController Service { get; }
 
         public ModuleState ModuleState { get; }
     }

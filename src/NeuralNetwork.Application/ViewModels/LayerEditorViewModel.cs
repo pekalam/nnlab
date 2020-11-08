@@ -1,6 +1,6 @@
 ﻿using Common.Domain;
 using Common.Framework;
-using NeuralNetwork.Application.Services;
+using NeuralNetwork.Application.Controllers;
 using NNLib;
 using NNLib.MLP;
 using Prism.Mvvm;
@@ -89,13 +89,13 @@ namespace NeuralNetwork.Application.ViewModels
         }
 
         [InjectionConstructor]
-        public LayerEditorViewModel(ILayerEditorService service)
+        public LayerEditorViewModel(ILayerEditorController service)
         {
             Service = service;
             service.Initialize(this);
         }
 
-        public ILayerEditorService Service { get; }
+        public ILayerEditorController Service { get; }
 
         public MatrixPreviewViewModel MatrixPreview { get; set; } = new MatrixPreviewViewModel();
 

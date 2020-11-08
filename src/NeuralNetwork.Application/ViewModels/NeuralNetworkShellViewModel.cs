@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Common.Framework;
-using NeuralNetwork.Application.Services;
+using NeuralNetwork.Application.Controllers;
 using Prism.Regions;
 using Unity;
 
@@ -23,12 +23,12 @@ namespace NeuralNetwork.Application.ViewModels
         }
 
         [InjectionConstructor]
-        public NeuralNetworkShellViewModel(INeuralNetworkShellService service)
+        public NeuralNetworkShellViewModel(INeuralNetworkShellController service)
         {
             Service = service;
         }
 
-        private INeuralNetworkShellService Service { get; }
+        private INeuralNetworkShellController Service { get; }
 
         public override void OnNavigatedTo(NavigationContext navigationContext)
         {

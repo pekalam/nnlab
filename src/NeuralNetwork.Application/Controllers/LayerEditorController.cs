@@ -6,7 +6,6 @@ using Common.Domain;
 using Common.Framework;
 using ControlzEx.Standard;
 using NeuralNetwork.Application.Controllers;
-using NeuralNetwork.Application.Services;
 using NeuralNetwork.Application.ViewModels;
 using NeuralNetwork.Domain;
 using NNLib;
@@ -17,9 +16,9 @@ using Prism.Ioc;
 using SharedUI.MatrixPreview;
 using Shell.Interface;
 
-namespace NeuralNetwork.Application.Services
+namespace NeuralNetwork.Application.Controllers
 {
-    public interface ILayerEditorService : ITransientController
+    public interface ILayerEditorController : ITransientController
     {
         Action<LayerEditorNavParams> Navigated { get; set; }
         DelegateCommand ExitCommand { get; set; }
@@ -27,14 +26,11 @@ namespace NeuralNetwork.Application.Services
 
         public static void Register(IContainerRegistry cr)
         {
-            cr.Register<ILayerEditorService, LayerEditorController>();
+            cr.Register<ILayerEditorController, LayerEditorController>();
         }
     }
-}
 
-namespace NeuralNetwork.Application.Controllers
-{
-    internal class LayerEditorController : ControllerBase<LayerEditorViewModel>,ILayerEditorService
+    internal class LayerEditorController : ControllerBase<LayerEditorViewModel>,ILayerEditorController
     {
         private readonly INeuralNetworkService _networkService;
         private readonly IEventAggregator _ea;
@@ -42,7 +38,7 @@ namespace NeuralNetwork.Application.Controllers
         private MLPNetwork? _assignedNetwork;
         private int _layerNum;
 
-        public LayerEditorController(INeuralNetworkShellService shellService, INeuralNetworkService networkService, IEventAggregator ea)
+        public LayerEditorController(INeuralNetworkShellController shellService, INeuralNetworkService networkService, IEventAggregator ea)
         {
             _networkService = networkService;
             _ea = ea;
