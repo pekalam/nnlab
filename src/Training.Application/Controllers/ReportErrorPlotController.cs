@@ -5,27 +5,23 @@ using Common.Framework;
 using Prism.Ioc;
 using Prism.Regions;
 using Training.Application.Controllers;
-using Training.Application.Services;
 using Training.Application.ViewModels;
 using Training.Domain;
 
-namespace Training.Application.Services
+namespace Training.Application.Controllers
 {
-    public interface IReportErrorService : ITransientController
+    public interface IReportErrorController : ITransientController
     {
         Action<NavigationContext> Navigated { get; }
 
         public static void Register(IContainerRegistry cr)
         {
-            cr.Register<IReportErrorService, ReportErrorPlotController>();
+            cr.Register<IReportErrorController, ReportErrorPlotController>();
 
         }
     }
-}
 
-namespace Training.Application.Controllers
-{
-    internal class ReportErrorPlotController : ControllerBase<ReportErrorPlotViewModel>,IReportErrorService
+    internal class ReportErrorPlotController : ControllerBase<ReportErrorPlotViewModel>,IReportErrorController
     {
         private string? _reportErrorPlotSettingsRegion;
 

@@ -11,13 +11,12 @@ using Prism.Ioc;
 using Prism.Regions;
 using Shell.Interface;
 using Training.Application.Controllers;
-using Training.Application.Services;
 using Training.Application.ViewModels;
 using Training.Domain;
 
-namespace Training.Application.Services
+namespace Training.Application.Controllers
 {
-    public interface ITrainingParametersService : ITransientController
+    public interface ITrainingParametersController : ITransientController
     {
         DelegateCommand OkCommand { get; }
         DelegateCommand ResetCommand { get; }
@@ -25,14 +24,12 @@ namespace Training.Application.Services
 
         public static void Register(IContainerRegistry cr)
         {
-            cr.Register<ITrainingParametersService, TrainingParametersController>();
+            cr.Register<ITrainingParametersController, TrainingParametersController>();
         }
     }
-}
 
-namespace Training.Application.Controllers
-{
-    internal class TrainingParametersController : ControllerBase<TrainingParametersViewModel>,ITrainingParametersService
+
+    internal class TrainingParametersController : ControllerBase<TrainingParametersViewModel>,ITrainingParametersController
     {
         private readonly AppState _appState;
         private readonly IRegionManager _rm;

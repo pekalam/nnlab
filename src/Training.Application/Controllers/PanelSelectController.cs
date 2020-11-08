@@ -11,26 +11,23 @@ using Prism.Regions;
 using Prism.Services.Dialogs;
 using Shell.Interface;
 using Training.Application.Controllers;
-using Training.Application.Services;
 using Training.Application.ViewModels;
 
-namespace Training.Application.Services
+
+namespace Training.Application.Controllers
 {
-    public interface IPanelSelectService : ITransientController
+    public interface IPanelSelectController : ITransientController
     {
         DelegateCommand ApplySelectionCommand { get; }
         Action<IDialogParameters> Navigated { get; }
 
         public static void Register(IContainerRegistry cr)
         {
-            cr.Register<IPanelSelectService, PanelSelectController>();
+            cr.Register<IPanelSelectController, PanelSelectController>();
         }
     }
-}
 
-namespace Training.Application.Controllers
-{
-    class PanelSelectController : ControllerBase<PanelSelectViewModel>,IPanelSelectService
+    class PanelSelectController : ControllerBase<PanelSelectViewModel>,IPanelSelectController
     {
         private PanelSelectionResult _selectionResult = null!;
         private Panels? _startSelected;

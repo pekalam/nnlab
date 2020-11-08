@@ -19,27 +19,23 @@ using Prism.Regions;
 using Shell.Interface;
 using Training.Application.Controllers;
 using Training.Application.Plots;
-using Training.Application.Services;
 using Training.Application.ViewModels;
 using Training.Application.ViewModels.PanelLayout;
 using Training.Domain;
 using Unity.Injection;
 
-namespace Training.Application.Services
+namespace Training.Application.Controllers
 {
-    public interface IOutputPlotService : ITransientController
+    public interface IOutputPlotController : ITransientController
     {
         Action<NavigationContext> Navigated { get; set; }
 
         public static void Register(IContainerRegistry cr)
         {
-            cr.Register<IOutputPlotService, OutputPlotController>();
+            cr.Register<IOutputPlotController, OutputPlotController>();
         }
     }
-}
 
-namespace Training.Application.Controllers
-{
     class OutputPlotSelector
     {
         public void SelectPlot(TrainingSession session) => SelectPlot(session.Network ?? throw new NullReferenceException("Null network"));
@@ -59,7 +55,7 @@ namespace Training.Application.Controllers
         public IOutputPlot? OutputPlot { get; private set; }
     }
 
-    class OutputPlotController : ControllerBase<OutputPlotViewModel>, IOutputPlotService
+    class OutputPlotController : ControllerBase<OutputPlotViewModel>, IOutputPlotController
     {
         private string _outputPlotSettingsRegion = null!;
 

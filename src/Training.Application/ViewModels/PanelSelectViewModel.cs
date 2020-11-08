@@ -6,7 +6,7 @@ using System.Windows.Input;
 using Common.Framework;
 using Prism.Regions;
 using Prism.Services.Dialogs;
-using Training.Application.Services;
+using Training.Application.Controllers;
 using Unity;
 
 namespace Training.Application.ViewModels
@@ -37,13 +37,13 @@ namespace Training.Application.ViewModels
         }
 
         [InjectionConstructor]
-        public PanelSelectViewModel(IPanelSelectService service)
+        public PanelSelectViewModel(IPanelSelectController service)
         {
             Service = service;
             service.Initialize(this);
         }
 
-        public IPanelSelectService Service { get; }
+        public IPanelSelectController Service { get; }
 
         public Action<List<PanelSelectModel>>? SetSelectedItems { get; set; }
 

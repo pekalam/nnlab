@@ -4,19 +4,19 @@ using System.Text;
 using Common.Framework;
 using Prism.Regions;
 using SharedUI.MatrixPreview;
-using Training.Application.Services;
+using Training.Application.Controllers;
 
 namespace Training.Application.ViewModels
 {
     class MatrixTrainingPreviewViewModel : ViewModelBase<MatrixTrainingPreviewViewModel>
     {
-        public MatrixTrainingPreviewViewModel(IMatrixTrainingPreviewService service)
+        public MatrixTrainingPreviewViewModel(IMatrixTrainingPreviewController service)
         {
             Service = service;
             service.Initialize(this);
         }
 
-        public IMatrixTrainingPreviewService Service { get; }
+        public IMatrixTrainingPreviewController Service { get; }
 
         public MatrixPreviewViewModel MatVm { get; set; } = new MatrixPreviewViewModel();
 

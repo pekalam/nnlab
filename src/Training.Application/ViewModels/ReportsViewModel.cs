@@ -5,7 +5,7 @@ using System.Windows;
 using Common.Domain;
 using Common.Framework;
 using Prism.Regions;
-using Training.Application.Services;
+using Training.Application.Controllers;
 using Training.Domain;
 using Unity;
 
@@ -34,7 +34,7 @@ namespace Training.Application.ViewModels
         }
 
         [InjectionConstructor]
-        public ReportsViewModel(AppState appState, ModuleState moduleState, IReportsService service)
+        public ReportsViewModel(AppState appState, ModuleState moduleState, IReportsController service)
         {
             AppState = appState;
             ModuleState = moduleState;
@@ -44,7 +44,7 @@ namespace Training.Application.ViewModels
 
         public AppState AppState { get;  }
         public ModuleState ModuleState { get; }
-        public IReportsService Service { get; private set; }
+        public IReportsController Service { get; private set; }
 
         public TrainingSessionReport? SelectedReport
         {

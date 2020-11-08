@@ -7,27 +7,23 @@ using Prism.Ioc;
 using Prism.Regions;
 using Training.Application.Controllers;
 using Training.Application.Plots;
-using Training.Application.Services;
 using Training.Application.ViewModels;
 using Training.Application.ViewModels.PanelLayout;
 using Training.Domain;
 
-namespace Training.Application.Services
+namespace Training.Application.Controllers
 {
-    interface IMatrixTrainingPreviewService : ITransientController
+    interface IMatrixTrainingPreviewController : ITransientController
     {
         Action<NavigationContext> Navigated { get; }
 
         public static void Register(IContainerRegistry cr)
         {
-            cr.Register<IMatrixTrainingPreviewService, MatrixTrainingPreviewController>();
+            cr.Register<IMatrixTrainingPreviewController, MatrixTrainingPreviewController>();
         }
     }
-}
 
-namespace Training.Application.Controllers
-{
-    class MatrixTrainingPreviewController : ControllerBase<MatrixTrainingPreviewViewModel>,IMatrixTrainingPreviewService
+    class MatrixTrainingPreviewController : ControllerBase<MatrixTrainingPreviewViewModel>,IMatrixTrainingPreviewController
     {
         private PlotEpochEndConsumer? _epochEndConsumer;
         private readonly ModuleState _moduleState;

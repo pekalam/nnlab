@@ -13,28 +13,24 @@ using Prism.Ioc;
 using Prism.Regions;
 using Training.Application.Controllers;
 using Training.Application.Plots;
-using Training.Application.Services;
 using Training.Application.ViewModels;
 using Training.Application.ViewModels.PanelLayout;
 using Training.Domain;
 // ReSharper disable InconsistentlySynchronizedField
 
-
-namespace Training.Application.Services
+namespace Training.Application.Controllers
 {
-    public interface IErrorPlotService : ITransientController
+    public interface IErrorPlotController : ITransientController
     {
         Action<NavigationContext> Navigated { get; }
 
         public static void Register(IContainerRegistry cr)
         {
-            cr.Register<IErrorPlotService, ErrorPlotController>();
+            cr.Register<IErrorPlotController, ErrorPlotController>();
         }
     }
-}
 
-namespace Training.Application.Controllers
-{
+
     class ErrorPlotNavParams : NavigationParameters
     {
         public ErrorPlotNavParams(string parentRegion, bool epochEnd, List<DataPoint> points)
@@ -64,7 +60,7 @@ namespace Training.Application.Controllers
         }
     }
 
-    class ErrorPlotController : ControllerBase<ErrorPlotViewModel>,IErrorPlotService
+    class ErrorPlotController : ControllerBase<ErrorPlotViewModel>,IErrorPlotController
     {
         private string _errorPlotSettingsRegion = null!;
         private readonly object _ptsLock = new object();

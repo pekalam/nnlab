@@ -1,6 +1,5 @@
 ﻿using Prism.Ioc;
 using Training.Application.Controllers;
-using Training.Application.Services;
 
 namespace Training.Application
 {
@@ -10,18 +9,18 @@ namespace Training.Application
         {
             cr.RegisterSingleton<ModuleState>();
 
-            cr.RegisterSingleton<ITrainingService, TrainingController>()
+            cr.RegisterSingleton<ITrainingController, TrainingController>()
                 .RegisterSingleton<ITrainingInfoController, TrainingInfoController>();
 
-            IPanelSelectService.Register(cr);
-            ITrainingService.Register(cr);
-            IErrorPlotService.Register(cr);
-            IOutputPlotService.Register(cr);
-            IMatrixTrainingPreviewService.Register(cr);
-            IReportsService.Register(cr);
-            IReportErrorService.Register(cr);
-            ITrainingParametersService.Register(cr);
-            ITrainingNetworkPreviewService.Register(cr);
+            IPanelSelectController.Register(cr);
+            ITrainingController.Register(cr);
+            IErrorPlotController.Register(cr);
+            IOutputPlotController.Register(cr);
+            IMatrixTrainingPreviewController.Register(cr);
+            IReportsController.Register(cr);
+            IReportErrorController.Register(cr);
+            ITrainingParametersController.Register(cr);
+            ITrainingNetworkPreviewController.Register(cr);
         }
     }
 }

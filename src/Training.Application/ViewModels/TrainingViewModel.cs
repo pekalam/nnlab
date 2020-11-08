@@ -4,7 +4,7 @@ using System.Text;
 using System.Windows;
 using Common.Framework;
 using Prism.Regions;
-using Training.Application.Services;
+using Training.Application.Controllers;
 using Training.Application.ViewModels.PanelLayout;
 using Training.Domain;
 using Unity;
@@ -25,7 +25,7 @@ namespace Training.Application.ViewModels
         }
 
         [InjectionConstructor]
-        public TrainingViewModel(ITrainingService service, ModuleState moduleState, IRegionManager rm)
+        public TrainingViewModel(ITrainingController service, ModuleState moduleState, IRegionManager rm)
         {
             Service = service;
             ModuleState = moduleState;
@@ -37,7 +37,7 @@ namespace Training.Application.ViewModels
 
         public ModuleState ModuleState { get; }
 
-        public ITrainingService Service { get; }
+        public ITrainingController Service { get; }
 
         public Visibility SelectPanelsButtonVisibility
         {

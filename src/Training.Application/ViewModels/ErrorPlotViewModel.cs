@@ -7,13 +7,13 @@ using OxyPlot.Axes;
 using OxyPlot.Series;
 using Prism.Regions;
 using SharedUI.BasicPlot;
-using Training.Application.Services;
+using Training.Application.Controllers;
 
 namespace Training.Application.ViewModels
 {
     public class ErrorPlotViewModel : ViewModelBase<ErrorPlotViewModel>
     {
-        public ErrorPlotViewModel(IErrorPlotService service)
+        public ErrorPlotViewModel(IErrorPlotController service)
         {
             Service = service;
             BasicPlotModel = new BasicPlotModel();
@@ -40,7 +40,7 @@ namespace Training.Application.ViewModels
             service.Initialize(this);
         }
 
-        public IErrorPlotService Service { get; }
+        public IErrorPlotController Service { get; }
 
         public LineSeries Series = new LineSeries();
 

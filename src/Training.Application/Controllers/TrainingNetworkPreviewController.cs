@@ -16,14 +16,14 @@ using Prism.Regions;
 using Shell.Interface;
 using Training.Application.Controllers;
 using Training.Application.Plots;
-using Training.Application.Services;
 using Training.Application.ViewModels;
 using Training.Application.ViewModels.PanelLayout;
 using Training.Domain;
 
-namespace Training.Application.Services
+
+namespace Training.Application.Controllers
 {
-    public interface ITrainingNetworkPreviewService : ITransientController
+    public interface ITrainingNetworkPreviewController : ITransientController
     {
         DelegateCommand ToggleAnimationCommand { get; }
         DelegateCommand ClearColorsCommand { get; }
@@ -31,14 +31,11 @@ namespace Training.Application.Services
 
         public static void Register(IContainerRegistry cr)
         {
-            cr.Register<ITrainingNetworkPreviewService, TrainingNetworkPreviewController>();
+            cr.Register<ITrainingNetworkPreviewController, TrainingNetworkPreviewController>();
         }
     }
-}
 
-namespace Training.Application.Controllers
-{
-    class TrainingNetworkPreviewController : ControllerBase<TrainingNetworkPreviewViewModel>, ITrainingNetworkPreviewService
+    class TrainingNetworkPreviewController : ControllerBase<TrainingNetworkPreviewViewModel>, ITrainingNetworkPreviewController
     {
         private PlotEpochEndConsumer? _epochEndConsumer;
         private Action? _epochEndCallback;

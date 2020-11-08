@@ -4,7 +4,6 @@ using FluentAssertions;
 using Moq.AutoMock;
 using TestUtils;
 using Training.Application.Controllers;
-using Training.Application.Services;
 using Training.Application.ViewModels;
 using Training.Domain;
 using Xunit;
@@ -30,7 +29,7 @@ namespace Training.Application.Tests
             _mocker.UseImpl<ModuleStateHelper>();
             _mocker.UseImpl<ModuleStateSessionOptionsDecorator>();
 
-            _service = _mocker.UseImpl<ITrainingService,TrainingController>();
+            _service = _mocker.UseImpl<ITrainingController,TrainingController>();
 
             _ctrl = _mocker.UseImpl<TrainingController>();
             _vm = _mocker.UseVm<TrainingViewModel>();

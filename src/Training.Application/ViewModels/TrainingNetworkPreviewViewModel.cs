@@ -2,7 +2,7 @@
 using Common.Framework;
 using NNLibAdapter;
 using Prism.Regions;
-using Training.Application.Services;
+using Training.Application.Controllers;
 using Training.Domain;
 
 namespace Training.Application.ViewModels
@@ -11,13 +11,13 @@ namespace Training.Application.ViewModels
     {
         private NNLibModelAdapter? _modelAdapter;
 
-        public TrainingNetworkPreviewViewModel(ModuleState moduleState, ITrainingNetworkPreviewService service)
+        public TrainingNetworkPreviewViewModel(ModuleState moduleState, ITrainingNetworkPreviewController service)
         {
             Service = service;
             service.Initialize(this);
         }
 
-        public ITrainingNetworkPreviewService Service { get; }
+        public ITrainingNetworkPreviewController Service { get; }
 
         public NNLibModelAdapter? ModelAdapter
         {

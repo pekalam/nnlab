@@ -1,7 +1,7 @@
 ﻿using System;
 using Common.Domain;
 using Common.Framework;
-using Training.Application.Services;
+using Training.Application.Controllers;
 using Unity;
 
 namespace Training.Application.ViewModels
@@ -19,13 +19,13 @@ namespace Training.Application.ViewModels
         }
 
         [InjectionConstructor]
-        public TrainingParametersViewModel(ITrainingParametersService service)
+        public TrainingParametersViewModel(ITrainingParametersController service)
         {
             Service = service;
             service.Initialize(this);
         }
 
-        public ITrainingParametersService Service { get; }
+        public ITrainingParametersController Service { get; }
 
 
         public TrainingParameters? TrainingParameters

@@ -12,12 +12,12 @@ using OxyPlot.Axes;
 using OxyPlot.Series;
 using Prism.Regions;
 using SharedUI.BasicPlot;
-using Training.Application.Services;
 using Training.Domain;
 using NNLib;
 using NNLib.Common;
 using NNLib.Data;
 using NNLib.MLP;
+using Training.Application.Controllers;
 
 namespace Training.Application.ViewModels
 {
@@ -30,13 +30,13 @@ namespace Training.Application.ViewModels
     {
         private OutputPlotType _plotType;
 
-        public OutputPlotViewModel(IOutputPlotService service)
+        public OutputPlotViewModel(IOutputPlotController service)
         {
             Service = service;
             service.Initialize(this);
         }
 
-        public IOutputPlotService Service { get; }
+        public IOutputPlotController Service { get; }
 
         public OutputPlotType PlotType
         {

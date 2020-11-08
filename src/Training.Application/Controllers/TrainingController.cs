@@ -3,23 +3,76 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Windows.Input;
 using Accessibility;
 using Common.Framework;
 using NNLib;
 using NNLib.Exceptions;
 using Prism.Commands;
 using Prism.Events;
+using Prism.Ioc;
+using Prism.Mvvm;
 using Prism.Regions;
 using Prism.Services.Dialogs;
 using Shell.Interface;
-using Training.Application.Services;
 using Training.Application.ViewModels;
 using Training.Application.ViewModels.PanelLayout;
 using Training.Domain;
 
 namespace Training.Application.Controllers
 {
-    class TrainingController : ControllerBase<TrainingViewModel>,ITrainingService
+    public class ModuleStateSessionOptionsDecorator : BindableBase
+    {
+        private TrainingSession? _session;
+        private readonly IMetroDialogService _dialogService;
+
+        public ModuleStateSessionOptionsDecorator(ModuleStateHelper moduleStateHelper, IMetroDialogService dialogService)
+        {
+            _dialogService = dialogService;
+            moduleStateHelper.OnActiveSessionChanged(session => Session = session);
+            ResetSessionCommand = new DelegateCommand(ResetSession);
+        }
+
+        public ICommand ResetSessionCommand { get; }
+
+        public TrainingSession? Session
+        {
+            get => _session;
+            set => SetProperty(ref _session, value);
+        }
+
+        private async void ResetSession()
+        {
+            Debug.Assert(_session != null);
+            if (_dialogService.ShowModalConfirmationDialog("Confirm session reset", "This action will remove all reports and set all network parameters to state before training was started."))
+            {
+                await _session.ResetSession();
+            }
+        }
+    }
+
+    public interface ITrainingController : ITransientController
+    {
+        DelegateCommand StartTrainingSessionCommand { get; }
+        DelegateCommand StopTrainingSessionCommand { get; }
+        DelegateCommand PauseTrainingSessionCommand { get; }
+        DelegateCommand OpenReportsCommand { get; }
+        DelegateCommand OpenParametersCommand { get; }
+
+        DelegateCommand SelectPanelsClickCommand { get; }
+
+        DelegateCommand ResetParametersCommand { get; }
+
+        ModuleStateSessionOptionsDecorator SessionOptionsDecorator { get; }
+
+        public static void Register(IContainerRegistry cr)
+        {
+            cr.RegisterSingleton<ITrainingController, TrainingController>();
+        }
+    }
+
+
+    class TrainingController : ControllerBase<TrainingViewModel>,ITrainingController
     {
         private readonly IRegionManager _rm;
         private readonly IEventAggregator _ea;

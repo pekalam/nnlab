@@ -15,13 +15,12 @@ using Prism.Ioc;
 using Prism.Regions;
 using Shell.Interface;
 using Training.Application.Controllers;
-using Training.Application.Services;
 using Training.Application.ViewModels;
 using Training.Domain;
 
-namespace Training.Application.Services
+namespace Training.Application.Controllers
 {
-    public interface IReportsService : ITransientController
+    public interface IReportsController : ITransientController
     {
         DelegateCommand<TrainingSessionReport> SelectionChangedCommand { get; }
         Action<NavigationContext> Navigated { get; }
@@ -31,14 +30,11 @@ namespace Training.Application.Services
 
         public static void Register(IContainerRegistry cr)
         {
-            cr.Register<IReportsService, ReportsController>();
+            cr.Register<IReportsController, ReportsController>();
         }
     }
-}
 
-namespace Training.Application.Controllers
-{
-    class ReportsController : ControllerBase<ReportsViewModel>,IReportsService
+    class ReportsController : ControllerBase<ReportsViewModel>,IReportsController
     {
         private readonly IRegionManager _rm;
         private readonly AppState _appState;

@@ -1,14 +1,16 @@
 using System;
+using System.Linq;
 using Common.Domain;
 using Common.Framework;
 using FluentAssertions;
 using Moq.AutoMock;
 using NNLib;
+using NNLib.Common;
+using NNLib.Data;
 using NNLib.Training.GradientDescent;
 using NNLib.Training.LevenbergMarquardt;
 using TestUtils;
 using Training.Application.Controllers;
-using Training.Application.Services;
 using Training.Application.ViewModels;
 using Training.Domain;
 using Xunit;
@@ -30,7 +32,7 @@ namespace Training.Application.Tests
             _mocker.UseTestEa();
             _appState = _mocker.UseImpl<AppState>();
             _moduleState = _mocker.UseImpl<ModuleState>();
-            _ctrl = _mocker.UseImpl<ITrainingParametersService,TrainingParametersController>();
+            _ctrl = _mocker.UseImpl<ITrainingParametersController,TrainingParametersController>();
             _service = _ctrl;
 
 
@@ -78,8 +80,17 @@ namespace Training.Application.Tests
         [Fact]
         public void f()
         {
+
+
             var session = _appState.CreateSession();
-            session.SetupValidAndGate();
+            session.TrainingData = new TrainingData(new SupervisedTrainingData(SupervisedTrainingSamples.FromArrays(
+               Enumerable.Repeat(new[] { 0d, 1d }, 1000).ToArray(),
+              Enumerable.Repeat(new[] { 1d }, 1000).ToArray()
+            )), new SupervisedTrainingSamplesVariables(new SupervisedSetVariableIndexes(new []{0}, new []{1}), new VariableName[]
+            {
+                new VariableName("x"), new VariableName("y"), 
+            } ), TrainingDataSource.Memory, NormalizationMethod.None);
+            session.Network = MLPMocks.AndGateNet;
             _moduleState.ActiveSession.Trainer.Algorithm.Should().BeOfType<GradientDescentAlgorithm>();
 
             _vm.TrainingParameters.Algorithm = TrainingAlgorithm.LevenbergMarquardt;
