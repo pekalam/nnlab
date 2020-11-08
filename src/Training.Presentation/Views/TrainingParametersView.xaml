@@ -35,7 +35,8 @@
                             </Grid.ColumnDefinitions>
                             <TextBlock VerticalAlignment="Center" FontSize="20" Text="Algorithm:" />
                             <ComboBox Grid.Column="1" ItemsSource="{Binding Algorithms}"
-                                      SelectedItem="{Binding Path=TrainingParameters.Algorithm}" />
+                                      SelectedItem="{Binding Path=TrainingParameters.Algorithm}" 
+                                      Name="Algorithm"/>
                         </Grid>
                         <TextBlock Text="Training parameters" Margin="0,10,0,0" FontSize="20" />
                         <Grid Margin="12,14,20,20">
@@ -66,10 +67,11 @@
                                        Margin="0,10,0,10" />
                             <presentation:SubmitNumericUpDown Grid.Row="0" MinWidth="120"
                                                               Grid.Column="1"
+                                                              Name="LearningRate"
                                                               Minimum="0"
                                                               Speedup="True"
                                                               Interval="0.0001"
-                                                              Value="{Binding TrainingParameters.GDParams.LearningRate, Mode=TwoWay, UpdateSourceTrigger=Explicit, ValidatesOnDataErrors=True}"
+                                                              Value="{Binding TrainingParameters.GDParams.LearningRate, Mode=TwoWay, UpdateSourceTrigger=Explicit, ValidatesOnExceptions=True}"
                                                               HorizontalAlignment="Stretch"
                                                               HorizontalContentAlignment="Stretch">
                                 <b:Interaction.Behaviors>
@@ -84,10 +86,11 @@
                             <presentation:SubmitNumericUpDown MinWidth="120"
                                                               Grid.Row="2"
                                                               Grid.Column="1"
+                                                              Name="Momentum"
                                                               Minimum="0"
                                                               Speedup="True"
                                                               Interval="0.0001"
-                                                              Value="{Binding TrainingParameters.GDParams.Momentum, Mode=TwoWay, UpdateSourceTrigger=Explicit, ValidatesOnDataErrors=True}"
+                                                              Value="{Binding TrainingParameters.GDParams.Momentum, Mode=TwoWay, UpdateSourceTrigger=Explicit, ValidatesOnExceptions=True}"
                                                               HorizontalAlignment="Stretch"
                                                               HorizontalContentAlignment="Stretch">
                                 <b:Interaction.Behaviors>
@@ -101,11 +104,12 @@
                             <presentation:SubmitNumericUpDown MinWidth="120"
                                                               Grid.Row="4"
                                                               Grid.Column="1"
+                                                              Name="BatchSize"
                                                               Minimum="1"
                                                               StringFormat="0"
                                                               Speedup="True"
                                                               Interval="1"
-                                                              Value="{Binding TrainingParameters.GDParams.BatchSize, Mode=TwoWay, UpdateSourceTrigger=Explicit, ValidatesOnDataErrors=True, ValidatesOnExceptions=True}"
+                                                              Value="{Binding TrainingParameters.GDParams.BatchSize, Mode=TwoWay, UpdateSourceTrigger=Explicit, ValidatesOnExceptions=True}"
                                                               HorizontalAlignment="Stretch"
                                                               HorizontalContentAlignment="Stretch">
 
@@ -147,7 +151,8 @@
                                                               Minimum="0"
                                                               Speedup="True"
                                                               Interval="0.0001"
-                                                              Value="{Binding TrainingParameters.LMParams.DampingParamIncFactor, Mode=TwoWay, UpdateSourceTrigger=Explicit, ValidatesOnDataErrors=True}"
+                                                              Name="DampingParameterInc"
+                                                              Value="{Binding TrainingParameters.LMParams.DampingParamIncFactor, Mode=TwoWay, UpdateSourceTrigger=Explicit, ValidatesOnExceptions=True}"
                                                               HorizontalAlignment="Stretch"
                                                               HorizontalContentAlignment="Stretch">
                                 <b:Interaction.Behaviors>
@@ -165,7 +170,8 @@
                                                               Minimum="0"
                                                               Speedup="True"
                                                               Interval="0.0001"
-                                                              Value="{Binding TrainingParameters.LMParams.DampingParamDecFactor, Mode=TwoWay, UpdateSourceTrigger=Explicit, ValidatesOnDataErrors=True}"
+                                                              Name="DampingParameterDec"
+                                                              Value="{Binding TrainingParameters.LMParams.DampingParamDecFactor, Mode=TwoWay, UpdateSourceTrigger=Explicit, ValidatesOnExceptions=True}"
                                                               HorizontalAlignment="Stretch"
                                                               HorizontalContentAlignment="Stretch">
                                 <b:Interaction.Behaviors>
@@ -197,7 +203,8 @@
                                                               Grid.Column="1"
                                                               Minimum="0"
                                                               Interval="0.0001"
-                                                              Value="{Binding TrainingParameters.TargetError, Mode=TwoWay, ValidatesOnDataErrors=True}"
+                                                              Name="TargetError"
+                                                              Value="{Binding TrainingParameters.TargetError, Mode=TwoWay, ValidatesOnExceptions=True}"
                                                               HorizontalAlignment="Stretch"
                                                               HorizontalContentAlignment="Stretch">
                                 <b:Interaction.Behaviors>
@@ -217,7 +224,7 @@
                                           Margin="0,0,10,0" />
                                 <mah:TimePicker Grid.Column="1"
                                                 PickerVisibility="HourMinute"
-                                                SelectedDateTime="{Binding MaxLearningTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                                                SelectedDateTime="{Binding MaxLearningTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True}"
                                                 SelectedTimeFormat="Short"
                                                 IsEnabled="{Binding ElementName=maxLearningTimeCheckbox, Path=IsChecked, Converter={StaticResource boolNegConverter}}" />
                             </Grid>
@@ -230,10 +237,12 @@
                                     <ColumnDefinition />
                                     <ColumnDefinition />
                                 </Grid.ColumnDefinitions>
-                                <CheckBox Content="Undefined" IsChecked="True" x:Name="maxEpochsCheckbox"
+                                <CheckBox Content="Undefined" x:Name="maxEpochsCheckbox"
+                                          IsChecked="{Binding IsMaxEpochsChecked}"
                                           Margin="0,0,10,0" />
                                 <mah:NumericUpDown Grid.Column="1"
-                                                   IsEnabled="{Binding Path=IsChecked, ElementName=maxLearningTimeCheckbox, Converter={StaticResource boolNegConverter}}" />
+                                                   Value="{Binding TrainingParameters.MaxEpochs, Mode=TwoWay, ValidatesOnExceptions=True}"
+                                                   IsEnabled="{Binding Path=IsChecked, ElementName=maxEpochsCheckbox, Converter={StaticResource boolNegConverter}}" />
                             </Grid>
                         </Grid>
 
@@ -295,7 +304,9 @@
                                            HorizontalAlignment="Left" VerticalAlignment="Center"
                                            Margin="0,10,0,10" />
                                 <mah:NumericUpDown Grid.Column="1" Grid.Row="2"
-                                                   Value="{Binding TrainingParameters.ValidationEpochThreshold}"
+                                                   Name="ValidationEpochThreshold"
+                                                   Minimum="0"
+                                                   Value="{Binding TrainingParameters.ValidationEpochThreshold, ValidatesOnExceptions=True}"
                                                    IsEnabled="{Binding Path=IsChecked, ElementName=RunValidationCheckbox}" />
 
 
@@ -316,7 +327,8 @@
                                                                   Grid.Column="1"
                                                                   Minimum="0"
                                                                   Interval="0.0001"
-                                                                  Value="{Binding TrainingParameters.ValidationTargetError, Mode=TwoWay, ValidatesOnDataErrors=True}"
+                                                                  Name="ValidationTargetError"
+                                                                  Value="{Binding TrainingParameters.ValidationTargetError, Mode=TwoWay, ValidatesOnExceptions=True}"
                                                                   HorizontalAlignment="Stretch"
                                                                   HorizontalContentAlignment="Stretch">
                                     <b:Interaction.Behaviors>

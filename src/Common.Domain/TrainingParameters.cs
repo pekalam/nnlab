@@ -2,6 +2,8 @@
 using NNLib.Training.LevenbergMarquardt;
 using Prism.Mvvm;
 using System;
+using System.Collections;
+using System.ComponentModel;
 
 namespace Common.Domain
 {
@@ -117,7 +119,7 @@ namespace Common.Domain
 
     public class TrainingParameters : BindableBase
     {
-        private int _maxEpochs = int.MaxValue;
+        private int? _maxEpochs;
         private TimeSpan _maxLearningTime = TimeSpan.MaxValue;
         private double _targetError = 0.000001;
         private TrainingAlgorithm _algorithm = TrainingAlgorithm.GradientDescent;
@@ -146,7 +148,11 @@ namespace Common.Domain
         public double TargetError
         {
             get => _targetError;
-            set => SetProperty(ref _targetError, value);
+            set
+            {
+                if(value < 0) throw new ArgumentException("Target error must be grater than zero");
+                SetProperty(ref _targetError, value);
+            }
         }
 
         public TimeSpan MaxLearningTime
@@ -155,10 +161,14 @@ namespace Common.Domain
             set => SetProperty(ref _maxLearningTime, value);
         }
 
-        public int MaxEpochs
+        public int? MaxEpochs
         {
             get => _maxEpochs;
-            set => SetProperty(ref _maxEpochs, value);
+            set
+            {
+                if (value < 0) throw new ArgumentException("Max epochs must be grater than zero");
+                SetProperty(ref _maxEpochs, value);
+            }
         }
 
         public bool RunValidation
@@ -174,7 +184,11 @@ namespace Common.Domain
         public int ValidationEpochThreshold
         {
             get => _validationEpochThreshold;
-            set => SetProperty(ref _validationEpochThreshold, value);
+            set
+            {
+                if (value < 0) throw new ArgumentException("Validation epoch threshold must be grater than zero");
+                SetProperty(ref _validationEpochThreshold, value);
+            }
         }
 
         public bool AddReportOnPause
@@ -202,7 +216,11 @@ namespace Common.Domain
         public double ValidationTargetError
         {
             get => _validationTargetError;
-            set => SetProperty(ref _validationTargetError, value);
+            set
+            {
+                if (value < 0) throw new ArgumentException("Validation target error must be grater than zero");
+                SetProperty(ref _validationTargetError, value);
+            }
         }
 
         protected bool Equals(TrainingParameters other)

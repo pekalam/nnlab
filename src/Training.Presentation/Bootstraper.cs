@@ -12,6 +12,7 @@ namespace Training.Presentation
         public static void RegisterTypes(IContainerRegistry cr)
         {
             cr.Register<ITrainingInfoView, TrainingInfoView>();
+            cr.Register<ITrainingParametersView, TrainingParametersView>();
 
 
             cr.RegisterForNavigation<TrainingView>();

@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Common.Domain;
 using Moq;
 using Moq.AutoMock;
@@ -102,6 +103,8 @@ namespace Training.Application.Tests
 
             _moduleState.ActiveSession.Start();
             _ea.VerifyTimesCalled<TrainingSessionStarted>(1);
+
+            await Task.Delay(100);
 
             await _moduleState.ActiveSession.Pause();
             _ea.VerifyTimesCalled<TrainingSessionPaused>(1);

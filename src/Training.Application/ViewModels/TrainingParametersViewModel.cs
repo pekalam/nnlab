@@ -2,15 +2,17 @@
 using Common.Framework;
 using System;
 using Training.Application.Controllers;
+using Training.Application.Views;
 using Unity;
 
 namespace Training.Application.ViewModels
 {
-    public class TrainingParametersViewModel : ViewModelBase<TrainingParametersViewModel>
+    public class TrainingParametersViewModel : ViewModelBase<TrainingParametersViewModel, ITrainingParametersView>
     {
         private TrainingParameters? _trainingParameters;
         private bool _isMaxLearningTimeChecked;
         private DateTime _maxLearningTime;
+        private bool _isMaxEpochsChecked;
 
 #pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
         public TrainingParametersViewModel()
@@ -43,6 +45,12 @@ namespace Training.Application.ViewModels
         {
             get => _isMaxLearningTimeChecked;
             set => SetProperty(ref _isMaxLearningTimeChecked, value);
+        }
+
+        public bool IsMaxEpochsChecked
+        {
+            get => _isMaxEpochsChecked;
+            set => SetProperty(ref _isMaxEpochsChecked, value);
         }
 
         public DateTime MaxLearningTime
