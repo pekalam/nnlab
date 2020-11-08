@@ -1,6 +1,6 @@
-﻿using System;
-using Common.Domain;
+﻿using Common.Domain;
 using Common.Framework;
+using System;
 using Training.Application.Controllers;
 using Unity;
 

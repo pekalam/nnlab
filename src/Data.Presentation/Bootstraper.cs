@@ -1,6 +1,4 @@
-﻿using Data.Application;
-using Data.Application.Interfaces;
-using Data.Application.ViewModels;
+﻿using Data.Application.Interfaces;
 using Data.Presentation.Services;
 using Data.Presentation.Views;
 using Prism.Ioc;

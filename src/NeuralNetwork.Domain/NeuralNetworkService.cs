@@ -1,5 +1,4 @@
-﻿using System;
-using Common.Domain;
+﻿using Common.Domain;
 using NNLib;
 using NNLib.ActivationFunction;
 using NNLib.MLP;

@@ -1,9 +1,7 @@
-﻿using System;
+﻿using Prism.Regions;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using Prism.Regions;
 
 namespace Training.Application.ViewModels.PanelLayout.Layouts
 {

@@ -1,9 +1,9 @@
-﻿using System;
-using System.Linq;
-using Common.Domain;
+﻿using Common.Domain;
 using NNLib.Common;
 using NNLib.Csv;
 using NNLib.Data;
+using System;
+using System.Linq;
 
 namespace Data.Domain.Services
 {

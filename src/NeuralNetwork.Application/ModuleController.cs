@@ -1,6 +1,4 @@
 ﻿using Common.Domain;
-using NeuralNetwork.Application.Controllers;
-using NeuralNetwork.Application.ViewModels;
 using NeuralNetwork.Domain;
 using Prism.Events;
 using Prism.Regions;

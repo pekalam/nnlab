@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Common.Domain;
+﻿using Common.Domain;
 using Common.Framework;
 
 namespace Training.Application.ViewModels

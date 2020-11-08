@@ -1,11 +1,8 @@
-﻿using System;
-using System.Linq;
-using Common.Domain;
+﻿using Common.Domain;
 using Data.Application.Controllers;
 
 using Data.Application.ViewModels;
 using FluentAssertions;
-using MahApps.Metro.IconPacks.Converter;
 using Moq.AutoMock;
 using OxyPlot;
 using SharedUI.MatrixPreview;

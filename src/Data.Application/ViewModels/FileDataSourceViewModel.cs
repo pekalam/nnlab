@@ -1,8 +1,7 @@
 ﻿using Common.Framework;
-
-using System.Windows;
 using Data.Application.Controllers.DataSource;
 using Prism.Regions;
+using System.Windows;
 
 namespace Data.Application.ViewModels
 {

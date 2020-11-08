@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Common.Framework;
+﻿using Common.Framework;
+using System;
 
 namespace Training.Application.Views
 {

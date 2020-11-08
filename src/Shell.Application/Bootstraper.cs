@@ -2,7 +2,6 @@
 using Prism.Regions;
 using Shell.Application.PrismDecorators;
 using Shell.Application.Services;
-using Shell.Interface;
 
 namespace Shell.Application
 {

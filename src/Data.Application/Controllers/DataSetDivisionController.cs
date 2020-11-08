@@ -1,16 +1,16 @@
-﻿using Data.Domain.Services;
+﻿using Common.Domain;
+using Common.Framework;
+using Data.Application.ViewModels;
+using Data.Domain;
+using Data.Domain.Services;
 using NNLib.Common;
+using NNLib.Data;
 using Prism.Commands;
+using Prism.Ioc;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using Common.Domain;
-using Common.Framework;
-using Data.Application.ViewModels;
-using Data.Domain;
-using NNLib.Data;
-using Prism.Ioc;
 
 namespace Data.Application.Controllers
 {

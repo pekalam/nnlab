@@ -1,9 +1,9 @@
-﻿using System;
-using OxyPlot;
-using OxyPlot.Series;
-using System.Windows;
+﻿using OxyPlot;
 using OxyPlot.Axes;
+using OxyPlot.Series;
 using SharedUI.BasicPlot;
+using System;
+using System.Windows;
 
 namespace BasicPlotTest
 {

@@ -1,5 +1,4 @@
-﻿using System.ComponentModel;
-using Common.Domain;
+﻿using Common.Domain;
 using Prism.Events;
 using Prism.Regions;
 using Shell.Interface;

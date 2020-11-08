@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using Common.Domain;
-using MathNet.Numerics.LinearAlgebra;
-using NNLib;
+﻿using Common.Domain;
 using Prediction.Application.Controllers;
 using Prism.Mvvm;
+using System.Collections.Generic;
 
 namespace Prediction.Application
 {

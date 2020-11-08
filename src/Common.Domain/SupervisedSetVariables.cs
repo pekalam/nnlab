@@ -1,7 +1,7 @@
-﻿using System;
+﻿using NNLib.Common;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using NNLib.Common;
 
 namespace Common.Domain
 {

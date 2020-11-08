@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Media.Animation;
-using Common.Domain;
+﻿using Common.Domain;
 using FluentAssertions;
 using Moq.AutoMock;
+using System.Threading.Tasks;
 using TestUtils;
 using Training.Application.Plots;
 using Training.Domain;

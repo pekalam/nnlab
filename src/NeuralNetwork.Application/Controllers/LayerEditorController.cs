@@ -1,20 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
-using Common.Domain;
+﻿using Common.Domain;
 using Common.Framework;
-using ControlzEx.Standard;
-using NeuralNetwork.Application.Controllers;
 using NeuralNetwork.Application.ViewModels;
 using NeuralNetwork.Domain;
-using NNLib;
 using NNLib.MLP;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Ioc;
 using SharedUI.MatrixPreview;
 using Shell.Interface;
+using System;
+using System.ComponentModel;
 
 namespace NeuralNetwork.Application.Controllers
 {

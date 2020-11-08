@@ -1,9 +1,8 @@
-﻿using Data.Domain.Services;
-using Prism.Commands;
-using Common.Domain;
+﻿using Common.Domain;
 using Common.Framework;
-using Data.Application.Controllers.DataSource;
 using Data.Application.ViewModels;
+using Data.Domain.Services;
+using Prism.Commands;
 using Prism.Ioc;
 
 namespace Data.Application.Controllers.DataSource

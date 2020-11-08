@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Windows;
-using CommonServiceLocator;
+﻿using CommonServiceLocator;
 using Prism.Regions;
+using System.Collections.Generic;
+using System.Windows;
 using Training.Application;
 using Training.Application.ViewModels.PanelLayout;
 using Training.Presentation.Views.PanelLayout;

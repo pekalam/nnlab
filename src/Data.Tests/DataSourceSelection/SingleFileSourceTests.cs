@@ -1,14 +1,12 @@
-﻿using System.Threading.Tasks;
-using Common.Domain;
-using Common.Framework;
+﻿using Common.Domain;
 using Data.Application.Controllers;
-
 using Data.Application.ViewModels;
 using Data.Domain.Services;
 using FluentAssertions;
 using Moq;
 using Moq.AutoMock;
 using Prism.Commands;
+using System.Threading.Tasks;
 using TestUtils;
 using Xunit;
 

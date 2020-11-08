@@ -1,18 +1,15 @@
-using System;
-using System.Linq;
 using Common.Domain;
-using Common.Framework;
 using FluentAssertions;
 using Moq.AutoMock;
-using NNLib;
 using NNLib.Common;
 using NNLib.Data;
 using NNLib.Training.GradientDescent;
 using NNLib.Training.LevenbergMarquardt;
+using System;
+using System.Linq;
 using TestUtils;
 using Training.Application.Controllers;
 using Training.Application.ViewModels;
-using Training.Domain;
 using Xunit;
 
 namespace Training.Application.Tests

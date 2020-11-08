@@ -1,5 +1,4 @@
-﻿using Common.Domain;
-using Prism.Events;
+﻿using Prism.Events;
 
 namespace Training.Interface
 {

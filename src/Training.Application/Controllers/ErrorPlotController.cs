@@ -1,20 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Windows.Threading;
-using Common.Domain;
-using Common.Framework;
+﻿using Common.Framework;
 using Common.Framework.Extensions;
-using CommonServiceLocator;
 using OxyPlot;
 using Prism.Ioc;
 using Prism.Regions;
-using Training.Application.Controllers;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 using Training.Application.Plots;
 using Training.Application.ViewModels;
-using Training.Application.ViewModels.PanelLayout;
 using Training.Domain;
 // ReSharper disable InconsistentlySynchronizedField
 

@@ -1,12 +1,11 @@
-﻿using System;
+﻿using Common.Domain;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
-using System.Windows.Threading;
-using Common.Domain;
 using Training.Domain;
 
 namespace Training.Application.Plots

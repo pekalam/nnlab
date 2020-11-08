@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Windows.Controls;
-using System.Windows.Input;
-using CommonServiceLocator;
-using ControlzEx.Standard;
+﻿using CommonServiceLocator;
 using MathNet.Numerics.LinearAlgebra;
 using Prism.Events;
 using Prism.Mvvm;
+using System;
+using System.Collections.Generic;
+using System.Windows.Controls;
+using System.Windows.Input;
 using Unity;
 
 namespace SharedUI.MatrixPreview

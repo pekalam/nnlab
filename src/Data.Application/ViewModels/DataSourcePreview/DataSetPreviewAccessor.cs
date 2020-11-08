@@ -1,9 +1,9 @@
-﻿using System.Data;
-using System.Diagnostics;
-using System.Linq;
-using Common.Domain;
+﻿using Common.Domain;
 using NNLib.Common;
 using NNLib.Data;
+using System.Data;
+using System.Diagnostics;
+using System.Linq;
 
 namespace Data.Application.ViewModels.DataSourcePreview
 {

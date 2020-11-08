@@ -1,11 +1,10 @@
-using System.Threading.Tasks;
 using Common.Domain;
 using FluentAssertions;
 using Moq.AutoMock;
+using System.Threading.Tasks;
 using TestUtils;
 using Training.Application.Controllers;
 using Training.Application.ViewModels;
-using Training.Domain;
 using Xunit;
 
 namespace Training.Application.Tests

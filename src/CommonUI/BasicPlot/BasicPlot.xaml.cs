@@ -1,17 +1,16 @@
-﻿using System;
+﻿using CommonServiceLocator;
+using Microsoft.Win32;
+using OxyPlot;
+using OxyPlot.Wpf;
+using Prism.Mvvm;
+using Prism.Regions;
+using System;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using CommonServiceLocator;
-using Microsoft.Win32;
-using OxyPlot;
-using OxyPlot.SkiaSharp;
-using OxyPlot.Wpf;
-using Prism.Mvvm;
-using Prism.Regions;
 
 namespace SharedUI.BasicPlot
 {

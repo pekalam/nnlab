@@ -1,7 +1,6 @@
-﻿using System.Windows.Controls;
-using Common.Domain;
-using CommonServiceLocator;
+﻿using CommonServiceLocator;
 using Prism.Regions;
+using System.Windows.Controls;
 using Training.Application.ViewModels;
 
 namespace Training.Presentation.Views

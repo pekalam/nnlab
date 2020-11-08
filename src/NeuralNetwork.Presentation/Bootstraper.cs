@@ -1,5 +1,4 @@
-﻿using NeuralNetwork.Application.ViewModels;
-using NeuralNetwork.Presentation.Views;
+﻿using NeuralNetwork.Presentation.Views;
 using Prism.Ioc;
 using LayerEditorView = NeuralNetwork.Presentation.Views.LayerEditorView;
 using LayersDisplayView = NeuralNetwork.Presentation.Views.LayersDisplayView;

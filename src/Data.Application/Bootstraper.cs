@@ -1,10 +1,6 @@
-﻿using Common.Framework;
-using Data.Application.Controllers;
+﻿using Data.Application.Controllers;
 using Data.Application.Controllers.DataSource;
-
-using Data.Domain;
 using Prism.Ioc;
-using Prism.Unity;
 
 namespace Data.Application
 {

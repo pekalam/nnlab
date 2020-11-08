@@ -1,18 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
-using System.Windows.Controls;
-using Common.Domain;
+﻿using Common.Domain;
 using Common.Framework;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Ioc;
 using Prism.Regions;
 using Shell.Interface;
-using Training.Application.Controllers;
+using System;
+using System.ComponentModel;
 using Training.Application.ViewModels;
-using Training.Domain;
 
 namespace Training.Application.Controllers
 {

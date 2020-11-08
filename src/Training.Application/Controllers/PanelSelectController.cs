@@ -1,16 +1,12 @@
 ﻿
+using Common.Framework;
+using Prism.Commands;
+using Prism.Ioc;
+using Prism.Services.Dialogs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Controls;
-using Common.Framework;
-using Prism.Commands;
-using Prism.Events;
-using Prism.Ioc;
-using Prism.Regions;
-using Prism.Services.Dialogs;
-using Shell.Interface;
-using Training.Application.Controllers;
 using Training.Application.ViewModels;
 
 

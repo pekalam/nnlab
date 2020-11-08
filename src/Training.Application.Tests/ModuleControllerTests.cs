@@ -1,16 +1,9 @@
-using System;
-using System.ComponentModel;
-using System.Reflection;
-using AutoFixture;
 using Common.Domain;
-using Common.Framework;
 using Moq;
 using Moq.AutoMock;
 using Prism.Regions;
 using Shell.Interface;
 using TestUtils;
-using Training.Application.ViewModels;
-using Training.Domain;
 using Training.Interface;
 using Xunit;
 #pragma warning disable 4014

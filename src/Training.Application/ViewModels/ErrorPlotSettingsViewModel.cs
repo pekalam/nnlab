@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text;
-using Common.Framework;
-using Microsoft.VisualBasic;
-using OxyPlot.Axes;
+﻿using OxyPlot.Axes;
 using Prism.Regions;
 using SharedUI.BasicPlot;
+using System.Diagnostics;
 
 namespace Training.Application.ViewModels
 {

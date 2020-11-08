@@ -1,5 +1,4 @@
 using Common.Domain;
-using Data.Application.ViewModels;
 using Data.Application.ViewModels.DataSourcePreview;
 using Data.Domain.Services;
 using FluentAssertions;

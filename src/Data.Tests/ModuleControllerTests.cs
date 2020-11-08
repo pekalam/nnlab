@@ -1,16 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Common.Domain;
-using Data.Application.Controllers.DataSource;
-using FluentAssertions;
+﻿using Common.Domain;
 using Moq;
 using Moq.AutoMock;
 using Prism.Regions;
-using Shell.Interface;
 using TestUtils;
-using Xunit;
 
 namespace Data.Application.Tests
 {

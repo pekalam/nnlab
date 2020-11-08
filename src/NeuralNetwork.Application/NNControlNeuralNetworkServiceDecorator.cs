@@ -1,10 +1,10 @@
-﻿using System.Linq;
-using Common.Domain;
+﻿using Common.Domain;
 using NeuralNetwork.Domain;
 using NNLib;
 using NNLib.ActivationFunction;
 using NNLib.MLP;
 using NNLibAdapter;
+using System.Linq;
 
 namespace NeuralNetwork.Application
 {

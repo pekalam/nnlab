@@ -1,4 +1,5 @@
-﻿using NNLib.Common;
+﻿using Common.Domain;
+using NNLib.Data;
 using OxyPlot;
 using OxyPlot.Series;
 using Serilog;
@@ -7,8 +8,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
-using Common.Domain;
-using NNLib.Data;
 
 namespace Data.Application.ViewModels
 {

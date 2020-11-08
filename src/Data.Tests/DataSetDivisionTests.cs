@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using Common.Domain;
+﻿using Common.Domain;
 using Data.Application.Controllers;
-
 using Data.Application.ViewModels;
 using FluentAssertions;
 using Moq;
 using Moq.AutoMock;
-using Prism.Events;
 using Prism.Regions;
+using System;
+using System.Collections.Generic;
 using TestUtils;
 using Xunit;
 

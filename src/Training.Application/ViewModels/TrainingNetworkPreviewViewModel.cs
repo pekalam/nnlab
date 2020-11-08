@@ -1,9 +1,7 @@
-﻿using System;
-using Common.Framework;
+﻿using Common.Framework;
 using NNLibAdapter;
 using Prism.Regions;
 using Training.Application.Controllers;
-using Training.Domain;
 
 namespace Training.Application.ViewModels
 {

@@ -1,12 +1,9 @@
+using AutoFixture;
+using Common.Domain;
+using FluentAssertions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using AutoFixture;
-using Common.Domain;
-using FakeItEasy;
-using FluentAssertions;
-using MathNet.Numerics.LinearAlgebra;
-using MathNet.Numerics.LinearAlgebra.Complex;
 using TestUtils;
 using Xunit;
 

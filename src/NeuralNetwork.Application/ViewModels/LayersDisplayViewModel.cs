@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using Common.Framework;
+using NeuralNetwork.Application.Controllers;
+using NNLib;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
-using Common.Framework;
-using NeuralNetwork.Application.Controllers;
-using NNLib;
 using Unity;
 
 namespace NeuralNetwork.Application.ViewModels

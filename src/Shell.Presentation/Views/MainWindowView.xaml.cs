@@ -1,7 +1,5 @@
-﻿using System.Windows;
-using System.Windows.Controls;
+﻿using MahApps.Metro.Controls;
 using System.Windows.Threading;
-using MahApps.Metro.Controls;
 
 namespace Shell.Presentation.Views
 {

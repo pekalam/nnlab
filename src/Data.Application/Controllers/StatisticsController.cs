@@ -1,14 +1,10 @@
-﻿using System;
+﻿using Common.Domain;
 using Common.Framework;
-using NNLib.Common;
-using Prism.Commands;
-using System.Collections.Generic;
-using System.ComponentModel;
-using Common.Domain;
-using Data.Application.Controllers.DataSource;
 using Data.Application.ViewModels;
 using NNLib.Data;
 using Prism.Ioc;
+using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace Data.Application.Controllers.DataSource
 {

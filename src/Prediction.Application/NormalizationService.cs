@@ -1,7 +1,7 @@
-﻿using System;
-using Common.Domain;
+﻿using Common.Domain;
 using MathNet.Numerics.LinearAlgebra;
 using NNLib.Data;
+using System;
 
 namespace Prediction.Application
 {

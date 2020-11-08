@@ -1,8 +1,7 @@
-﻿using System;
-using System.Diagnostics;
-using Prism.Events;
+﻿using Prism.Events;
 using Prism.Regions;
 using Shell.Interface;
+using System;
 using Unity;
 
 namespace Shell.Application.PrismDecorators

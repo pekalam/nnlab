@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using NNLib.Common;
-using NNLib.Csv;
+﻿using NNLib.Csv;
 using NNLib.Data;
 using Prism.Mvvm;
+using System;
+using System.Collections.Generic;
 
 namespace Common.Domain
 {

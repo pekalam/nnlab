@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Common.Framework;
-using CommonServiceLocator;
+﻿using Common.Framework;
 using Prism.Ioc;
 using Prism.Regions;
-using Training.Application.Controllers;
+using System;
 using Training.Application.Plots;
 using Training.Application.ViewModels;
-using Training.Application.ViewModels.PanelLayout;
 using Training.Domain;
 
 namespace Training.Application.Controllers

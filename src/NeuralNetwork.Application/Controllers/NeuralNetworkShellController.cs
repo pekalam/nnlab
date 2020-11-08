@@ -1,18 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows.Controls.Ribbon;
-using Common.Domain;
+﻿using Common.Domain;
 using Common.Framework;
-using NeuralNetwork.Application.Controllers;
 using NeuralNetwork.Application.View;
 using NeuralNetwork.Application.ViewModels;
-using NeuralNetwork.Domain;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Ioc;
 using Prism.Regions;
 using Shell.Interface;
+using System;
 
 namespace NeuralNetwork.Application.Controllers
 {

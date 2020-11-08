@@ -1,16 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Media.Animation;
-using Common.Domain;
+﻿using Common.Domain;
 using Common.Framework;
 using MathNet.Numerics.LinearAlgebra;
-using NNLib;
-using NNLib.Common;
 using NNLib.Data;
 using NNLib.MLP;
 using OxyPlot;
@@ -19,6 +9,12 @@ using Prediction.Application.ViewModels;
 using Prism.Commands;
 using Prism.Ioc;
 using Prism.Regions;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Prediction.Application.Controllers
 {

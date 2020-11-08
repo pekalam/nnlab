@@ -1,28 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using System.Windows.Threading;
-using Common.Domain;
+﻿using Common.Domain;
 using Common.Framework;
 using Common.Framework.Extensions;
-using CommonServiceLocator;
-using NNLib;
-using NNLib.Common;
 using NNLib.Data;
 using NNLib.MLP;
-using Prism.Events;
 using Prism.Ioc;
 using Prism.Regions;
-using Shell.Interface;
-using Training.Application.Controllers;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows.Threading;
 using Training.Application.Plots;
 using Training.Application.ViewModels;
-using Training.Application.ViewModels.PanelLayout;
 using Training.Domain;
-using Unity.Injection;
 
 namespace Training.Application.Controllers
 {

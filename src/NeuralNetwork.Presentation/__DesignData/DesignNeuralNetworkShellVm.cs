@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using NeuralNetwork.Application.ViewModels;
+﻿using NeuralNetwork.Application.ViewModels;
 
 namespace NeuralNetwork.Presentation.__DesignData
 {

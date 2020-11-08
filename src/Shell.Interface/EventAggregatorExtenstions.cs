@@ -1,6 +1,6 @@
-﻿using System;
-using Common.Framework.Extensions;
+﻿using Common.Framework.Extensions;
 using Prism.Events;
+using System;
 
 namespace Shell.Interface
 {

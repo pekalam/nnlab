@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using Common.Domain;
+﻿using Common.Domain;
 using Common.Framework;
-using NNLib.Common;
 using NNLib.Data;
 using OxyPlot;
 using Prism.Commands;
@@ -14,9 +7,10 @@ using Prism.Events;
 using Prism.Ioc;
 using Prism.Regions;
 using Shell.Interface;
-using Training.Application.Controllers;
+using System;
+using System.Linq;
+using System.Threading;
 using Training.Application.ViewModels;
-using Training.Domain;
 
 namespace Training.Application.Controllers
 {

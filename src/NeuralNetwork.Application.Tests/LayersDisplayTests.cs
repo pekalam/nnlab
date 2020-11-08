@@ -1,5 +1,4 @@
 using Common.Domain;
-using Common.Framework;
 using FluentAssertions;
 using Moq.AutoMock;
 using NeuralNetwork.Application.Controllers;

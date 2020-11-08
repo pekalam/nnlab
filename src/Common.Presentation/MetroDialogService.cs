@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net.Mime;
-using System.Text;
-using System.Windows;
-using Common.Framework;
+﻿using Common.Framework;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
+using System.Windows;
 
 namespace Common.Presentation
 {

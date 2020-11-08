@@ -1,17 +1,14 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Printing;
-using System.Reflection;
-using System.Windows.Controls;
 using FluentAssertions;
 using NetArchTest.Rules;
 using Prism.Unity.Ioc;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Windows.Controls;
 using Unity;
 using Xunit;
 using Xunit.Abstractions;
-using Xunit.Sdk;
 
 namespace ArchTests
 {

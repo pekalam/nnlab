@@ -1,8 +1,8 @@
-﻿using System.ComponentModel;
+﻿using Data.Application.ViewModels;
+using NNLib.Common;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
-using Data.Application.ViewModels;
-using NNLib.Common;
 
 namespace Data.Presentation.Views
 {

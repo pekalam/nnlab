@@ -1,12 +1,8 @@
-﻿using System;
-using System.Threading.Tasks;
-using NNLib;
-using System.Windows;
-using System.Windows.Threading;
-using MathNet.Numerics.LinearAlgebra;
+﻿using MathNet.Numerics.LinearAlgebra;
 using NNLib.ActivationFunction;
 using NNLib.MLP;
 using SharedUI.MatrixPreview;
+using System.Windows;
 
 namespace MatrixPreviewTest
 {

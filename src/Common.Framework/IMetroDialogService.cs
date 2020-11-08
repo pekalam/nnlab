@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Common.Framework
+﻿namespace Common.Framework
 {
     public interface IMetroDialogService
     {

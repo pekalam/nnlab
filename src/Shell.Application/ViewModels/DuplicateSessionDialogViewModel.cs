@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows.Input;
-using Common.Domain;
+﻿using Common.Domain;
 using Common.Framework;
 using Prism.Commands;
-using Prism.Regions;
 using Prism.Services.Dialogs;
-using Shell.Application.Services;
+using System;
+using System.Windows.Input;
 using Unity;
 
 namespace Shell.Application.ViewModels

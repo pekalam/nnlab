@@ -1,7 +1,7 @@
-﻿using System;
-using System.Diagnostics;
-using Serilog;
+﻿using Serilog;
 using Serilog.Core;
+using System;
+using System.Diagnostics;
 
 namespace Common.Logging
 {

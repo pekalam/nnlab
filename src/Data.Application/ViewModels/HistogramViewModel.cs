@@ -1,6 +1,4 @@
-﻿using Common.Domain;
-using OxyPlot;
-using OxyPlot.Axes;
+﻿using OxyPlot.Axes;
 using Prism.Mvvm;
 using SharedUI.BasicPlot;
 

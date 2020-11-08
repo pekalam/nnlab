@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using Common.Framework;
-using Prism.Events;
+﻿using Prism.Events;
 using Prism.Regions;
-using Shell.Application;
 using Shell.Application.Interfaces;
 using Shell.Interface;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Shell.Presentation
 {

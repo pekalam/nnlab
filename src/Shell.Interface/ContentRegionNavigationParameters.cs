@@ -1,7 +1,4 @@
-﻿using System;
-using Prism.Regions;
-
-namespace Shell.Interface
+﻿namespace Shell.Interface
 {
 
 }

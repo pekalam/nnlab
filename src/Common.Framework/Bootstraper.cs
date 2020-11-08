@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Prism.Ioc;
-using Prism.Regions;
+﻿using Prism.Ioc;
 
 namespace Common.Framework
 {

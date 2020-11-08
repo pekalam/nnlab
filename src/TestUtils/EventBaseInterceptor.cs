@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Security.Cryptography;
-using System.Text;
-using Castle.DynamicProxy;
+﻿using Castle.DynamicProxy;
 using FluentAssertions;
 using Moq;
 using Prism.Events;
+using System;
+using System.Collections.Generic;
 using IInvocation = Castle.DynamicProxy.IInvocation;
 
 namespace TestUtils

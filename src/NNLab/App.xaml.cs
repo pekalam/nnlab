@@ -1,6 +1,4 @@
-﻿using System;
-using System.Reflection;
-using Data;
+﻿using Data;
 using MathNet.Numerics;
 using NeuralNetwork;
 using Prediction;
@@ -9,6 +7,8 @@ using Prism.Modularity;
 using Prism.Mvvm;
 using Shell;
 using Shell.Presentation.Views;
+using System;
+using System.Reflection;
 using Training;
 using Window = System.Windows.Window;
 

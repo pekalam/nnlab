@@ -1,11 +1,4 @@
-﻿using Prism.Commands;
-using Prism.Mvvm;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Common.Framework;
+﻿using Common.Framework;
 using NeuralNetwork.Application.Controllers;
 using Prism.Regions;
 using Unity;

@@ -1,13 +1,10 @@
-﻿using System.ComponentModel;
-using System.Linq;
-using System.Windows.Data;
-using Common.Domain;
-using Common.Framework;
+﻿using Common.Domain;
 using Prism.Events;
 using Prism.Regions;
 using Shell.Interface;
+using System.ComponentModel;
+using System.Windows.Data;
 using Training.Application.Controllers;
-using Training.Application.ViewModels;
 using Training.Domain;
 using Training.Interface;
 

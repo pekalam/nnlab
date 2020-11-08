@@ -1,23 +1,20 @@
-﻿using System;
-using Common.Domain;
+﻿using Common.Domain;
 using Common.Framework;
+using Data.Application.ViewModels;
+using MathNet.Numerics.LinearAlgebra;
 using NNLib.Common;
+using NNLib.Data;
 using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Series;
 using Prism.Commands;
 using Prism.Events;
+using Prism.Ioc;
 using Prism.Regions;
 using Shell.Interface;
+using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using Data.Application.Controllers;
-using Data.Application.ViewModels;
-using MathNet.Numerics.LinearAlgebra;
-using MathNet.Numerics.LinearAlgebra.Complex;
-using NNLib.Data;
-using Prism.Ioc;
 
 
 namespace Data.Application.Controllers

@@ -1,14 +1,12 @@
-﻿using Common.Framework;
-using NNLib.Common;
+﻿using Common.Domain;
+using Common.Framework;
+using Data.Application.ViewModels.DataSourcePreview;
+using NNLib.Data;
 using Prism.Commands;
 using System;
-using System.ComponentModel;
 using System.Data;
 using System.Windows;
 using System.Windows.Input;
-using Common.Domain;
-using Data.Application.ViewModels.DataSourcePreview;
-using NNLib.Data;
 
 namespace Data.Application.ViewModels
 {

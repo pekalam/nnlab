@@ -1,5 +1,4 @@
 ﻿using Prediction.Application;
-using Prediction.Application.Controllers;
 using Prediction.Presentation.Views;
 using Prism.Ioc;
 

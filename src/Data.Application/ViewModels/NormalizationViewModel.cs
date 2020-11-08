@@ -1,8 +1,5 @@
-﻿using System.ComponentModel;
-using Common.Domain;
-using Common.Framework;
+﻿using Common.Framework;
 using Data.Application.Controllers.DataSource;
-using MathNet.Numerics.Providers.LinearAlgebra;
 using Unity;
 
 namespace Data.Application.ViewModels

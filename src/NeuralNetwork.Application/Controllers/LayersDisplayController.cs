@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Linq;
-using Common.Domain;
+﻿using Common.Domain;
 using Common.Framework;
 using NeuralNetwork.Application.Messaging;
 using NeuralNetwork.Application.ViewModels;
@@ -14,6 +9,9 @@ using Prism.Commands;
 using Prism.Events;
 using Prism.Ioc;
 using Shell.Interface;
+using System;
+using System.ComponentModel;
+using System.Linq;
 
 namespace NeuralNetwork.Application.Controllers
 {

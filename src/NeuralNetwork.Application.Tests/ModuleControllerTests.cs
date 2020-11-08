@@ -1,17 +1,14 @@
-using System;
 using Common.Domain;
 using FluentAssertions;
 using Moq;
 using Moq.AutoMock;
 using NeuralNetwork.Application.Controllers;
-using NeuralNetwork.Application.ViewModels;
 using NeuralNetwork.Domain;
 using NNLib.Common;
 using Prism.Regions;
 using Shell.Interface;
 using TestUtils;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace NeuralNetwork.Application.Tests
 {

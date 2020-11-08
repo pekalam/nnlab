@@ -1,10 +1,10 @@
-﻿using System;
-using System.Reflection;
+﻿using PanelLayoutTest.Views;
 using Prism.Ioc;
-using PanelLayoutTest.Views;
-using System.Windows;
 using Prism.Modularity;
 using Prism.Mvvm;
+using System;
+using System.Reflection;
+using System.Windows;
 using Training;
 
 namespace PanelLayoutTest

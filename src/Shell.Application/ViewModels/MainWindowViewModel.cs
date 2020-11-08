@@ -1,18 +1,15 @@
-﻿using System;
-using System.Globalization;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Input;
-using System.Windows.Threading;
-using Common.Domain;
+﻿using Common.Domain;
 using Common.Framework;
 using Prism.Commands;
 using Prism.Events;
-using Prism.Mvvm;
 using Prism.Regions;
 using Shell.Application.Interfaces;
 using Shell.Interface;
+using System;
+using System.Globalization;
+using System.Windows;
+using System.Windows.Data;
+using System.Windows.Input;
 using Training.Interface;
 using Unity;
 

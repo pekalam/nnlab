@@ -1,9 +1,6 @@
 ﻿using NeuralNetwork.Application;
-using Prism.Events;
 using Prism.Ioc;
 using Prism.Modularity;
-using Prism.Regions;
-using Shell.Interface;
 
 namespace NeuralNetwork
 {

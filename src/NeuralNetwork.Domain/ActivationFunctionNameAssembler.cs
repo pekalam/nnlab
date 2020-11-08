@@ -1,6 +1,6 @@
-﻿using System;
-using NNLib.ActivationFunction;
+﻿using NNLib.ActivationFunction;
 using NNLib.MLP;
+using System;
 
 namespace Common.Domain
 {

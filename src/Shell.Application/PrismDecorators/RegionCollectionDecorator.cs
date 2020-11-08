@@ -1,9 +1,9 @@
-﻿using System;
+﻿using Prism.Regions;
+using Shell.Interface;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using Prism.Regions;
-using Shell.Interface;
 
 namespace Shell.Application.PrismDecorators
 {

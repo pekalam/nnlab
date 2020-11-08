@@ -1,9 +1,7 @@
-﻿using System;
-using System.ComponentModel;
-using NNLib;
-using NNLib.Training.GradientDescent;
+﻿using NNLib.Training.GradientDescent;
 using NNLib.Training.LevenbergMarquardt;
 using Prism.Mvvm;
+using System;
 
 namespace Common.Domain
 {

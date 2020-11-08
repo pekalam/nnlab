@@ -1,6 +1,6 @@
-﻿using System.Collections.Specialized;
+﻿using NeuralNetwork.Application.ViewModels;
+using System.Collections.Specialized;
 using System.Windows.Controls;
-using NeuralNetwork.Application.ViewModels;
 
 namespace NeuralNetwork.Presentation.Views
 {

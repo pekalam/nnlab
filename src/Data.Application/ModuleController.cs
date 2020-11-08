@@ -1,14 +1,10 @@
-﻿using System;
-using System.Linq;
-using System.Net.NetworkInformation;
-using Common.Domain;
+﻿using Common.Domain;
 using Data.Application.Controllers;
 using Data.Application.Controllers.DataSource;
-
-using Data.Application.ViewModels;
 using Prism.Events;
 using Prism.Regions;
 using Shell.Interface;
+using System;
 
 namespace Data.Application
 {

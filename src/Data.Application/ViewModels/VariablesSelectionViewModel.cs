@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using Common.Framework;
+﻿using Common.Framework;
 using Data.Application.Controllers;
 using Data.Domain;
 using Unity;

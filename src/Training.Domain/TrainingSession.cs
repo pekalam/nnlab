@@ -1,13 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Runtime.CompilerServices;
-using System.Threading;
-using System.Threading.Tasks;
-using Common.Domain;
-using NNLib;
+﻿using Common.Domain;
 using NNLib.Exceptions;
 using NNLib.LossFunction;
 using NNLib.MLP;
@@ -15,6 +6,12 @@ using NNLib.Training;
 using NNLib.Training.GradientDescent;
 using NNLib.Training.LevenbergMarquardt;
 using Prism.Mvvm;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Training.Domain
 {

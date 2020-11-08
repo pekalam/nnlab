@@ -1,11 +1,10 @@
-﻿using Common.Framework;
-
+﻿using Common.Domain;
+using Common.Framework;
+using Data.Application.Controllers;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
-using Common.Domain;
-using Data.Application.Controllers;
 
 namespace Data.Application.ViewModels
 {

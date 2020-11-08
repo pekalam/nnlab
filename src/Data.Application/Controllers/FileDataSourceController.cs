@@ -1,14 +1,14 @@
-﻿using System;
-using System.Diagnostics;
-using Prism.Commands;
-using Prism.Events;
-using Prism.Regions;
-using Shell.Interface;
-using System.Windows;
-using Common.Domain;
+﻿using Common.Domain;
 using Common.Framework;
 using Data.Application.ViewModels;
+using Prism.Commands;
+using Prism.Events;
 using Prism.Ioc;
+using Prism.Regions;
+using Shell.Interface;
+using System;
+using System.Diagnostics;
+using System.Windows;
 
 namespace Data.Application.Controllers.DataSource
 {

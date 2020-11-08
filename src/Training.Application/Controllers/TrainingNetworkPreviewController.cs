@@ -1,23 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Threading;
-using Common.Domain;
+﻿using Common.Domain;
 using Common.Framework;
-using NNLib;
 using NNLib.MLP;
 using NNLibAdapter;
 using Prism.Commands;
 using Prism.Ioc;
 using Prism.Regions;
-using Shell.Interface;
-using Training.Application.Controllers;
+using System;
+using System.Windows.Threading;
 using Training.Application.Plots;
 using Training.Application.ViewModels;
-using Training.Application.ViewModels.PanelLayout;
 using Training.Domain;
 
 

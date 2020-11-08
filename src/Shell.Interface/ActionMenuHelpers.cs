@@ -1,8 +1,8 @@
-﻿using System.Diagnostics;
+﻿using Prism;
+using Prism.Regions;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
-using Prism;
-using Prism.Regions;
 
 namespace Shell.Interface
 {

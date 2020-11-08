@@ -1,15 +1,13 @@
-using System;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
 using Common.Domain;
 using FluentAssertions;
-using NNLib;
 using NNLib.ActivationFunction;
 using NNLib.Exceptions;
 using NNLib.MLP;
 using NNLib.Training.GradientDescent;
 using NNLib.Training.LevenbergMarquardt;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 using TestUtils;
 using Xunit;
 

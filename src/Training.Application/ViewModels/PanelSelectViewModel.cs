@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows.Controls;
-using System.Windows.Input;
-using Common.Framework;
-using Prism.Regions;
+﻿using Common.Framework;
 using Prism.Services.Dialogs;
+using System;
+using System.Collections.Generic;
+using System.Windows.Controls;
 using Training.Application.Controllers;
 using Unity;
 

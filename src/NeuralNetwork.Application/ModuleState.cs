@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Text;
-using Common.Domain;
+﻿using Common.Domain;
 using NNLibAdapter;
 using Prism.Mvvm;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace NeuralNetwork.Application
 {

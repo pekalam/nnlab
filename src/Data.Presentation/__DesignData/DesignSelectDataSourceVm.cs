@@ -1,9 +1,5 @@
 ﻿#pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
 #pragma warning disable CS8625
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using Data.Application.ViewModels;
 
 

@@ -1,4 +1,8 @@
-﻿using System;
+﻿using Common.Framework;
+using Prism.Events;
+using Prism.Regions;
+using Shell.Interface;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -6,11 +10,6 @@ using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Data;
-using Common.Framework;
-using Prism.Commands;
-using Prism.Events;
-using Prism.Regions;
-using Shell.Interface;
 using Unity;
 
 namespace Shell.Application.ViewModels

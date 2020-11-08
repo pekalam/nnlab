@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using Common.Domain;
-using NNLib.Common;
-using NNLib.Csv;
+﻿using Common.Domain;
 using NNLib.Data;
+using System;
+using System.Threading.Tasks;
 
 namespace Data.Domain.Services
 {

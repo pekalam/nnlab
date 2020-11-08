@@ -1,23 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text;
-using System.Threading;
-using System.Windows.Forms;
-using Common.Domain;
+﻿using Common.Domain;
 using Common.Framework;
 using MathNet.Numerics.LinearAlgebra;
+using NNLib.Data;
+using NNLib.MLP;
 using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Series;
 using Prism.Regions;
 using SharedUI.BasicPlot;
-using Training.Domain;
-using NNLib;
-using NNLib.Common;
-using NNLib.Data;
-using NNLib.MLP;
+using System.Collections.Generic;
+using System.Threading;
 using Training.Application.Controllers;
+using Training.Domain;
 
 namespace Training.Application.ViewModels
 {

@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
-using System.Timers;
-using System.Windows;
-using System.Windows.Threading;
-using Common.Domain;
+﻿using Common.Domain;
 using Common.Framework;
-using NNLib;
 using NNLib.Training.GradientDescent;
+using System;
+using System.Timers;
+using System.Windows.Threading;
 using Training.Application.Controllers;
 using Training.Application.Views;
-using Training.Domain;
 using Unity;
 
 namespace Training.Application.ViewModels

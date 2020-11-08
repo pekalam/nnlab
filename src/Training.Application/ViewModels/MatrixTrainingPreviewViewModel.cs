@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Common.Framework;
+﻿using Common.Framework;
 using Prism.Regions;
 using SharedUI.MatrixPreview;
 using Training.Application.Controllers;

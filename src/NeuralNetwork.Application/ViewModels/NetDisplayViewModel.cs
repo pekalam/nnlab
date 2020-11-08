@@ -1,6 +1,5 @@
 ﻿using Common.Framework;
 using NeuralNetwork.Application.Controllers;
-using NNLibAdapter;
 using Unity;
 
 namespace NeuralNetwork.Application.ViewModels

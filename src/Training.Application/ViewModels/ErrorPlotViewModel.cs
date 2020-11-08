@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Common.Framework;
+﻿using Common.Framework;
 using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Series;
 using Prism.Regions;
 using SharedUI.BasicPlot;
+using System;
 using Training.Application.Controllers;
 
 namespace Training.Application.ViewModels

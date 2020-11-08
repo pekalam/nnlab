@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using MahApps.Metro.Controls;
+using Microsoft.Xaml.Behaviors;
+using System;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using MahApps.Metro.Controls;
-using Microsoft.Xaml.Behaviors;
 
 namespace Common.Presentation.Behaviors
 {

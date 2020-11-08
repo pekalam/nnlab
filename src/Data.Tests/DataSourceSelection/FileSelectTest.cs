@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using Common.Domain;
-using Common.Framework;
+﻿using Common.Domain;
 using Data.Application.Controllers;
 using Data.Application.Interfaces;
 

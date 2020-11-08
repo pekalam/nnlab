@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Common.Domain;
+﻿using Common.Domain;
 using Prism.Events;
 using Prism.Regions;
-using Shell.Application.Controllers;
 using Shell.Interface;
 
 namespace Shell.Application

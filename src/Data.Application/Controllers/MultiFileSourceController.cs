@@ -1,14 +1,14 @@
-﻿using System;
+﻿using Common.Domain;
 using Common.Framework;
+using Data.Application.Interfaces;
+using Data.Application.ViewModels;
 using Data.Domain.Services;
 using Prism.Commands;
+using Prism.Events;
 using Prism.Regions;
 using Shell.Interface;
+using System;
 using System.Linq;
-using Common.Domain;
-using Data.Application.Interfaces;
-using Prism.Events;
-using Data.Application.ViewModels;
 
 namespace Data.Application.Controllers
 {

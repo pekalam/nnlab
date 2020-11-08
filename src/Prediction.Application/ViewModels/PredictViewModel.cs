@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Common.Domain;
+﻿using Common.Domain;
 using Common.Framework;
 using MathNet.Numerics.LinearAlgebra;
-using NNLib.Common;
 using NNLib.Data;
 using NNLib.MLP;
 using NNLibAdapter;
@@ -16,6 +12,7 @@ using Prediction.Application.Controllers;
 using Prism.Regions;
 using SharedUI.BasicPlot;
 using SharedUI.MatrixPreview;
+using System;
 
 namespace Prediction.Application.ViewModels
 {

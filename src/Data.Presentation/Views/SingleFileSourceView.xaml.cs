@@ -1,5 +1,5 @@
-﻿using System.Windows.Controls;
-using Data.Application.Views;
+﻿using Data.Application.Views;
+using System.Windows.Controls;
 
 namespace Data.Presentation.Views
 {

@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Windows.Input;
-using Common.Framework;
+﻿using Common.Framework;
 using Prism.Commands;
 using Prism.Services.Dialogs;
+using System;
+using System.Windows.Input;
 
 namespace Shell.Application.ViewModels
 {

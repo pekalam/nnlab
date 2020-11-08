@@ -1,12 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using Common.Domain;
+﻿using Common.Domain;
 using NNLib.Data;
 using NNLib.MLP;
 using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Series;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 using Training.Domain;
 
 namespace Training.Application.ViewModels

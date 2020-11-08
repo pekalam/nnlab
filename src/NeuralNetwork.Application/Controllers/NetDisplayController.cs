@@ -1,14 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
-using Common.Domain;
+﻿using Common.Domain;
 using Common.Framework;
-using NeuralNetwork.Application.Controllers;
 using NeuralNetwork.Application.Messaging;
-using NeuralNetwork.Application.ViewModels;
 using NNControl;
-using NNLib;
 using NNLibAdapter;
 using Prism.Commands;
 using Prism.Events;

@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using Common.Framework;
+﻿using Common.Framework;
 using Moq;
 using Moq.AutoMock;
 using Prism.Events;
 using Prism.Regions;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 
 namespace TestUtils
 {

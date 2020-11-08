@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Common.Framework;
+﻿using Common.Framework;
 using Prism.Ioc;
 using Prism.Regions;
-using Training.Application.Controllers;
+using System;
 using Training.Application.ViewModels;
-using Training.Domain;
 
 namespace Training.Application.Controllers
 {

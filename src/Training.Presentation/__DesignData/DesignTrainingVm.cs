@@ -1,10 +1,8 @@
-﻿using System;
+﻿using Common.Domain;
+using System;
 using System.Collections.Generic;
-using System.Text;
-using Common.Domain;
 using Training.Application;
 using Training.Application.ViewModels;
-using Training.Domain;
 
 namespace Training.Presentation.__DesignData
 {

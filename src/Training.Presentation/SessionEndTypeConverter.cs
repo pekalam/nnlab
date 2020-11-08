@@ -1,7 +1,7 @@
-﻿using System;
+﻿using Common.Domain;
+using System;
 using System.Globalization;
 using System.Windows.Data;
-using Common.Domain;
 
 namespace Training.Presentation
 {

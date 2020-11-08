@@ -1,8 +1,6 @@
 ﻿using Prism.Ioc;
-using Shell.Application;
 using Shell.Application.Interfaces;
 using Shell.Application.ViewModels;
-using Shell.Interface;
 using Shell.Presentation.Views;
 
 namespace Shell.Presentation

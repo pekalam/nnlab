@@ -1,14 +1,12 @@
-﻿using System;
-using Castle.DynamicProxy;
-using Common.Domain;
+﻿using Common.Domain;
 using Moq;
-using NNLib;
 using NNLib.ActivationFunction;
 using NNLib.Common;
 using NNLib.Data;
 using NNLib.MLP;
 using Prism.Regions;
 using Shell.Interface;
+using System;
 
 namespace TestUtils
 {

@@ -1,13 +1,10 @@
-﻿using System.IO;
-using System.Linq;
-using Castle.DynamicProxy;
-using Common.Domain;
-using Data.Domain.Services;
+﻿using Data.Domain.Services;
 using FluentAssertions;
 using Moq.AutoMock;
 using NNLib.Common;
 using NNLib.Data;
-using TestUtils;
+using System.IO;
+using System.Linq;
 using Xunit;
 
 namespace Data.Domain.Tests

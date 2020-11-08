@@ -1,11 +1,10 @@
-﻿using System;
+﻿using MathNet.Numerics.LinearAlgebra;
+using Prism.Commands;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Windows.Input;
-using MathNet.Numerics.LinearAlgebra;
-using Prism.Commands;
 
 namespace SharedUI.MatrixPreview
 {

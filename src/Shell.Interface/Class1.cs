@@ -1,12 +1,6 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Runtime.CompilerServices;
-using Common.Domain;
-using CommonServiceLocator;
+﻿using Common.Domain;
 using Prism.Commands;
 using Prism.Events;
-using Prism.Ioc;
-using Prism.Mvvm;
-using Prism.Unity;
 
 namespace Shell.Interface
 {

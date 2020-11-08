@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows;
-using Common.Framework;
+﻿using Common.Framework;
 using Prism.Regions;
+using System.Windows;
 using Training.Application.Controllers;
 using Training.Application.ViewModels.PanelLayout;
-using Training.Domain;
 using Unity;
 
 namespace Training.Application.ViewModels

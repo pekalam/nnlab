@@ -1,13 +1,12 @@
-﻿using System;
+﻿using MathNet.Numerics.LinearAlgebra;
+using NNLib.MLP;
+using Prism.Commands;
+using Prism.Events;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows.Input;
-using MathNet.Numerics.LinearAlgebra;
-using NNLib;
-using NNLib.MLP;
-using Prism.Commands;
-using Prism.Events;
 
 namespace SharedUI.MatrixPreview
 {

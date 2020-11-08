@@ -1,8 +1,6 @@
-﻿using System;
+﻿using Prism.Regions;
+using System;
 using System.ComponentModel;
-using System.Diagnostics;
-using Prism.Regions;
-using Shell.Interface;
 
 namespace Shell.Application.PrismDecorators
 {

@@ -1,5 +1,6 @@
-﻿using Common.Framework;
-
+﻿using Common.Domain;
+using Common.Framework;
+using Data.Application.Controllers;
 using Data.Domain;
 using Prism.Regions;
 using System;
@@ -7,8 +8,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows.Input;
-using Common.Domain;
-using Data.Application.Controllers;
 
 namespace Data.Application.ViewModels
 {

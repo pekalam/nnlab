@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.SymbolStore;
-using System.Diagnostics.Tracing;
-using System.Text;
-using System.Windows;
-using Common.Domain;
+﻿using Common.Domain;
 using Common.Framework;
 using Prism.Commands;
 using Prism.Events;
@@ -14,6 +8,7 @@ using Shell.Application.Controllers;
 using Shell.Application.Services;
 using Shell.Application.ViewModels;
 using Shell.Interface;
+using System.Windows;
 using Training.Interface;
 
 namespace Shell.Application.Services
