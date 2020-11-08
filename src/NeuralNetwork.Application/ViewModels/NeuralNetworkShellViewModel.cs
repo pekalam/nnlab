@@ -23,19 +23,19 @@ namespace NeuralNetwork.Application.ViewModels
         }
 
         [InjectionConstructor]
-        public NeuralNetworkShellViewModel(INeuralNetworkShellController service)
+        public NeuralNetworkShellViewModel(INeuralNetworkShellController controller)
         {
-            Service = service;
+            Controller = controller;
         }
 
-        private INeuralNetworkShellController Service { get; }
+        private INeuralNetworkShellController Controller { get; }
 
         public override void OnNavigatedTo(NavigationContext navigationContext)
         {
             if (!_navigatedInvoked)
             {
                 _navigatedInvoked = true;
-                Service.Navigated(navigationContext);
+                Controller.Navigated(navigationContext);
             }
         }
     }

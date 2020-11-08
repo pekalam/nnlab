@@ -18,7 +18,7 @@
                                         HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="NeuronClick">
-                    <mvvm:InvokeCommandAction Command="{Binding Service.NeuronClickCommand}" />
+                    <mvvm:InvokeCommandAction Command="{Binding Controller.NeuronClickCommand}" />
                 </i:EventTrigger>
             </i:Interaction.Triggers>
         </nnControl:NeuralNetworkControl>

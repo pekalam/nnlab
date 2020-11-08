@@ -54,13 +54,13 @@ namespace NeuralNetwork.Application.ViewModels
         }
 
         [InjectionConstructor]
-        public LayersDisplayViewModel(ILayersDisplayController service)
+        public LayersDisplayViewModel(ILayersDisplayController controller)
         {
-            Service = service;
-            service.Initialize(this);
+            Controller = controller;
+            controller.Initialize(this);
         }
 
-        public ILayersDisplayController Service { get; }
+        public ILayersDisplayController Controller { get; }
 
         public ObservableCollection<LayerEditorItemModel> Layers
         {
@@ -83,7 +83,7 @@ namespace NeuralNetwork.Application.ViewModels
                 IsOutputLayer = false,
                 LayerIndex = collection.Count,
                 TotalNeurons = 0,
-                AddLayer = Service.AddLayerCommand
+                AddLayer = Controller.AddLayerCommand
             });
             Layers = collection;
         }
@@ -95,10 +95,10 @@ namespace NeuralNetwork.Application.ViewModels
                 IsOutputLayer = layer.IsOutputLayer,
                 LayerIndex = ind,
                 TotalNeurons = layer.NeuronsCount,
-                RemoveLayer = Service.RemoveLayerCommand,
-                EditLayer = Service.EditLayerCommand,
-                InsertAfter = Service.InsertAfterCommand,
-                InsertBefore = Service.InsertBeforeCommand
+                RemoveLayer = Controller.RemoveLayerCommand,
+                EditLayer = Controller.EditLayerCommand,
+                InsertAfter = Controller.InsertAfterCommand,
+                InsertBefore = Controller.InsertBeforeCommand
             };
         }
     }

@@ -245,7 +245,7 @@
             </ListBox.ItemTemplate>
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="SelectionChanged">
-                    <i:InvokeCommandAction Command="{Binding Service.LayerClickedCommand}"
+                    <i:InvokeCommandAction Command="{Binding Controller.LayerClickedCommand}"
                                            CommandParameter="{Binding SelectedValue, ElementName=listBox}" />
                 </i:EventTrigger>
             </i:Interaction.Triggers>

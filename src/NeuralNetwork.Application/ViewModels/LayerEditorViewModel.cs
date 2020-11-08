@@ -89,13 +89,13 @@ namespace NeuralNetwork.Application.ViewModels
         }
 
         [InjectionConstructor]
-        public LayerEditorViewModel(ILayerEditorController service)
+        public LayerEditorViewModel(ILayerEditorController controller)
         {
-            Service = service;
-            service.Initialize(this);
+            Controller = controller;
+            controller.Initialize(this);
         }
 
-        public ILayerEditorController Service { get; }
+        public ILayerEditorController Controller { get; }
 
         public MatrixPreviewViewModel MatrixPreview { get; set; } = new MatrixPreviewViewModel();
 
@@ -107,7 +107,7 @@ namespace NeuralNetwork.Application.ViewModels
 
         public override void OnNavigatedTo(NavigationContext navigationContext)
         {
-            Service.Navigated((LayerEditorNavParams)navigationContext.Parameters["params"]);
+            Controller.Navigated((LayerEditorNavParams)navigationContext.Parameters["params"]);
         }
     }
 }

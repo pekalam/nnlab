@@ -17,13 +17,13 @@ namespace NeuralNetwork.Application.ViewModels
         }
 
         [InjectionConstructor]
-        public NetDisplayViewModel(INetDisplayController service, ModuleState moduleState)
+        public NetDisplayViewModel(INetDisplayController controller, ModuleState moduleState)
         {
-            Service = service;
+            Controller = controller;
             ModuleState = moduleState;
         }
 
-        public INetDisplayController Service { get; }
+        public INetDisplayController Controller { get; }
 
         public ModuleState ModuleState { get; }
     }
