@@ -12,7 +12,7 @@ using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Legends;
 using OxyPlot.Series;
-using Prediction.Application.Services;
+using Prediction.Application.Controllers;
 using Prism.Regions;
 using SharedUI.BasicPlot;
 using SharedUI.MatrixPreview;
@@ -37,9 +37,9 @@ namespace Prediction.Application.ViewModels
             
         }
 
-        public PredictViewModel(IPredictService service)
+        public PredictViewModel(IPredictController controller)
         {
-            Service = service;
+            Controller = controller;
             PlotModel = new BasicPlotModel();
             PlotModel.Model.Series.Add(DataPredictionLineSeries);
             PlotModel.Model.Series.Add(DataScatterSeries);
@@ -56,7 +56,7 @@ namespace Prediction.Application.ViewModels
 
             PlotModel.Model.Legends.Add(l);
 
-            service.Initialize(this);
+            controller.Initialize(this);
         }
 
         public NNLibModelAdapter? ModelAdapter
@@ -65,7 +65,7 @@ namespace Prediction.Application.ViewModels
             set => SetProperty(ref _modelAdapter, value);
         }
 
-        public IPredictService Service { get; }
+        public IPredictController Controller { get; }
 
         public MatrixPreviewViewModel InputMatrixVm { get; set; } = new MatrixPreviewViewModel();
 
@@ -146,7 +146,7 @@ namespace Prediction.Application.ViewModels
 
         public override void OnNavigatedTo(NavigationContext navigationContext)
         {
-            Service.Navigated?.Invoke(navigationContext);
+            Controller.Navigated?.Invoke(navigationContext);
         }
 
 

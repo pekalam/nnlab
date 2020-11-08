@@ -1,4 +1,4 @@
-﻿using Prediction.Application.Services;
+﻿using Prediction.Application.Controllers;
 using Prism.Ioc;
 
 namespace Prediction.Application
@@ -7,7 +7,7 @@ namespace Prediction.Application
     {
         public static void RegisterTypes(IContainerRegistry cr)
         {
-            IPredictService.Register(cr);
+            IPredictController.Register(cr);
         }
     }
 }

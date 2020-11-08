@@ -3,7 +3,7 @@ using Common.Domain;
 using MathNet.Numerics.LinearAlgebra;
 using NNLib.Data;
 
-namespace Prediction.Application.Services
+namespace Prediction.Application
 {
     internal class NormalizationService
     {

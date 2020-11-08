@@ -15,13 +15,27 @@ using NNLib.Data;
 using NNLib.MLP;
 using OxyPlot;
 using OxyPlot.Series;
-using Prediction.Application.Services;
 using Prediction.Application.ViewModels;
 using Prism.Commands;
+using Prism.Ioc;
 using Prism.Regions;
 
 namespace Prediction.Application.Controllers
 {
+    public interface IPredictController : ITransientController
+    {
+        DelegateCommand PredictCommand { get; }
+        Action<NavigationContext> Navigated { get; set; }
+
+        DelegateCommand<DataSetType?> PredictPlotCommand { get; }
+
+        public static void Register(IContainerRegistry cr)
+        {
+            cr.Register<IPredictController, PredictController>();
+
+        }
+    }
+
     internal static class EnumeratorExtensions
     {
         public static IEnumerable<T> IterateEnumerator<T>(this IEnumerator<T> enumerator)
@@ -47,7 +61,7 @@ namespace Prediction.Application.Controllers
         public DataSetType[]? PlotSetTypes { get; set; } 
     }
 
-    class PredictController : ControllerBase<PredictViewModel>, IPredictService
+    class PredictController : ControllerBase<PredictViewModel>, IPredictController
     {
         private readonly AppState _appState;
         private readonly ModuleState _moduleState;
