@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using Common.Domain;
 using Common.Framework;
-using Data.Application.Services;
+using Data.Application.Controllers.DataSource;
 using MathNet.Numerics.Providers.LinearAlgebra;
 using Unity;
 
@@ -13,7 +13,7 @@ namespace Data.Application.ViewModels
         private bool _minMaxChecked;
         private bool _meanChecked;
         private bool _stdChecked;
-        private INormalizationService? _service;
+        private INormalizationController? _controller;
 
         public NormalizationViewModel()
         {
@@ -21,17 +21,17 @@ namespace Data.Application.ViewModels
         }
 
         [InjectionConstructor]
-        public NormalizationViewModel(INormalizationService service)
+        public NormalizationViewModel(INormalizationController controller)
         {
-            Service = service;
+            Controller = controller;
 
-            service.Initialize(this);
+            controller.Initialize(this);
         }
 
-        public INormalizationService? Service
+        public INormalizationController? Controller
         {
-            get => _service;
-            set => SetProperty(ref _service, value);
+            get => _controller;
+            set => SetProperty(ref _controller, value);
         }
 
         public bool NoneChecked

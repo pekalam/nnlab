@@ -1,6 +1,5 @@
 ﻿using System;
 using Common.Framework;
-using Data.Application.Services;
 using Data.Domain.Services;
 using Prism.Commands;
 using Prism.Regions;

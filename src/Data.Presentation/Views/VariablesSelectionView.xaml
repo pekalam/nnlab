@@ -34,7 +34,7 @@
                     Foreground="White">
             <DataGrid.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Header="Ignore all" Command="{Binding Service.IgnoreAllCommand}"/>
+                    <MenuItem Header="Ignore all" Command="{Binding Controller.IgnoreAllCommand}"/>
                 </ContextMenu>
             </DataGrid.ContextMenu>
             <DataGrid.Columns>

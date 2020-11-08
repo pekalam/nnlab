@@ -1,6 +1,6 @@
 ﻿using Common.Framework;
 using Data.Application.Controllers.DataSource;
-using Data.Application.Services;
+
 using NNLib.Common;
 using NNLib.Data;
 using Unity;
@@ -17,14 +17,14 @@ namespace Data.Application.ViewModels
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
         
         [InjectionConstructor]
-        public StatisticsViewModel(IStatisticsService service)
+        public StatisticsViewModel(IStatisticsController controller)
         {
-            Service = service;
+            Controller = controller;
 
-            service.Initialize(this);
+            controller.Initialize(this);
         }
 
-        public IStatisticsService Service { get; }
+        public IStatisticsController Controller { get; }
 
         public HistogramViewModel HistogramVm { get; } = new HistogramViewModel();
         public VariablesPlotViewModel VariablesPlotVm { get; } = new VariablesPlotViewModel();

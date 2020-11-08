@@ -1,5 +1,4 @@
-﻿using Data.Application.Services;
-using Data.Domain.Services;
+﻿using Data.Domain.Services;
 using NNLib.Common;
 using Prism.Commands;
 using System;

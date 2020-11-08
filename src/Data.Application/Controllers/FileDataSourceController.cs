@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using Data.Application.Services;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Regions;

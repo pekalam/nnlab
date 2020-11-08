@@ -1,7 +1,6 @@
 ﻿using System;
 using Common.Domain;
 using Common.Framework;
-using Data.Application.Services;
 using NNLib.Common;
 using OxyPlot;
 using OxyPlot.Axes;
@@ -21,9 +20,9 @@ using NNLib.Data;
 using Prism.Ioc;
 
 
-namespace Data.Application.Services
+namespace Data.Application.Controllers
 {
-    public interface ICustomDataSetService : ITransientController
+    public interface ICustomDataSetController : ITransientController
     {
         DelegateCommand<OxyMouseDownEventArgs> PlotMouseDownCommand { get; set; }
         DelegateCommand OpenDivisionViewCommand { get; set; }
@@ -32,14 +31,10 @@ namespace Data.Application.Services
 
         public static void Register(IContainerRegistry cr)
         {
-            cr.Register<ICustomDataSetService, CustomDataSetController>();
+            cr.Register<ICustomDataSetController, CustomDataSetController>();
         }
     }
-}
 
-//TODO refactor
-namespace Data.Application.Controllers
-{
     internal class CustomDataSetMemento
     {
         private Dictionary<Session, (IReadOnlyList<double[]> input, IReadOnlyList<double[]> target)> _storage = new Dictionary<Session, (IReadOnlyList<double[]> input, IReadOnlyList<double[]> target)>();
@@ -62,7 +57,7 @@ namespace Data.Application.Controllers
         }
     }
 
-    internal class CustomDataSetController : ControllerBase<CustomDataSetViewModel>, ICustomDataSetService
+    internal class CustomDataSetController : ControllerBase<CustomDataSetViewModel>, ICustomDataSetController
     {
         private readonly AppState _appState;
         private List<double[]> _input = new List<double[]>();

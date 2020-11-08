@@ -9,13 +9,13 @@
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance dd:DesignCustomDataSetVm, IsDesignTimeCreatable=True}">
     <StackPanel Orientation="Horizontal">
-        <Button Style="{StaticResource ActionMenuButton}" Command="{Binding Service.SelectVariablesCommand}">
+        <Button Style="{StaticResource ActionMenuButton}" Command="{Binding Controller.SelectVariablesCommand}">
             <StackPanel>
                 <iconPacks:PackIconFontAwesome Kind="SubscriptSolid" Width="20" Height="20" HorizontalAlignment="Center"/>
                 <TextBlock>Variables</TextBlock>
             </StackPanel>
         </Button>
-        <Button Style="{StaticResource ActionMenuButton}" Command="{Binding Service.OpenDivisionViewCommand}">
+        <Button Style="{StaticResource ActionMenuButton}" Command="{Binding Controller.OpenDivisionViewCommand}">
             <StackPanel>
                 <iconPacks:PackIconFontAwesome Kind="DivideSolid" Width="20" Height="20" HorizontalAlignment="Center"/>
                 <TextBlock>Divide</TextBlock>

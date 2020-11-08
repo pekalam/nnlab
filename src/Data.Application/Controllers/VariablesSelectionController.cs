@@ -1,5 +1,4 @@
 ﻿using Common.Framework;
-using Data.Application.Services;
 using Data.Domain;
 using Data.Domain.Services;
 using NNLib.Common;
@@ -14,22 +13,19 @@ using Data.Application.Controllers;
 using Data.Application.ViewModels;
 using Prism.Ioc;
 
-namespace Data.Application.Services
+namespace Data.Application.Controllers
 {
-    public interface IVariablesSelectionService : ITransientController
+    public interface IVariablesSelectionController : ITransientController
     {
         ICommand IgnoreAllCommand { get; set; }
 
         public static void Register(IContainerRegistry cr)
         {
-            cr.Register<IVariablesSelectionService, VariablesSelectionController>();
+            cr.Register<IVariablesSelectionController, VariablesSelectionController>();
         }
     }
-}
 
-namespace Data.Application.Controllers
-{
-    internal class VariablesSelectionController : ControllerBase<VariablesSelectionViewModel>,IVariablesSelectionService
+    internal class VariablesSelectionController : ControllerBase<VariablesSelectionViewModel>,IVariablesSelectionController
     {
         private readonly AppState _appState;
         private SupervisedSetVariableIndexes _currentIndexes = null!;

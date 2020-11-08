@@ -1,6 +1,5 @@
 ﻿using System;
 using Common.Framework;
-using Data.Application.Services;
 using NNLib.Common;
 using Prism.Commands;
 using System.Collections.Generic;
@@ -11,20 +10,16 @@ using Data.Application.ViewModels;
 using NNLib.Data;
 using Prism.Ioc;
 
-namespace Data.Application.Services
+namespace Data.Application.Controllers.DataSource
 {
-    public interface IStatisticsService : ITransientController
+    public interface IStatisticsController : ITransientController
     {
         public static void Register(IContainerRegistry cr)
         {
-            cr.Register<IStatisticsService, StatisticsController>();
+            cr.Register<IStatisticsController, StatisticsController>();
         }
     }
-}
-
-namespace Data.Application.Controllers.DataSource
-{
-    internal class StatisticsController : ControllerBase<StatisticsViewModel>,IStatisticsService
+    internal class StatisticsController : ControllerBase<StatisticsViewModel>,IStatisticsController
     {
         private HistogramController _histogramCtrl = null!;
         private VariablesPlotController _variablesPlotCtrl = null!;

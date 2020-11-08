@@ -1,5 +1,5 @@
 ﻿using Common.Framework;
-using Data.Application.Services;
+using Data.Application.Controllers;
 using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Series;
@@ -18,22 +18,22 @@ namespace Data.Application.ViewModels
         }
 
         [InjectionConstructor]
-        public CustomDataSetViewModel(ICustomDataSetService customDataSetService, MatrixPreviewViewModel matrixVm)
+        public CustomDataSetViewModel(ICustomDataSetController customDataSetController, MatrixPreviewViewModel matrixVm)
         {
             KeepAlive = false;
-            Service = customDataSetService;
+            Controller = customDataSetController;
             MatrixVm = matrixVm;
             matrixVm.CanRemoveItem = true;
 
-            PlotModel.MouseDown += (sender, args) => Service.PlotMouseDownCommand.Execute(args);
+            PlotModel.MouseDown += (sender, args) => Controller.PlotMouseDownCommand.Execute(args);
 
             PlotModel.Series.Add(Scatter);
             PlotModel.Series.Add(Line);
 
-            customDataSetService.Initialize(this);
+            customDataSetController.Initialize(this);
         }
 
-        public ICustomDataSetService Service { get; set; }
+        public ICustomDataSetController Controller { get; set; }
 
 
         public ScatterSeries Scatter { get; } = new ScatterSeries()
@@ -73,7 +73,7 @@ namespace Data.Application.ViewModels
 
         public override void OnNavigatedTo(NavigationContext navigationContext)
         {
-            Service.Navigated(navigationContext);
+            Controller.Navigated(navigationContext);
         }
     }
 }

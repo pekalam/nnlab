@@ -1,7 +1,7 @@
 ﻿using Common.Framework;
 using Data.Application.Controllers;
 using Data.Application.Controllers.DataSource;
-using Data.Application.Services;
+
 using Data.Domain;
 using Prism.Ioc;
 using Prism.Unity;
@@ -16,10 +16,10 @@ namespace Data.Application
                 .RegisterSingleton<IDataSetDivisionController, DataSetDivisionController>()
                 .RegisterSingleton<IFileDataSourceController, FileDataSourceController>();
 
-                INormalizationService.Register(cr);
-                IStatisticsService.Register(cr);
-                ICustomDataSetService.Register(cr);
-                IVariablesSelectionService.Register(cr);
+                INormalizationController.Register(cr);
+                IStatisticsController.Register(cr);
+                ICustomDataSetController.Register(cr);
+                IVariablesSelectionController.Register(cr);
 
                 IFileController.Register(cr);
                 IFileDataSourceController.Register(cr);

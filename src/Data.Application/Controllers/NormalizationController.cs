@@ -1,5 +1,4 @@
-﻿using Data.Application.Services;
-using Data.Domain.Services;
+﻿using Data.Domain.Services;
 using Prism.Commands;
 using Common.Domain;
 using Common.Framework;
@@ -7,25 +6,22 @@ using Data.Application.Controllers.DataSource;
 using Data.Application.ViewModels;
 using Prism.Ioc;
 
-namespace Data.Application.Services
+namespace Data.Application.Controllers.DataSource
 {
-    public interface INormalizationService : ITransientController
+    public interface INormalizationController : ITransientController
     {
-        DelegateCommand NoNormalizationCommand { get;  }
-        DelegateCommand MinMaxNormalizationCommand { get;  }
-        DelegateCommand MeanNormalizationCommand { get;  }
-        DelegateCommand StdNormalizationCommand { get;  }
+        DelegateCommand NoNormalizationCommand { get; }
+        DelegateCommand MinMaxNormalizationCommand { get; }
+        DelegateCommand MeanNormalizationCommand { get; }
+        DelegateCommand StdNormalizationCommand { get; }
 
         public static void Register(IContainerRegistry cr)
         {
-            cr.Register<INormalizationService, NormalizationController>();
+            cr.Register<INormalizationController, NormalizationController>();
         }
     }
-}
 
-namespace Data.Application.Controllers.DataSource
-{
-    internal class NormalizationController : ControllerBase<NormalizationViewModel>, INormalizationService
+    internal class NormalizationController : ControllerBase<NormalizationViewModel>, INormalizationController
     {
         private readonly INormalizationDomainService _normalizationService;
         private readonly AppStateHelper _helper;

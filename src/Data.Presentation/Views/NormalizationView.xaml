@@ -21,28 +21,28 @@
             <RadioButton Content="None" IsChecked="{Binding NoneChecked}">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="Checked">
-                        <i:InvokeCommandAction Command="{Binding Service.NoNormalizationCommand}"/>
+                        <i:InvokeCommandAction Command="{Binding Controller.NoNormalizationCommand}"/>
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
             </RadioButton>
             <RadioButton Content="Max-min" IsChecked="{Binding MinMaxChecked}">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="Checked">
-                        <i:InvokeCommandAction Command="{Binding Service.MinMaxNormalizationCommand}"/>
+                        <i:InvokeCommandAction Command="{Binding Controller.MinMaxNormalizationCommand}"/>
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
             </RadioButton>
             <RadioButton Content="Mean" IsChecked="{Binding MeanChecked}">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="Checked">
-                        <i:InvokeCommandAction Command="{Binding Service.MeanNormalizationCommand}"/>
+                        <i:InvokeCommandAction Command="{Binding Controller.MeanNormalizationCommand}"/>
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
             </RadioButton>
             <RadioButton Content="Std" IsChecked="{Binding StdChecked}">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="Checked">
-                        <i:InvokeCommandAction Command="{Binding Service.StdNormalizationCommand}"/>
+                        <i:InvokeCommandAction Command="{Binding Controller.StdNormalizationCommand}"/>
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
             </RadioButton>

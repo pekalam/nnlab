@@ -1,6 +1,6 @@
 ﻿using Common.Domain;
 using Data.Application.Controllers;
-using Data.Application.Services;
+
 using Data.Application.ViewModels;
 using Data.Domain;
 using Data.Domain.Services;
@@ -17,7 +17,7 @@ namespace Data.Application.Tests.VariablesSelection
         private AutoMocker _mocker = new AutoMocker();
         private AppState _appState;
         private VariablesSelectionController _ctrl;
-        private IVariablesSelectionService _service;
+        private IVariablesSelectionController _controller;
         private VariablesSelectionViewModel _vm;
 
         private Session _session;
@@ -31,8 +31,8 @@ namespace Data.Application.Tests.VariablesSelection
             _session = _appState.CreateSession();
             _session.TrainingData = TrainingDataMocks.ValidData4;
 
-            _ctrl = _mocker.UseImpl<IVariablesSelectionService, VariablesSelectionController>();
-            _service = _ctrl;
+            _ctrl = _mocker.UseImpl<IVariablesSelectionController, VariablesSelectionController>();
+            _controller = _ctrl;
 
             _vm = _mocker.UseVm<VariablesSelectionViewModel>();
             _vm.IsActive = true;

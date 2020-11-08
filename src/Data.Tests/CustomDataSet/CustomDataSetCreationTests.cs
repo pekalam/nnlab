@@ -2,7 +2,7 @@
 using System.Linq;
 using Common.Domain;
 using Data.Application.Controllers;
-using Data.Application.Services;
+
 using Data.Application.ViewModels;
 using FluentAssertions;
 using MahApps.Metro.IconPacks.Converter;
@@ -21,7 +21,7 @@ namespace Data.Application.Tests.CustomDataSet
         private CustomDataSetController _ctrl;
         private CustomDataSetViewModel _vm;
         private AppState _appState;
-        private ICustomDataSetService _dsService;
+        private ICustomDataSetController _dsController;
 
         public CustomDataSetCreationTests()
         {
@@ -32,17 +32,17 @@ namespace Data.Application.Tests.CustomDataSet
 
             var matVm = _mocker.UseImpl<MatrixPreviewViewModel>();
             matVm.UpdateColumns = _ => { };
-            _ctrl = _mocker.UseImpl<ICustomDataSetService,CustomDataSetController>();
+            _ctrl = _mocker.UseImpl<ICustomDataSetController,CustomDataSetController>();
             _vm = _mocker.UseVm<CustomDataSetViewModel>();
             _vm.OnNavigatedTo(null);
 
-            _dsService = _ctrl;
+            _dsController = _ctrl;
 
         }
 
         private void AddPoint(double x, double y)
         {
-            _dsService.PlotMouseDownCommand.Execute(new OxyMouseDownEventArgs()
+            _dsController.PlotMouseDownCommand.Execute(new OxyMouseDownEventArgs()
             {
                 ClickCount = 2,
                 Position = new ScreenPoint(x, y),
@@ -62,7 +62,7 @@ namespace Data.Application.Tests.CustomDataSet
         public void MouseDownCommand_updates_session_training_data()
         {
             //act
-            _dsService.PlotMouseDownCommand.Execute(new OxyMouseDownEventArgs()
+            _dsController.PlotMouseDownCommand.Execute(new OxyMouseDownEventArgs()
             {
                 ClickCount = 2, Position = new ScreenPoint(0,0), ChangedButton = OxyMouseButton.Left,
             });

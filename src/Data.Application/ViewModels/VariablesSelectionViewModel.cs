@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 using Common.Framework;
-using Data.Application.Services;
+using Data.Application.Controllers;
 using Data.Domain;
 using Unity;
 
@@ -19,14 +19,14 @@ namespace Data.Application.ViewModels
         }
 
         [InjectionConstructor]
-        public VariablesSelectionViewModel(IVariablesSelectionService service)
+        public VariablesSelectionViewModel(IVariablesSelectionController controller)
         {
-            Service = service;
-            service.Initialize(this);
+            Controller = controller;
+            controller.Initialize(this);
         }
 
 
-        public IVariablesSelectionService Service { get; }
+        public IVariablesSelectionController Controller { get; }
 
         public VariableTableModel[] Variables
         {
