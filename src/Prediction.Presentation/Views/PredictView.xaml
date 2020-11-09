@@ -39,12 +39,12 @@
                 </Grid.ColumnDefinitions>
                 <StackPanel Grid.Row="0" Grid.Column="0">
                     <TextBlock Text="Input" HorizontalAlignment="Center" FontSize="22"/>
-                    <matrixPreview:MatrixPreviewView DataContext="{Binding InputMatrixVm}" Editable="True" LayerSelectPanelVisibility="Collapsed"/>
+                        <matrixPreview:MatrixPreviewView DataContext="{Binding InputMatrixVm}" Editable="True" LayerSelectPanelVisibility="Collapsed"  MatrixTypePanelVisibility="Collapsed"/>
                 </StackPanel>
                 <Rectangle Grid.Row="0" Grid.Column="1" Fill="LightGray"/>
                 <StackPanel Grid.Row="0" Grid.Column="2">
                     <TextBlock Text="Output" HorizontalAlignment="Center" FontSize="22"/>
-                    <matrixPreview:MatrixPreviewView DataContext="{Binding OutputMatrixVm}" Editable="True" LayerSelectPanelVisibility="Collapsed"/>
+                    <matrixPreview:MatrixPreviewView DataContext="{Binding OutputMatrixVm}" Editable="True" LayerSelectPanelVisibility="Collapsed" MatrixTypePanelVisibility="Collapsed"/>
                 </StackPanel>
                 <Button Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1" Margin="0,16,0,0" HorizontalAlignment="Center" Height="40" Width="100" Command="{Binding Controller.PredictCommand}">Predict</Button>
             </Grid>

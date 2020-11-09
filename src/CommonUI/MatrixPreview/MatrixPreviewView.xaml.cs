@@ -31,6 +31,16 @@ namespace SharedUI.MatrixPreview
         }
 
 
+        public static readonly DependencyProperty MatrixTypePanelVisibilityProperty = DependencyProperty.Register(
+            "MatrixTypePanelVisibility", typeof(Visibility), typeof(MatrixPreviewView), new PropertyMetadata(Visibility.Visible));
+
+        public Visibility MatrixTypePanelVisibility
+        {
+            get { return (Visibility) GetValue(MatrixTypePanelVisibilityProperty); }
+            set { SetValue(MatrixTypePanelVisibilityProperty, value); }
+        }
+
+
         private bool _columnSelected;
         private object? _selectedColumn;
 

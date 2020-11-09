@@ -23,14 +23,13 @@
         <ScrollViewer VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Auto">
 
         
-        <Grid MinHeight="50" 
-              Name="LayerSelectPanel">
+        <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Visibility="{Binding LayerSelectPanelVisibility, ElementName=root}">
+                <StackPanel MinHeight="50" Orientation="Horizontal" VerticalAlignment="Center" Visibility="{Binding LayerSelectPanelVisibility, ElementName=root}">
                 <TextBlock Text="{Binding SelectedLayerNum, Converter={StaticResource layerNumberConverter}}"
                            FontSize="12" VerticalAlignment="Center" MinWidth="80" Margin="7,0,0,0"/>
                 <Button Margin="10,10,5,10" Command="{Binding PrevLayer}">
@@ -45,7 +44,7 @@
                 </Button>
             </StackPanel>
 
-            <StackPanel Orientation="Horizontal" Grid.Column="1">
+                <StackPanel MinHeight="50" Orientation="Horizontal" Grid.Column="1"  Visibility="{Binding MatrixTypePanelVisibility, ElementName=root}">
                 <RadioButton Margin="5,0,5,0" GroupName="GW1"
                              Content="Weights"
                              IsChecked="{Binding SelectedMatrixType,Converter={StaticResource matrixTypeConverter},ConverterParameter={x:Static matrixPreview:MatrixTypes.Weights}}" />

@@ -42,7 +42,7 @@ namespace Training.Application.Controllers
 
             ToggleAnimationCommand = new DelegateCommand(ToggleAnimation);
             ClearColorsCommand = new DelegateCommand(ClearColors);
-            Navigated = Navigated;
+            Navigated = NavigatedAction;
         }
 
         protected override void VmCreated()
