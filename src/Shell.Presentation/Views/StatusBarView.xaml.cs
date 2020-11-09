@@ -3,9 +3,11 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Media.Animation;
 
 namespace Shell.Presentation.Views
@@ -15,11 +17,19 @@ namespace Shell.Presentation.Views
     /// </summary>
     public partial class StatusBarView : UserControl
     {
+
         private List<string> _initialNames = new List<string>();
         private ObservableCollection<Session>? _sessions;
 
+        private Timer _doubleTimer;
+        private int _clicks;
+        private object _clickedDataContext;
+        private object _clickedSender;
+
         public StatusBarView()
         {
+            _doubleTimer = new Timer(250);
+            _doubleTimer.Elapsed += DoubleTimerOnElapsed;
             InitializeComponent();
         }
 
@@ -61,10 +71,34 @@ namespace Shell.Presentation.Views
 
             txt.GetBindingExpression(TextBox.TextProperty)!.UpdateSource();
         }
-
-        private void SessionNameBox_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
+        private void DoubleTimerOnElapsed(object sender, ElapsedEventArgs e)
         {
-            (sender as TextBox)!.IsReadOnly = false;
+            _doubleTimer.Stop();
+
+            System.Windows.Application.Current.Dispatcher.Invoke(() =>
+            {
+                if (_clicks == 1)
+                {
+                    SessionNames.SelectedItem = _clickedDataContext;
+                }
+                else if (_clicks == 2)
+                {
+                    (_clickedSender as TextBox)!.IsReadOnly = false;
+                }
+            });
+
+            _clicks = 0;
+        }
+
+        private void SessionNameBox_OnPreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            _doubleTimer.Stop();
+
+            _clickedDataContext = (VisualTreeHelper.GetParent((sender as TextBox)!) as ContentPresenter).DataContext;
+            _clickedSender = sender;
+            _clicks++;
+
+            _doubleTimer.Start();
         }
     }
 }

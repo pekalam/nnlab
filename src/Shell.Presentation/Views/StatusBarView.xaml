@@ -76,15 +76,15 @@
                     <!--     <TextBlock FontSize="12" Text="Session 1" VerticalAlignment="Center" Margin="10,0,0,0" /> -->
                     <!-- </Border> -->
 
-                    <ComboBox Height="23" Width="120" ItemsSource="{Binding AppState.Sessions}"
+                    <ComboBox Height="23" Width="160" ItemsSource="{Binding AppState.Sessions}"
                               SelectedItem="{Binding AppState.ActiveSession}" Name="SessionNames" DropDownOpened="SessionNames_OnDropDownOpened">
                         <ComboBox.Style>
                             <Style TargetType="ComboBox">
                                 <Setter Property="ItemTemplate">
                                     <Setter.Value>
                                         <DataTemplate DataType="{x:Type domain:Session}">
-                                      
-                                            <TextBox IsReadOnly="True" MouseDoubleClick="SessionNameBox_OnMouseDoubleClick" Tag="{Binding}" Text="{Binding Name, ValidatesOnExceptions=True}" Name="SessionNameBox" LostFocus="SessionNameBox_OnLostFocus">
+
+                                            <TextBox IsReadOnly="True" PreviewMouseDown="SessionNameBox_OnPreviewMouseDown" Tag="{Binding}" Text="{Binding Name, ValidatesOnExceptions=True}" Name="SessionNameBox" LostFocus="SessionNameBox_OnLostFocus">
                                                 <TextBox.Style>
                                                     <Style TargetType="TextBox">
                                                         <Style.Triggers>
@@ -96,6 +96,7 @@
                                                             <Trigger Property="IsReadOnly" Value="True">
                                                                 <Setter Property="BorderBrush" Value="{x:Null}"></Setter>
                                                                 <Setter Property="Background" Value="{x:Null}"></Setter>
+                                                                <Setter Property="Cursor" Value="Arrow"></Setter>
                                                             </Trigger>
                                                         </Style.Triggers>
                                                     </Style>
