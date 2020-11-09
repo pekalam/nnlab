@@ -152,7 +152,9 @@ namespace Data.Application.Controllers
 
         private bool CanDivide()
         {
-            return Vm!.TrainingSetPercent > 0 && Vm!.TrainingSetPercent + Vm!.ValidationSetPercent + Vm!.TestSetPercent == 100;
+            return (Vm!.TrainingSetPercent > 0 &&
+                    Vm!.TrainingSetPercent + Vm!.ValidationSetPercent + Vm!.TestSetPercent == 100) ||
+                (Vm!.TrainingSetPercent == 33 && Vm!.ValidationSetPercent == 33 && Vm!.TestSetPercent == 33);
         }
 
         private DataSetDivisionOptions ConstructDivOptions()

@@ -176,12 +176,14 @@ namespace Data.Application.ViewModels
                 {
                     case nameof(TrainingSetPercent):
                         if (TrainingSetPercent == 0) return "Cannot set to 0";
-                        return (TrainingSetPercent + ValidationSetPercent + TestSetPercent == 100)
+                        return TrainingSetPercent + ValidationSetPercent + TestSetPercent == 100 ||
+                               (TrainingSetPercent == 33 && ValidationSetPercent == 33 && TestSetPercent == 33)
                             ? null
                             : "Invalid percent value";
                     case nameof(ValidationSetPercent):
                     case nameof(TestSetPercent):
-                        return (TrainingSetPercent + ValidationSetPercent + TestSetPercent == 100)
+                        return TrainingSetPercent + ValidationSetPercent + TestSetPercent == 100 ||
+                               (TrainingSetPercent == 33 && ValidationSetPercent == 33 && TestSetPercent == 33)
                             ? null
                             : "Invalid percent value";
                 }
