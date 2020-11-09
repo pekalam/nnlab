@@ -19,6 +19,9 @@ namespace Data.Application.Controllers
         DelegateCommand<string> DivideFileDataCommand { get; set; }
         DelegateCommand<(List<double[]> input, List<double[]> target)?> DivideMemoryDataCommand { get; set; }
 
+        DelegateCommand<object> Divide13Command { get; set; }
+        DelegateCommand<object> Divide7020Command { get; set; }
+
         public static void Register(IContainerRegistry cr)
         {
             cr.RegisterSingleton<IDataSetDivisionController, DataSetDivisionController>();
@@ -36,9 +39,55 @@ namespace Data.Application.Controllers
             _appState = appState;
 
             DivideFileDataCommand =
-                new DelegateCommand<string>(DivideFileData, _ => CanDivide());
+                new DelegateCommand<string>(s => DivideFileData(s), _ => CanDivide());
 
-            DivideMemoryDataCommand = new DelegateCommand<(List<double[]> input, List<double[]> target)?>(DivideMemoryData, _ => CanDivide());
+            DivideMemoryDataCommand = new DelegateCommand<(List<double[]> input, List<double[]> target)?>(args => DivideMemoryData(args), _ => CanDivide());
+
+
+            Divide13Command = new DelegateCommand<object>(o =>
+            {
+                Vm!.InsufficientSizeMsg = default;
+                var opt = new DataSetDivisionOptions()
+                {
+                    TrainingSetPercent = Vm!.TrainingSetPercent = 33,
+                    TestSetPercent = Vm!.TestSetPercent = 33,
+                    ValidationSetPercent = Vm!.ValidationSetPercent = 33,
+                };
+
+                if(Vm!.InsufficientSizeMsg != default) return;
+
+                if (o is string path)
+                {
+                    DivideFileData(path, opt);
+                }
+                else
+                {
+                    DivideMemoryData(((List<double[]> input, List<double[]> target)?)o, opt);
+                }
+            });
+
+
+            Divide7020Command = new DelegateCommand<object>(o =>
+            {
+                Vm!.InsufficientSizeMsg = default;
+                var opt = new DataSetDivisionOptions()
+                {
+                    TrainingSetPercent = Vm!.TrainingSetPercent = 70,
+                    ValidationSetPercent = Vm!.ValidationSetPercent = 20,
+                    TestSetPercent = Vm!.TestSetPercent = 10,
+                };
+
+                if (Vm!.InsufficientSizeMsg != default) return;
+
+                if (o is string path)
+                {
+                    DivideFileData(path, opt);
+                }
+                else
+                {
+                    DivideMemoryData(((List<double[]> input, List<double[]> target)?)o, opt);
+                }
+            });
         }
 
         protected override void VmCreated()
@@ -116,13 +165,18 @@ namespace Data.Application.Controllers
             };
         }
 
-        private void DivideMemoryData((List<double[]> input, List<double[]> target)? args)
+        private void DivideMemoryData((List<double[]> input, List<double[]> target)? args, DataSetDivisionOptions? options = null)
         {
-            var method = new LinearDataSetDivider();
+            IDataSetDivider method = Vm!.DivisionMethod switch
+            {
+                DivisionMethod.Random => new RandomDataSetDivider(),
+                DivisionMethod.Normal => new LinearDataSetDivider(),
+                _ => throw new NotImplementedException()
+            };
 
-            var pos = args!.Value!.input.Select((doubles, i) => (long)i).ToList();
+            var pos = args!.Value!.input.Select((doubles, i) => (long) i).ToList();
 
-            var opt = ConstructDivOptions();
+            var opt = options ?? ConstructDivOptions();
             var divs = method.Divide(pos, opt);
 
             SupervisedTrainingSamples? training = null;
@@ -160,9 +214,9 @@ namespace Data.Application.Controllers
 
             var total = sets.TrainingSet.Input.Count + (sets.ValidationSet?.Input.Count ?? 0) +
                         (sets.TestSet?.Input.Count ?? 0);
-            var calcTrainingPerc = (int)Math.Round(sets.TrainingSet.Input.Count * 100.0 / total);
-            var calcValidationPerc = (int)Math.Round((sets.ValidationSet?.Input.Count ?? 0) * 100.0 / total);
-            var calcTestPerc = (int)Math.Round((sets.TestSet?.Input.Count ?? 0) * 100.0 / total);
+            var calcTrainingPerc = (int) Math.Round(sets.TrainingSet.Input.Count * 100.0 / total);
+            var calcValidationPerc = (int) Math.Round((sets.ValidationSet?.Input.Count ?? 0) * 100.0 / total);
+            var calcTestPerc = (int) Math.Round((sets.TestSet?.Input.Count ?? 0) * 100.0 / total);
 
             Vm!.PropertyChanged -= VmOnPropertyChanged;
             Vm!.TrainingSetPercent = calcTrainingPerc;
@@ -176,10 +230,10 @@ namespace Data.Application.Controllers
             _appState.ActiveSession.RaiseTrainingDataUpdated();
         }
 
-        private void DivideFileData(string path)
+        private void DivideFileData(string path, DataSetDivisionOptions? options = null)
         {
             var existingData = _appState.ActiveSession!.TrainingData!;
-            var opt = ConstructDivOptions();
+            var opt = options ?? ConstructDivOptions();
             var sets = _dataService.LoadSets(path, Vm!.DivisionMethod switch
             {
                 DivisionMethod.Random => new RandomDataSetDivider(),
@@ -197,12 +251,11 @@ namespace Data.Application.Controllers
             Vm!.PropertyChanged += VmOnPropertyChanged;
         }
 
-        public void Initialize()
-        {
-            
-        }
+        public void Initialize() { }
 
         public DelegateCommand<string> DivideFileDataCommand { get; set; }
         public DelegateCommand<(List<double[]> input, List<double[]> target)?> DivideMemoryDataCommand { get; set; }
+        public DelegateCommand<object> Divide13Command { get; set; }
+        public DelegateCommand<object> Divide7020Command { get; set; }
     }
 }

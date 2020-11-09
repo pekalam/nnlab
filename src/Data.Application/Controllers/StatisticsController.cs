@@ -5,6 +5,8 @@ using NNLib.Data;
 using Prism.Ioc;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
+using HistogramViewModel = Data.Application.ViewModels.HistogramViewModel;
 
 namespace Data.Application.Controllers.DataSource
 {
@@ -30,20 +32,22 @@ namespace Data.Application.Controllers.DataSource
 
         protected override void VmCreated()
         {
-            Vm!.VariablesPlotVm.PropertyChanged += VariablesPlotVmOnPropertyChanged;
-            Vm!.PropertyChanged += VmOnPropertyChanged;
             _histogramCtrl = new HistogramController(Vm!.HistogramVm, _appState);
             _variablesPlotCtrl = new VariablesPlotController(Vm!.VariablesPlotVm);
 
             _helper.OnTrainingDataInSession(data =>
             {
-                if (data != null) SetTrainingData();
+                if (data != null && data.Source != TrainingDataSource.Memory) SetTrainingData();
             });
 
             _helper.OnTrainingDataPropertyChanged(data =>
             {
+                if(data.Source == TrainingDataSource.Memory) return;
+
                 Vm!.DataSetTypes = data.SetTypes;
                 Vm!.SelectedDataSetType = DataSetType.Training;
+
+                _histogramCtrl.PlotColumnDataOnHistogram(Vm!.HistogramVm.SelectedVariable!, Vm!.SelectedDataSetType);
             }, s => s switch
             {
                 nameof(TrainingData.Variables) => true,
@@ -51,15 +55,26 @@ namespace Data.Application.Controllers.DataSource
                 nameof(TrainingData.NormalizationMethod) => true,
                 _ => false,
             });
-
-            SetTrainingData();
         }
-
         private void VmOnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(StatisticsViewModel.SelectedDataSetType))
             {
                 _variablesPlotCtrl.Plot(_appState.ActiveSession!.TrainingData!, Vm!.SelectedDataSetType);
+                _histogramCtrl.PlotColumnDataOnHistogram(Vm!.HistogramVm.SelectedVariable!, Vm!.SelectedDataSetType);
+            }
+        }
+
+        private void HistogramVmOnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case nameof(HistogramViewModel.SelectedVariable):
+                    _histogramCtrl.PlotColumnDataOnHistogram(Vm!.HistogramVm.SelectedVariable!, Vm!.SelectedDataSetType);
+                    break;
+                case nameof(HistogramViewModel.BinWidth):
+                    _histogramCtrl.UpdateBinWidth(Vm!.SelectedDataSetType);
+                    break;
             }
         }
 
@@ -71,9 +86,13 @@ namespace Data.Application.Controllers.DataSource
             }
         }
 
-
         private void SetTrainingData()
         {
+            Vm!.VariablesPlotVm.PropertyChanged -= VariablesPlotVmOnPropertyChanged;
+            Vm!.HistogramVm.PropertyChanged -= HistogramVmOnPropertyChanged;
+            Vm!.PropertyChanged -= VmOnPropertyChanged;
+
+
             var trainingData = _appState.ActiveSession!.TrainingData!;
 
             var setTypes = new List<DataSetType>() {DataSetType.Training};
@@ -81,8 +100,16 @@ namespace Data.Application.Controllers.DataSource
             if (trainingData.Sets.ValidationSet != null) setTypes.Add(DataSetType.Validation);
             Vm!.DataSetTypes = setTypes.ToArray();
             Vm!.SelectedDataSetType = DataSetType.Training;
+            Vm!.HistogramVm.Variables = trainingData.Variables.InputVariableNames.Union(trainingData.Variables.TargetVariableNames).ToArray();
+            Vm!.HistogramVm.SelectedVariable = Vm!.HistogramVm.Variables[0];
 
             _variablesPlotCtrl.Plot(_appState.ActiveSession!.TrainingData!, Vm!.SelectedDataSetType);
+            _histogramCtrl.PlotColumnDataOnHistogram(Vm!.HistogramVm.SelectedVariable, Vm!.SelectedDataSetType);
+
+
+            Vm!.VariablesPlotVm.PropertyChanged += VariablesPlotVmOnPropertyChanged;
+            Vm!.HistogramVm.PropertyChanged += HistogramVmOnPropertyChanged;
+            Vm!.PropertyChanged += VmOnPropertyChanged;
         }
     }
 }

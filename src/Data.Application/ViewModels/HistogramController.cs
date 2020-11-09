@@ -14,64 +14,25 @@ namespace Data.Application.ViewModels
     public class HistogramController
     {
         private readonly HistogramViewModel _vm;
-        private int _varIndex;
-        private IVectorSet? _vectorSet;
-        private AppStateHelper _helper;
         private readonly AppState _appState;
 
         public HistogramController(HistogramViewModel vm, AppState appState)
         {
             _vm = vm;
             _appState = appState;
-            _helper = new AppStateHelper(appState);
-            vm.PropertyChanged += VmOnPropertyChanged;
-
-            _helper.OnTrainingDataChanged(data =>
-                {
-                    _vm.Variables = data.Variables.InputVariableNames.Union(data.Variables.TargetVariableNames).ToArray();
-                    _vm.SelectedVariable = _vm.Variables[0];
-                });
-
-            _helper.OnTrainingDataPropertyChanged(data =>
-            {
-                _vm.Variables = data.Variables.InputVariableNames.Union(data.Variables.TargetVariableNames).ToArray();
-                _vm.SelectedVariable = _vm.Variables[0];
-            }, s => s switch
-            {
-                nameof(TrainingData.Variables) => true,
-                _ => false,
-            });
         }
 
-        private void VmOnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        public void UpdateBinWidth(DataSetType dataSetType)
         {
-            switch (e.PropertyName)
-            {
-                case nameof(HistogramViewModel.BinWidth):
-                    UpdateBinWidth();
-                    break;
-                case nameof(HistogramViewModel.SelectedVariable):
-                    if(_vm.SelectedVariable == null) return;
-                    PlotColumnDataOnHistogram(_vm.SelectedVariable);
-                    break;
-            }
-        }
+            var (varInd, vectorSet) = GetVarIndAndVectorSet(_vm.SelectedVariable!, dataSetType);
 
-        public void UpdateBinWidth()
-        {
-            if (_vectorSet != null)
-            {
-                var items = CollectHistogramItems(_vectorSet, _varIndex);
-                ((HistogramSeries)_vm.HistogramModel.Model.Series[0]).ItemsSource = items;
-                _vm.HistogramModel.Model.InvalidatePlot(true);
-            }
+            var items = CollectHistogramItems(vectorSet, varInd);
+            ((HistogramSeries)_vm.HistogramModel.Model.Series[0]).ItemsSource = items;
+            _vm.HistogramModel.Model.InvalidatePlot(true);
         }
 
         private IList<HistogramItem> CollectHistogramItems(IVectorSet vectorSet, int varIndex)
         {
-            _varIndex = varIndex;
-            _vectorSet = vectorSet;
-
             var vectorSetValues = Enumerable.Range(0, vectorSet.Count).Select(i => vectorSet[i][varIndex, 0]).ToList();
 
             var max = vectorSetValues.Max();
@@ -98,9 +59,6 @@ namespace Data.Application.ViewModels
         {
             _vm.HistogramModel.Model.Series.Clear();
 
-            _vectorSet = vectorSet;
-            _varIndex = varIndex;
-
             if (vectorSet.Count > 100_000)
             {
                 Log.Logger.Debug("Ignoring loading histogram for more than 100_000 items (actual count: {count})", vectorSet.Count);
@@ -125,12 +83,23 @@ namespace Data.Application.ViewModels
             _vm.HistogramModel.Model.InvalidatePlot(true);
         }
 
-        public void PlotColumnDataOnHistogram(string columnName)
+        private string GetOrgColumnName(string columnName) => columnName.Replace('_', '.');
+
+        public void PlotColumnDataOnHistogram(string columnName, DataSetType dataSetType)
+        {
+            var (varInd, vectorSet) = GetVarIndAndVectorSet(columnName, dataSetType);
+
+            LoadHistogram(vectorSet, columnName, varInd);
+        }
+
+        private (int ind, IVectorSet vectorSet) GetVarIndAndVectorSet(string columnName, DataSetType dataSetType)
         {
             Debug.Assert(_appState.ActiveSession?.TrainingData != null);
 
+            columnName = GetOrgColumnName(columnName);
+
             var trainingData = _appState.ActiveSession.TrainingData;
-            columnName = columnName.Replace('_', '.');
+
             for (int i = 0; i < trainingData.Variables.Length; i++)
             {
                 if (trainingData.Variables.Names[i] == columnName)
@@ -139,22 +108,22 @@ namespace Data.Application.ViewModels
                     var varInd = -1;
                     if ((varInd = trainingData.Variables.Indexes.InputVarIndexes.IndexOf(i)) != -1)
                     {
-                        vectorSet = trainingData.Sets.TrainingSet.Input;
+                        vectorSet = trainingData.GetSet(dataSetType)!.Input;
                     }
                     else if ((varInd = trainingData.Variables.Indexes.TargetVarIndexes.IndexOf(i)) != -1)
                     {
-                        vectorSet = trainingData.Sets.TrainingSet.Target;
+                        vectorSet = trainingData.GetSet(dataSetType)!.Target;
                     }
                     else
                     {
                         throw new Exception($"Cannot find variable index {i}");
                     }
 
-                    LoadHistogram(vectorSet, columnName, varInd);
-                    return;
+                    return (varInd, vectorSet);
                 }
             }
-            throw new Exception($"Cannot find column {columnName}");
+
+            throw new Exception($"Cannot find variable with name {columnName}");
         }
     }
 }

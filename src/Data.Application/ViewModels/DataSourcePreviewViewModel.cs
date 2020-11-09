@@ -97,6 +97,7 @@ namespace Data.Application.ViewModels
             }, s => s switch
             {
                 nameof(TrainingData.Variables) => true,
+                nameof(TrainingData.Sets) => true,
                 nameof(TrainingData.NormalizationMethod) => true,
                 _ => false,
             });

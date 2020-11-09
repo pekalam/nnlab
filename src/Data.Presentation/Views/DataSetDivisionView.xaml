@@ -25,10 +25,35 @@
             <Setter Property="Margin" Value="0,0,16,0"></Setter>
         </Style>
         <converters:NullToVisibilityConverter x:Key="NullToVis"/>
+
+        <Style TargetType="Button" x:Key="CommonDivRatioBtn">
+            <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Flyout.Background}"></Setter>
+            <Setter Property="Padding" Value="5"></Setter>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Background="{TemplateBinding Background}" BorderBrush="White" Padding="{TemplateBinding Padding}" BorderThickness="1">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{StaticResource MenuColorHighlighted}"></Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
     </UserControl.Resources>
 
     <StackPanel Margin="16,6,24,10">
-        <StackPanel Orientation="Horizontal" TextBlock.FontSize="16" Margin="0,0,0,22">
+        <UniformGrid Columns="2" Margin="0,0,0,18">
+            <Button HorizontalAlignment="Left" Style="{StaticResource CommonDivRatioBtn}" Command="{Binding Service.Divide7020Command}"
+                    CommandParameter="{Binding DivideCommandParam}">70%/20%/10%</Button>
+            <Button HorizontalAlignment="Left" Style="{StaticResource CommonDivRatioBtn}" Command="{Binding Service.Divide13Command}"
+                    CommandParameter="{Binding DivideCommandParam}" Padding="8,5,8,5">1/3</Button>
+        </UniformGrid>
+        <StackPanel Orientation="Horizontal" TextBlock.FontSize="16" Margin="0,0,0,18">
             <TextBlock Text="Current size ratio: "/>
             <TextBlock Text="{Binding Ratio}" FontWeight="Bold"/>
         </StackPanel>
