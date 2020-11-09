@@ -21,6 +21,8 @@ namespace NeuralNetwork.Application.ViewModels
             WMean = 0, WStdDev = 1, BMean = 0, BStdDev = 0,
         };
 
+        private ParamsInitMethod[] _paramsInitMethods;
+
 
         public LayerDetailsModel(Layer layer, bool isFirstLayer)
         {
@@ -52,6 +54,12 @@ namespace NeuralNetwork.Application.ViewModels
         {
             get => _paramsInitMethod;
             set => SetProperty(ref _paramsInitMethod, value);
+        }
+
+        public ParamsInitMethod[] ParamsInitMethods
+        {
+            get => _paramsInitMethods;
+            set => SetProperty(ref _paramsInitMethods, value);
         }
 
         public NormDistMatrixBuilderOptions NormDistOptions

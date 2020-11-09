@@ -254,11 +254,6 @@ namespace SharedUI.MatrixPreview
                 return _network.Layers[_selectedLayerNum].Biases;
             }
 
-            if (matrixType == MatrixTypes.Output)
-            {
-                return _network.Layers[_selectedLayerNum].Output;
-            }
-
             if (matrixType == MatrixTypes.Weights)
             {
                 return _network.Layers[_selectedLayerNum].Weights;
@@ -277,9 +272,6 @@ namespace SharedUI.MatrixPreview
                     break;
                 case MatrixTypes.Weights:
                     columnTitle = "Weight";
-                    break;
-                case MatrixTypes.Output:
-                    columnTitle = "Output";
                     break;
             }
 

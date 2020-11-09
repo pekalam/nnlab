@@ -16,16 +16,10 @@
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance designData:DesignLayerEditorVm, IsDesignTimeCreatable=True}">
     <UserControl.Resources>
-        <ObjectDataProvider x:Key="dataFromEnum" MethodName="GetValues"
+        <ObjectDataProvider x:Key="activationFunctions" MethodName="GetValues"
                             ObjectType="{x:Type System:Enum}">
             <ObjectDataProvider.MethodParameters>
                 <x:Type TypeName="domain1:ActivationFunctionName" />
-            </ObjectDataProvider.MethodParameters>
-        </ObjectDataProvider>
-        <ObjectDataProvider x:Key="paramsInitMethods" MethodName="GetValues"
-                            ObjectType="{x:Type System:Enum}">
-            <ObjectDataProvider.MethodParameters>
-                <x:Type TypeName="domain1:ParamsInitMethod" />
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
         <Style x:Key="Title" TargetType="TextBlock">
@@ -55,7 +49,7 @@
                                VerticalAlignment="Center" Height="26" />
             <TextBlock Text="Activation function" HorizontalAlignment="Left" Style="{StaticResource Title}"
                        VerticalAlignment="Center" />
-            <ComboBox Name="Activation" ItemsSource="{Binding Source={StaticResource dataFromEnum}}"
+            <ComboBox Name="Activation" ItemsSource="{Binding Source={StaticResource activationFunctions}}"
                       SelectedValue="{Binding Path=Layer.ActivationFunction, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                       HorizontalAlignment="Stretch" VerticalAlignment="Center" Height="26" />
             <TextBlock Text="Inputs count" HorizontalAlignment="Left" VerticalAlignment="Center"
@@ -71,7 +65,7 @@
                        VerticalAlignment="Center" />
             <UniformGrid Columns="2" Margin="0,10,0,0">
                 <ComboBox MaxHeight="{Binding ElementName=Activation,Path=Height}"
-                          ItemsSource="{Binding Source={StaticResource paramsInitMethods}}" 
+                          ItemsSource="{Binding Layer.ParamsInitMethods}" 
                           SelectedValue="{Binding Path=Layer.ParamsInitMethod}"/>
                 <Button Margin="10,0,0,0" HorizontalAlignment="Right" MaxHeight="40"
                         Command="{Binding Controller.InitializeParametersCommand}">
@@ -135,10 +129,8 @@
 
             </ToggleButton>
 
-            <ScrollViewer VerticalScrollBarVisibility="Visible" Name="MatrixView" Visibility="{Binding IsChecked,ElementName=MatrixViewToggle, Converter={StaticResource BoolToVis}}">
-                <matrixPreview:MatrixPreviewView Editable="True" MaxHeight="600"
+                <matrixPreview:MatrixPreviewView Editable="True" MaxHeight="600" Name="MatrixView" Visibility="{Binding IsChecked,ElementName=MatrixViewToggle, Converter={StaticResource BoolToVis}}"
                                                  LayerSelectPanelVisibility="Collapsed" DataContext="{Binding MatrixPreview}" />
-            </ScrollViewer>
         </StackPanel>
 
     </Grid>

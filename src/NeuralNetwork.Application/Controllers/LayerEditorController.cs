@@ -10,6 +10,7 @@ using SharedUI.MatrixPreview;
 using Shell.Interface;
 using System;
 using System.ComponentModel;
+using System.Linq;
 
 namespace NeuralNetwork.Application.Controllers
 {
@@ -52,6 +53,8 @@ namespace NeuralNetwork.Application.Controllers
             var layer = navParams.Layer;
             _layerNum = navParams.LayerNum;
             _assignedNetwork = navParams.Network;
+
+            var method = ParamsInitMethodAssembler.FromMatrixBuilder(layer.MatrixBuilder);
             var model = new LayerDetailsModel(layer, navParams.Network.BaseLayers[0] == layer)
             {
                 NeuronsCount = layer.NeuronsCount,
@@ -59,7 +62,18 @@ namespace NeuralNetwork.Application.Controllers
                 ActivationFunction =
                     ActivationFunctionNameAssembler.FromActivationFunction(
                         ((PerceptronLayer)layer).ActivationFunction),
-                ParamsInitMethod = ParamsInitMethodAssembler.FromMatrixBuilder(layer.MatrixBuilder),
+                ParamsInitMethod = method,
+                ParamsInitMethods = Enum.GetValues(typeof(ParamsInitMethod)).Cast<ParamsInitMethod>().Where(
+                    initMethod =>
+                    {
+                        if (initMethod == ParamsInitMethod.NguyenWidrow &&
+                            !(layer.IsOutputLayer || _assignedNetwork.BaseLayers[0] == layer))
+                        {
+                            return false;
+                        }
+
+                        return true;
+                    }).ToArray(),
             };
             model.PropertyChanged += OnLayerDetailsModelPropertyChanged;
 
