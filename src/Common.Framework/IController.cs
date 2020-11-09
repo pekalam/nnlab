@@ -3,13 +3,13 @@
     /// <summary>
     /// Marker interface
     /// </summary>
-    public interface ITransientController
+    public interface IController
     {
         void Initialize(IViewModel vm);
     }
 
 
-    public class ControllerBase<TVm> : ITransientController where TVm : ViewModelBase<TVm>
+    public class ControllerBase<TVm> : IController where TVm : ViewModelBase<TVm>
     {
         protected TVm? Vm;
 

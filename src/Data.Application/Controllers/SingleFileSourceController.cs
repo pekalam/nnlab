@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Data.Application.Controllers
 {
-    public interface ISingleFileController : ITransientController
+    public interface ISingleFileController : IController
     {
         DelegateCommand ReturnCommand { get; set; }
         DelegateCommand ContinueCommand { get; set; }

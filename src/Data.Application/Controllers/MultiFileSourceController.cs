@@ -12,7 +12,7 @@ using System.Linq;
 
 namespace Data.Application.Controllers
 {
-    public interface IMultiFileSourceController : ITransientController
+    public interface IMultiFileSourceController : IController
     {
         DelegateCommand SelectTrainingFileCommand { get; set; }
         DelegateCommand SelectValidationFileCommand { get; set; }

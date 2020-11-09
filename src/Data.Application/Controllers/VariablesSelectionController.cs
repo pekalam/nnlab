@@ -14,7 +14,7 @@ using System.Windows.Input;
 
 namespace Data.Application.Controllers
 {
-    public interface IVariablesSelectionController : ITransientController
+    public interface IVariablesSelectionController : IController
     {
         ICommand IgnoreAllCommand { get; set; }
 

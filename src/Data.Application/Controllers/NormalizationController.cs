@@ -7,7 +7,7 @@ using Prism.Ioc;
 
 namespace Data.Application.Controllers.DataSource
 {
-    public interface INormalizationController : ITransientController
+    public interface INormalizationController : IController
     {
         DelegateCommand NoNormalizationCommand { get; }
         DelegateCommand MinMaxNormalizationCommand { get; }

@@ -8,7 +8,7 @@ using Training.Domain;
 
 namespace Training.Application.Controllers
 {
-    interface IMatrixTrainingPreviewController : ITransientController
+    interface IMatrixTrainingPreviewController : IController
     {
         Action<NavigationContext> Navigated { get; }
 

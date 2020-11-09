@@ -15,7 +15,7 @@ using Training.Domain;
 
 namespace Training.Application.Controllers
 {
-    public interface IOutputPlotController : ITransientController
+    public interface IOutputPlotController : IController
     {
         Action<NavigationContext> Navigated { get; set; }
 

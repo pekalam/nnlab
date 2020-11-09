@@ -15,10 +15,11 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using IController = Common.Framework.IController;
 
 namespace Prediction.Application.Controllers
 {
-    public interface IPredictController : ITransientController
+    public interface IPredictController : IController
     {
         DelegateCommand PredictCommand { get; }
         Action<NavigationContext> Navigated { get; set; }

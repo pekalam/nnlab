@@ -13,7 +13,7 @@ using Training.Application.Views;
 
 namespace Training.Application.Controllers
 {
-    public interface ITrainingParametersController : ITransientController
+    public interface ITrainingParametersController : IController
     {
         DelegateCommand OkCommand { get; }
         DelegateCommand ResetCommand { get; }

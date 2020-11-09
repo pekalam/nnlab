@@ -6,7 +6,7 @@ using Training.Application.ViewModels;
 
 namespace Training.Application.Controllers
 {
-    public interface IReportErrorController : ITransientController
+    public interface IReportErrorController : IController
     {
         Action<NavigationContext> Navigated { get; }
 

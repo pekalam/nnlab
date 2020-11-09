@@ -15,7 +15,7 @@ using System.Linq;
 
 namespace NeuralNetwork.Application.Controllers
 {
-    public interface ILayersDisplayController : ITransientController
+    public interface ILayersDisplayController : IController
     {
         DelegateCommand AddLayerCommand { get; set; }
         DelegateCommand<LayerEditorItemModel> RemoveLayerCommand { get; set; }

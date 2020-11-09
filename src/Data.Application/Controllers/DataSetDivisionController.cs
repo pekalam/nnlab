@@ -14,7 +14,7 @@ using System.Linq;
 
 namespace Data.Application.Controllers
 {
-    public interface IDataSetDivisionController : ITransientController
+    public interface IDataSetDivisionController : IController
     {
         DelegateCommand<string> DivideFileDataCommand { get; set; }
         DelegateCommand<(List<double[]> input, List<double[]> target)?> DivideMemoryDataCommand { get; set; }

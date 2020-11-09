@@ -46,7 +46,7 @@ namespace Training.Application.Controllers
         }
     }
 
-    public interface ITrainingController : ITransientController
+    public interface ITrainingController : IController
     {
         DelegateCommand StartTrainingSessionCommand { get; }
         DelegateCommand StopTrainingSessionCommand { get; }

@@ -7,7 +7,7 @@ using Training.Domain;
 
 namespace Training.Application.Controllers
 {
-    public interface ITrainingInfoController : ITransientController { }
+    public interface ITrainingInfoController : IController { }
 
     internal class TrainingInfoController : ControllerBase<TrainingInfoViewModel>,ITrainingInfoController
     {

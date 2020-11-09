@@ -11,10 +11,11 @@ using System;
 using System.Linq;
 using System.Threading;
 using Training.Application.ViewModels;
+using IController = Common.Framework.IController;
 
 namespace Training.Application.Controllers
 {
-    public interface IReportsController : ITransientController
+    public interface IReportsController : IController
     {
         DelegateCommand<TrainingSessionReport> SelectionChangedCommand { get; }
         Action<NavigationContext> Navigated { get; }

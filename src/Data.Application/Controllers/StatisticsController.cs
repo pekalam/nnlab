@@ -8,7 +8,7 @@ using System.ComponentModel;
 
 namespace Data.Application.Controllers.DataSource
 {
-    public interface IStatisticsController : ITransientController
+    public interface IStatisticsController : IController
     {
         public static void Register(IContainerRegistry cr)
         {

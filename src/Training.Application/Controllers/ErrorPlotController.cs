@@ -10,11 +10,13 @@ using System.Threading;
 using Training.Application.Plots;
 using Training.Application.ViewModels;
 using Training.Domain;
+using IController = Common.Framework.IController;
+
 // ReSharper disable InconsistentlySynchronizedField
 
 namespace Training.Application.Controllers
 {
-    public interface IErrorPlotController : ITransientController
+    public interface IErrorPlotController : IController
     {
         Action<NavigationContext> Navigated { get; }
 

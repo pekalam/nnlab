@@ -9,7 +9,7 @@ using Shell.Interface;
 
 namespace Data.Application.Controllers
 {
-    public interface IFileController : ITransientController
+    public interface IFileController : IController
     {
         DelegateCommand CreateDataSetCommand { get; set; }
         DelegateCommand SelectFileCommand { get; set; }

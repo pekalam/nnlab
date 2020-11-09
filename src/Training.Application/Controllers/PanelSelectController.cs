@@ -12,7 +12,7 @@ using Training.Application.ViewModels;
 
 namespace Training.Application.Controllers
 {
-    public interface IPanelSelectController : ITransientController
+    public interface IPanelSelectController : IController
     {
         DelegateCommand ApplySelectionCommand { get; }
         Action<IDialogParameters> Navigated { get; }

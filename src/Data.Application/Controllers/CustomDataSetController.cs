@@ -15,11 +15,12 @@ using Shell.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using IController = Common.Framework.IController;
 
 
 namespace Data.Application.Controllers
 {
-    public interface ICustomDataSetController : ITransientController
+    public interface ICustomDataSetController : IController
     {
         DelegateCommand<OxyMouseDownEventArgs> PlotMouseDownCommand { get; set; }
         DelegateCommand OpenDivisionViewCommand { get; set; }

@@ -12,7 +12,7 @@ using System.Windows;
 
 namespace Data.Application.Controllers.DataSource
 {
-    public interface IFileDataSourceController : ITransientController
+    public interface IFileDataSourceController : IController
     {
         Action Initialized { get; set; }
         DelegateCommand SelectVariablesCommand { get; set; }

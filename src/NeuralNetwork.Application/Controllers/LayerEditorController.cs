@@ -13,7 +13,7 @@ using System.ComponentModel;
 
 namespace NeuralNetwork.Application.Controllers
 {
-    public interface ILayerEditorController : ITransientController
+    public interface ILayerEditorController : IController
     {
         Action<LayerEditorNavParams> Navigated { get; set; }
         DelegateCommand ExitCommand { get; set; }

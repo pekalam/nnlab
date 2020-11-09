@@ -14,7 +14,7 @@ using Training.Domain;
 
 namespace Training.Application.Controllers
 {
-    public interface ITrainingNetworkPreviewController : ITransientController
+    public interface ITrainingNetworkPreviewController : IController
     {
         DelegateCommand ToggleAnimationCommand { get; }
         DelegateCommand ClearColorsCommand { get; }

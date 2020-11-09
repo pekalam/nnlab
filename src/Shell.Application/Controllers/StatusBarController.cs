@@ -13,7 +13,7 @@ using Training.Interface;
 
 namespace Shell.Application.Services
 {
-    public interface IStatusBarService : ITransientController
+    public interface IStatusBarService : IController
     {
         DelegateCommand AddSessionCommand { get; set; }
         DelegateCommand DuplicateSessionCommand { get; set; }
