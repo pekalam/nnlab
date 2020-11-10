@@ -28,7 +28,7 @@
                     <TextBlock Text="Data points" FontSize="16" />
                     <wpf:PlotView Grid.Row="1" MinHeight="400" Model="{Binding PlotModel}"
                                   Controller="{Binding PlotController}" />
-                    <matrixPreview:MatrixPreviewView Grid.Row="2" LayerSelectPanelVisibility="Collapsed" Editable="True"
+                    <matrixPreview:MatrixPreviewView Grid.Row="2" LayerSelectPanelVisibility="Collapsed" MatrixTypePanelVisibility="Collapsed" Editable="True"
                                                      DataContext="{Binding MatrixVm}" />
                 </Grid>
             </ContentControl>
