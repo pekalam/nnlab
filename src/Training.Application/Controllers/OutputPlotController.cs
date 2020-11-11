@@ -122,10 +122,12 @@ namespace Training.Application.Controllers
             {
                 _cts!.Cancel();
                 _plotSelector.OutputPlot?.OnSessionPaused(s);
+            }, new PlotEpochEndConsumerOptions
+            {
+                DefaultConsumerType = PlotEpochEndConsumerType.Buffering,
+                BufferingBufferSize = 100,
+                UseOnlineSynch = true,
             });
-
-            _epochEndConsumer.ConsumerType = PlotEpochEndConsumerType.Buffering;
-            _epochEndConsumer.BufferSize = 100;
 
             var p = new NavigationParameters();
             p.Add(nameof(PlotEpochEndConsumer), _epochEndConsumer);

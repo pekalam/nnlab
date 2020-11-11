@@ -22,11 +22,14 @@ namespace Training.Application.Plots
         public const int DefOnlineBufferTimeSpan = 33;
         public const int DefOnlineBufferSize = 120;
         public const int DefBufferingBufferSize = 10;
+        public const int DefOnlineSynchTimeSpan = 33;
 
         public int OnlineBufferTimeSpan { get; set; } = DefOnlineBufferTimeSpan;
         public int OnlineBufferSize { get; set; } = DefOnlineBufferSize;
+        public int OnlineSynchTimeSpan { get; set; } = DefOnlineSynchTimeSpan;
         public PlotEpochEndConsumerType DefaultConsumerType { get; set; } = PlotEpochEndConsumerType.Online;
         public int BufferingBufferSize { get; set; } = DefBufferingBufferSize;
+        public bool UseOnlineSynch { get; set; }
     }
 
     internal class PlotEpochEndConsumer
@@ -49,7 +52,11 @@ namespace Training.Application.Plots
         private readonly Action<TrainingSession>? _onTrainingStopped;
         private readonly Action<TrainingSession>? _onTrainingPaused;
         private readonly ModuleState _moduleState;
+
         private readonly PlotEpochEndConsumerOptions _options;
+
+        private readonly List<EpochEndArgs> _onlineSynchList = new List<EpochEndArgs>(2000);
+        private DateTime? _lastOnlineSynch;
 
         public PlotEpochEndConsumer(ModuleState moduleState, Action<IList<EpochEndArgs>, TrainingSession> callback,
             Action<TrainingSession>? onTrainingStarting = null,
@@ -188,7 +195,32 @@ namespace Training.Application.Plots
 
         private void Session_EpochEnd(object? sender, EpochEndArgs e)
         {
-            _sub?.OnNext(e);
+            bool onlineSynch = ConsumerType == PlotEpochEndConsumerType.Online && _options.UseOnlineSynch;
+            if (onlineSynch)
+            {
+                _onlineSynchList.Add(e);
+                if (_lastOnlineSynch.HasValue)
+                {
+                    if ((Time.Now - _lastOnlineSynch.Value).TotalMilliseconds >= _options.OnlineSynchTimeSpan)
+                    {
+                        Debug.WriteLine((Time.Now - _lastOnlineSynch.Value).TotalMilliseconds);
+                        Debug.Assert(_session != null);
+
+                        _callback(_onlineSynchList, _session);
+                        _onlineSynchList.Clear();
+                        _lastOnlineSynch = Time.Now;
+                    }
+
+                }
+                else
+                {
+                    _lastOnlineSynch = Time.Now;
+                }
+            }
+            else
+            {
+                _sub?.OnNext(e);
+            }
         }
 
         private void InitSubscription()
@@ -204,19 +236,23 @@ namespace Training.Application.Plots
                     _buffering = new Subject<EpochEndArgs>();
                 }
 
-                _onlineSub = _online
-                    .Buffer(timeSpan: TimeSpan.FromMilliseconds(_options.OnlineBufferTimeSpan), count: _options.OnlineBufferSize)
-                    .DelaySubscription(TimeSpan.FromMilliseconds(_options.OnlineBufferTimeSpan))
-                    .SubscribeOn(Scheduler.Default)
-                    .Subscribe(list =>
-                    {
-                        //test
-                        //stp.Restart();
-                        if (list.Count > 0) _callback(list, _session);
-                        //stp.Stop();
-                        //if(stp.ElapsedMilliseconds > 0)
-                        //Debug.WriteLine($"Epoch end consumer time: " + stp.ElapsedMilliseconds);
-                    });
+                if (!_options.UseOnlineSynch)
+                {
+                    _onlineSub = _online
+                        .Buffer(timeSpan: TimeSpan.FromMilliseconds(_options.OnlineBufferTimeSpan), count: _options.OnlineBufferSize)
+                        .DelaySubscription(TimeSpan.FromMilliseconds(_options.OnlineBufferTimeSpan))
+                        .SubscribeOn(Scheduler.Default)
+                        .Subscribe(list =>
+                        {
+                            //test
+                            //stp.Restart();
+                            if (list.Count > 0) _callback(list, _session);
+                            //stp.Stop();
+                            //if(stp.ElapsedMilliseconds > 0)
+                            //Debug.WriteLine($"Epoch end consumer time: " + stp.ElapsedMilliseconds);
+                        });
+
+                }
             }
             else
             {
@@ -228,10 +264,11 @@ namespace Training.Application.Plots
                     _online = new Subject<EpochEndArgs>();
                 }
 
-                _bufSub = _buffering.SubscribeOn(Scheduler.Default).DynamicBuffer(_bufferSizeSub).Subscribe(args =>
+                _bufSub = _buffering.DynamicBuffer(_bufferSizeSub).Subscribe(args =>
                 {
                     if (args.Length > 0) _callback(args, _session);
                 });
+                _bufferSizeSub.OnNext(BufferSize);
             }
         }
 
