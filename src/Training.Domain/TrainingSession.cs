@@ -290,68 +290,72 @@ namespace Training.Domain
             _reseted = false;
             double error = 0;
             double? validationError = null;
-            do
+
+            return await Task.Factory.StartNew(() =>
             {
-                try
+                do
                 {
-                    error = await Trainer.DoEpochAsync(_epochCts.Token);
-                    if (Parameters.RunValidation)
+                    try
                     {
-                        _validationThresholdCount++;
-                        if (_validationThresholdCount == Parameters.ValidationEpochThreshold)
+                        error = Trainer.DoEpoch(_epochCts.Token);
+                        if (Parameters.RunValidation)
                         {
-                            _validationThresholdCount = 0;
-                            validationError = Trainer.RunValidation(_epochCts.Token);
+                            _validationThresholdCount++;
+                            if (_validationThresholdCount == Parameters.ValidationEpochThreshold)
+                            {
+                                _validationThresholdCount = 0;
+                                validationError = Trainer.RunValidation(_epochCts.Token);
+                            }
                         }
                     }
-                }
-                catch (OperationCanceledException)
-                {
-                    return StoppedPausedOrMaxTime();
-                }
-                catch (TrainingCanceledException)
-                {
-                    return StoppedPausedOrMaxTime();
-                }
-                catch (AlgorithmFailed)
-                {
-                    return TrainingSessionReport.CreateAlgorithmErrorSessionReport(Trainer.Epochs, error,
-                        StartTime!.Value, EpochEndEvents);
-                }
+                    catch (OperationCanceledException)
+                    {
+                        return StoppedPausedOrMaxTime();
+                    }
+                    catch (TrainingCanceledException)
+                    {
+                        return StoppedPausedOrMaxTime();
+                    }
+                    catch (AlgorithmFailed)
+                    {
+                        return TrainingSessionReport.CreateAlgorithmErrorSessionReport(Trainer.Epochs, error,
+                            StartTime!.Value, EpochEndEvents);
+                    }
 
-                var arg = new EpochEndArgs
-                {
-                    Epoch = Trainer.Epochs,
-                    Error = error,
-                    Iterations = Trainer.Iterations,
-                    ValidationError = validationError,
-                };
-                EpochEnd?.Invoke(this, arg);
-                EpochEndEvents.Add(arg);
+                    var arg = new EpochEndArgs
+                    {
+                        Epoch = Trainer.Epochs,
+                        Error = error,
+                        Iterations = Trainer.Iterations,
+                        ValidationError = validationError,
+                    };
+                    EpochEnd?.Invoke(this, arg);
+                    EpochEndEvents.Add(arg);
 
-                if (_epochCts.IsCancellationRequested) return StoppedPausedOrMaxTime();
+                    if (_epochCts.IsCancellationRequested) return StoppedPausedOrMaxTime();
 
-                if (Trainer.Epochs == Parameters.MaxEpochs)
-                {
-                    Stopped = true;
-                    return TrainingSessionReport.CreateMaxEpochSessionReport(Trainer.Epochs, error, StartTime!.Value,
-                        EpochEndEvents);
-                }
+                    if (Trainer.Epochs == Parameters.MaxEpochs)
+                    {
+                        Stopped = true;
+                        return TrainingSessionReport.CreateMaxEpochSessionReport(Trainer.Epochs, error, StartTime!.Value,
+                            EpochEndEvents);
+                    }
 
-                if (double.IsNaN(error))
-                    return TrainingSessionReport.CreateNaNSessionReport(Trainer.Epochs, error, StartTime!.Value,
-                        EpochEndEvents);
+                    if (double.IsNaN(error))
+                        return TrainingSessionReport.CreateNaNSessionReport(Trainer.Epochs, error, StartTime!.Value,
+                            EpochEndEvents);
 
-                if (validationError.HasValue && Parameters.StopWhenValidationErrorReached && validationError.Value <= Parameters.ValidationTargetError)
-                {
-                    return TrainingSessionReport.CreateValidationErrorReachedSessionReport(Trainer.Epochs, error, StartTime!.Value,
-                        EpochEndEvents);
-                }
-            } while (error > Parameters.TargetError);
+                    if (validationError.HasValue && Parameters.StopWhenValidationErrorReached && validationError.Value <= Parameters.ValidationTargetError)
+                    {
+                        return TrainingSessionReport.CreateValidationErrorReachedSessionReport(Trainer.Epochs, error, StartTime!.Value,
+                            EpochEndEvents);
+                    }
+                } while (error > Parameters.TargetError);
 
-            Stopped = true;
-            return TrainingSessionReport.CreateTargetReachedSessionReport(Trainer.Epochs, error, StartTime!.Value,
-                EpochEndEvents);
+                Stopped = true;
+                return TrainingSessionReport.CreateTargetReachedSessionReport(Trainer.Epochs, error, StartTime!.Value,
+                    EpochEndEvents);
+            }, TaskCreationOptions.LongRunning);
         }
 
         public Task<double> RunValidation(TrainingSessionReport report)
