@@ -53,14 +53,15 @@ namespace Training.Application.Controllers
         private CancellationTokenSource? _cts;
         private readonly IRegionManager _rm;
         private readonly ModuleState _moduleState;
+        private AppStateHelper _helper;
 
         private readonly object _pltLock = new object();
 
-        public OutputPlotController(IRegionManager rm, ModuleState moduleState)
+        public OutputPlotController(IRegionManager rm, ModuleState moduleState, AppStateHelper helper)
         {
             _rm = rm;
             _moduleState = moduleState;
-            _moduleState.ActiveSessionChanged += ModuleStateOnActiveSessionChanged;
+            _helper = helper;
 
             Navigated = OnNavigated;
         }
@@ -68,6 +69,26 @@ namespace Training.Application.Controllers
         protected override void VmCreated()
         {
             Vm!.IsActiveChanged += OnIsActiveChanged;
+
+            _helper.OnTrainingDataPropertyChanged(data =>
+            {
+                Vm!.BasicPlotModel.Model.Series.Clear();
+                _plotSelector.SelectPlot(_moduleState.ActiveSession!);
+                _plotSelector.OutputPlot?.CreateForSession(_moduleState.ActiveSession!, Vm!);
+                Vm!.BasicPlotModel.Model.InvalidatePlot(true);
+            }, s => s switch
+            {
+                nameof(TrainingData.Variables) => true,
+                _ => false,
+            });
+
+            _helper.OnNetworkChanged(network =>
+            {
+                Vm!.BasicPlotModel.Model.Series.Clear();
+                _plotSelector.SelectPlot(_moduleState.ActiveSession!);
+                _plotSelector.OutputPlot?.CreateForSession(_moduleState.ActiveSession!, Vm!);
+                Vm!.BasicPlotModel.Model.InvalidatePlot(true);
+            });
         }
 
         private void OnIsActiveChanged(object? sender, EventArgs e)
@@ -77,12 +98,6 @@ namespace Training.Application.Controllers
                 _epochEndConsumer?.ForceStop();
                 Vm!.IsActiveChanged -= OnIsActiveChanged;
             }
-        }
-
-        private void ModuleStateOnActiveSessionChanged(object? sender, (TrainingSession? prev, TrainingSession next) e)
-        {
-            Vm!.BasicPlotModel.Model.Series.Clear();
-            Vm!.BasicPlotModel.Model.InvalidatePlot(true);
         }
 
         private void InvalidatePlot()
@@ -111,7 +126,6 @@ namespace Training.Application.Controllers
             }, session =>
             {
                 _cts = new CancellationTokenSource();
-                _plotSelector.SelectPlot(session);
                 _plotSelector.OutputPlot?.OnSessionStarting(Vm!, session, _cts.Token);
                 GlobalDistributingDispatcher.CallCustom(InvalidatePlot, _epochEndConsumer!);
             }, s =>

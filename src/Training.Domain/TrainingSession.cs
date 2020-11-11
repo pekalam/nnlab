@@ -131,17 +131,11 @@ namespace Training.Domain
 
         private void ConstructTrainer()
         {
-            _session.TrainingParameters!.PropertyChanged += TrainingParametersOnPropertyChanged;
             _session.NetworkStructureChanged += SessionOnNetworkStructureChanged;
             _session.TrainingData!.PropertyChanged += TrainingDataOnPropertyChanged;
             Trainer = new MLPTrainer(_session.Network!, _session.TrainingData!.Sets, SelectAlgorithm(),
                 new QuadraticLossFunction());
             IsValid = true;
-        }
-
-        private void TrainingParametersOnPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(TrainingParameters.Algorithm)) Trainer!.Algorithm = SelectAlgorithm();
         }
 
         private void SessionOnPropertyChanged(object sender, PropertyChangedEventArgs e)

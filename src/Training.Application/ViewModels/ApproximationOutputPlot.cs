@@ -53,8 +53,6 @@ namespace Training.Application.ViewModels
 
         public void OnSessionStarting(OutputPlotViewModel vm, TrainingSession session, CancellationToken ct)
         {
-            _session = session;
-            InitPlot(session.TrainingData!, DataSetType.Training, vm);
         }
 
         private void InitPlot(TrainingData trainingData, DataSetType setType, OutputPlotViewModel vm)
@@ -133,6 +131,12 @@ namespace Training.Application.ViewModels
             InitPlot(trainingData, set, vm);
 
             PlotDataPoints(net);
+        }
+
+        public void CreateForSession(TrainingSession session, OutputPlotViewModel vm)
+        {
+            _session = session;
+            InitPlot(session.TrainingData!, DataSetType.Training, vm);
         }
     }
 }

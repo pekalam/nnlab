@@ -18,7 +18,7 @@ namespace Training.Application.ViewModels
 {
     public enum OutputPlotType
     {
-        Approximation, VecNum
+        Approximation, VecNum,
     }
 
     public class OutputPlotViewModel : ViewModelBase<OutputPlotViewModel>
@@ -59,6 +59,8 @@ namespace Training.Application.ViewModels
         void OnSessionStopped(TrainingSession session);
         void OnSessionPaused(TrainingSession session);
         void GeneratePlot(DataSetType set, TrainingData trainingData, MLPNetwork net, OutputPlotViewModel vm);
+
+        void CreateForSession(TrainingSession session, OutputPlotViewModel vm);
     }
 
     internal class VecNumPlot : IOutputPlot
@@ -85,6 +87,25 @@ namespace Training.Application.ViewModels
         }
 
         public void OnSessionStarting(OutputPlotViewModel vm, TrainingSession session, CancellationToken ct)
+        {
+
+        }
+
+        public void OnSessionStopped(TrainingSession session)
+        {
+
+        }
+
+        public void OnSessionPaused(TrainingSession session)
+        {
+
+        }
+
+        public void GeneratePlot(DataSetType set, TrainingData trainingData, MLPNetwork net, OutputPlotViewModel vm)
+        {
+        }
+
+        public void CreateForSession(TrainingSession session, OutputPlotViewModel vm)
         {
             _session = session;
 
@@ -126,20 +147,6 @@ namespace Training.Application.ViewModels
             };
 
             vm.PlotModel.Series.Add(_output);
-        }
-
-        public void OnSessionStopped(TrainingSession session)
-        {
-
-        }
-
-        public void OnSessionPaused(TrainingSession session)
-        {
-
-        }
-
-        public void GeneratePlot(DataSetType set, TrainingData trainingData, MLPNetwork net, OutputPlotViewModel vm)
-        {
         }
     }
 }
