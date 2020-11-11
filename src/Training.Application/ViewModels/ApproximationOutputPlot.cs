@@ -37,12 +37,13 @@ namespace Training.Application.ViewModels
             Debug.Assert(_session != null, nameof(_session) + " != null");
 
             var input = _session.TrainingData!.Sets.TrainingSet.Input;
+            var orgInput = _session.TrainingData!.OriginalSets.TrainingSet.Input;
             var dataPoints = new DataPoint[input.Count];
 
             for (int i = 0; i < input.Count; i++)
             {
                 network.CalculateOutput(input[i]);
-                dataPoints[i] = new DataPoint(input[i].At(0, 0), network.Output!.At(0, 0));
+                dataPoints[i] = new DataPoint(orgInput[i].At(0, 0), network.Output!.At(0, 0));
             }
 
             Array.Sort(dataPoints, _dataPointComparer);
@@ -94,8 +95,8 @@ namespace Training.Application.ViewModels
                 Color = OxyColor.FromRgb(255, 0, 0),
             };
 
-            var input = trainingData.GetSet(setType)!.Input;
-            var target = trainingData.GetSet(setType)!.Target;
+            var input = trainingData.GetOriginalSet(setType)!.Input;
+            var target = trainingData.GetOriginalSet(setType)!.Target;
 
             for (int i = 0; i < input.Count; i++)
             {
