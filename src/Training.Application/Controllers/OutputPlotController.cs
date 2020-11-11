@@ -127,6 +127,7 @@ namespace Training.Application.Controllers
                 DefaultConsumerType = PlotEpochEndConsumerType.Buffering,
                 BufferingBufferSize = 100,
                 UseOnlineSynch = true,
+                FlushBufferOnConsumerTypeChange = false,
             });
 
             var p = new NavigationParameters();

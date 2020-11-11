@@ -68,7 +68,7 @@ namespace Training.Application.ViewModels
 
         public void OnEpochEnd(IList<EpochEndArgs> args, OutputPlotViewModel vm, CancellationToken ct)
         {
-            var network = _session.Network!.Clone();
+            var network = _session.Network!;
             var input = _session.TrainingData!.Sets.TrainingSet.Input;
             var target = _session.TrainingData!.Sets.TrainingSet.Target;
 

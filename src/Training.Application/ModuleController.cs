@@ -46,6 +46,7 @@ namespace Training.Application
             _moduleState.PropertyChanged += ModuleStateOnPropertyChanged;
 
             _appState.SessionCreated += AppStateOnSessionCreated;
+            _appState.SessionDuplicated += AppStateOnSessionDuplicated;
 
             _ea.GetEvent<ReloadContentForSession>().Subscribe(args =>
             {
@@ -66,6 +67,10 @@ namespace Training.Application
             });
         }
 
+        private void AppStateOnSessionDuplicated(object? sender, Session e)
+        {
+            BindingOperations.EnableCollectionSynchronization(e.TrainingReports, e);
+        }
 
         private void AppStateOnSessionCreated(object? sender, Session e)
         {

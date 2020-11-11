@@ -11,6 +11,7 @@ namespace Common.Domain
 
         public event EventHandler<(Session? prev, Session next)>? ActiveSessionChanged;
         public event EventHandler<Session>? SessionCreated;
+        public event EventHandler<Session>? SessionDuplicated;
 
         public Session? ActiveSession
         {
@@ -57,6 +58,7 @@ namespace Common.Domain
             Log.Debug($"Session {_activeSession!.Name} duplicated. Duplicated name: {cpy.Name}");
 
             Sessions.Add(cpy);
+            SessionDuplicated?.Invoke(this, cpy);
             ActiveSession = cpy;
             return cpy;
         }

@@ -39,6 +39,7 @@ namespace Common.Domain
             _trainingDataFile = trainingDataFile;
             _validationDataFile = validationDataFile;
             _testDataFile = testDataFile;
+            _initialNetwork = network?.Clone();
 
             if (_trainingParameters == null && trainingData != null)
             {

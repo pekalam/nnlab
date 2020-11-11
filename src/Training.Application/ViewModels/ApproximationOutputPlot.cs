@@ -29,9 +29,7 @@ namespace Training.Application.ViewModels
 
         public void OnEpochEnd(IList<EpochEndArgs> args, OutputPlotViewModel vm, CancellationToken ct)
         {
-            var network = _session!.Network!.Clone();
-
-            PlotDataPoints(network);
+            PlotDataPoints(_session!.Network!);
         }
 
         private void PlotDataPoints(MLPNetwork network)

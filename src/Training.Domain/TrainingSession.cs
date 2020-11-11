@@ -33,13 +33,18 @@ namespace Training.Domain
         private MLPTrainer? _trainer;
         private int _validationThresholdCount;
 
+        private bool _stopRequested;
+
         public TrainingSession(AppState appState)
         {
             _session = appState.ActiveSession!;
 
             if (appState.ActiveSession!.TrainingData != null && appState.ActiveSession.TrainingParameters != null &&
                 appState.ActiveSession.Network != null)
+            {
                 ConstructTrainer();
+                _session.PropertyChanged += SessionOnTrainingParametersChanged;
+            }
             else
                 _session.PropertyChanged += SessionOnPropertyChanged;
         }
@@ -216,7 +221,7 @@ namespace Training.Domain
                 return Task.CompletedTask;
             }
 
-            Stopped = true;
+            _stopRequested = true;
             _epochCts!.Cancel();
             return _sessionTask;
         }
@@ -225,7 +230,6 @@ namespace Training.Domain
         {
             if (_epochCts == null) throw new Exception("Training session not started");
 
-            Paused = true;
             _epochCts.Cancel();
             return _sessionTask;
         }
@@ -242,8 +246,6 @@ namespace Training.Domain
             var sessionTask = InternalStart().ContinueWith(t =>
             {
                 _elapsed += Time.Now - StartTime.Value;
-                if (!Stopped)
-                    Paused = true;
 
                 CurrentReport = t.Result;
                 if (Parameters!.AddReportOnPause)
@@ -254,6 +256,11 @@ namespace Training.Domain
                     }
                 }
                 Started = false;
+                if (!_stopRequested)
+                    Paused = true;
+                else Stopped = true;
+                _stopRequested = false;
+
                 return CurrentReport;
             });
             _sessionTask = sessionTask;
@@ -264,7 +271,7 @@ namespace Training.Domain
         {
             TrainingSessionReport StoppedPausedOrMaxTime()
             {
-                if (Stopped)
+                if (_stopRequested)
                 {
                     return TrainingSessionReport.CreateStoppedSessionReport(Trainer.Epochs, Trainer.Error,
                         StartTime!.Value, EpochEndEvents);
@@ -336,7 +343,7 @@ namespace Training.Domain
 
                     if (Trainer.Epochs == Parameters.MaxEpochs)
                     {
-                        Stopped = true;
+                        _stopRequested = true;
                         return TrainingSessionReport.CreateMaxEpochSessionReport(Trainer.Epochs, error, StartTime!.Value,
                             EpochEndEvents);
                     }
@@ -352,7 +359,7 @@ namespace Training.Domain
                     }
                 } while (error > Parameters.TargetError);
 
-                Stopped = true;
+                _stopRequested = true;
                 return TrainingSessionReport.CreateTargetReachedSessionReport(Trainer.Epochs, error, StartTime!.Value,
                     EpochEndEvents);
             }, TaskCreationOptions.LongRunning);

@@ -33,7 +33,6 @@ namespace Training.Application.Tests
             _service = _ctrl;
 
 
-            _vm = _mocker.UseVm<TrainingParametersViewModel>();
         }
 
         [Fact]
@@ -42,10 +41,15 @@ namespace Training.Application.Tests
             var session = _appState.CreateSession();
             session.SetupValidAndGate();
 
+            //create vm after session is created
+            _vm = _mocker.UseVm<TrainingParametersViewModel>();
+
             _vm.TrainingParameters.Should().Be(session.TrainingParameters);
 
             _vm.IsMaxLearningTimeChecked = false;
             _vm.MaxLearningTime = Time.Now.AddMinutes(2);
+
+            _vm.Service.OkCommand.Execute();
 
             var session2 = _appState.CreateSession();
             session2.SetupValidAndGate();
@@ -77,8 +81,6 @@ namespace Training.Application.Tests
         [Fact]
         public void f()
         {
-
-
             var session = _appState.CreateSession();
             session.TrainingData = new TrainingData(new SupervisedTrainingData(SupervisedTrainingSamples.FromArrays(
                Enumerable.Repeat(new[] { 0d, 1d }, 1000).ToArray(),
@@ -88,6 +90,10 @@ namespace Training.Application.Tests
                 new VariableName("x"), new VariableName("y"), 
             } ), TrainingDataSource.Memory, NormalizationMethod.None);
             session.Network = MLPMocks.AndGateNet;
+
+            //create vm after session is created
+            _vm = _mocker.UseVm<TrainingParametersViewModel>();
+
             _moduleState.ActiveSession.Trainer.Algorithm.Should().BeOfType<GradientDescentAlgorithm>();
 
             _vm.TrainingParameters.Algorithm = TrainingAlgorithm.LevenbergMarquardt;

@@ -30,6 +30,8 @@ namespace Training.Application.Plots
         public PlotEpochEndConsumerType DefaultConsumerType { get; set; } = PlotEpochEndConsumerType.Online;
         public int BufferingBufferSize { get; set; } = DefBufferingBufferSize;
         public bool UseOnlineSynch { get; set; }
+
+        public bool FlushBufferOnConsumerTypeChange { get; set; } = true;
     }
 
     internal class PlotEpochEndConsumer
@@ -230,7 +232,10 @@ namespace Training.Application.Plots
             {
                 if (_bufSub != null)
                 {
-                    _buffering?.OnCompleted();
+                    if (_options.FlushBufferOnConsumerTypeChange)
+                    {
+                        _buffering?.OnCompleted();
+                    }
                     _bufSub?.Dispose();
                     _bufSub = null;
                     _buffering = new Subject<EpochEndArgs>();
