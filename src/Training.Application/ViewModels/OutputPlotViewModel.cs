@@ -1,4 +1,5 @@
-﻿using Common.Domain;
+﻿using System;
+using Common.Domain;
 using Common.Framework;
 using MathNet.Numerics.LinearAlgebra;
 using NNLib.Data;
@@ -41,7 +42,6 @@ namespace Training.Application.ViewModels
         public BasicPlotModel BasicPlotModel { get; } = new BasicPlotModel();
 
         public PlotModel PlotModel => BasicPlotModel.Model;
-        public PlotController PlotController => BasicPlotModel.Controller;
 
         public override void OnNavigatedTo(NavigationContext navigationContext)
         {
@@ -108,8 +108,8 @@ namespace Training.Application.ViewModels
             {
                 Title = "Network error",
                 Position = AxisPosition.Left,
+                AxisTitleDistance = 18,
             });
-
             var scatter = new ScatterSeries()
             {
                 MarkerType = MarkerType.Circle,
@@ -140,11 +140,6 @@ namespace Training.Application.ViewModels
 
         public void GeneratePlot(DataSetType set, TrainingData trainingData, MLPNetwork net, OutputPlotViewModel vm)
         {
-        }
-
-        public void SetOutput(SupervisedTrainingSamples set, Matrix<double>[] output)
-        {
-            throw new System.NotImplementedException();
         }
     }
 }

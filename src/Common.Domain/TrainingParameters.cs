@@ -150,7 +150,7 @@ namespace Common.Domain
             get => _targetError;
             set
             {
-                if(value < 0) throw new ArgumentException("Target error must be grater than zero");
+                if (value < 0) throw new ArgumentException("Target error must be grater than zero");
                 SetProperty(ref _targetError, value);
             }
         }
@@ -176,7 +176,9 @@ namespace Common.Domain
             get => _runValidation;
             set
             {
-                if(!CanRunValidation && value) throw new ArgumentException($"Cannot set {nameof(RunValidation)} to true if {nameof(CanRunValidation)}=false");
+                if (!CanRunValidation && value)
+                    throw new ArgumentException(
+                        $"Cannot set {nameof(RunValidation)} to true if {nameof(CanRunValidation)}=false");
                 SetProperty(ref _runValidation, value);
             }
         }
@@ -225,7 +227,14 @@ namespace Common.Domain
 
         protected bool Equals(TrainingParameters other)
         {
-            return _maxEpochs == other._maxEpochs && _maxLearningTime.Equals(other._maxLearningTime) && _targetError.Equals(other._targetError) && _algorithm == other._algorithm && _runValidation == other._runValidation && _validationEpochThreshold == other._validationEpochThreshold && _addReportOnPause == other._addReportOnPause && _canRunValidation == other._canRunValidation && _stopWhenValidationErrorReached == other._stopWhenValidationErrorReached && _validationTargetError == other._validationTargetError && GDParams.Equals(other.GDParams) && LMParams.Equals(other.LMParams);
+            return _maxEpochs == other._maxEpochs && _maxLearningTime.Equals(other._maxLearningTime) &&
+                   _targetError.Equals(other._targetError) && _algorithm == other._algorithm &&
+                   _runValidation == other._runValidation &&
+                   _validationEpochThreshold == other._validationEpochThreshold &&
+                   _addReportOnPause == other._addReportOnPause && _canRunValidation == other._canRunValidation &&
+                   _stopWhenValidationErrorReached == other._stopWhenValidationErrorReached &&
+                   _validationTargetError == other._validationTargetError && GDParams.Equals(other.GDParams) &&
+                   LMParams.Equals(other.LMParams);
         }
 
         public override bool Equals(object? obj)
@@ -258,7 +267,7 @@ namespace Common.Domain
         {
             return new TrainingParameters(this.CanRunValidation)
             {
-                GDParams = GDParams.Clone(),LMParams = LMParams.Clone(),
+                GDParams = GDParams.Clone(), LMParams = LMParams.Clone(),
                 Algorithm = Algorithm,
                 AddReportOnPause = AddReportOnPause,
                 MaxEpochs = MaxEpochs,
@@ -267,7 +276,7 @@ namespace Common.Domain
                 TargetError = TargetError,
                 ValidationEpochThreshold = ValidationEpochThreshold,
                 StopWhenValidationErrorReached = StopWhenValidationErrorReached,
-                ValidationTargetError =  ValidationTargetError,
+                ValidationTargetError = ValidationTargetError,
             };
         }
     }

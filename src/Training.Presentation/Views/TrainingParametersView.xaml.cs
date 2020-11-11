@@ -29,7 +29,7 @@ namespace Training.Presentation.Views
             }
 
             return err || Validation.GetHasError(ValidationEpochThreshold) ||
-                   Validation.GetHasError(ValidationTargetError);
+                   Validation.GetHasError(ValidationTargetError) || Validation.GetHasError(MaxLearningTime);
         }
     }
 }

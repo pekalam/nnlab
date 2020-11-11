@@ -54,6 +54,8 @@ namespace Training.Application.Controllers
         private readonly IRegionManager _rm;
         private readonly ModuleState _moduleState;
 
+        private readonly object _pltLock = new object();
+
         public OutputPlotController(IRegionManager rm, ModuleState moduleState)
         {
             _rm = rm;
@@ -85,7 +87,10 @@ namespace Training.Application.Controllers
 
         private void InvalidatePlot()
         {
-            Vm!.PlotModel.InvalidatePlot(true);
+            lock (_pltLock)
+            {
+                Vm!.PlotModel.InvalidatePlot(true);
+            }
         }
 
         private void InitPlotEpochEndConsumer()
@@ -97,16 +102,18 @@ namespace Training.Application.Controllers
                     return;
                 }
 
-                _plotSelector.OutputPlot?.OnEpochEnd(epochEnds, Vm!, _cts.Token);
+                lock (_pltLock)
+                {
+                    _plotSelector.OutputPlot?.OnEpochEnd(epochEnds, Vm!, _cts.Token);
+                }
 
-                GlobalDistributingDispatcher.CallDirectly(InvalidatePlot, _epochEndConsumer!);
-
+                GlobalDistributingDispatcher.CallCustom(InvalidatePlot, _epochEndConsumer!);
             }, session =>
             {
                 _cts = new CancellationTokenSource();
                 _plotSelector.SelectPlot(session);
                 _plotSelector.OutputPlot?.OnSessionStarting(Vm!, session, _cts.Token);
-                GlobalDistributingDispatcher.CallDirectly(InvalidatePlot, _epochEndConsumer!);
+                GlobalDistributingDispatcher.CallCustom(InvalidatePlot, _epochEndConsumer!);
             }, s =>
             {
                 _cts!.Cancel();

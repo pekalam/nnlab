@@ -56,7 +56,11 @@ namespace Training.Application.ViewModels
         public DateTime MaxLearningTime
         {
             get => _maxLearningTime;
-            set => SetProperty(ref _maxLearningTime, value);
+            set
+            {
+                if(value != default && value < Time.Now) throw new ArgumentException("Invalid time");
+                SetProperty(ref _maxLearningTime, value);
+            }
         }
     }
 }

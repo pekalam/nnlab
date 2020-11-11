@@ -54,6 +54,7 @@ namespace Training.Application.Controllers
                     var newParams = _appState.ActiveSession!.TrainingParameters!.Clone();
                     Vm!.TrainingParameters = newParams;
                     AttachHandlersToParameters(newParams);
+                    SetVmProperties();
                 },
                 () => !Vm!.TrainingParameters!
                     .Equals(_appState.ActiveSession!.TrainingParameters));
@@ -73,26 +74,14 @@ namespace Training.Application.Controllers
                 {
                     SetNewSession(session);
                 }
-
-                session.PropertyChanged += SessionOnPropertyChanged;
             });
 
             _ea.GetEvent<EnableModalNavigation>().Publish(ReturnCommand);
         }
 
-        private void SessionOnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void SetVmProperties()
         {
-            if (e.PropertyName == nameof(Session.TrainingParameters))
-            {
-                SetNewSession((sender as Session)!);
-            }
-        }
-
-        private void SetNewSession(Session session)
-        {
-            Vm!.TrainingParameters = session.TrainingParameters!.Clone();
-            AttachHandlersToParameters(Vm!.TrainingParameters);
-            Vm!.IsMaxLearningTimeChecked = Vm!.TrainingParameters.MaxLearningTime == TimeSpan.MaxValue;
+            Vm!.IsMaxLearningTimeChecked = Vm!.TrainingParameters!.MaxLearningTime == TimeSpan.MaxValue;
             Vm!.IsMaxEpochsChecked = Vm!.TrainingParameters.MaxEpochs == null;
 
             if (!Vm!.IsMaxLearningTimeChecked)
@@ -100,6 +89,13 @@ namespace Training.Application.Controllers
                 Vm!.MaxLearningTime = Time.Now.Add(Vm!.TrainingParameters.MaxLearningTime);
             }
             else Vm!.MaxLearningTime = default;
+        }
+
+        private void SetNewSession(Session session)
+        {
+            Vm!.TrainingParameters = session.TrainingParameters!.Clone();
+            AttachHandlersToParameters(Vm!.TrainingParameters);
+            SetVmProperties();
         }
 
         private void AttachHandlersToParameters(TrainingParameters parameters)
@@ -130,24 +126,31 @@ namespace Training.Application.Controllers
         private void VmOnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             var vm = (sender as TrainingParametersViewModel)!;
-            RaiseCommandsCanExec();
             switch (e.PropertyName)
             {
                 case nameof(TrainingParametersViewModel.IsMaxLearningTimeChecked):
                     if (vm.IsMaxLearningTimeChecked)
                     {
-                        _appState.ActiveSession!.TrainingParameters!.MaxLearningTime = TimeSpan.MaxValue;
+                        Vm!.TrainingParameters!.MaxLearningTime = TimeSpan.MaxValue;
                     }
                     else
                     {
-                        _appState.ActiveSession!.TrainingParameters!.MaxLearningTime = Time.Now.AddMinutes(10) - Time.Now;
+                        Vm!.MaxLearningTime = Time.Now.AddMinutes(10);
+                        Vm!.TrainingParameters!.MaxLearningTime = Time.Now.AddMinutes(10) - Time.Now;
                     }
 
                     break;
                 case nameof(TrainingParametersViewModel.MaxLearningTime):
-                    _appState.ActiveSession!.TrainingParameters!.MaxLearningTime = vm.MaxLearningTime - Time.Now;
+                    Vm!.TrainingParameters!.MaxLearningTime = vm.MaxLearningTime - Time.Now;
+                    break;
+                case nameof(TrainingParametersViewModel.IsMaxEpochsChecked):
+                    if (Vm!.IsMaxEpochsChecked)
+                    {
+                        Vm!.TrainingParameters!.MaxEpochs = null;
+                    }
                     break;
             }
+            RaiseCommandsCanExec();
         }
 
         private void Return()

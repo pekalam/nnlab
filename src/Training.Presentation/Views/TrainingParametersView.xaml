@@ -18,6 +18,7 @@
              interface:BreadcrumbsHelper.Breadcrumb="Parameters" interface:BreadcrumbsHelper.IsModal="True">
     <UserControl.Resources>
         <converters:BooleanNegConverter x:Key="boolNegConverter" />
+        <converters:NullableToZeroConverter x:Key="NullableToZeroConverter"/>
     </UserControl.Resources>
     <ContentControl Style="{StaticResource ContentPanel}">
         <Grid>
@@ -222,7 +223,7 @@
                                 <CheckBox Content="Undefined" IsChecked="{Binding IsMaxLearningTimeChecked}"
                                           x:Name="maxLearningTimeCheckbox"
                                           Margin="0,0,10,0" />
-                                <mah:TimePicker Grid.Column="1"
+                                <mah:TimePicker Name="MaxLearningTime" Grid.Column="1"
                                                 PickerVisibility="HourMinute"
                                                 SelectedDateTime="{Binding MaxLearningTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True}"
                                                 SelectedTimeFormat="Short"
@@ -241,7 +242,7 @@
                                           IsChecked="{Binding IsMaxEpochsChecked}"
                                           Margin="0,0,10,0" />
                                 <mah:NumericUpDown Grid.Column="1"
-                                                   Value="{Binding TrainingParameters.MaxEpochs, Mode=TwoWay, ValidatesOnExceptions=True}"
+                                                   Value="{Binding TrainingParameters.MaxEpochs, Mode=TwoWay, ValidatesOnExceptions=True, Converter={StaticResource NullableToZeroConverter}}"
                                                    IsEnabled="{Binding Path=IsChecked, ElementName=maxEpochsCheckbox, Converter={StaticResource boolNegConverter}}" />
                             </Grid>
                         </Grid>

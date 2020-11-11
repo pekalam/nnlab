@@ -97,7 +97,7 @@ namespace Training.Application.Plots
         }
 
 
-        public static void CallDirectly(Action action, PlotEpochEndConsumer consumer)
+        public static void CallCustom(Action action, PlotEpochEndConsumer consumer)
         {
             _queues[consumer].Enqueue(action);
             Interlocked.Increment(ref _toInvoke);

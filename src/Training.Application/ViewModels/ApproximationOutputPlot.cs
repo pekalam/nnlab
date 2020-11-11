@@ -1,35 +1,56 @@
-﻿using Common.Domain;
+﻿using System;
+using Common.Domain;
 using NNLib.Data;
 using NNLib.MLP;
 using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Series;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using Training.Domain;
 
 namespace Training.Application.ViewModels
 {
+    internal class DataPointComparer : IComparer<DataPoint>
+    {
+        public int Compare(DataPoint x, DataPoint y)
+        {
+            return x.X.CompareTo(y.X);
+        }
+    }
+
     internal class ApproximationOutputPlot : IOutputPlot
     {
         private LineSeries? _output;
         private TrainingSession? _session;
+        private readonly IComparer<DataPoint> _dataPointComparer = new DataPointComparer();
 
         public void OnEpochEnd(IList<EpochEndArgs> args, OutputPlotViewModel vm, CancellationToken ct)
         {
             var network = _session!.Network!.Clone();
 
-            var dataPoints = new List<DataPoint>();
+            PlotDataPoints(network);
+        }
+
+        private void PlotDataPoints(MLPNetwork network)
+        {
+            Debug.Assert(_session != null, nameof(_session) + " != null");
+
             var input = _session.TrainingData!.Sets.TrainingSet.Input;
+            var dataPoints = new DataPoint[input.Count];
 
             for (int i = 0; i < input.Count; i++)
             {
                 network.CalculateOutput(input[i]);
-                dataPoints.Add(new DataPoint(input[i].At(0, 0), network.Output!.At(0, 0)));
+                dataPoints[i] = new DataPoint(input[i].At(0, 0), network.Output!.At(0, 0));
             }
+
+            Array.Sort(dataPoints, _dataPointComparer);
+
             _output!.Points.Clear();
-            _output.Points.AddRange(dataPoints.OrderBy(p => p.X));
+            _output.Points.AddRange(dataPoints);
         }
 
         public void OnSessionStarting(OutputPlotViewModel vm, TrainingSession session, CancellationToken ct)
@@ -58,7 +79,8 @@ namespace Training.Application.ViewModels
             vm.PlotModel.Axes.Add(new LinearAxis()
             {
                 Title = trainingData.Variables.Names[targetVarInd],
-                Position = AxisPosition.Left
+                Position = AxisPosition.Left,
+                AxisTitleDistance = 18,
             });
 
             var scatter = new ScatterSeries()
@@ -112,16 +134,7 @@ namespace Training.Application.ViewModels
 
             InitPlot(trainingData, set, vm);
 
-            var dataPoints = new List<DataPoint>();
-            var input = trainingData.GetSet(set)!.Input;
-
-            for (int i = 0; i < input.Count; i++)
-            {
-                net.CalculateOutput(input[i]);
-                dataPoints.Add(new DataPoint(input[i].At(0, 0), net.Output!.At(0, 0)));
-            }
-            _output.Points.Clear();
-            _output.Points.AddRange(dataPoints);
+            PlotDataPoints(net);
         }
     }
 }

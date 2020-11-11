@@ -118,7 +118,7 @@ namespace Training.Application.Controllers
 
         private void InvalidatePlot()
         {
-            GlobalDistributingDispatcher.CallDirectly(InvalidateMethod, _epochEndConsumer!);
+            GlobalDistributingDispatcher.CallCustom(InvalidateMethod, _epochEndConsumer!);
         }
 
         private void InvalidateMethod()
