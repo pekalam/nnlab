@@ -14,15 +14,13 @@ namespace NeuralNetwork.Application
         private readonly AppState _appState;
         private readonly AppStateHelper _helper;
         private bool _firstNav;
-        private ModuleState _moduleState;
 
-        public ModuleController(IEventAggregator ea, IRegionManager rm, AppState appState, INeuralNetworkService networkService, ModuleState moduleState)
+        public ModuleController(IEventAggregator ea, IRegionManager rm, AppState appState, INeuralNetworkService networkService)
         {
             _ea = ea;
             _rm = rm;
             _appState = appState;
             _networkService = networkService;
-            _moduleState = moduleState;
             _helper = new AppStateHelper(appState);
 
             _ea.GetEvent<SetupNewNavigationForSession>().Subscribe(OnSetupNewNavigationForSession);
@@ -35,11 +33,6 @@ namespace NeuralNetwork.Application
             {
                 if (data == null)
                 {
-                    if (_appState.ActiveSession!.Network != null)
-                    {
-                        _moduleState.SetupActiveSession();
-                    }
-
                     _ea.GetEvent<DisableNavMenuItem>().Publish(ModuleIds.NeuralNetwork);
                     return;
                 }
@@ -47,12 +40,6 @@ namespace NeuralNetwork.Application
                 if (_appState.ActiveSession!.Network == null)
                 {
                     CreateNetworkForSession(_appState.ActiveSession);
-                    _moduleState.SetupActiveSession();
-                    _moduleState.AdjustNetworkLabels(data);
-                }
-                else if (_moduleState.ModelAdapter == null)
-                {
-                    _moduleState.SetupActiveSession();
                 }
                 else
                 {
@@ -89,7 +76,6 @@ namespace NeuralNetwork.Application
         private void AdjustNetworkToNewVariables(TrainingData trainingData)
         {
             _networkService.AdjustNetworkToData(trainingData);
-            _moduleState.AdjustNetworkLabels(trainingData);
         }
 
         private void OnReloadContentForSession((int moduleId, Session prev, Session next) arg)

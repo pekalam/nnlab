@@ -3,6 +3,7 @@ using FluentAssertions;
 using Moq;
 using Moq.AutoMock;
 using NeuralNetwork.Application.Controllers;
+using NeuralNetwork.Application.ViewModels;
 using NeuralNetwork.Domain;
 using NNLib.Common;
 using Prism.Regions;
@@ -16,7 +17,6 @@ namespace NeuralNetwork.Application.Tests
     {
         private AutoMocker _mocker = new AutoMocker();
         private AppState _appState;
-        private ModuleState _moduleState;
         private ModuleController _ctrl;
         private TestEa _ea;
         private Mock<IRegionManager> _rm;
@@ -26,7 +26,6 @@ namespace NeuralNetwork.Application.Tests
             (_rm, _) = _mocker.UseTestRm();
             _ea = _mocker.UseTestEa();
             _appState = _mocker.UseImpl<AppState>();
-            _moduleState = _mocker.UseImpl<ModuleState>();
             _mocker.UseImpl<NeuralNetworkService>();
             _mocker.UseImpl<INeuralNetworkService, NNControlNeuralNetworkServiceDecorator>();
             _mocker.UseImpl<NeuralNetworkShellController>();
@@ -42,7 +41,6 @@ namespace NeuralNetwork.Application.Tests
             var sesion = _appState.CreateSession();
 
             _appState.ActiveSession.Network.Should().BeNull();
-            _moduleState.ModelAdapter.Should().BeNull();
         }
 
         [Fact]
@@ -54,7 +52,6 @@ namespace NeuralNetwork.Application.Tests
             _ctrl.Run();
 
             _appState.ActiveSession.Network.Should().NotBeNull();
-            _moduleState.ModelAdapter.Should().NotBeNull();
         }
 
         [Fact]
@@ -63,19 +60,16 @@ namespace NeuralNetwork.Application.Tests
             var sesion = _appState.CreateSession();
 
             _appState.ActiveSession.Network.Should().BeNull();
-            _moduleState.ModelAdapter.Should().BeNull();
 
             _ctrl.Run();
 
             _appState.ActiveSession.Network.Should().BeNull();
-            _moduleState.ModelAdapter.Should().BeNull();
 
             //act
             sesion.TrainingData = TrainingDataMocks.ValidData1;
 
             //assert
             _appState.ActiveSession.Network.Should().NotBeNull();
-            _moduleState.ModelAdapter.Should().NotBeNull();
         }
 
         [Fact]
@@ -84,13 +78,11 @@ namespace NeuralNetwork.Application.Tests
             _ctrl.Run();
 
             _appState.ActiveSession.Should().BeNull();
-            _moduleState.ModelAdapter.Should().BeNull();
 
             var sesion = _appState.CreateSession();
             sesion.TrainingData = TrainingDataMocks.ValidData1;
 
             _appState.ActiveSession.Network.Should().NotBeNull();
-            _moduleState.ModelAdapter.Should().NotBeNull();
         }
 
         [Fact]
@@ -232,24 +224,26 @@ namespace NeuralNetwork.Application.Tests
     }
 
 
-    public class ModuleStateTests
+    public class NetDisplayTests
     {
         private AutoMocker _mocker = new AutoMocker();
         private AppState _appState;
-        private ModuleState _moduleState;
-        private ModuleController _controller;
+        private ModuleController _moduleController;
 
+        private INetDisplayController _controller;
+        private NetDisplayViewModel _vm;
 
-        public ModuleStateTests()
+        public NetDisplayTests()
         {
             _mocker.UseTestEa();
             _mocker.UseTestRm();
             _appState = _mocker.UseImpl<AppState>();
-            _moduleState = _mocker.UseImpl<ModuleState>();
             _mocker.UseImpl<INeuralNetworkService, NeuralNetworkService>();
-            _controller = _mocker.UseImpl<ModuleController>();
+            _moduleController = _mocker.UseImpl<ModuleController>();
+            _moduleController.Run();
 
-            _controller.Run();
+            _controller = _mocker.UseImpl<INetDisplayController, NetDisplayController>();
+            _vm = _mocker.UseVm<NetDisplayViewModel>();
         }
 
         [Fact]
@@ -262,7 +256,7 @@ namespace NeuralNetwork.Application.Tests
 
 
             //assert
-            _moduleState.ModelAdapter.Should().NotBeNull();
+            _vm.ModelAdapter.Should().NotBeNull();
         }
 
         [Fact]
@@ -272,25 +266,25 @@ namespace NeuralNetwork.Application.Tests
             var sesion = _appState.CreateSession();
             sesion.TrainingData = TrainingDataMocks.ValidData1;
 
-            var adapter = _moduleState.ModelAdapter;
+            var adapter = _vm.ModelAdapter;
             //additional check
             adapter.Should().NotBeNull();
 
             //act
             _appState.DuplicateActiveSession();
             //additional check
-            _moduleState.ModelAdapter.Should().NotBeNull();
+            _vm.ModelAdapter.Should().NotBeNull();
 
             //assert
-            _moduleState.ModelAdapter.Should().NotBe(adapter);
+            _vm.ModelAdapter.Should().NotBe(adapter);
         }
 
         [Fact]
         public void PropertyChanged_event_is_sent_after_active_session_is_set()
         {
             int called = 0;
-            _moduleState.PropertyChanged += (sender, args) =>
-                called += (args.PropertyName == nameof(ModuleState.ModelAdapter) ? 1 : 0);
+            _vm.PropertyChanged += (sender, args) =>
+                called += (args.PropertyName == nameof(NetDisplayViewModel.ModelAdapter) ? 1 : 0);
 
             var sesion = _appState.CreateSession();
             sesion.TrainingData = TrainingDataMocks.ValidData1;

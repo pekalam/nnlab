@@ -36,19 +36,17 @@ namespace NeuralNetwork.Application.Controllers
         private readonly INeuralNetworkShellController _shellService;
         private readonly INeuralNetworkService _networkService;
         private readonly AppState _appState;
-        private readonly ModuleState _moduleState;
         private readonly IEventAggregator _ea;
         private readonly AppStateHelper _helper;
 
         private bool _initialized;
 
-        public LayerListController(INeuralNetworkShellController shellService, INeuralNetworkService networkService, AppState appState, IEventAggregator ea, ModuleState moduleState)
+        public LayerListController(INeuralNetworkShellController shellService, INeuralNetworkService networkService, AppState appState, IEventAggregator ea)
         {
             _shellService = shellService;
             _networkService = networkService;
             _appState = appState;
             _ea = ea;
-            _moduleState = moduleState;
             _helper = new AppStateHelper(appState);
 
             AddLayerCommand = new DelegateCommand(AddLayer);
@@ -67,12 +65,6 @@ namespace NeuralNetwork.Application.Controllers
             _helper.OnNetworkChanged(network =>
             {
                 SetLayers();
-
-                _moduleState.NetworkStructureChanged -= ModuleStateOnNetworkStructureChanged;
-                _moduleState.NetworkStructureChanged += ModuleStateOnNetworkStructureChanged;
-
-                _moduleState.PropertyChanged -= ModuleStateOnPropertyChanged;
-                _moduleState.PropertyChanged += ModuleStateOnPropertyChanged;
             });
 
             _ea.GetEvent<IntNeuronClicked>().Subscribe(args =>
@@ -86,22 +78,6 @@ namespace NeuralNetwork.Application.Controllers
             });
 
             _initialized = true;
-        }
-
-        private void ModuleStateOnPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            SetLayers();
-        }
-
-        private void ModuleStateOnNetworkStructureChanged(NNLibModelAdapter obj)
-        {
-            var trainingData = _appState.ActiveSession!.TrainingData!;
-
-            if (obj.LayerModelAdapters[0].LayerModel.NeuronModels.Count != trainingData.Variables.InputVariableNames.Length ||
-                obj.LayerModelAdapters[^1].LayerModel.NeuronModels.Count != trainingData.Variables.TargetVariableNames.Length) return;
-
-            obj.SetInputLabels(trainingData.Variables.InputVariableNames);
-            obj.SetOutputLabels(trainingData.Variables.TargetVariableNames);
         }
 
         private void InsertBefore(LayerEditorItemModel obj)
@@ -175,8 +151,6 @@ namespace NeuralNetwork.Application.Controllers
 
         private void SetLayers()
         {
-            if(_moduleState.ModelAdapter == null) return;
-            
             Vm!.CreateLayers(_appState.ActiveSession!.Network!.Layers);
         }
 

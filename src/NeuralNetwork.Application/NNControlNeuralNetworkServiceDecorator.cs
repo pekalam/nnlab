@@ -5,6 +5,8 @@ using NNLib.ActivationFunction;
 using NNLib.MLP;
 using NNLibAdapter;
 using System.Linq;
+using NeuralNetwork.Application.Messaging;
+using Prism.Events;
 
 namespace NeuralNetwork.Application
 {
@@ -12,24 +14,22 @@ namespace NeuralNetwork.Application
     {
         private readonly INeuralNetworkService _service;
         private readonly AppState _appState;
-        private readonly ModuleState _moduleState;
+        private readonly IEventAggregator _ea;
 
-        public NNControlNeuralNetworkServiceDecorator(NeuralNetworkService service, AppState appState, ModuleState moduleState)
+        public NNControlNeuralNetworkServiceDecorator(NeuralNetworkService service, AppState appState, IEventAggregator ea)
         {
             _service = service;
             _appState = appState;
-            _moduleState = moduleState;
+            _ea = ea;
         }
 
-        private NNLibModelAdapter ModelAdapter => _moduleState.ModelAdapter!;
 
         private MLPNetwork NeuralNetwork => _appState.ActiveSession?.Network!;
 
         public bool AddLayer()
         {
             var result = _service.AddLayer();
-            ModelAdapter.AddLayer(NeuralNetwork.Layers[^1]);
-            _moduleState.RaiseNetworkStructureChanged();
+            _ea.GetEvent<IntLayerAdded>().Publish((_appState.ActiveSession!.Network!.Layers[^1], _appState.ActiveSession!.Network!.Layers.Count));
             return result;
         }
 
@@ -38,18 +38,27 @@ namespace NeuralNetwork.Application
             var result = _service.RemoveLayer(layerIndex);
             if (result != null)
             {
-                ModelAdapter.RemoveLayer(layerIndex);
+                _ea.GetEvent<IntLayerRemoved>().Publish(layerIndex);
             }
-            _moduleState.RaiseNetworkStructureChanged();
             return result;
         }
 
         public bool SetNeuronsCount(Layer layer, int neuronsCount)
         {
-            var layerModelAdapter = ModelAdapter.LayerModelAdapters.First(l => ((NNLibLayerAdapter)l).Layer == layer);
-            layerModelAdapter.SetNeuronsCount(neuronsCount);
             var result= _service.SetNeuronsCount(layer, neuronsCount);
-            _moduleState.RaiseNetworkStructureChanged();
+
+            int index = 1;
+            foreach (var netLayer in _appState.ActiveSession!.Network!.BaseLayers)
+            {
+                if (netLayer == layer)
+                {
+                    break;
+                }
+
+                index++;
+            }
+
+            _ea.GetEvent<IntLayerModified>().Publish((index, layer.NeuronsCount));
             return result;
         }
 
@@ -60,9 +69,8 @@ namespace NeuralNetwork.Application
 
         public bool SetInputsCount(int inputsCount)
         {
-            ModelAdapter.LayerModelAdapters[0].SetNeuronsCount(inputsCount);
             var result = _service.SetInputsCount(inputsCount);
-            _moduleState.RaiseNetworkStructureChanged();
+            _ea.GetEvent<IntLayerModified>().Publish((0, inputsCount));
             return result;
         }
 
@@ -79,16 +87,14 @@ namespace NeuralNetwork.Application
         public Layer InsertAfter(int layerIndex)
         {
             var layer = _service.InsertAfter(layerIndex);
-            ModelAdapter.InsertAfter(layerIndex + 1, layer);
-            _moduleState.RaiseNetworkStructureChanged();
+            _ea.GetEvent<IntLayerAdded>().Publish((layer,layerIndex));
             return layer;
         }
 
         public Layer InsertBefore(int layerIndex)
         {
             var layer = _service.InsertBefore(layerIndex);
-            ModelAdapter.InsertBefore(layerIndex + 1, layer);
-            _moduleState.RaiseNetworkStructureChanged();
+            _ea.GetEvent<IntLayerAdded>().Publish((layer,layerIndex));
             return layer;
         }
 
@@ -105,10 +111,23 @@ namespace NeuralNetwork.Application
 
         public void AdjustNetworkToData(TrainingData data)
         {
+            var outBefore = _appState.ActiveSession!.Network!.BaseLayers[^1].NeuronsCount;
+            var inBefore = _appState.ActiveSession!.Network!.BaseLayers[0].InputsCount;
+
             _service.AdjustNetworkToData(data);
-            ModelAdapter.LayerModelAdapters[0].SetNeuronsCount(_appState.ActiveSession!.Network!.Layers[0].InputsCount);
-            ModelAdapter.LayerModelAdapters[^1].SetNeuronsCount(_appState.ActiveSession!.Network!.Layers[^1].NeuronsCount);
-            _moduleState.RaiseNetworkStructureChanged();
+
+            var outAfter = _appState.ActiveSession!.Network!.BaseLayers[^1].NeuronsCount;
+            var inAfter = _appState.ActiveSession!.Network!.BaseLayers[0].InputsCount;
+
+            if (outBefore != outAfter)
+            {
+                _ea.GetEvent<IntLayerModified>().Publish((_appState.ActiveSession.Network!.BaseLayers.Count, outAfter));
+            }
+
+            if (inBefore != inAfter)
+            {
+                _ea.GetEvent<IntLayerModified>().Publish((0, inAfter));
+            }
         }
     }
 }

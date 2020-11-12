@@ -14,7 +14,6 @@ namespace NeuralNetwork.Application.Tests
         private AutoMocker _mocker = new AutoMocker();
         private ModuleController _moduleController;
         private AppState _appState;
-        private ModuleState _moduleState;
         private LayerListViewModel _vm;
 
         public LayersDisplayTests()
@@ -22,7 +21,6 @@ namespace NeuralNetwork.Application.Tests
             _mocker.UseTestRm();
             _mocker.UseTestEa();
             _appState = _mocker.UseImpl<AppState>();
-            _moduleState = _mocker.UseImpl<ModuleState>();
             _mocker.UseImpl<NeuralNetworkService>();
             _mocker.UseImpl<INeuralNetworkService, NNControlNeuralNetworkServiceDecorator>();
             _moduleController = _mocker.UseImpl<ModuleController>();

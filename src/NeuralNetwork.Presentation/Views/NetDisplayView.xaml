@@ -14,7 +14,7 @@
              d:DataContext="{d:DesignInstance designData:DesignNetDisplayVm, IsDesignTimeCreatable=True}">
     <Grid MouseDown="UIElement_OnMouseDown">
         <nnControl:NeuralNetworkControl x:Name="neuralNetworkControl" ShowVis="False"
-                                        ModelAdapter="{Binding ModuleState.ModelAdapter}" Width="Auto"
+                                        ModelAdapter="{Binding ModelAdapter}" Width="Auto"
                                         HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         </nnControl:NeuralNetworkControl>
     </Grid>

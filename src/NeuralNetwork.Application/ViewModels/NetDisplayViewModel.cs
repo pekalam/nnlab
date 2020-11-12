@@ -1,12 +1,14 @@
 ﻿using Common.Framework;
 using NeuralNetwork.Application.Controllers;
+using NNLibAdapter;
 using Unity;
 
 namespace NeuralNetwork.Application.ViewModels
 {
     public class NetDisplayViewModel : ViewModelBase<NetDisplayViewModel>
     {
-        
+        private NNLibModelAdapter? _modelAdapter;
+
 #pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
         public NetDisplayViewModel()
         {
@@ -16,14 +18,18 @@ namespace NeuralNetwork.Application.ViewModels
         }
 
         [InjectionConstructor]
-        public NetDisplayViewModel(INetDisplayController controller, ModuleState moduleState)
+        public NetDisplayViewModel(INetDisplayController controller)
         {
             Controller = controller;
-            ModuleState = moduleState;
+            controller.Initialize(this);
         }
 
         public INetDisplayController Controller { get; }
 
-        public ModuleState ModuleState { get; }
+        public NNLibModelAdapter? ModelAdapter
+        {
+            get => _modelAdapter;
+            set => SetProperty(ref _modelAdapter, value);
+        }
     }
 }
