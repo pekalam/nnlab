@@ -15,7 +15,7 @@
                 <TextBlock>Variables</TextBlock>
             </StackPanel>
         </Button>
-        <Button Command="{Binding Service.DivideDatasetCommand}">
+        <Button Command="{Binding Service.DivideDatasetCommand}" x:Name="DivideDatasetButton">
             <Button.Style>
                 <Style TargetType="Button" BasedOn="{StaticResource ActionMenuButton}">
                     <Style.Triggers>

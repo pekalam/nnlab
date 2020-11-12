@@ -40,8 +40,15 @@ namespace Data.Application
         {
             if (arg.moduleId == ModuleIds.Data)
             {
-                var view = GetViewToNavigateFromSession(arg);
-                _rm.NavigateContentRegion(view);
+                var (view, navParams) = GetViewToNavigateFromSession(arg);
+                if (navParams == null)
+                {
+                    _rm.NavigateContentRegion(view);
+                }
+                else
+                {
+                    _rm.NavigateContentRegion(view, navParams);
+                }
             }
         }
 
@@ -49,30 +56,41 @@ namespace Data.Application
         {
             if(arg.moduleId == ModuleIds.Data)
             {
-                var view = GetViewToNavigateFromSession(arg);
+                var (view, navParams) = GetViewToNavigateFromSession(arg);
                 _firstNavToken?.Dispose();
                 _firstNavToken = _ea.OnFirstNavigation(ModuleIds.Data, () =>
                 {
-                    _rm.NavigateContentRegion(view);
+                    if (navParams == null)
+                    {
+                        _rm.NavigateContentRegion(view);
+                    }
+                    else
+                    {
+                        _rm.NavigateContentRegion(view, navParams);
+                    }
                     _firstNavToken = null;
                 });
             }
         }
 
-        private string GetViewToNavigateFromSession((int moduleId, Session prev, Session next) arg)
+        private (string viewName, NavigationParameters? navParams) GetViewToNavigateFromSession((int moduleId, Session prev, Session next) arg)
         {
             if (arg.next.TrainingData == null)
             {
-                return "SelectDataSourceView";
+                return ("SelectDataSourceView", null);
             }
-            else if (arg.next.TrainingData.Source == TrainingDataSource.Csv)
-            {
-                return "FileDataSourceView";
 
-            }
-            else if (arg.next.TrainingData.Source == TrainingDataSource.Memory)
+            if (arg.next.TrainingData.Source == TrainingDataSource.Csv)
             {
-                return "CustomDataSetView";
+                return ("FileDataSourceView", new NavigationParameters
+                {
+                    {"Multi", arg.next.SingleDataFile == null}
+                });
+            }
+
+            if (arg.next.TrainingData.Source == TrainingDataSource.Memory)
+            {
+                return ("CustomDataSetView", null);
             }
 
             throw new Exception("Invalid arg");
