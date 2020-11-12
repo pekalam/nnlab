@@ -12,16 +12,10 @@
              d:DesignHeight="450" d:DesignWidth="800"
              mvvm:ViewModelLocator.AutoWireViewModel="True"
              d:DataContext="{d:DesignInstance designData:DesignNetDisplayVm, IsDesignTimeCreatable=True}">
-    <Grid>
+    <Grid MouseDown="UIElement_OnMouseDown">
         <nnControl:NeuralNetworkControl x:Name="neuralNetworkControl" ShowVis="False"
                                         ModelAdapter="{Binding ModuleState.ModelAdapter}" Width="Auto"
                                         HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-            <i:Interaction.Triggers>
-                <i:EventTrigger EventName="NeuronClick">
-                    <mvvm:InvokeCommandAction Command="{Binding Controller.NeuronClickCommand}" />
-                </i:EventTrigger>
-            </i:Interaction.Triggers>
         </nnControl:NeuralNetworkControl>
-
     </Grid>
 </UserControl>

@@ -6,7 +6,7 @@ namespace NeuralNetwork.Presentation.__DesignData
     {
     }
 
-    class DesignLayersDisplayVm : LayersDisplayViewModel { }
+    class DesignLayerListVm : LayerListViewModel { }
 
     class DesignLayerEditorVm : LayerEditorViewModel { }
 

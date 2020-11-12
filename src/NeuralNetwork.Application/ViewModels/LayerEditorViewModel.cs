@@ -1,6 +1,7 @@
 ﻿using Common.Domain;
 using Common.Framework;
 using NeuralNetwork.Application.Controllers;
+using NeuralNetwork.Domain;
 using NNLib;
 using NNLib.MLP;
 using Prism.Mvvm;

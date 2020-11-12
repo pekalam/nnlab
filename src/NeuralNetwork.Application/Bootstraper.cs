@@ -14,7 +14,7 @@ namespace NeuralNetwork.Application
 
             INetDisplayController.Register(cr);
             ILayerEditorController.Register(cr);
-            ILayersDisplayController.Register(cr);
+            ILayerListController.Register(cr);
             INeuralNetworkShellController.Register(cr);
         }
     }

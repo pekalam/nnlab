@@ -42,7 +42,7 @@ namespace NeuralNetwork.Application.Controllers
 
             Navigated = (_) =>
             {
-                _rm.Regions[NeuralNetworkRegions.NetworkDownRegion].RequestNavigate("LayersDisplayView");
+                _rm.Regions[NeuralNetworkRegions.NetworkDownRegion].RequestNavigate("LayerListView");
             };
 
             _appState.ActiveSessionChanged += (_, __) =>
@@ -56,7 +56,7 @@ namespace NeuralNetwork.Application.Controllers
             _isEditorOpened = false;
             if (_rm.Regions.ContainsRegionWithName(NeuralNetworkRegions.NetworkDownRegion))
             {
-                _rm.Regions[NeuralNetworkRegions.NetworkDownRegion].RequestNavigate("LayersDisplayView");
+                _rm.Regions[NeuralNetworkRegions.NetworkDownRegion].RequestNavigate("LayerListView");
             }
         }
 

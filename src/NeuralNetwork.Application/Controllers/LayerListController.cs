@@ -15,7 +15,7 @@ using System.Linq;
 
 namespace NeuralNetwork.Application.Controllers
 {
-    public interface ILayersDisplayController : IController
+    public interface ILayerListController : IController
     {
         DelegateCommand AddLayerCommand { get; set; }
         DelegateCommand<LayerEditorItemModel> RemoveLayerCommand { get; set; }
@@ -27,11 +27,11 @@ namespace NeuralNetwork.Application.Controllers
 
         public static void Register(IContainerRegistry cr)
         {
-            cr.Register<ILayersDisplayController, LayersDisplayController>();
+            cr.Register<ILayerListController, LayerListController>();
         }
     }
 
-    internal class LayersDisplayController : ControllerBase<LayersDisplayViewModel>,ILayersDisplayController
+    internal class LayerListController : ControllerBase<LayerListViewModel>,ILayerListController
     {
         private readonly INeuralNetworkShellController _shellService;
         private readonly INeuralNetworkService _networkService;
@@ -42,7 +42,7 @@ namespace NeuralNetwork.Application.Controllers
 
         private bool _initialized;
 
-        public LayersDisplayController(INeuralNetworkShellController shellService, INeuralNetworkService networkService, AppState appState, IEventAggregator ea, ModuleState moduleState)
+        public LayerListController(INeuralNetworkShellController shellService, INeuralNetworkService networkService, AppState appState, IEventAggregator ea, ModuleState moduleState)
         {
             _shellService = shellService;
             _networkService = networkService;
@@ -75,6 +75,16 @@ namespace NeuralNetwork.Application.Controllers
                 _moduleState.PropertyChanged += ModuleStateOnPropertyChanged;
             });
 
+            _ea.GetEvent<IntNeuronClicked>().Subscribe(args =>
+            {
+                SelectLayer(args);
+            });
+
+            _ea.GetEvent<IntNetDisplayAreaClicked>().Subscribe(() =>
+            {
+                Vm!.SelectedLayer = null;
+            });
+
             _initialized = true;
         }
 
@@ -98,6 +108,7 @@ namespace NeuralNetwork.Application.Controllers
         {
             _networkService.InsertBefore(obj.LayerIndex);   
             SetLayers();
+            _ea.GetEvent<IntLayerListChanged>().Publish();
         }
 
         private void InsertAfter(LayerEditorItemModel obj)
@@ -111,7 +122,7 @@ namespace NeuralNetwork.Application.Controllers
                 _networkService.InsertAfter(obj.LayerIndex);
                 SetLayers();
             }
-
+            _ea.GetEvent<IntLayerListChanged>().Publish();
         }
 
         private void LayerClicked(LayerEditorItemModel? obj)
@@ -159,6 +170,7 @@ namespace NeuralNetwork.Application.Controllers
             }
             //TODO remove
             SetLayers();
+            _ea.GetEvent<IntLayerListChanged>().Publish();
         }
 
         private void SetLayers()
@@ -166,7 +178,6 @@ namespace NeuralNetwork.Application.Controllers
             if(_moduleState.ModelAdapter == null) return;
             
             Vm!.CreateLayers(_appState.ActiveSession!.Network!.Layers);
-            _moduleState.ModelAdapter.Controller?.ClearHighlight();
         }
 
         private void AddLayer()
@@ -180,6 +191,7 @@ namespace NeuralNetwork.Application.Controllers
                 PublishValidArch();
             }
             SetLayers();
+            _ea.GetEvent<IntLayerListChanged>().Publish();
         }
 
         private void PublishInvalidArch()

@@ -1,4 +1,4 @@
-﻿namespace Common.Domain
+﻿namespace NeuralNetwork.Domain
 {
     public enum ActivationFunctionName
     {
@@ -6,10 +6,5 @@
         Sigmoid,
         TanH,
         ArcTan
-    }
-
-    public enum ParamsInitMethod
-    {
-        DefaultNormalDist, NormalDist, Xavier, NguyenWidrow, SqrMUniform
     }
 }

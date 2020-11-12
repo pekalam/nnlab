@@ -15,7 +15,7 @@ namespace NeuralNetwork.Application.Tests
         private ModuleController _moduleController;
         private AppState _appState;
         private ModuleState _moduleState;
-        private LayersDisplayViewModel _vm;
+        private LayerListViewModel _vm;
 
         public LayersDisplayTests()
         {
@@ -27,7 +27,7 @@ namespace NeuralNetwork.Application.Tests
             _mocker.UseImpl<INeuralNetworkService, NNControlNeuralNetworkServiceDecorator>();
             _moduleController = _mocker.UseImpl<ModuleController>();
             _mocker.UseImpl<NeuralNetworkShellController>();
-            _mocker.UseImpl<ILayersDisplayController, LayersDisplayController>();
+            _mocker.UseImpl<ILayerListController, LayerListController>();
 
             _moduleController.Run();
         }
@@ -35,7 +35,7 @@ namespace NeuralNetwork.Application.Tests
         [Fact]
         public void Layers_when_no_active_session_are_empty()
         {
-            _vm = _mocker.UseVm<LayersDisplayViewModel>();
+            _vm = _mocker.UseVm<LayerListViewModel>();
 
             _vm.Layers.Should().BeNullOrEmpty();
         }
@@ -47,7 +47,7 @@ namespace NeuralNetwork.Application.Tests
             session.TrainingData = TrainingDataMocks.ValidData1;
             session.Network = MLPMocks.ValidNet1;
 
-            _vm = _mocker.UseVm<LayersDisplayViewModel>();
+            _vm = _mocker.UseVm<LayerListViewModel>();
             _vm.Layers.Should().HaveCount(_appState.ActiveSession.Network!.TotalLayers + 1);
 
             var session2 = _appState.CreateSession();

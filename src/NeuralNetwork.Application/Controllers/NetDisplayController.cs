@@ -1,4 +1,5 @@
-﻿using Common.Domain;
+﻿using System.Windows;
+using Common.Domain;
 using Common.Framework;
 using NeuralNetwork.Application.Messaging;
 using NNControl;
@@ -12,7 +13,8 @@ namespace NeuralNetwork.Application.Controllers
 {
     public interface INetDisplayController : ISingletonController
     {
-        DelegateCommand<NeuronClickedEventArgs> NeuronClickCommand { get; set; }
+        DelegateCommand<int?> NeuronClickCommand { get; set; }
+        DelegateCommand AreaClicked { get; set; }
 
         public static void Register(IContainerRegistry cr)
         {
@@ -35,9 +37,15 @@ namespace NeuralNetwork.Application.Controllers
             _appState = appState;
             _helper = new AppStateHelper(appState);
 
-            NeuronClickCommand = new DelegateCommand<NeuronClickedEventArgs>(args =>
+            NeuronClickCommand = new DelegateCommand<int?>(layerInd =>
             {
-                _ea.GetEvent<IntNeuronClicked>().Publish((((NNLibLayerAdapter)args.LayerAdapter).Layer, args.NeuronIndex)!);
+                if (!layerInd.HasValue || layerInd == 0)
+                {
+                    return;
+                }
+                layerInd--;
+
+                _ea.GetEvent<IntNeuronClicked>().Publish(_appState.ActiveSession!.Network!.Layers[layerInd.Value]);
             });
 
             ea.GetEvent<IntLayerClicked>().Subscribe(arg =>
@@ -46,12 +54,23 @@ namespace NeuralNetwork.Application.Controllers
                 _moduleState.ModelAdapter.Controller.HighlightLayer(arg.layerIndex + 1);
             });
 
+            ea.GetEvent<IntLayerListChanged>().Subscribe(() =>
+            {
+                _moduleState!.ModelAdapter!.Controller.ClearHighlight();
+            });
+
+            AreaClicked = new DelegateCommand(() =>
+            {
+                _moduleState.ModelAdapter!.Controller.ClearHighlight();
+                _ea.GetEvent<IntNetDisplayAreaClicked>().Publish();
+            });
         }
 
         public void Initialize()
         {
         }
 
-        public DelegateCommand<NeuronClickedEventArgs> NeuronClickCommand { get; set; }
+        public DelegateCommand<int?> NeuronClickCommand { get; set; }
+        public DelegateCommand AreaClicked { get; set; }
     }
 }

@@ -10,6 +10,7 @@
              xmlns:matrixPreview="clr-namespace:SharedUI.MatrixPreview;assembly=SharedUI"
              xmlns:designData="clr-namespace:NeuralNetwork.Presentation.__DesignData"
              xmlns:domain1="clr-namespace:Common.Domain;assembly=NeuralNetwork.Domain"
+             xmlns:domain11="clr-namespace:NeuralNetwork.Domain;assembly=NeuralNetwork.Domain"
              d:DesignHeight="450" d:DesignWidth="900"
              prism:ViewModelLocator.AutoWireViewModel="True"
              Focusable="True"
@@ -19,7 +20,7 @@
         <ObjectDataProvider x:Key="activationFunctions" MethodName="GetValues"
                             ObjectType="{x:Type System:Enum}">
             <ObjectDataProvider.MethodParameters>
-                <x:Type TypeName="domain1:ActivationFunctionName" />
+                <x:Type TypeName="domain11:ActivationFunctionName" />
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
         <Style x:Key="Title" TargetType="TextBlock">
@@ -79,7 +80,7 @@
                 <Grid.Style>
                     <Style TargetType="Grid">
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding Layer.ParamsInitMethod}" Value="{x:Static domain1:ParamsInitMethod.NormalDist}">
+                            <DataTrigger Binding="{Binding Layer.ParamsInitMethod}" Value="{x:Static domain11:ParamsInitMethod.NormalDist}">
                                 <Setter Property="Visibility" Value="Visible"/>
                             </DataTrigger>
                         </Style.Triggers>

@@ -1,7 +1,6 @@
 ﻿using NeuralNetwork.Presentation.Views;
 using Prism.Ioc;
 using LayerEditorView = NeuralNetwork.Presentation.Views.LayerEditorView;
-using LayersDisplayView = NeuralNetwork.Presentation.Views.LayersDisplayView;
 
 namespace NeuralNetwork.Presentation
 {
@@ -11,7 +10,7 @@ namespace NeuralNetwork.Presentation
         {
             cr.RegisterForNavigation<NeuralNetworkShellView>();
             cr.RegisterForNavigation<LayerEditorView>();
-            cr.RegisterForNavigation<LayersDisplayView>();
+            cr.RegisterForNavigation<LayerListView>();
         }
     }
 }

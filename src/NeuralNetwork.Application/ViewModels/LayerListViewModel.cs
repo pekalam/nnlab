@@ -41,26 +41,26 @@ namespace NeuralNetwork.Application.ViewModels
         }
     }
 
-    public class LayersDisplayViewModel : ViewModelBase<LayersDisplayViewModel>
+    public class LayerListViewModel : ViewModelBase<LayerListViewModel>
     {
         private ObservableCollection<LayerEditorItemModel> _layers = new ObservableCollection<LayerEditorItemModel>();
         private LayerEditorItemModel? _selectedLayer;
 
                 
 #pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
-        public LayersDisplayViewModel()
+        public LayerListViewModel()
         {
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
         }
 
         [InjectionConstructor]
-        public LayersDisplayViewModel(ILayersDisplayController controller)
+        public LayerListViewModel(ILayerListController controller)
         {
             Controller = controller;
             controller.Initialize(this);
         }
 
-        public ILayersDisplayController Controller { get; }
+        public ILayerListController Controller { get; }
 
         public ObservableCollection<LayerEditorItemModel> Layers
         {

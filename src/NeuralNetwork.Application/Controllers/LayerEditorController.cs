@@ -60,20 +60,9 @@ namespace NeuralNetwork.Application.Controllers
                 NeuronsCount = layer.NeuronsCount,
                 InputsCount = layer.InputsCount,
                 ActivationFunction =
-                    ActivationFunctionNameAssembler.FromActivationFunction(
-                        ((PerceptronLayer)layer).ActivationFunction),
+                    ActivationFunctionNameAssembler.FromActivationFunction(((PerceptronLayer)layer).ActivationFunction),
                 ParamsInitMethod = method,
-                ParamsInitMethods = Enum.GetValues(typeof(ParamsInitMethod)).Cast<ParamsInitMethod>().Where(
-                    initMethod =>
-                    {
-                        if (initMethod == ParamsInitMethod.NguyenWidrow &&
-                            !(layer.IsOutputLayer || _assignedNetwork.BaseLayers[0] == layer))
-                        {
-                            return false;
-                        }
-
-                        return true;
-                    }).ToArray(),
+                ParamsInitMethods = layer.GetAvailableParamsInitMethods(_assignedNetwork),
             };
             model.PropertyChanged += OnLayerDetailsModelPropertyChanged;
 
