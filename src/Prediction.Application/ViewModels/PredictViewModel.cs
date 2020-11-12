@@ -171,18 +171,25 @@ namespace Prediction.Application.ViewModels
         }
 
 
-        public void UpdatePlots(ScatterPoint[] dataScatter, DataPoint[] dataPredLine, DataPoint[] predLine, ScatterPoint[] predScatter)
+        public void UpdatePlots(TrainingData data,ScatterPoint[] dataScatter, DataPoint[] dataPredLine, DataPoint[] predLine, ScatterPoint[] predScatter)
         {
 
             ClearPlots();
+
+            if (PlotModel.Model.Axes.Count == 0)
+            {
+                UpdateAxes(data);
+            }
 
             DataScatterSeries.Points.AddRange(dataScatter);
             DataPredictionLineSeries.Points.AddRange(dataPredLine);
             PredictionLineSeries.Points.AddRange(predLine);
             PredictionScatterSeries.Points.AddRange(predScatter);
 
-            PlotModel.Model.DefaultXAxis.Reset();
-            PlotModel.Model.DefaultYAxis.Reset();
+
+
+            PlotModel.Model.Axes[0].Reset();
+            PlotModel.Model.Axes[1].Reset();
 
             PlotModel.Model.InvalidatePlot(true);
         }

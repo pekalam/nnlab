@@ -65,7 +65,7 @@
                     <basicPlot:BasicPlot Wpf="True" MinHeight="400" PlotModel="{Binding PlotModel}"/>
                     <StackPanel Orientation="Vertical" Margin="10,20,10,10">
                         <TextBlock Text="Dataset type"/>
-                        <ComboBox Width="200" HorizontalAlignment="Left" Name="PlotSetTypesCombobox" SelectedIndex="0" SelectedItem="{Binding SelectedPlotSetType}" ItemsSource="{Binding PlotSetTypes}"></ComboBox>
+                        <ComboBox Width="200" HorizontalAlignment="Left" Name="PlotSetTypesCombobox" SelectedIndex="0" SelectedItem="{Binding SelectedPlotSetType, Mode=TwoWay}" ItemsSource="{Binding PlotSetTypes}"></ComboBox>
                     </StackPanel>
 
                     <UniformGrid Columns="4" Margin="0,14,0,0">

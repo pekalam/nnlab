@@ -163,11 +163,10 @@ namespace Prediction.Application.Controllers
         public void SetMemento(PredictControllerMemento memento)
         {
             Vm!.Interval = memento.Interval;
-            Vm!.PlotSetTypes = memento.PlotSetTypes;
             Vm!.SelectedPlotSetType = memento.SelectedPlotSetType;
             Vm!.UpdateNetworkAndMatrix(_appState.ActiveSession!.Network!, _appState.ActiveSession.TrainingData!,
                 memento.InputMatrix);
-            Vm!.UpdatePlots(memento.DataScatterPoints, memento.DataPredictionPoints, memento.PredictionPoints, memento.PredictionScatterPoints);
+            Vm!.UpdatePlots(_appState.ActiveSession!.TrainingData!,memento.DataScatterPoints, memento.DataPredictionPoints, memento.PredictionPoints, memento.PredictionScatterPoints);
             UpdateStartEndValue(memento.SelectedPlotSetType);
         }
 
@@ -251,7 +250,7 @@ namespace Prediction.Application.Controllers
 
             });
 
-            Vm!.UpdatePlots(dataScatter, 
+            Vm!.UpdatePlots(_appState.ActiveSession!.TrainingData!,dataScatter, 
                 dataPredLine.OrderBy(p => p.X).ToArray(),
                 predLine.OrderBy(p => p.X).ToArray(), 
                 predScatter.ToArray());

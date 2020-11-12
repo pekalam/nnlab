@@ -61,6 +61,7 @@ namespace Training.Application.ViewModels
 
             vm.PlotType = OutputPlotType.Approximation;
             vm.PlotModel.Series.Clear();
+            vm.PlotModel.Annotations.Clear();
             vm.PlotModel.Title = "Accuracy";
 
 

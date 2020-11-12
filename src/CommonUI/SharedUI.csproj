@@ -7,14 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Common.Domain\Common.Domain.csproj" />
-    <ProjectReference Include="..\Common.Framework\Common.Framework.csproj" />
-    <ProjectReference Include="..\Common.Presentation\Common.Presentation.csproj" />
+    <PackageReference Include="OxyPlot.SkiaSharp" Version="2.1.0-Preview1" />
+    <PackageReference Include="OxyPlot.SkiaSharp.Wpf" Version="2.1.0-Preview1" />
+    <PackageReference Include="OxyPlot.Wpf" Version="2.1.0-Preview1" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="OxyPlot.SkiaSharp.Wpf" Version="2.1.0-unstable.1440" />
-    <PackageReference Include="OxyPlot.Wpf" Version="2.1.0-unstable.1440" />
+    <ProjectReference Include="..\Common.Domain\Common.Domain.csproj" />
+    <ProjectReference Include="..\Common.Framework\Common.Framework.csproj" />
+    <ProjectReference Include="..\Common.Presentation\Common.Presentation.csproj" />
   </ItemGroup>
 
 </Project>

@@ -9,6 +9,8 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Threading;
+using Prism.Events;
+using Shell.Interface;
 using Training.Application.Plots;
 using Training.Application.ViewModels;
 using Training.Domain;
@@ -57,13 +59,19 @@ namespace Training.Application.Controllers
 
         private readonly object _pltLock = new object();
 
-        public OutputPlotController(IRegionManager rm, ModuleState moduleState, AppStateHelper helper)
+        public OutputPlotController(IRegionManager rm, ModuleState moduleState, AppStateHelper helper, IEventAggregator ea)
         {
             _rm = rm;
             _moduleState = moduleState;
             _helper = helper;
 
             Navigated = OnNavigated;
+
+            ea.GetEvent<ContentRegionViewChanged>().Subscribe(() =>
+            {
+                // Vm!.PlotModel.Annotations.Clear();
+                Vm.PlotModel.InvalidatePlot(false);
+            });
         }
 
         protected override void VmCreated()
@@ -79,6 +87,7 @@ namespace Training.Application.Controllers
             }, s => s switch
             {
                 nameof(TrainingData.Variables) => true,
+                nameof(TrainingData.Sets) => true,
                 _ => false,
             });
 
