@@ -36,7 +36,12 @@ namespace SharedUI.MatrixPreview
         {
             _ea = ea;
             _vm = vm;
-            _matrixGridRenderer = new MatrixGridRenderer(_vm, new DelegateCommand<MatrixPreviewModel>(RemoveItem));
+            _matrixGridRenderer = new MatrixGridRenderer(_vm, new DelegateCommand<MatrixPreviewModel>(RemoveItem,
+                model =>
+                {
+                    if (vm.CanExecuteRemove != null) return vm.CanExecuteRemove(model);
+                    return false;
+                }));
 
             NextLayer = new DelegateCommand(NextLayerExecute);
             PrevLayer = new DelegateCommand(PrevLayerExecute);

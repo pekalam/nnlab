@@ -238,6 +238,10 @@
         <Setter Property="Margin" Value="50,40,50,40"/>
     </Style>
 
+    <Style TargetType="ContentControl" x:Key="ContentPanelWithMargin" BasedOn="{StaticResource ContentPanel}">
+        <Setter Property="Margin" Value="50,40,50,40"/>
+    </Style>
+
     <SolidColorBrush x:Key="StatusBarBackground" Color="#E2E2E2"/>
     
 </ResourceDictionary>

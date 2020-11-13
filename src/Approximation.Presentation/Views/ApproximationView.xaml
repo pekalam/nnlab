@@ -14,19 +14,19 @@
              mc:Ignorable="d" 
              d:DesignHeight="1200" d:DesignWidth="800"
              d:DataContext="{d:DesignInstance designData:DesignPredictVm, IsDesignTimeCreatable=True}"
-             prism:ViewModelLocator.AutoWireViewModel="True" Style="{StaticResource ContentUserControl}"
+             prism:ViewModelLocator.AutoWireViewModel="True"
              interface:BreadcrumbsHelper.Breadcrumb="Approximation">
-    <ContentControl Style="{StaticResource ContentPanel}">
         <ScrollViewer>
-        <Grid>
+        <ContentControl Style="{StaticResource ContentPanelWithMargin}">
+            <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-
+            
             <nnControl:NeuralNetworkControl MinHeight="400" ModelAdapter="{Binding Path=ModelAdapter}" Grid.ColumnSpan="2"/>
-
+            
             <Grid Grid.Row="1" Margin="5,5,5,40">
                 <Grid.RowDefinitions>
                     <RowDefinition/>
@@ -120,7 +120,6 @@
                     </UniformGrid>
                 </StackPanel>
         </Grid>
-        </ScrollViewer>
-    </ContentControl>
-    
+            </ContentControl>
+    </ScrollViewer>
 </UserControl>

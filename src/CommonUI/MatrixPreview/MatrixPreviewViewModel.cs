@@ -82,8 +82,9 @@ namespace SharedUI.MatrixPreview
 
         public bool CanRemoveItem
         {
-            get => _canRemoveItem;
-            set => SetProperty(ref _canRemoveItem, value);
+            get;set;
         }
+
+        public Func<MatrixPreviewModel, bool> CanExecuteRemove { get; set; }
     }
 }

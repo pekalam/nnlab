@@ -94,6 +94,7 @@ namespace Data.Application.ViewModels
                 DataSetTypes = data.SetTypes;
                 DataSetInstanceAccessor = new DataSetInstanceAccessor(_appState, DataSetType.Training);
                 DataSetPreviewAccessor = new DataSetPreviewAccessor(_appState);
+                UpdateStats(new TrainingDataStats(data));
             }, s => s switch
             {
                 nameof(TrainingData.Variables) => true,
@@ -112,7 +113,7 @@ namespace Data.Application.ViewModels
             _previewDataSetType = DataSetType.Training;
             RaisePropertyChanged(nameof(InstanceDataSetType));
             RaisePropertyChanged(nameof(PreviewDataSetType));
-            Stats = new TrainingDataStats(trainingData);
+            UpdateStats(new TrainingDataStats(trainingData));
 
             ShowLoading = false;
         }
@@ -213,21 +214,17 @@ namespace Data.Application.ViewModels
                 SetProperty(ref _previewDataSetType, value);
                 _dataSetPreviewAccessor!.ChangeDataSet(value);
                 FileDataPreview = _dataSetPreviewAccessor.GetPreview(MaxPreviewCount);
-                SetStats();
+                UpdateStats();
             }
         }
 
-        public TrainingDataStats Stats
+        private void UpdateStats(TrainingDataStats? newStats = null)
         {
-            set
+            if (newStats != null)
             {
-                _trainingDataStats = value;
-                SetStats();
+                _trainingDataStats = newStats;
             }
-        }
 
-        private void SetStats()
-        {
             Stat1 = new HeaderValueModel()
             {
                 Header = "Rows",

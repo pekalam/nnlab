@@ -12,6 +12,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
+using Common.Logging;
 
 namespace Training.Domain
 {
@@ -209,9 +210,18 @@ namespace Training.Domain
             Paused = false;
             if (!Started)
             {
-                CurrentReport = TrainingSessionReport.CreateStoppedSessionReport(Trainer.Epochs, Trainer.Error,
-                    StartTime ?? Time.Now, EpochEndEvents);
+                var report = TrainingSessionReport.CreateStoppedSessionReport(Trainer.Epochs, Trainer.Error,
+                    _session.TrainingReports.Count switch
+                    {
+                        0 => StartTime ?? Time.Now,
+                        _ => _session.TrainingReports[^1].EndDate,
+                    }, EpochEndEvents);
                 Stopped = true;
+                CurrentReport = report;
+                lock (_session)
+                {
+                    _session.TrainingReports.Add(report);
+                }
                 return Task.CompletedTask;
             }
 
@@ -241,21 +251,23 @@ namespace Training.Domain
             {
                 _elapsed += Time.Now - StartTime.Value;
 
-                CurrentReport = t.Result;
-                if (Parameters!.AddReportOnPause)
+                var report = t.Result;
+                CurrentReport = report;
+
+                if (Parameters!.AddReportOnPause || _stopRequested)
                 {
                     lock (_session)
                     {
-                        _session.TrainingReports.Add(CurrentReport);
+                        _session.TrainingReports.Add(report);
                     }
                 }
                 Started = false;
-                if (!_stopRequested)
-                    Paused = true;
-                else Stopped = true;
-                _stopRequested = false;
 
-                return CurrentReport;
+                if (_stopRequested) Stopped = true;
+                else Paused = true;
+
+                _stopRequested = false;
+                return report;
             });
             _sessionTask = sessionTask;
             return sessionTask;
@@ -308,6 +320,16 @@ namespace Training.Domain
                                 validationError = Trainer.RunValidation(_epochCts.Token);
                             }
                         }
+
+                        var arg = new EpochEndArgs
+                        {
+                            Epoch = Trainer.Epochs,
+                            Error = error,
+                            Iterations = Trainer.Iterations,
+                            ValidationError = validationError,
+                        };
+                        EpochEnd?.Invoke(this, arg);
+                        EpochEndEvents.Add(arg);
                     }
                     catch (OperationCanceledException)
                     {
@@ -322,16 +344,11 @@ namespace Training.Domain
                         return TrainingSessionReport.CreateAlgorithmErrorSessionReport(Trainer.Epochs, error,
                             StartTime!.Value, EpochEndEvents);
                     }
-
-                    var arg = new EpochEndArgs
+                    catch (Exception e)
                     {
-                        Epoch = Trainer.Epochs,
-                        Error = error,
-                        Iterations = Trainer.Iterations,
-                        ValidationError = validationError,
-                    };
-                    EpochEnd?.Invoke(this, arg);
-                    EpochEndEvents.Add(arg);
+
+                        return StoppedPausedOrMaxTime();
+                    }
 
                     if (_epochCts.IsCancellationRequested) return StoppedPausedOrMaxTime();
 

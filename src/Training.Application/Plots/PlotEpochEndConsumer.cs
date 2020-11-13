@@ -20,7 +20,7 @@ namespace Training.Application.Plots
     internal class PlotEpochEndConsumerOptions
     {
         public const int DefOnlineBufferTimeSpan = 33;
-        public const int DefOnlineBufferSize = 120;
+        public const int DefOnlineBufferSize = 300;
         public const int DefBufferingBufferSize = 10;
         public const int DefOnlineSynchTimeSpan = 33;
 

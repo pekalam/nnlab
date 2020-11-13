@@ -75,6 +75,6 @@ namespace Training.Application.ViewModels
         public ModuleState ModuleState { get; }
         public AppState AppState { get; }
 
-        public int? IterationsPerEpoch => (ModuleState.ActiveSession!.Trainer!.Algorithm as GradientDescentAlgorithm)?.BatchTrainer?.IterationsPerEpoch ?? 0;
+        public int? IterationsPerEpoch => (ModuleState.ActiveSession!.Trainer!.Algorithm as GradientDescentAlgorithm)?.IterationsPerEpoch ?? 0;
     }
 }

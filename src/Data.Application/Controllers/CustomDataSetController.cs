@@ -115,6 +115,12 @@ namespace Data.Application.Controllers
             };
         }
 
+
+        protected override void VmCreated()
+        {
+            Vm!.MatrixVm.CanExecuteRemove = (model) => _input.Count > 3;
+        }
+
         private void OnTrainingDataChanged(TrainingData data)
         {
             if (_currentSession != null)

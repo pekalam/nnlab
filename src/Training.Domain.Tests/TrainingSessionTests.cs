@@ -93,8 +93,9 @@ namespace Training.Domain.Tests
             report.EpochEndEventArgs.Should().HaveCount(report.TotalEpochs);
 
             lastErr.Should().BeLessOrEqualTo(param.TargetError);
+            _appState.ActiveSession!.TrainingReports.Count.Should().Be(1);
         }
-    
+
         [Fact]
         public async void Stop_when_called_stops_session_and_creates_report()
         {
@@ -122,8 +123,9 @@ namespace Training.Domain.Tests
             _session.Started.Should().BeFalse();
             _session.Stopped.Should().BeTrue();
             _session.CurrentReport.Should().Be(report);
+            _appState.ActiveSession!.TrainingReports.Count.Should().Be(1);
         }
-    
+
         [Fact]
         public async void Stop_when_called_stops_session_and_next_start_call_throws()
         {
@@ -177,9 +179,10 @@ namespace Training.Domain.Tests
             _session.Started.Should().BeFalse();
             _session.Trainer.Epochs.Should().NotBe(0);
             _session.CurrentReport.SessionEndType.Should().Be(SessionEndType.Paused);
+            _appState.ActiveSession!.TrainingReports.Count.Should().Be(1);
         }
-    
-    
+
+
         [Fact]
         public async void Stop_when_called_after_pause_returns()
         {
@@ -199,16 +202,19 @@ namespace Training.Domain.Tests
             catch (TrainingCanceledException)
             {
             }
-    
+            
+            Time.TimeProvider = () => DateTime.Now.Add(TimeSpan.FromMinutes(2));
+
             await _session.Stop();
 
             _session.Paused.Should().BeFalse();
             _session.Stopped.Should().BeTrue();
             _session.Started.Should().BeFalse();
             _session.CurrentReport.SessionEndType.Should().Be(SessionEndType.Stopped);
+            _appState.ActiveSession!.TrainingReports.Count.Should().Be(2);
         }
-    
-    
+
+
         [Fact]
         public async void Stop_when_not_started_returns_report()
         {
@@ -226,6 +232,7 @@ namespace Training.Domain.Tests
             _session.Stopped.Should().BeTrue();
             _session.Started.Should().BeFalse();
             _session.CurrentReport.SessionEndType.Should().Be(SessionEndType.Stopped);
+            _appState.ActiveSession!.TrainingReports.Count.Should().Be(1);
         }
     
     
@@ -245,6 +252,7 @@ namespace Training.Domain.Tests
             _session.Paused.Should().BeFalse();
             _session.Stopped.Should().BeTrue();
             _session.Started.Should().BeFalse();
+            _appState.ActiveSession!.TrainingReports.Count.Should().Be(1);
         }
 
         [Fact]
@@ -268,6 +276,7 @@ namespace Training.Domain.Tests
             _session.Stopped.Should().BeFalse();
             _session.Paused.Should().BeTrue();
             _session.Started.Should().BeFalse();
+            _appState.ActiveSession!.TrainingReports.Count.Should().Be(1);
         }
 
 
