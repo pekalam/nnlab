@@ -15,6 +15,7 @@ namespace Shell.Presentation
 
             cr.RegisterDialog<DuplicateSessionDialogView, DuplicateSessionDialogViewModel>();
             cr.RegisterDialog<CreateSessionDialogView, CreateSessionDialogViewModel>();
+            cr.RegisterDialog<AboutDialogView, AboutDialogViewModel>();
 
         }
     }

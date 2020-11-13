@@ -10,6 +10,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
+using Prism.Services.Dialogs;
 using Training.Interface;
 using Unity;
 
@@ -54,7 +55,7 @@ namespace Shell.Application.ViewModels
         }
 
         [InjectionConstructor]
-        public MainWindowViewModel(IEventAggregator ea, IRegionManager rm, NavigationBreadcrumbsViewModel navigationBreadcrumbsVm, IContentRegionHistoryService contentRegionHistory, AppState appState, StatusBarViewModel statusBarViewModel)
+        public MainWindowViewModel(IEventAggregator ea, IRegionManager rm, NavigationBreadcrumbsViewModel navigationBreadcrumbsVm, IContentRegionHistoryService contentRegionHistory, AppState appState, StatusBarViewModel statusBarViewModel, IDialogService dialogService)
         {
             _ea = ea;
             _rm = rm;
@@ -70,7 +71,12 @@ namespace Shell.Application.ViewModels
 
             ToggleHamburgerMenuCommand = new DelegateCommand(() => HamburgerMenuVisibility = HamburgerMenuVisibility == Visibility.Collapsed ? Visibility.Visible : Visibility.Collapsed);
 
-            ExitCommand = new DelegateCommand(() => System.Windows.Application.Current.MainWindow.Close());
+            ExitCommand = new DelegateCommand(() => System.Windows.Application.Current.MainWindow!.Close());
+
+            AboutCommand = new DelegateCommand(() =>
+            {
+                dialogService.ShowDialog("AboutDialogView", null, null);
+            });
 
             _ea.GetEvent<ShowFlyout>().Subscribe(args =>
             {
@@ -187,6 +193,7 @@ namespace Shell.Application.ViewModels
         public StatusBarViewModel StatusBarViewModel { get; }
         public DelegateCommand ToggleHamburgerMenuCommand { get; }
         public DelegateCommand ExitCommand { get; }
+        public DelegateCommand AboutCommand { get; }
 
         private void Navigate(int identifier)
         {

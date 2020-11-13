@@ -200,9 +200,15 @@
                                                    VerticalAlignment="Center" HorizontalAlignment="Left" />
                 </Button>
 
+                <Button Style="{StaticResource HamburgerMenuButton}" Command="{Binding AboutCommand}">
+                    About
+                </Button>
+
                 <Button Style="{StaticResource HamburgerMenuButton}" Command="{Binding ExitCommand}">
                     Exit
                 </Button>
+                
+  
             </StackPanel>
         </Border>
 
