@@ -13,6 +13,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using Common.Logging;
+using Microsoft.Extensions.Logging;
 
 namespace Training.Domain
 {
@@ -328,8 +329,8 @@ namespace Training.Domain
                             Iterations = Trainer.Iterations,
                             ValidationError = validationError,
                         };
-                        EpochEnd?.Invoke(this, arg);
                         EpochEndEvents.Add(arg);
+                        EpochEnd?.Invoke(this, arg);
                     }
                     catch (OperationCanceledException)
                     {
@@ -346,7 +347,7 @@ namespace Training.Domain
                     }
                     catch (Exception e)
                     {
-
+                        Log.Logger.LogError(e, "Exception in training session");
                         return StoppedPausedOrMaxTime();
                     }
 

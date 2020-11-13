@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace Common.Logging
 {
@@ -15,12 +16,12 @@ namespace Common.Logging
         public static void TaskSchedulerOnUnobservedTaskException(object? sender, UnobservedTaskExceptionEventArgs e)
         {
             //todo
-            Log.Fatal<string>(e.Exception!, "Unhandled exception");
+            Log.Logger.LogCritical(e.Exception!, "Unhandled exception");
         }
 
         public static void CurrentDomainOnUnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            Log.Fatal<string>((Exception)e.ExceptionObject, "Unhandled exception");
+            Log.Logger.LogCritical((Exception)e.ExceptionObject, "Unhandled exception");
         }
     }
 
