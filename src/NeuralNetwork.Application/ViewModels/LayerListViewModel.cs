@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
+using Prism.Regions;
 using Unity;
 
 namespace NeuralNetwork.Application.ViewModels
@@ -20,6 +21,7 @@ namespace NeuralNetwork.Application.ViewModels
         public int TotalNeurons { get; set; }
         public bool IsOutputLayer { get; set; }
         public bool IsAddLayerItem { get; set; }
+        public bool IsFirstLayer { get; set; }
         public ICommand? AddLayer { get; set; }
         public ICommand? RemoveLayer { get; set; }
         public ICommand? EditLayer { get; set; }
@@ -74,6 +76,14 @@ namespace NeuralNetwork.Application.ViewModels
             set => SetProperty(ref _selectedLayer, value);
         }
 
+        public override void OnNavigatedTo(NavigationContext navigationContext)
+        {
+            if (navigationContext.Parameters.ContainsKey("PreviousSelected"))
+            {
+                Controller.NavigatedFromOpened((int) navigationContext.Parameters["PreviousSelected"]);
+            }
+        }
+
         public void CreateLayers(IEnumerable<Layer> lauers)
         {
             var collection = new ObservableCollection<LayerEditorItemModel>(lauers.Select(CreateLayerModel));
@@ -92,6 +102,7 @@ namespace NeuralNetwork.Application.ViewModels
         {
             return new LayerEditorItemModel()
             {
+                IsFirstLayer = ind == 0,
                 IsOutputLayer = layer.IsOutputLayer,
                 LayerIndex = ind,
                 TotalNeurons = layer.NeuronsCount,

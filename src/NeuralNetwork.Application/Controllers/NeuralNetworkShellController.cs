@@ -8,6 +8,7 @@ using Prism.Ioc;
 using Prism.Regions;
 using Shell.Interface;
 using System;
+using Unity.Injection;
 
 namespace NeuralNetwork.Application.Controllers
 {
@@ -27,6 +28,7 @@ namespace NeuralNetwork.Application.Controllers
         private readonly IRegionManager _rm;
         private readonly AppState _appState;
         private readonly IEventAggregator _ea;
+        private LayerEditorItemModel? _openedModel;
 
         private bool _isEditorOpened;
 
@@ -56,12 +58,18 @@ namespace NeuralNetwork.Application.Controllers
             _isEditorOpened = false;
             if (_rm.Regions.ContainsRegionWithName(NeuralNetworkRegions.NetworkDownRegion))
             {
-                _rm.Regions[NeuralNetworkRegions.NetworkDownRegion].RequestNavigate("LayerListView");
+                _rm.Regions[NeuralNetworkRegions.NetworkDownRegion].RequestNavigate("LayerListView", new NavigationParameters
+                {
+                    {"PreviousSelected", _openedModel!.LayerIndex}
+                });
             }
+
+            _openedModel = null;
         }
 
         private void OpenLayerEditor(LayerEditorItemModel model)
         {
+            _openedModel = model;
             _ea.GetEvent<EnableModalNavigation>().Publish(CloseLayerEditorCommand);
             _isEditorOpened = true;
             var layer = _appState.ActiveSession!.Network!.Layers[model.LayerIndex];

@@ -25,7 +25,7 @@
                                 <Canvas.Style>
                                     <Style TargetType="Canvas">
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsAddLayerItem}" Value="True">
+                                            <DataTrigger Binding="{Binding IsFirstLayer}" Value="True">
                                                 <Setter Property="Visibility" Value="Collapsed"/>
                                             </DataTrigger>
                                         </Style.Triggers>

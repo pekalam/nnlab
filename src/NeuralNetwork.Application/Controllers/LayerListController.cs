@@ -25,6 +25,8 @@ namespace NeuralNetwork.Application.Controllers
         DelegateCommand<LayerEditorItemModel> InsertAfterCommand { get; set; }
         DelegateCommand<LayerEditorItemModel> InsertBeforeCommand { get; set; }
 
+        Action<int> NavigatedFromOpened { get; }
+
         public static void Register(IContainerRegistry cr)
         {
             cr.Register<ILayerListController, LayerListController>();
@@ -56,6 +58,11 @@ namespace NeuralNetwork.Application.Controllers
             LayerClickedCommand = new DelegateCommand<LayerEditorItemModel>(LayerClicked);
             InsertAfterCommand = new DelegateCommand<LayerEditorItemModel>(InsertAfter);
             InsertBeforeCommand = new DelegateCommand<LayerEditorItemModel>(InsertBefore);
+
+            NavigatedFromOpened = layerIndex =>
+            {
+                Vm!.SelectedLayer = Vm!.Layers[layerIndex];
+            };
         }
 
         protected override void VmCreated()
@@ -149,10 +156,7 @@ namespace NeuralNetwork.Application.Controllers
             _ea.GetEvent<IntLayerListChanged>().Publish();
         }
 
-        private void SetLayers()
-        {
-            Vm!.CreateLayers(_appState.ActiveSession!.Network!.Layers);
-        }
+        private void SetLayers() => Vm!.CreateLayers(_appState.ActiveSession!.Network!.Layers);
 
         private void AddLayer()
         {
@@ -194,5 +198,6 @@ namespace NeuralNetwork.Application.Controllers
         public DelegateCommand<LayerEditorItemModel> LayerClickedCommand { get; set; }
         public DelegateCommand<LayerEditorItemModel> InsertAfterCommand { get; set; }
         public DelegateCommand<LayerEditorItemModel> InsertBeforeCommand { get; set; }
+        public Action<int> NavigatedFromOpened { get; }
     }
 }
