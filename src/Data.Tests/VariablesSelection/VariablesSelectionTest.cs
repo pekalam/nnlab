@@ -23,6 +23,7 @@ namespace Data.Application.Tests.VariablesSelection
 
         public VariablesSelectionTest()
         {
+            _mocker.UseTestEa();
             _mocker.UseTestRm();
 
             _appState = _mocker.UseImpl<AppState>();
