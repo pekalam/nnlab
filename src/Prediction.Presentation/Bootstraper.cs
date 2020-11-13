@@ -1,8 +1,8 @@
-﻿using Prediction.Application;
-using Prediction.Presentation.Views;
+﻿using Approximation.Application;
+using Approximation.Presentation.Views;
 using Prism.Ioc;
 
-namespace Prediction.Presentation
+namespace Approximation.Presentation
 {
     public static class Bootstraper
     {
@@ -10,7 +10,7 @@ namespace Prediction.Presentation
         {
             cr.RegisterSingleton<ModuleState>();
 
-            cr.RegisterForNavigation<PredictView>();
+            cr.RegisterForNavigation<ApproximationView>();
         }
     }
 }

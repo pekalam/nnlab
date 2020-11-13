@@ -15,7 +15,7 @@
     <ProjectReference Include="..\Common.Logging\Common.Logging.csproj" />
     <ProjectReference Include="..\Data\Data.csproj" />
     <ProjectReference Include="..\NeuralNetwork\NeuralNetwork.csproj" />
-    <ProjectReference Include="..\Prediction\Prediction.csproj" />
+    <ProjectReference Include="..\Prediction\Approximation.csproj" />
     <ProjectReference Include="..\Shell\Shell.csproj" />
     <ProjectReference Include="..\Training\Training.csproj" />
   </ItemGroup>

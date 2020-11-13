@@ -180,7 +180,7 @@ namespace NeuralNetwork.Application.Controllers
             });
             _ea.GetEvent<DisableNavMenuItem>().Publish(ModuleIds.Data);
             _ea.GetEvent<DisableNavMenuItem>().Publish(ModuleIds.Training);
-            _ea.GetEvent<DisableNavMenuItem>().Publish(ModuleIds.Prediction);
+            _ea.GetEvent<DisableNavMenuItem>().Publish(ModuleIds.Approximation);
         }
 
         private void PublishValidArch()
@@ -188,7 +188,7 @@ namespace NeuralNetwork.Application.Controllers
             _ea.GetEvent<HideErrorNotification>().Publish();
             _ea.GetEvent<EnableNavMenuItem>().Publish(ModuleIds.Data);
             _ea.GetEvent<EnableNavMenuItem>().Publish(ModuleIds.Training);
-            _ea.GetEvent<EnableNavMenuItem>().Publish(ModuleIds.Prediction);
+            _ea.GetEvent<EnableNavMenuItem>().Publish(ModuleIds.Approximation);
         }
 
         public DelegateCommand AddLayerCommand { get; set; }

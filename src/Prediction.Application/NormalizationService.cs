@@ -1,9 +1,9 @@
-﻿using Common.Domain;
+﻿using System;
+using Common.Domain;
 using MathNet.Numerics.LinearAlgebra;
 using NNLib.Data;
-using System;
 
-namespace Prediction.Application
+namespace Approximation.Application
 {
     internal class NormalizationService
     {

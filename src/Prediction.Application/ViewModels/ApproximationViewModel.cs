@@ -1,4 +1,6 @@
-﻿using Common.Domain;
+﻿using System;
+using Approximation.Application.Controllers;
+using Common.Domain;
 using Common.Framework;
 using MathNet.Numerics.LinearAlgebra;
 using NNLib.Data;
@@ -8,15 +10,13 @@ using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Legends;
 using OxyPlot.Series;
-using Prediction.Application.Controllers;
 using Prism.Regions;
 using SharedUI.BasicPlot;
 using SharedUI.MatrixPreview;
-using System;
 
-namespace Prediction.Application.ViewModels
+namespace Approximation.Application.ViewModels
 {
-    public class PredictViewModel : ViewModelBase<PredictViewModel>
+    public class ApproximationViewModel : ViewModelBase<ApproximationViewModel>
     {
         private NNLibModelAdapter? _modelAdapter;
         private bool _showPlotPrediction;
@@ -28,13 +28,13 @@ namespace Prediction.Application.ViewModels
         private MatrixPreviewViewModel _outputMatrixVm = new MatrixPreviewViewModel();
 
 #pragma warning disable 8618
-        public PredictViewModel()
+        public ApproximationViewModel()
 #pragma warning restore 8618
         {
             
         }
 
-        public PredictViewModel(IPredictController controller)
+        public ApproximationViewModel(IApproximationController controller)
         {
             Controller = controller;
             PlotModel = new BasicPlotModel();
@@ -62,7 +62,7 @@ namespace Prediction.Application.ViewModels
             set => SetProperty(ref _modelAdapter, value);
         }
 
-        public IPredictController Controller { get; }
+        public IApproximationController Controller { get; }
 
         public MatrixPreviewViewModel InputMatrixVm { get; set; } = new MatrixPreviewViewModel();
 
@@ -76,7 +76,7 @@ namespace Prediction.Application.ViewModels
 
         public LineSeries DataPredictionLineSeries { get; set; } = new LineSeries()
         {
-            Title = "Prediction"
+            Title = "Approximation"
         };
 
         public ScatterSeries DataScatterSeries { get; set; } = new ScatterSeries()
@@ -89,13 +89,13 @@ namespace Prediction.Application.ViewModels
 
         public LineSeries PredictionLineSeries { get; set; } = new LineSeries()
         {
-            Title = "Prediction"
+            Title = "Approximation"
         };
 
 
         public ScatterSeries PredictionScatterSeries { get; set; } = new ScatterSeries()
         {
-            Title = "Prediction",
+            Title = "Approximation",
             MarkerType = MarkerType.Circle,
             MarkerSize = 3,
             MarkerFill = OxyColor.FromRgb(0, 255, 0),

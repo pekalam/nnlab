@@ -3,13 +3,13 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
-    <AssemblyName>Prediction</AssemblyName>
+    <AssemblyName>Approximation</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Prism.Wpf" Version="7.2.0.1422" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Prediction.Application\Prediction.Application.csproj" />
-    <ProjectReference Include="..\Prediction.Presentation\Prediction.Presentation.csproj" />
+    <ProjectReference Include="..\Prediction.Application\Approximation.Application.csproj" />
+    <ProjectReference Include="..\Prediction.Presentation\Approximation.Presentation.csproj" />
   </ItemGroup>
 </Project>

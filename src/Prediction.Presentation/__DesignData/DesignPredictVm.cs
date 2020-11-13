@@ -1,8 +1,8 @@
-﻿using Prediction.Application.ViewModels;
+﻿using Approximation.Application.ViewModels;
 
-namespace Prediction.Presentation.__DesignData
+namespace Approximation.Presentation.__DesignData
 {
-    class DesignPredictVm : PredictViewModel
+    class DesignPredictVm : ApproximationViewModel
     {
     }
 }

@@ -1,13 +1,13 @@
-﻿using Prediction.Application.Controllers;
+﻿using Approximation.Application.Controllers;
 using Prism.Ioc;
 
-namespace Prediction.Application
+namespace Approximation.Application
 {
     public static class Bootstraper
     {
         public static void RegisterTypes(IContainerRegistry cr)
         {
-            IPredictController.Register(cr);
+            IApproximationController.Register(cr);
         }
     }
 }

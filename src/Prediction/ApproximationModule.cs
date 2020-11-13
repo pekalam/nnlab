@@ -1,10 +1,10 @@
-﻿using Prediction.Application;
+﻿using Approximation.Application;
 using Prism.Ioc;
 using Prism.Modularity;
 
-namespace Prediction
+namespace Approximation
 {
-    public class PredictionModule : IModule
+    public class ApproximationModule : IModule
     {
         public void OnInitialized(IContainerProvider containerProvider)
         {
@@ -15,8 +15,8 @@ namespace Prediction
         {
             containerRegistry.RegisterSingleton<ModuleController>();
 
-            Prediction.Application.Bootstraper.RegisterTypes(containerRegistry);
-            Prediction.Presentation.Bootstraper.RegisterTypes(containerRegistry);
+            Bootstraper.RegisterTypes(containerRegistry);
+            Presentation.Bootstraper.RegisterTypes(containerRegistry);
         }
     }
 }

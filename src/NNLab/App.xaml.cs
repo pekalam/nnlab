@@ -1,7 +1,6 @@
 ﻿using Data;
 using MathNet.Numerics;
 using NeuralNetwork;
-using Prediction;
 using Prism.Ioc;
 using Prism.Modularity;
 using Prism.Mvvm;
@@ -9,6 +8,7 @@ using Shell;
 using Shell.Presentation.Views;
 using System;
 using System.Reflection;
+using Approximation;
 using Training;
 using Window = System.Windows.Window;
 
@@ -32,7 +32,7 @@ namespace Assemlber
             moduleCatalog.AddModule<DataModule>();
             moduleCatalog.AddModule<NeuralNetworkModule>();
             moduleCatalog.AddModule<TrainingModule>();
-            moduleCatalog.AddModule<PredictionModule>();
+            moduleCatalog.AddModule<ApproximationModule>();
         }
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)

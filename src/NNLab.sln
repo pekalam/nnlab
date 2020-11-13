@@ -97,13 +97,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Training.Application.Tests"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.Logging", "Common.Logging\Common.Logging.csproj", "{B0E312C4-CAD8-4711-B750-62F9F940F429}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "B. Prediction", "B. Prediction", "{20194232-0561-44FF-9160-154191DBEAA6}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "B. Approximation", "B. Approximation", "{20194232-0561-44FF-9160-154191DBEAA6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Prediction", "Prediction\Prediction.csproj", "{DEAF858B-2B3D-4F8F-9B1D-0CAF0746C9EE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Approximation", "Prediction\Approximation.csproj", "{DEAF858B-2B3D-4F8F-9B1D-0CAF0746C9EE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Prediction.Presentation", "Prediction.Presentation\Prediction.Presentation.csproj", "{471A9559-87E2-489A-ABF3-C7F75D5E2C4E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Approximation.Presentation", "Prediction.Presentation\Approximation.Presentation.csproj", "{471A9559-87E2-489A-ABF3-C7F75D5E2C4E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Prediction.Application", "Prediction.Application\Prediction.Application.csproj", "{B8F2D31D-AF3D-4F65-B0B7-FD557E155FB9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Approximation.Application", "Prediction.Application\Approximation.Application.csproj", "{B8F2D31D-AF3D-4F65-B0B7-FD557E155FB9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

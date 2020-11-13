@@ -3,7 +3,7 @@ using Prism.Events;
 using Prism.Regions;
 using Shell.Interface;
 
-namespace Prediction.Application
+namespace Approximation.Application
 {
     internal class ModuleController
     {
@@ -29,14 +29,14 @@ namespace Prediction.Application
 
             _helper.OnTrainingDataInSession(data => SendEnabledDisabledForActiveSession());
 
-            _ea.OnFirstNavigation(ModuleIds.Prediction, () =>
+            _ea.OnFirstNavigation(ModuleIds.Approximation, () =>
             {
-                _rm.NavigateContentRegion("PredictView");
+                _rm.NavigateContentRegion("ApproximationView");
             });
 
             _ea.GetEvent<ReloadContentForSession>().Subscribe(args =>
             {
-                if (args.moduleId == ModuleIds.Prediction)
+                if (args.moduleId == ModuleIds.Approximation)
                 {
                     if (_appState.ActiveSession!.TrainingData == null || _appState.ActiveSession.Network == null)
                     {
@@ -44,7 +44,7 @@ namespace Prediction.Application
                     }
                     else
                     {
-                        _rm.NavigateContentRegion("PredictView");
+                        _rm.NavigateContentRegion("ApproximationView");
                     }
 
                 }
@@ -52,11 +52,11 @@ namespace Prediction.Application
 
             _ea.GetEvent<SetupNewNavigationForSession>().Subscribe(args =>
             {
-                if (args.moduleId == ModuleIds.Prediction)
+                if (args.moduleId == ModuleIds.Approximation)
                 {
-                    _ea.OnFirstNavigation(ModuleIds.Prediction, () =>
+                    _ea.OnFirstNavigation(ModuleIds.Approximation, () =>
                     {
-                        _rm.NavigateContentRegion("PredictView");
+                        _rm.NavigateContentRegion("ApproximationView");
                     });
                 }
             });
@@ -66,11 +66,11 @@ namespace Prediction.Application
         {
             if (_appState.ActiveSession?.TrainingData != null && _appState.ActiveSession.Network != null)
             {
-                _ea.GetEvent<EnableNavMenuItem>().Publish(ModuleIds.Prediction);
+                _ea.GetEvent<EnableNavMenuItem>().Publish(ModuleIds.Approximation);
             }
             else
             {
-                _ea.GetEvent<DisableNavMenuItem>().Publish(ModuleIds.Prediction);
+                _ea.GetEvent<DisableNavMenuItem>().Publish(ModuleIds.Approximation);
             }
         }
     }

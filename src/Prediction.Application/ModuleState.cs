@@ -1,13 +1,13 @@
-﻿using Common.Domain;
-using Prediction.Application.Controllers;
+﻿using System.Collections.Generic;
+using Approximation.Application.Controllers;
+using Common.Domain;
 using Prism.Mvvm;
-using System.Collections.Generic;
 
-namespace Prediction.Application
+namespace Approximation.Application
 {
     public class ModuleState : BindableBase
     {
-        private readonly Dictionary<Session, PredictControllerMemento> _predictMementos = new Dictionary<Session, PredictControllerMemento>();
+        private readonly Dictionary<Session, ApproximationControllerMemento> _predictMementos = new Dictionary<Session, ApproximationControllerMemento>();
         private readonly AppState _appState;
 
         public ModuleState(AppState appState)
@@ -15,14 +15,14 @@ namespace Prediction.Application
             _appState = appState;
         }
 
-        public PredictControllerMemento? GetSessionPredictMemento()
+        public ApproximationControllerMemento? GetSessionPredictMemento()
         {
             return _predictMementos.ContainsKey(_appState.ActiveSession!)
                 ? _predictMementos[_appState.ActiveSession!]
                 : null;
         }
 
-        public void SetSessionPredictMemento(Session session, PredictControllerMemento memento)
+        public void SetSessionPredictMemento(Session session, ApproximationControllerMemento memento)
         {
             _predictMementos[session] = memento;
         }

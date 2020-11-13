@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Prediction.Presentation.Views.PredictView"
+﻿<UserControl x:Class="Approximation.Presentation.Views.ApproximationView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:prism="http://prismlibrary.com/"
@@ -6,16 +6,16 @@
              xmlns:matrixPreview="clr-namespace:SharedUI.MatrixPreview;assembly=SharedUI"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:designData="clr-namespace:Prediction.Presentation.__DesignData"
              xmlns:interface="clr-namespace:Shell.Interface;assembly=Shell.Interface"
              xmlns:basicPlot="clr-namespace:SharedUI.BasicPlot;assembly=SharedUI" xmlns:sharedui="clr-namespace:SharedUI;assembly=SharedUI"
              xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:behaviors="clr-namespace:Common.Presentation.Behaviors;assembly=Common.Presentation"
+             xmlns:designData="clr-namespace:Approximation.Presentation.__DesignData"
              mc:Ignorable="d" 
              d:DesignHeight="1200" d:DesignWidth="800"
              d:DataContext="{d:DesignInstance designData:DesignPredictVm, IsDesignTimeCreatable=True}"
              prism:ViewModelLocator.AutoWireViewModel="True" Style="{StaticResource ContentUserControl}"
-             interface:BreadcrumbsHelper.Breadcrumb="Predict">
+             interface:BreadcrumbsHelper.Breadcrumb="Approximation">
     <ContentControl Style="{StaticResource ContentPanel}">
         <ScrollViewer>
         <Grid>
@@ -46,7 +46,7 @@
                     <TextBlock Text="Output" HorizontalAlignment="Center" FontSize="22"/>
                     <matrixPreview:MatrixPreviewView DataContext="{Binding OutputMatrixVm}" Editable="True" LayerSelectPanelVisibility="Collapsed" MatrixTypePanelVisibility="Collapsed"/>
                 </StackPanel>
-                <Button Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1" Margin="0,16,0,0" HorizontalAlignment="Center" Height="40" Width="100" Command="{Binding Controller.PredictCommand}">Predict</Button>
+                    <Button Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1" Margin="0,16,0,0" HorizontalAlignment="Center" Height="40" Width="130" Command="{Binding Controller.CalculateOutputCommand}">Calculate output</Button>
             </Grid>
 
             <StackPanel Grid.Row="2">
@@ -115,7 +115,7 @@
                                 </TextBox.Text>
                             </TextBox>
                         </StackPanel>
-                        <Button Content="Plot prediction" Command="{Binding Controller.PredictPlotCommand}"
+                        <Button Content="Plot output" Command="{Binding Controller.PlotOutputCommand}"
                                  CommandParameter="{Binding SelectedPlotSetType}" Margin="10" Height="40" Width="120"/>
                     </UniformGrid>
                 </StackPanel>

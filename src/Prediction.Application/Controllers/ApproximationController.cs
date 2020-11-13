@@ -1,34 +1,34 @@
-﻿using Common.Domain;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
+using Approximation.Application.ViewModels;
+using Common.Domain;
 using Common.Framework;
 using MathNet.Numerics.LinearAlgebra;
 using NNLib.Data;
 using NNLib.MLP;
 using OxyPlot;
 using OxyPlot.Series;
-using Prediction.Application.ViewModels;
 using Prism.Commands;
 using Prism.Ioc;
 using Prism.Regions;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 using IController = Common.Framework.IController;
 
-namespace Prediction.Application.Controllers
+namespace Approximation.Application.Controllers
 {
-    public interface IPredictController : IController
+    public interface IApproximationController : IController
     {
-        DelegateCommand PredictCommand { get; }
+        DelegateCommand CalculateOutputCommand { get; }
         Action<NavigationContext> Navigated { get; set; }
 
-        DelegateCommand<DataSetType?> PredictPlotCommand { get; }
+        DelegateCommand<DataSetType?> PlotOutputCommand { get; }
 
         public static void Register(IContainerRegistry cr)
         {
-            cr.Register<IPredictController, PredictController>();
+            cr.Register<IApproximationController, ApproximationController>();
 
         }
     }
@@ -44,7 +44,7 @@ namespace Prediction.Application.Controllers
         }
     }
 
-    public class PredictControllerMemento
+    public class ApproximationControllerMemento
     {
         public double Interval { get; set; }
         public Matrix<double> InputMatrix { get; set; } = null!;
@@ -58,7 +58,7 @@ namespace Prediction.Application.Controllers
         public DataSetType[]? PlotSetTypes { get; set; } 
     }
 
-    class PredictController : ControllerBase<PredictViewModel>, IPredictController
+    class ApproximationController : ControllerBase<ApproximationViewModel>, IApproximationController
     {
         private readonly AppState _appState;
         private readonly ModuleState _moduleState;
@@ -67,16 +67,16 @@ namespace Prediction.Application.Controllers
 
         private bool _initialized;
 
-        public PredictController(AppState appState, ModuleState moduleState, NormalizationService normalizationService)
+        public ApproximationController(AppState appState, ModuleState moduleState, NormalizationService normalizationService)
         {
             _appState = appState;
             _helper = new AppStateHelper(appState);
             _moduleState = moduleState;
             _normalizationService = normalizationService;
 
-            PredictCommand = new DelegateCommand(Predict);
+            CalculateOutputCommand = new DelegateCommand(Predict);
             Navigated = NavigatedAction;
-            PredictPlotCommand = new DelegateCommand<DataSetType?>(PredictPlot);
+            PlotOutputCommand = new DelegateCommand<DataSetType?>(PredictPlot);
         }
         
         protected override void VmCreated()
@@ -86,7 +86,7 @@ namespace Prediction.Application.Controllers
 
         private void VmOnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(PredictViewModel.SelectedPlotSetType))
+            if (e.PropertyName == nameof(ApproximationViewModel.SelectedPlotSetType))
             {
                 UpdateStartEndValue(Vm!.SelectedPlotSetType);
             }
@@ -160,7 +160,7 @@ namespace Prediction.Application.Controllers
 
         }
 
-        public void SetMemento(PredictControllerMemento memento)
+        public void SetMemento(ApproximationControllerMemento memento)
         {
             Vm!.Interval = memento.Interval;
             Vm!.SelectedPlotSetType = memento.SelectedPlotSetType;
@@ -239,7 +239,7 @@ namespace Prediction.Application.Controllers
                 {
                     while (start <= Vm!.EndValue)
                     {
-                        var x = _normalizationService.ToNetworkDataNormalization(Matrix<double>.Build.Dense(1, 1, start));
+                        var x = _normalizationService.ToNetworkDataNormalization(Matrix<double>.Build.Dense((int) 1, (int) 1, (double) start));
                         network.CalculateOutput(x);
                         predLine.Add(new DataPoint(start, network.Output![0, 0]));
                         predScatter.Add(new ScatterPoint(start, network.Output![0, 0]));
@@ -267,9 +267,9 @@ namespace Prediction.Application.Controllers
         }
 
 
-        public PredictControllerMemento GetMemento()
+        public ApproximationControllerMemento GetMemento()
         {
-            return new PredictControllerMemento()
+            return new ApproximationControllerMemento()
             {
                 Interval = Vm!.Interval,
                 InputMatrix = Vm!.InputMatrixVm.Controller.AssignedMatrix!,
@@ -282,8 +282,8 @@ namespace Prediction.Application.Controllers
             };
         }
 
-        public DelegateCommand PredictCommand { get; }
+        public DelegateCommand CalculateOutputCommand { get; }
         public Action<NavigationContext> Navigated { get; set; }
-        public DelegateCommand<DataSetType?> PredictPlotCommand { get; }
+        public DelegateCommand<DataSetType?> PlotOutputCommand { get; }
     }
 }
