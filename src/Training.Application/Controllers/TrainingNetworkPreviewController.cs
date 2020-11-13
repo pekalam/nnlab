@@ -108,6 +108,13 @@ namespace Training.Application.Controllers
 
         private void NavigatedAction(NavigationContext obj)
         {
+            InitializeEpochEndConsumer();
+
+            _moduleState.ActiveSessionChanged += ModuleStateOnActiveSessionChanged;
+        }
+
+        private void InitializeEpochEndConsumer()
+        {
             _epochEndConsumer = new PlotEpochEndConsumer(_moduleState, (_, __) => _epochEndCallback!(),
                 session => { SetupAnimation(); },
                 session =>
@@ -122,8 +129,6 @@ namespace Training.Application.Controllers
                         Vm!.ModelAdapter!.Controller.Color.ApplyColors, DispatcherPriority.Background);
                 });
             _epochEndConsumer.Initialize();
-
-            _moduleState.ActiveSessionChanged += ModuleStateOnActiveSessionChanged;
         }
 
         private void ClearColors()
@@ -141,6 +146,7 @@ namespace Training.Application.Controllers
             else
             {
                 SetupAnimation();
+                InitializeEpochEndConsumer();
             }
         }
 
