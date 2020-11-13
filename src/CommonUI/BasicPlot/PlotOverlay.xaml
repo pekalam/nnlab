@@ -5,7 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              mc:Ignorable="d" 
-             d:DesignWidth="450">
+             d:DesignWidth="450"
+             x:Name="root">
     <UserControl.Resources>
         <Style TargetType="{x:Type Button}" x:Key="DefaultBtnStyle">
             <Setter Property="Width" Value="26"/>
@@ -29,18 +30,6 @@
             <iconPacks:FontAwesome Kind="CameraSolid"/>
         </Button>
         <Button Background="#A514202B" Foreground="#FFFFFF" Name="SettingsBtn" Click="SettingsBtn_Click" Visibility="{Binding SettingsVisibility}" ToolTip="Settings">
-            <Button.Style>
-                <Style BasedOn="{StaticResource DefaultBtnStyle}" TargetType="{x:Type Button}">
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding PlotModel.DisplaySettingsRegion}" Value="True">
-                            <Setter Property="Visibility" Value="Visible"></Setter>
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding PlotModel.DisplaySettingsRegion}" Value="False">
-                            <Setter Property="Visibility" Value="Collapsed"></Setter>
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Button.Style>
             <iconPacks:FontAwesome Kind="CogSolid"/>
         </Button>
         <Button Background="#A514202B" Foreground="#FFFFFF" Name="NewWindowBtn" Click="NewWindowBtn_Click" Visibility="{Binding NewWindowVisibility}" ToolTip="Open in new window">

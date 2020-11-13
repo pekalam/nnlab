@@ -9,6 +9,7 @@
              xmlns:dd="clr-namespace:Data.Presentation.__DesignData"
              xmlns:helpers="clr-namespace:Common.Presentation.Helpers;assembly=Common.Presentation"
              xmlns:basicPlot="clr-namespace:SharedUI.BasicPlot;assembly=SharedUI"
+             xmlns:validationRules="clr-namespace:Common.Presentation.ValidationRules;assembly=Common.Presentation"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance dd:DesignStatisticsVm, IsDesignTimeCreatable=True}"
              prism:ViewModelLocator.AutoWireViewModel="True">
@@ -44,8 +45,16 @@
             <StackPanel Margin="0,0,0,22" Orientation="Horizontal">
                 <StackPanel Margin="0,0,22,0">
                     <TextBlock  Margin="0,0,0,8" Text="Bin width" VerticalAlignment="Center" />
-                    <TextBox Text="{Binding Path=HistogramVm.BinWidth, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
-                             helpers:TextboxHelpers.UpdateSourceOnReturnKeyProperty="True" Width="60" VerticalAlignment="Center" />
+                    <TextBox 
+                             helpers:TextboxHelpers.UpdateSourceOnReturnKeyProperty="True" Width="60" VerticalAlignment="Center">
+                        <TextBox.Text>
+                            <Binding Path="HistogramVm.BinWidth" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged" ValidatesOnExceptions="True">
+                                <Binding.ValidationRules>
+                                    <validationRules:FloatValidationRule ValidationStep="RawProposedValue" />
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
                 </StackPanel>
             <StackPanel>
                 <TextBlock Margin="0,0,0,8" Text="Variable"/>

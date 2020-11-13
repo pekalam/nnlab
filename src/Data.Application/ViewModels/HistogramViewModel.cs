@@ -1,4 +1,5 @@
-﻿using OxyPlot.Axes;
+﻿using System;
+using OxyPlot.Axes;
 using Prism.Mvvm;
 using SharedUI.BasicPlot;
 
@@ -35,7 +36,14 @@ namespace Data.Application.ViewModels
         public double BinWidth
         {
             get => _binWidth;
-            set => SetProperty(ref _binWidth, value);
+            set
+            {
+                if (value <= 0)
+                {
+                    throw new ArgumentException("Bin width must be greater than 0");
+                }
+                SetProperty(ref _binWidth, value);
+            }
         }
     }
 }

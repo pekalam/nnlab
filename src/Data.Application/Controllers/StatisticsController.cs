@@ -44,10 +44,12 @@ namespace Data.Application.Controllers.DataSource
             {
                 if(data.Source == TrainingDataSource.Memory) return;
 
-                Vm!.DataSetTypes = data.SetTypes;
-                Vm!.SelectedDataSetType = DataSetType.Training;
+                SetTrainingData();
 
-                _histogramCtrl.PlotColumnDataOnHistogram(Vm!.HistogramVm.SelectedVariable!, Vm!.SelectedDataSetType);
+                // Vm!.DataSetTypes = data.SetTypes;
+                // Vm!.SelectedDataSetType = DataSetType.Training;
+                //
+                // _histogramCtrl.PlotColumnDataOnHistogram(Vm!.HistogramVm.SelectedVariable!, Vm!.SelectedDataSetType);
             }, s => s switch
             {
                 nameof(TrainingData.Variables) => true,

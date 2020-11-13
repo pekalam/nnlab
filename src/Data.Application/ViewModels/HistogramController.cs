@@ -73,6 +73,9 @@ namespace Data.Application.ViewModels
             var hs = new HistogramSeries()
             {
                 Title = $"{columnName}",
+                StrokeThickness = 1,
+                StrokeColor = OxyColors.Black,
+                EdgeRenderingMode = EdgeRenderingMode.PreferGeometricAccuracy,
             };
 
             var items = CollectHistogramItems(vectorSet, varIndex);

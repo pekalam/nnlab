@@ -11,6 +11,8 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using Prism.Events;
+using Shell.Interface;
 
 namespace Data.Application.Controllers
 {
@@ -33,10 +35,15 @@ namespace Data.Application.Controllers
         private readonly AppState _appState;
         private readonly ITrainingDataService _dataService;
 
-        public DataSetDivisionController( ITrainingDataService dataService, AppState appState)
+        public DataSetDivisionController( ITrainingDataService dataService, AppState appState, IEventAggregator ea)
         {
             _dataService = dataService;
             _appState = appState;
+
+            ea.GetEvent<PreviewCheckNavMenuItem>().Subscribe(args =>
+            {
+                ea.GetEvent<HideFlyout>().Publish();
+            });
 
             DivideFileDataCommand =
                 new DelegateCommand<string>(s => DivideFileData(s), _ => CanDivide());

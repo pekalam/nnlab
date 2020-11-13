@@ -11,6 +11,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows.Input;
+using Prism.Events;
+using Shell.Interface;
 
 namespace Data.Application.Controllers
 {
@@ -31,13 +33,18 @@ namespace Data.Application.Controllers
         private readonly ITrainingDataService _dsService;
         private readonly INormalizationDomainService _normalizationService;
 
-        public VariablesSelectionController(AppState appState, ITrainingDataService dsService, INormalizationDomainService normalizationService)
+        public VariablesSelectionController(AppState appState, ITrainingDataService dsService, INormalizationDomainService normalizationService, IEventAggregator ea)
         {
             _appState = appState;
             _dsService = dsService;
             _normalizationService = normalizationService;
 
             IgnoreAllCommand = new DelegateCommand(IgnoreAll);
+
+            ea.GetEvent<PreviewCheckNavMenuItem>().Subscribe(args =>
+            {
+                ea.GetEvent<HideFlyout>().Publish();
+            });
         }
 
         public ICommand IgnoreAllCommand { get; set; }

@@ -10,6 +10,7 @@ using OxyPlot.Series;
 using Prism.Regions;
 using SharedUI.BasicPlot;
 using System.Collections.Generic;
+using System.Data;
 using System.Threading;
 using OxyPlot.Annotations;
 using OxyPlot.Legends;
@@ -67,11 +68,16 @@ namespace Training.Application.ViewModels
 
     internal class VecNumPlot : IOutputPlot
     {
-        private TrainingSession _session = null!;
+        private TrainingSession? _session;
         private ScatterSeries _output = null!;
         private ElementCollection<Annotation> _annotations;
 
         public void OnEpochEnd(IList<EpochEndArgs> args, OutputPlotViewModel vm, CancellationToken ct)
+        {
+            PlotPoints(vm, _session!.TrainingData!, _session.Network!, DataSetType.Training);
+        }
+
+        private void PlotPoints(OutputPlotViewModel vm, TrainingData trainingData, MLPNetwork network, DataSetType setType)
         {
             _output.Points.Clear();
             _annotations.Clear();
@@ -88,9 +94,8 @@ namespace Training.Application.ViewModels
             vm.PlotModel.Annotations.Add(zeroLine);
 
 
-            var network = _session.Network!;
-            var input = _session.TrainingData!.Sets.TrainingSet.Input;
-            var target = _session.TrainingData!.Sets.TrainingSet.Target;
+            var input = trainingData.GetSet(setType)!.Input;
+            var target = trainingData.GetSet(setType)!.Target;
 
 
             var dataPoints = new ScatterPoint[input.Count];
@@ -98,24 +103,19 @@ namespace Training.Application.ViewModels
             {
                 network.CalculateOutput(input[i]);
 
-                dataPoints[i] = new ScatterPoint(i, target[i][0,0] - network.Output![0, 0]);
+                dataPoints[i] = new ScatterPoint(i, target[i][0, 0] - network.Output![0, 0]);
 
                 var annotation = new LineAnnotation();
-                annotation.Color = OxyColors.Blue;
+                annotation.Color = OxyColors.Red;
                 annotation.MinimumY = 0;
                 annotation.MaximumY = dataPoints[i].Y;
                 annotation.X = dataPoints[i].X;
                 annotation.LineStyle = LineStyle.Solid;
                 annotation.Type = LineAnnotationType.Vertical;
                 _annotations.Add(annotation);
-
-
             }
+
             _output.Points.AddRange(dataPoints);
-
-
-
-
         }
 
         public void OnSessionStarting(OutputPlotViewModel vm, TrainingSession session, CancellationToken ct)
@@ -133,18 +133,24 @@ namespace Training.Application.ViewModels
 
         public void GeneratePlot(DataSetType set, TrainingData trainingData, MLPNetwork net, OutputPlotViewModel vm)
         {
+            InitPlot(vm, trainingData);
+            PlotPoints(vm, trainingData,net,set);
         }
 
         public void CreateForSession(TrainingSession session, OutputPlotViewModel vm)
         {
             _session = session;
+            InitPlot(vm, session.TrainingData!);
+        }
 
+        private void InitPlot(OutputPlotViewModel vm, TrainingData trainingData)
+        {
             vm.PlotType = OutputPlotType.VecNum;
             vm.PlotModel.Series.Clear();
             vm.PlotModel.Annotations.Clear();
             vm.PlotModel.Title = "Accuracy";
 
-            var input = _session.TrainingData!.Sets.TrainingSet.Input;
+            var input = trainingData.Sets.TrainingSet.Input;
 
             vm.PlotModel.Axes.Clear();
             vm.PlotModel.Axes.Add(new LinearAxis()

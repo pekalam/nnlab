@@ -45,7 +45,8 @@ namespace BasicPlotTest
                 PlotAreaBackground = OxyColor.Parse("#FFFFFF"),
                 PlotMargins = new OxyThickness(80, Double.NaN, Double.NaN, Double.NaN),
             },
-            Controller = new PlotController()
+            Controller = new PlotController(),
+            DisplaySettingsRegion = false,
         };
     }
 }
