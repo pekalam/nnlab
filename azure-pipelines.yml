@@ -14,6 +14,10 @@ variables:
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
+  bin64FolderName: 'bin64'
+  bin86FolderName: 'bin86'
+  release64FolderName: 'x64Release'
+  release86FolderName: 'x86Release'
 
 steps:
 - task: UseDotNet@2
@@ -38,31 +42,33 @@ steps:
   inputs:
     command: 'publish'
     publishWebProjects: false
-    projects: 'src\NNLab\*.csproj'
-    arguments: '-c Release -r win-x64 -o x64AppRelease -p:PublishSingleFile=true'
+    projects: 'src\Assembler\*.csproj'
+    arguments: '-c Release -r win-x64 -o ${{ variables.release64FolderName }}\${{ variables.bin64FolderName }}'
+    zipAfterPublish: false
+    modifyOutputPath: false
 - task: DotNetCoreCLI@2
   displayName: 'Run dotnet publish win-x86'
   inputs:
     command: 'publish'
     publishWebProjects: false
-    projects: 'src\NNLab\*.csproj'
-    arguments: '-c Release -r win-x86 -o x86AppRelease -p:PublishSingleFile=true'
+    projects: 'src\Assembler\*.csproj'
+    arguments: '-c Release -r win-x86 -o ${{ variables.release86FolderName }}\${{ variables.bin86FolderName }}'
+    zipAfterPublish: false
+    modifyOutputPath: false
 - task: CmdLine@2
   inputs:
     script: |
-      cd .\src\NNLab\x64AppRelease\
-      ren .\Assembler.exe NNLab.exe
-      cd ..\x86AppRelease
-      ren .\Assembler.exe NNLab.exe
+      ren ${{ variables.release64FolderName }}\${{ variables.bin64FolderName }}\Assembler.exe NNLab.exe
+      ren ${{ variables.release86FolderName }}\${{ variables.bin86FolderName }}\Assembler.exe NNLab.exe
 - task: PublishBuildArtifacts@1
   displayName: 'Publish x64 build artifacts'
   inputs:
-    PathtoPublish: '$(System.DefaultWorkingDirectory)\x64AppRelease'
+    PathtoPublish: '$(System.DefaultWorkingDirectory)\${{ variables.release64FolderName }}'
     ArtifactName: 'x64AppRelease'
     publishLocation: 'Container'
 - task: PublishBuildArtifacts@1
   displayName: 'Publish x86 build artifacts'  
   inputs:
-    PathtoPublish: '$(System.DefaultWorkingDirectory)\x86AppRelease'
+    PathtoPublish: '$(System.DefaultWorkingDirectory)\${{ variables.release86FolderName }}'
     ArtifactName: 'x86AppRelease'
     publishLocation: 'Container'

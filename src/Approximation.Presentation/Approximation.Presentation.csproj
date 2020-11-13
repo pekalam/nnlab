@@ -7,7 +7,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Common.Presentation\Common.Presentation.csproj" />
     <ProjectReference Include="..\CommonUI\SharedUI.csproj" />
-    <ProjectReference Include="..\Prediction.Application\Approximation.Application.csproj" />
+    <ProjectReference Include="..\Approximation.Application\Approximation.Application.csproj" />
   </ItemGroup>
 
 </Project>

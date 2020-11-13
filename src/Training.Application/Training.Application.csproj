@@ -20,7 +20,7 @@
     <ProjectReference Include="..\Training.Interface\Training.Interface.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="NNLibAdapter" Version="1.0.52" />
+    <PackageReference Include="NNLibAdapter" Version="1.0.53" />
     <PackageReference Include="System.Reactive" Version="4.4.1" />
   </ItemGroup>
 </Project>

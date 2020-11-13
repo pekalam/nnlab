@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30204.135
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Assemlber", "NNLab\Assemlber.csproj", "{21DC1678-DADC-4801-85BB-C6BCEF203D9D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Assemlber", "Assembler\Assemlber.csproj", "{21DC1678-DADC-4801-85BB-C6BCEF203D9D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "A. Common", "A. Common", "{5444BEEC-50B2-4D40-915A-BF73E5775651}"
 EndProject
@@ -27,7 +27,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BasicPlotTest", "BasicPlotT
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MatrixPreviewTest", "MatrixPreviewTest\MatrixPreviewTest.csproj", "{28FC6643-7481-43AE-B7B4-8B202D1E7A71}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shell.Application.Tests", "NNLab.Tests\Shell.Application.Tests.csproj", "{3BB8ED4E-8A73-4559-AF51-5481C323D18C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shell.Application.Tests", "Shell.Application.Tests\Shell.Application.Tests.csproj", "{3BB8ED4E-8A73-4559-AF51-5481C323D18C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "C. Shell", "C. Shell", "{23B4C127-5737-4663-BB86-A43DFEE350CF}"
 EndProject
@@ -97,11 +97,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.Logging", "Common.Lo
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "B. Approximation", "B. Approximation", "{20194232-0561-44FF-9160-154191DBEAA6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Approximation", "Prediction\Approximation.csproj", "{DEAF858B-2B3D-4F8F-9B1D-0CAF0746C9EE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Approximation", "Approximation\Approximation.csproj", "{DEAF858B-2B3D-4F8F-9B1D-0CAF0746C9EE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Approximation.Presentation", "Prediction.Presentation\Approximation.Presentation.csproj", "{471A9559-87E2-489A-ABF3-C7F75D5E2C4E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Approximation.Presentation", "Approximation.Presentation\Approximation.Presentation.csproj", "{471A9559-87E2-489A-ABF3-C7F75D5E2C4E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Approximation.Application", "Prediction.Application\Approximation.Application.csproj", "{B8F2D31D-AF3D-4F65-B0B7-FD557E155FB9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Approximation.Application", "Approximation.Application\Approximation.Application.csproj", "{B8F2D31D-AF3D-4F65-B0B7-FD557E155FB9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
