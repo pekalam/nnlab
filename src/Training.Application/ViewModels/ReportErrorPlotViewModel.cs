@@ -44,6 +44,7 @@ namespace Training.Application.ViewModels
         {
             Service = service;
             BasicPlotModel = new BasicPlotModel();
+            BasicPlotModel.DisplaySettingsRegion = false;
             BasicPlotModel.Model.Series.Add(Series);
             BasicPlotModel.Model.Title = "Network error";
             BasicPlotModel.Model.Axes.Add(new LinearAxis()

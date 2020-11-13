@@ -6,6 +6,6 @@
              prism:ViewModelLocator.AutoWireViewModel="True">
   <Grid>
       <TextBlock Text="erer"/>
-      <basicPlot:BasicPlot PlotModel="{Binding BasicPlotModel}" />
+      <basicPlot:BasicPlot PlotModel="{Binding BasicPlotModel}"/>
   </Grid>
 </UserControl>

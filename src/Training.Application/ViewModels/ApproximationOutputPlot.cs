@@ -29,15 +29,14 @@ namespace Training.Application.ViewModels
 
         public void OnEpochEnd(IList<EpochEndArgs> args, OutputPlotViewModel vm, CancellationToken ct)
         {
-            PlotDataPoints(_session!.Network!);
+            PlotDataPoints(_session!.Network!, _session.TrainingData!);
         }
 
-        private void PlotDataPoints(MLPNetwork network)
+        private void PlotDataPoints(MLPNetwork network, TrainingData data)
         {
-            Debug.Assert(_session != null, nameof(_session) + " != null");
 
-            var input = _session.TrainingData!.Sets.TrainingSet.Input;
-            var orgInput = _session.TrainingData!.OriginalSets.TrainingSet.Input;
+            var input = data.Sets.TrainingSet.Input;
+            var orgInput = data.OriginalSets.TrainingSet.Input;
             var dataPoints = new DataPoint[input.Count];
 
             for (int i = 0; i < input.Count; i++)
@@ -132,7 +131,7 @@ namespace Training.Application.ViewModels
 
             InitPlot(trainingData, set, vm);
 
-            PlotDataPoints(net);
+            PlotDataPoints(net, trainingData);
         }
 
         public void CreateForSession(TrainingSession session, OutputPlotViewModel vm)
