@@ -55,7 +55,7 @@ namespace NeuralNetwork.Application.Controllers
             _assignedNetwork = navParams.Network;
 
             var method = ParamsInitMethodAssembler.FromMatrixBuilder(layer.MatrixBuilder);
-            var model = new LayerDetailsModel(layer, navParams.Network.BaseLayers[0] == layer)
+            var model = new LayerDetailsModel(layer, navParams.Network.BaseLayers[0] == layer, navParams.Network.BaseLayers[^1] == layer)
             {
                 NeuronsCount = layer.NeuronsCount,
                 InputsCount = layer.InputsCount,

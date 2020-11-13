@@ -25,10 +25,11 @@ namespace NeuralNetwork.Application.ViewModels
         private ParamsInitMethod[] _paramsInitMethods;
 
 
-        public LayerDetailsModel(Layer layer, bool isFirstLayer)
+        public LayerDetailsModel(Layer layer, bool isFirstLayer, bool isLastLayer)
         {
             Layer = layer;
             ShowInputsCount = isFirstLayer;
+            ShowNeuronsCount = !isLastLayer;
         }
 
         public Layer Layer { get; }
@@ -70,6 +71,7 @@ namespace NeuralNetwork.Application.ViewModels
         }
 
         public bool ShowInputsCount { get; }
+        public bool ShowNeuronsCount { get; }
     }
 
     public class LayerEditorNavParams : NavigationParameters

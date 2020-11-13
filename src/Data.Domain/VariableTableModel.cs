@@ -10,6 +10,10 @@ namespace Data.Domain
 {
     public class VariableTableModel : BindableBase, IDataErrorInfo
     {
+        private const string NoTargetVariableErrorMsg = "No target variable";
+        private const string NoInputVariableErrorMsg = "No input variable";
+        private const string TwoTargetVariablesErrorMsg = "Two target variables are not supported";
+
         private VariableUses _variableUse;
 
         private VariableTableModel(VariableUses initialVariableUse)
@@ -67,7 +71,7 @@ namespace Data.Domain
                 {
                     if(model != this && model.Error != null) model.RaisePropertyChanged(nameof(VariableUse));
                 }
-                if(!CheckHasNoInputVars() && !CheckHasNoTargetVars()) OnVariableUseSet?.Invoke(this);
+                if(!CheckHasNoInputVars() && !CheckHasNoTargetVars() && !CheckHasOneTargetVar()) OnVariableUseSet?.Invoke(this);
             }
         }
 
@@ -77,6 +81,9 @@ namespace Data.Domain
         private bool CheckHasNoTargetVars() => VariableUse != VariableUses.Target &&
                                              ContainingArray.All(v => v.VariableUse != VariableUses.Target);
 
+        private bool CheckHasOneTargetVar() => VariableUse == VariableUses.Target &&
+                                               ContainingArray.Any(v => v != this && v.VariableUse == VariableUses.Target);
+
         public string? Error { get; private set; }
         public string? this[string columnName]
         {
@@ -84,13 +91,19 @@ namespace Data.Domain
             {
                 if (CheckHasNoInputVars())
                 {
-                    OnError?.Invoke("No input variable");
-                    return Error = "No input variable";
+                    OnError?.Invoke(NoInputVariableErrorMsg);
+                    return Error = NoInputVariableErrorMsg;
                 }
                 if (CheckHasNoTargetVars())
                 {
-                    OnError?.Invoke("No target variable");
-                    return Error = "No target variable";
+                    OnError?.Invoke(NoTargetVariableErrorMsg);
+                    return Error = NoTargetVariableErrorMsg;
+                }
+
+                if (CheckHasOneTargetVar())
+                {
+                    OnError?.Invoke(TwoTargetVariablesErrorMsg);
+                    return Error = TwoTargetVariablesErrorMsg;
                 }
 
                 OnError?.Invoke(null);

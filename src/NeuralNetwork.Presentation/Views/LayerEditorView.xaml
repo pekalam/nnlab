@@ -45,7 +45,7 @@
         <UniformGrid Grid.Row="0" Grid.ColumnSpan="2" Columns="2" Margin="0,0,0,12">
             <TextBlock Text="Neurons" HorizontalAlignment="Left" VerticalAlignment="Center"
                        Style="{StaticResource Title}" />
-            <mah:NumericUpDown Grid.Row="0" Grid.Column="1" Minimum="1" HorizontalAlignment="Stretch" MinWidth="120"
+            <mah:NumericUpDown Grid.Row="0" Grid.Column="1" Minimum="1" HorizontalAlignment="Stretch" MinWidth="120" IsEnabled="{Binding Path=Layer.ShowNeuronsCount}"
                                Value="{Binding Path=Layer.NeuronsCount, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                VerticalAlignment="Center" Height="26" />
             <TextBlock Text="Activation function" HorizontalAlignment="Left" Style="{StaticResource Title}"
