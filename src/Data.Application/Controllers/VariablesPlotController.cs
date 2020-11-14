@@ -70,7 +70,7 @@ namespace Data.Application.Controllers
                     StrokeThickness = 1,
                     Color = _pallete.Colors[pal++],
                     Title = args.Variables.Names[varInd],
-                    EdgeRenderingMode = EdgeRenderingMode.PreferGeometricAccuracy,
+                    EdgeRenderingMode = EdgeRenderingMode.PreferSpeed,
                 };
             }
 

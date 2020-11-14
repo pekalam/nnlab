@@ -77,12 +77,12 @@ namespace Approximation.Application.ViewModels
 
         public LineSeries DataPredictionLineSeries { get; set; } = new LineSeries()
         {
-            Title = "Approximation"
+            Title = "Approximation of network output (data)"
         };
 
         public ScatterSeries DataScatterSeries { get; set; } = new ScatterSeries()
         {
-            Title = "Original data",
+            Title = "Training data",
             MarkerType = MarkerType.Circle,
             MarkerSize = 3,
             MarkerFill = OxyColor.FromRgb(0, 0, 255),
@@ -90,13 +90,14 @@ namespace Approximation.Application.ViewModels
 
         public LineSeries PredictionLineSeries { get; set; } = new LineSeries()
         {
-            Title = "Approximation"
+            Title = "Approximation of network output",
+            Color = OxyColor.FromRgb(0,0,0),
         };
 
 
         public ScatterSeries PredictionScatterSeries { get; set; } = new ScatterSeries()
         {
-            Title = "Approximation",
+            Title = "Network output",
             MarkerType = MarkerType.Circle,
             MarkerSize = 3,
             MarkerFill = OxyColor.FromRgb(0, 255, 0),
@@ -150,7 +151,8 @@ namespace Approximation.Application.ViewModels
 
         public void UpdateNetworkAndMatrix(MLPNetwork network, TrainingData data, Matrix<double> inputMatrix)
         {
-
+            if (data.Variables.InputVariableNames.Length != network.BaseLayers[0].InputsCount ||
+                data.Variables.TargetVariableNames.Length != network.BaseLayers[^1].NeuronsCount) return;
 
             var adapter = new NNLibModelAdapter();
             adapter.SetNeuralNetwork(network);
@@ -174,7 +176,6 @@ namespace Approximation.Application.ViewModels
 
         public void UpdatePlots(TrainingData data,ScatterPoint[] dataScatter, DataPoint[] dataPredLine, DataPoint[] predLine, ScatterPoint[] predScatter)
         {
-
             ClearPlots();
 
             if (PlotModel.Model.Axes.Count == 0)
@@ -197,7 +198,6 @@ namespace Approximation.Application.ViewModels
 
         public void ClearPlots()
         {
-
             DataScatterSeries.Points.Clear();
             DataPredictionLineSeries.Points.Clear();
             PredictionLineSeries.Points.Clear();

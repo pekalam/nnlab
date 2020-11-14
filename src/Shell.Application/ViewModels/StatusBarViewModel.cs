@@ -9,6 +9,7 @@ using System.Globalization;
 using System.Text;
 using System.Windows;
 using System.Windows.Data;
+using NNLib.MLP;
 
 namespace Shell.Application.ViewModels
 {
@@ -53,12 +54,19 @@ namespace Shell.Application.ViewModels
                 if (args.PropertyName == nameof(AppState.ActiveSession))
                 {
                     if(_appState.ActiveSession!.Network != null) UpdateNetworkInfo();
-                    _appState.ActiveSession.NetworkStructureChanged += _ => UpdateNetworkInfo();
+                    _appState.ActiveSession.NetworkStructureChanged -= ActiveSessionOnNetworkStructureChanged;
+                    _appState.ActiveSession.NetworkStructureChanged += ActiveSessionOnNetworkStructureChanged;
+                    _appState.ActiveSession.PropertyChanged -= ActiveSessionOnPropertyChanged;
                     _appState.ActiveSession.PropertyChanged += ActiveSessionOnPropertyChanged;
                 }
             };
 
             serivce.Initialize(this);
+        }
+
+        private void ActiveSessionOnNetworkStructureChanged(MLPNetwork obj)
+        {
+            UpdateNetworkInfo();
         }
 
         private void UpdateNetworkInfo()

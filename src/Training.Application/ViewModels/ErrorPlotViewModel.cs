@@ -28,7 +28,6 @@ namespace Training.Application.ViewModels
             {
                 Position = AxisPosition.Left,
                 Title = "Error",
-                AbsoluteMinimum = 0,
                 AxisTitleDistance = 18,
                 MinimumRange = 0.001,
             };

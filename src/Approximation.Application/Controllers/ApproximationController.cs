@@ -29,7 +29,6 @@ namespace Approximation.Application.Controllers
         public static void Register(IContainerRegistry cr)
         {
             cr.Register<IApproximationController, ApproximationController>();
-
         }
     }
 
@@ -55,7 +54,7 @@ namespace Approximation.Application.Controllers
         public DataPoint[] PredictionPoints { get; set; } = null!;
 
         public DataSetType SelectedPlotSetType { get; set; }
-        public DataSetType[]? PlotSetTypes { get; set; } 
+        public DataSetType[]? PlotSetTypes { get; set; }
     }
 
     class ApproximationController : ControllerBase<ApproximationViewModel>, IApproximationController
@@ -67,7 +66,8 @@ namespace Approximation.Application.Controllers
 
         private bool _initialized;
 
-        public ApproximationController(AppState appState, ModuleState moduleState, NormalizationService normalizationService)
+        public ApproximationController(AppState appState, ModuleState moduleState,
+            NormalizationService normalizationService)
         {
             _appState = appState;
             _helper = new AppStateHelper(appState);
@@ -78,7 +78,7 @@ namespace Approximation.Application.Controllers
             Navigated = NavigatedAction;
             PlotOutputCommand = new DelegateCommand<DataSetType?>(PredictPlot);
         }
-        
+
         protected override void VmCreated()
         {
             Vm!.PropertyChanged += VmOnPropertyChanged;
@@ -94,7 +94,7 @@ namespace Approximation.Application.Controllers
 
         private void NavigatedAction(NavigationContext obj)
         {
-            if(_initialized) return;
+            if (_initialized) return;
 
             _appState.ActiveSessionChanged += (_, args) =>
             {
@@ -106,7 +106,7 @@ namespace Approximation.Application.Controllers
 
             _helper.OnNetworkChanged(network =>
             {
-                UpdateUi();   
+                UpdateUi();
 
                 _appState.ActiveSession!.NetworkStructureChanged -= ActiveSessionOnNetworkStructureChanged;
                 _appState.ActiveSession!.NetworkStructureChanged += ActiveSessionOnNetworkStructureChanged;
@@ -118,6 +118,7 @@ namespace Approximation.Application.Controllers
 
                 if (Vm!.ShowPlotPrediction)
                 {
+                    Vm!.ClearPlots();
                     Vm!.UpdateAxes(data);
                     Vm!.PlotSetTypes = data.SetTypes;
                     Vm!.SelectedPlotSetType = DataSetType.Training;
@@ -136,12 +137,11 @@ namespace Approximation.Application.Controllers
 
         private void UpdateUi()
         {
-            if(_appState.ActiveSession!.TrainingData == null) return;
-            if(_appState.ActiveSession!.Network == null) return;
+            if (_appState.ActiveSession!.TrainingData == null) return;
+            if (_appState.ActiveSession!.Network == null) return;
 
             if (_moduleState.GetSessionPredictMemento() != null)
             {
-                UpdateShowPlotPrediction(_appState.ActiveSession!.TrainingData!);
                 SetMemento(_moduleState.GetSessionPredictMemento()!);
             }
             else
@@ -155,19 +155,9 @@ namespace Approximation.Application.Controllers
 
 
                 var inputMatrix = Matrix<double>.Build.Dense(_appState.ActiveSession.Network.Layers[0].InputsCount, 1);
-                Vm!.UpdateNetworkAndMatrix(_appState.ActiveSession.Network, _appState.ActiveSession!.TrainingData!, inputMatrix);
+                Vm!.UpdateNetworkAndMatrix(_appState.ActiveSession.Network, _appState.ActiveSession!.TrainingData!,
+                    inputMatrix);
             }
-
-        }
-
-        public void SetMemento(ApproximationControllerMemento memento)
-        {
-            Vm!.Interval = memento.Interval;
-            Vm!.SelectedPlotSetType = memento.SelectedPlotSetType;
-            Vm!.UpdateNetworkAndMatrix(_appState.ActiveSession!.Network!, _appState.ActiveSession.TrainingData!,
-                memento.InputMatrix);
-            Vm!.UpdatePlots(_appState.ActiveSession!.TrainingData!,memento.DataScatterPoints, memento.DataPredictionPoints, memento.PredictionPoints, memento.PredictionScatterPoints);
-            UpdateStartEndValue(memento.SelectedPlotSetType);
         }
 
         private void ActiveSessionOnNetworkStructureChanged(MLPNetwork network)
@@ -216,8 +206,6 @@ namespace Approximation.Application.Controllers
             var dataPredLine = new DataPoint[orgSet.Input.Count];
             var predLine = new List<DataPoint>(1000);
             var predScatter = new List<ScatterPoint>(1000);
-            var setStart = orgSet.Input.GetEnumerator().IterateEnumerator().Min(m => m[0, 0]);
-            var setEnd = orgSet.Input.GetEnumerator().IterateEnumerator().Max(m => m[0, 0]);
 
 
             for (int i = 0; i < orgSet.Input.Count; i++)
@@ -234,25 +222,22 @@ namespace Approximation.Application.Controllers
                 }
 
                 var start = Vm!.StartValue;
-
-                if (Vm!.StartValue != setStart || Vm!.EndValue != setEnd)
+                int total = (int) Math.Round(Vm!.EndValue / Vm.Interval, MidpointRounding.AwayFromZero) + 1;
+                while (total-- > 0)
                 {
-                    while (start <= Vm!.EndValue)
-                    {
-                        var x = _normalizationService.ToNetworkDataNormalization(Matrix<double>.Build.Dense((int) 1, (int) 1, (double) start));
-                        network.CalculateOutput(x);
-                        predLine.Add(new DataPoint(start, network.Output![0, 0]));
-                        predScatter.Add(new ScatterPoint(start, network.Output![0, 0]));
+                    var x = _normalizationService.ToNetworkDataNormalization(
+                        Matrix<double>.Build.Dense(1, 1, start));
+                    network.CalculateOutput(x);
+                    predLine.Add(new DataPoint(start, network.Output![0, 0]));
+                    predScatter.Add(new ScatterPoint(start, network.Output![0, 0]));
 
-                        start += Vm!.Interval;
-                    }
+                    start += Vm!.Interval;
                 }
-
             });
 
-            Vm!.UpdatePlots(_appState.ActiveSession!.TrainingData!,dataScatter, 
+            Vm!.UpdatePlots(_appState.ActiveSession!.TrainingData!, dataScatter,
                 dataPredLine.OrderBy(p => p.X).ToArray(),
-                predLine.OrderBy(p => p.X).ToArray(), 
+                predLine.OrderBy(p => p.X).ToArray(),
                 predScatter.ToArray());
         }
 
@@ -266,6 +251,22 @@ namespace Approximation.Application.Controllers
             Vm!.UpdateMatrix(network.Output!, _appState.ActiveSession!.TrainingData!, inputMatrix);
         }
 
+        public void SetMemento(ApproximationControllerMemento memento)
+        {
+            UpdateShowPlotPrediction(_appState.ActiveSession!.TrainingData!);
+            if (Vm!.ShowPlotPrediction)
+            {
+                Vm!.SelectedPlotSetType = memento.SelectedPlotSetType;
+                Vm!.UpdateAxes(_appState.ActiveSession!.TrainingData!);
+                Vm!.UpdatePlots(_appState.ActiveSession!.TrainingData!, memento.DataScatterPoints,
+                    memento.DataPredictionPoints, memento.PredictionPoints, memento.PredictionScatterPoints);
+            }
+            Vm!.Interval = memento.Interval;
+            Vm!.UpdateNetworkAndMatrix(_appState.ActiveSession!.Network!, _appState.ActiveSession.TrainingData!,
+                memento.InputMatrix);
+
+            UpdateStartEndValue(memento.SelectedPlotSetType);
+        }
 
         public ApproximationControllerMemento GetMemento()
         {

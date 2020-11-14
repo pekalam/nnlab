@@ -58,7 +58,6 @@ namespace Training.Application.ViewModels
             {
                 Position = AxisPosition.Left,
                 Title = "Error",
-                AbsoluteMinimum = 0,
                 AxisTitleDistance = 18,
             });
             BasicPlotModel.Model.PlotMargins = new OxyThickness(80, Double.NaN, Double.NaN, Double.NaN);
