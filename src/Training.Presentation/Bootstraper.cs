@@ -38,7 +38,6 @@ namespace Training.Presentation
             cr.RegisterForNavigation<ReportErrorPlotView>();
 
 
-            cr.RegisterForNavigation<ErrorPlotSettingsView>();
         }
     }
 }

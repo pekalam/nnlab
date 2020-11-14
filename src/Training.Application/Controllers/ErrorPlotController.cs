@@ -175,10 +175,9 @@ namespace Training.Application.Controllers
 
             var p = new NavigationParameters();
             p.Add(nameof(PlotEpochEndConsumer), _epochEndConsumer);
-            p.Add("PlotModel", Vm!.BasicPlotModel);
 
             _rm.Regions[_errorPlotSettingsRegion].RemoveAll();
-            _rm.Regions[_errorPlotSettingsRegion].RequestNavigate("ErrorPlotSettingsView", p);
+            _rm.Regions[_errorPlotSettingsRegion].RequestNavigate("PlotEpochParametersView", p);
 
             _epochEndConsumer.Initialize();
         }
