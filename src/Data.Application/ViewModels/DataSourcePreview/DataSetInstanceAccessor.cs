@@ -3,6 +3,7 @@ using NNLib.Common;
 using NNLib.Data;
 using System.Data;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 
 namespace Data.Application.ViewModels.DataSourcePreview
@@ -54,13 +55,13 @@ namespace Data.Application.ViewModels.DataSourcePreview
             int i = 0;
             foreach (var inputVarIndex in trainingData.Variables.Indexes.InputVarIndexes)
             {
-                row[inputVarIndex] = inputInstance[i++, 0].ToString();
+                row[inputVarIndex] = inputInstance[i++, 0].ToString(CultureInfo.InvariantCulture);
             }
 
             i = 0;
             foreach (var targetVarIndex in trainingData.Variables.Indexes.TargetVarIndexes)
             {
-                row[targetVarIndex] = targetInstance[i++, 0].ToString();
+                row[targetVarIndex] = targetInstance[i++, 0].ToString(CultureInfo.InvariantCulture);
             }
 
             _dataTable.Rows.Clear();

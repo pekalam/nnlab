@@ -55,7 +55,7 @@ namespace SharedUI.MatrixPreview
             {
                 if (_matrix != null)
                 {
-                    _matrix[_row, key] = double.Parse(value, NumberStyles.Float, CultureInfo.CurrentCulture);
+                    _matrix[_row, key] = double.Parse(value, NumberStyles.Float, CultureInfo.InvariantCulture);
                 }
                 _dictionary[key] = value;
                 ElementChanged?.Invoke();

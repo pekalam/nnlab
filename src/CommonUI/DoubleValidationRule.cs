@@ -8,7 +8,7 @@ namespace SharedUI
     {
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
         {
-            return double.TryParse((string)value, NumberStyles.Float, CultureInfo.CurrentCulture, out _)
+            return double.TryParse((string)value, NumberStyles.Float, CultureInfo.InvariantCulture, out _)
                 ? System.Windows.Controls.ValidationResult.ValidResult
                 : new System.Windows.Controls.ValidationResult(false, "Invalid value");
         }

@@ -3,6 +3,7 @@ using Prism.Commands;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -41,7 +42,7 @@ namespace SharedUI.MatrixPreview
                         Binding = new Binding("Props[" + i + "]")
                         {
                             Mode = BindingMode.TwoWay, UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
-                            ValidationRules = { new DoubleValidationRule()}
+                            ValidationRules = { new DoubleValidationRule()},ConverterCulture = CultureInfo.InvariantCulture,
                         },
                         Header = columnTitle(i),
                     });
@@ -70,7 +71,7 @@ namespace SharedUI.MatrixPreview
 
                     for (int j = 0; j < matrix.ColumnCount; j++)
                     {
-                        model.Props.UpdateCol(j, matrix.At(i, j).ToString(format));
+                        model.Props.UpdateCol(j, matrix.At(i, j).ToString(format, CultureInfo.InvariantCulture));
                     }
 
                     if (!ReadOnly)
@@ -94,7 +95,7 @@ namespace SharedUI.MatrixPreview
             {
                 for (int j = 0; j < matrix.ColumnCount; j++)
                 {
-                    _models[i].Props.UpdateCol(j, matrix.At(i, j).ToString(format));
+                    _models[i].Props.UpdateCol(j, matrix.At(i, j).ToString(format, CultureInfo.InvariantCulture));
                 }
             }
         }

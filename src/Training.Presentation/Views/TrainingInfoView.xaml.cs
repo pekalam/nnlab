@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Windows.Controls;
@@ -46,10 +47,10 @@ namespace Training.Presentation.Views
 
         public void UpdateTraining(double error, int epochs, int iterations, double? validationError)
         {
-            var e = error.ToString();
+            var e = error.ToString(CultureInfo.InvariantCulture);
             var ep = epochs.ToString();
             var it = iterations.ToString();
-            var val = validationError?.ToString();
+            var val = validationError?.ToString(CultureInfo.InvariantCulture);
             Dispatcher.InvokeAsync(() =>
             {
                 Error.Text = e;
