@@ -146,7 +146,7 @@ namespace Common.Domain
             NetworkParametersChanged?.Invoke(Network);
         }
 
-        public void ResetNetworkToInitial()
+        public void ResetNetworkToInitialAndClearReports()
         {
             Network = _initialNetwork;
             TrainingReports.Reset();

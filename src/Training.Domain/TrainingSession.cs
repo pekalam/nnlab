@@ -193,7 +193,7 @@ namespace Training.Domain
         {
             if (Started) await Stop();
 
-            _session.ResetNetworkToInitial();
+            _session.ResetNetworkToInitialAndClearReports();
             EpochEndEvents.Clear();
             Trainer = new MLPTrainer(_session.Network!, _session.TrainingData!.Sets, SelectAlgorithm(),
                 new QuadraticLossFunction());
@@ -216,7 +216,7 @@ namespace Training.Domain
                     {
                         0 => StartTime ?? Time.Now,
                         _ => _session.TrainingReports[^1].EndDate,
-                    }, EpochEndEvents);
+                    }, EpochEndEvents, Network!);
                 Stopped = true;
                 CurrentReport = report;
                 lock (_session)
@@ -287,20 +287,20 @@ namespace Training.Domain
                 if (_stopRequested)
                 {
                     return TrainingSessionReport.CreateStoppedSessionReport(Trainer.Epochs, Trainer.Error,
-                        StartTime!.Value, EpochEndEvents);
+                        StartTime!.Value, EpochEndEvents, Network!);
                 }
 
                 if (Time.Now - StartTime + _elapsed > Parameters.MaxLearningTime)
                     return TrainingSessionReport.CreateTimeoutSessionReport(Trainer.Epochs, Trainer.Error,
-                        StartTime!.Value, EpochEndEvents);
+                        StartTime!.Value, EpochEndEvents, Network!);
 
                 return TrainingSessionReport.CreatePausedSessionReport(Trainer.Epochs, Trainer.Error, StartTime!.Value,
-                    EpochEndEvents);
+                    EpochEndEvents, Network!);
             }
 
             if (double.IsNaN(Trainer!.Error) && !_reseted)
                 return TrainingSessionReport.CreateNaNSessionReport(Trainer.Epochs, Trainer.Error, StartTime!.Value,
-                    EpochEndEvents);
+                    EpochEndEvents, Network!);
 
             if (Parameters!.MaxLearningTime != TimeSpan.MaxValue)
                 _epochCts = new CancellationTokenSource(Parameters.MaxLearningTime);
@@ -339,7 +339,7 @@ namespace Training.Domain
                     catch (AlgorithmFailed)
                     {
                         return TrainingSessionReport.CreateAlgorithmErrorSessionReport(Trainer.Epochs, error,
-                            StartTime!.Value, EpochEndEvents);
+                            StartTime!.Value, EpochEndEvents, Network!);
                     }
 
                     var arg = new EpochEndArgs
@@ -358,24 +358,24 @@ namespace Training.Domain
                     {
                         _stopRequested = true;
                         return TrainingSessionReport.CreateMaxEpochSessionReport(Trainer.Epochs, error, StartTime!.Value,
-                            EpochEndEvents);
+                            EpochEndEvents, Network!);
                     }
 
                     if (double.IsNaN(error))
                         return TrainingSessionReport.CreateNaNSessionReport(Trainer.Epochs, error, StartTime!.Value,
-                            EpochEndEvents);
+                            EpochEndEvents, Network!);
 
                     if (validationError.HasValue && Parameters.StopWhenValidationErrorReached && validationError.Value <= Parameters.ValidationTargetError)
                     {
                         _stopRequested = true;
                         return TrainingSessionReport.CreateValidationErrorReachedSessionReport(Trainer.Epochs, error, StartTime!.Value,
-                            EpochEndEvents, validationError.Value);
+                            EpochEndEvents, Network!, validationError.Value);
                     }
                 } while (error > Parameters.TargetError);
 
                 _stopRequested = true;
                 return TrainingSessionReport.CreateTargetReachedSessionReport(Trainer.Epochs, error, StartTime!.Value,
-                    EpochEndEvents);
+                    EpochEndEvents, Network!);
             }, TaskCreationOptions.LongRunning);
         }
 
@@ -383,7 +383,7 @@ namespace Training.Domain
         {
             Debug.Assert(Trainer != null);
 
-            return Task.Run(() => Trainer.RunValidation()).ContinueWith(t =>
+            return Task.Run(() => Trainer.RunValidation(report.Network)).ContinueWith(t =>
             {
                 report.ValidationError = t.Result;
                 return t.Result;
@@ -394,7 +394,7 @@ namespace Training.Domain
         {
             Debug.Assert(Trainer != null);
 
-            return Task.Run(() => Trainer.RunTest()).ContinueWith(t =>
+            return Task.Run(() => Trainer.RunTest(report.Network)).ContinueWith(t =>
             {
                 report.TestError = t.Result;
                 return t.Result;

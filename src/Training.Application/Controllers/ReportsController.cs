@@ -92,8 +92,8 @@ namespace Training.Application.Controllers
                 region,
                 false,
                 setType,
-                _appState.ActiveSession!.Network!,
-                _appState.ActiveSession.TrainingData!,
+                Vm!.SelectedReport!.Network,
+                _appState.ActiveSession!.TrainingData!,
                 new CancellationTokenSource()
                 );
             
