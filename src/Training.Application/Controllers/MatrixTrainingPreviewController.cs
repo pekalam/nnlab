@@ -2,6 +2,8 @@
 using Prism.Ioc;
 using Prism.Regions;
 using System;
+using System.Drawing.Printing;
+using NNLib;
 using Training.Application.Plots;
 using Training.Application.ViewModels;
 using Training.Domain;
@@ -22,10 +24,12 @@ namespace Training.Application.Controllers
     {
         private PlotEpochEndConsumer? _epochEndConsumer;
         private readonly ModuleState _moduleState;
+        private readonly ModuleStateHelper _helper;
 
-        public MatrixTrainingPreviewController(ModuleState moduleState)
+        public MatrixTrainingPreviewController(ModuleState moduleState, ModuleStateHelper helper)
         {
             _moduleState = moduleState;
+            _helper = helper;
             Navigated = NavigatedAction;
         }
 
@@ -38,27 +42,38 @@ namespace Training.Application.Controllers
         {
             if (!Vm!.IsActive)
             {
-                _epochEndConsumer?.ForceStop();
+                _epochEndConsumer?.Remove();
                 Vm!.IsActiveChanged -= OnIsActiveChanged;
             }
         }
 
         private void AssignSession(TrainingSession session)
         {
-            Vm!.MatVm!.Controller.AssignNetwork(session.Network!);
+            if (session.Network != null)
+            {
+                Vm!.MatVm!.Controller.AssignNetwork(session.Network);
+
+                session.Network.StructureChanged -= NetworkOnStructureChanged;
+                session.Network.StructureChanged += NetworkOnStructureChanged;
+            }
+        }
+
+        private void NetworkOnStructureChanged(INetwork obj)
+        {
+            Vm!.MatVm!.Controller.AssignNetwork(_moduleState.ActiveSession!.Network!);
         }
 
         private void NavigatedAction(NavigationContext parameters)
         {
-
-
             if (_moduleState.ActiveSession != null)
             {
                 AssignSession(_moduleState.ActiveSession);
             }
 
-            _moduleState.ActiveSessionChanged += (_, args) => AssignSession(args.next);
-
+            _helper.OnTrainerChanged(trainer =>
+            {
+                AssignSession(_moduleState.ActiveSession!);
+            });
 
             _epochEndConsumer = new PlotEpochEndConsumer(_moduleState,(list, session) =>
             {

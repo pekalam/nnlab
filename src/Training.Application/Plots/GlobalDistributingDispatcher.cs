@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Threading;
@@ -49,7 +50,6 @@ namespace Training.Application.Plots
         {
             if(_queues.TryRemove(consumer, out var queue))
             {
-                Interlocked.Add(ref _toInvoke, -queue.Count);
                 queue.Clear();
             }
         }
@@ -70,17 +70,22 @@ namespace Training.Application.Plots
                         {
                             stop = true;
 
+                            var currentToInvoke = 0;
+
                             foreach (var queue in _queues.Values)
                             {
                                 stop = false;
                                 if (queue.TryDequeue(out var action))
                                 {
                                     action?.Invoke();
-                                    Interlocked.Decrement(ref _toInvoke);
                                 }
+
+                                currentToInvoke += queue.Count;
                             }
 
-                            if (_waitingForFinish && _toInvoke == 0)
+                            _toInvoke = currentToInvoke;
+
+                            if (_waitingForFinish && currentToInvoke == 0)
                             {
                                 _sem.Release();
                             }
@@ -97,8 +102,7 @@ namespace Training.Application.Plots
         {
             if (_queues[consumer].Count < _queues.Count)
             {
-                Interlocked.Increment(ref _toInvoke);
-                if (_sem.CurrentCount == 1) _sem.Wait();
+                if (_sem.CurrentCount == 1) _sem.Wait(TimeSpan.FromSeconds(2));
                 _queues[consumer].Enqueue(() =>
                 {
                     if (System.Windows.Application.Current == null) return;
@@ -114,8 +118,7 @@ namespace Training.Application.Plots
         {
             if (_queues[consumer].Count < _queues.Count)
             {
-                Interlocked.Increment(ref _toInvoke);
-                if (_sem.CurrentCount == 1) _sem.Wait();
+                if (_sem.CurrentCount == 1) _sem.Wait(TimeSpan.FromSeconds(2));
                 _queues[consumer].Enqueue(action);
                 TryStartBgTask();
             }

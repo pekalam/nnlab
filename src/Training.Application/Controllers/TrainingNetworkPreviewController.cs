@@ -70,7 +70,7 @@ namespace Training.Application.Controllers
             if (!Vm!.IsActive)
             {
                 _epochEndCallback = null;
-                _epochEndConsumer?.ForceStop();
+                _epochEndConsumer?.Remove();
                 Vm!.IsActiveChanged -= OnIsActiveChanged;
             }
         }
@@ -97,20 +97,9 @@ namespace Training.Application.Controllers
                 action => { GlobalDistributingDispatcher.Call(action, _epochEndConsumer!); });
         }
 
-        private void ModuleStateOnActiveSessionChanged(object? sender, (TrainingSession? prev, TrainingSession next) e)
-        {
-            if (_epochEndConsumer!.IsRunning)
-            {
-                _epochEndCallback = null;
-                _epochEndConsumer?.ForceStop();
-            }
-        }
-
         private void NavigatedAction(NavigationContext obj)
         {
             InitializeEpochEndConsumer();
-
-            _moduleState.ActiveSessionChanged += ModuleStateOnActiveSessionChanged;
         }
 
         private void InitializeEpochEndConsumer()
@@ -141,7 +130,7 @@ namespace Training.Application.Controllers
             if (_epochEndConsumer!.IsRunning)
             {
                 _epochEndCallback = null;
-                _epochEndConsumer?.ForceStop();
+                _epochEndConsumer?.Remove();
             }
             else
             {

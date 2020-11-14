@@ -86,7 +86,7 @@ namespace Training.Application.Controllers
         {
             if(!Vm!.IsActive)
             {
-                _epochEndConsumer?.ForceStop();
+                _epochEndConsumer?.Remove();
                 Vm!.IsActiveChanged -= OnIsActiveChanged;
             }
         }

@@ -81,6 +81,7 @@ namespace Training.Application.Plots
         {
             if (_moduleState.ActiveSession != null) SetTrainingSessionHandlers(_moduleState.ActiveSession);
 
+            _moduleState.ActiveSessionChanged -= ModuleStateOnActiveSessionChanged;
             _moduleState.ActiveSessionChanged += ModuleStateOnActiveSessionChanged;
         }
 
@@ -160,7 +161,7 @@ namespace Training.Application.Plots
             session.EpochEnd += Session_EpochEnd;
         }
 
-        public void ForceStop()
+        private void ForceStop()
         {
             if (_session != null)
             {
@@ -169,6 +170,12 @@ namespace Training.Application.Plots
             }
             EndSubscriptions();
             GlobalDistributingDispatcher.Unregister(this);
+        }
+
+        public void Remove()
+        {
+            ForceStop();
+            _moduleState.ActiveSessionChanged -= ModuleStateOnActiveSessionChanged;
         }
 
         public PlotEpochEndConsumerType ConsumerType
