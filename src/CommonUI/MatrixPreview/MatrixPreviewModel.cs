@@ -61,6 +61,12 @@ namespace SharedUI.MatrixPreview
             }
         }
 
+        public void UpdateCol(int col, string value)
+        {
+            _dictionary[col] = value;
+            ElementChanged?.Invoke();
+        }
+
         public ICollection<int> Keys => _dictionary.Keys;
 
         public ICollection<string> Values => _dictionary.Values;

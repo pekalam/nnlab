@@ -4,6 +4,5 @@
     {
         Weights,
         Biases,
-        Output
     }
 }

@@ -70,7 +70,7 @@ namespace SharedUI.MatrixPreview
 
                     for (int j = 0; j < matrix.ColumnCount; j++)
                     {
-                        model.Props[j] = matrix[i, j].ToString(format);
+                        model.Props.UpdateCol(j, matrix.At(i, j).ToString(format));
                     }
 
                     if (!ReadOnly)
@@ -94,7 +94,7 @@ namespace SharedUI.MatrixPreview
             {
                 for (int j = 0; j < matrix.ColumnCount; j++)
                 {
-                    _models[i].Props[j] = matrix[i, j].ToString(format);
+                    _models[i].Props.UpdateCol(j, matrix.At(i, j).ToString(format));
                 }
             }
         }
