@@ -83,6 +83,32 @@
             <TextBlock x:Name="Error" Style="{StaticResource StatsText}"/>
             <TextBlock Text="Validation set error" Visibility="{Binding Text,ElementName=ValidationError,Converter={StaticResource StringNullToVisConverter}}" Style="{StaticResource StatsText}"/>
             <TextBlock x:Name="ValidationError" Style="{StaticResource StatsText}" Visibility="{Binding Text,RelativeSource={RelativeSource Self},Converter={StaticResource StringNullToVisConverter}}"/>
+            <TextBlock Text="Result:" Style="{StaticResource StatsText}"/>
+            <TextBlock>
+                <TextBlock.Style>
+                    <Style TargetType="TextBlock" BasedOn="{StaticResource StatsText}">
+                        <Setter Property="Text" Value="{Binding ModuleState.ActiveSession.CurrentReport.SessionEndType, Converter={StaticResource NullToLine}}"></Setter>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ModuleState.ActiveSession.CurrentReport}" Value="{x:Null}">
+                                <Setter Property="Text" Value="-"></Setter>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding ModuleState.ActiveSession.CurrentReport.SessionEndType}" Value="{x:Static domain:SessionEndType.TargetReached}">
+                                <Setter Property="Foreground" Value="Green"></Setter>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding ModuleState.ActiveSession.CurrentReport.SessionEndType}" Value="{x:Static domain:SessionEndType.ValidationErrorReached}">
+                                <Setter Property="Foreground" Value="Green"></Setter>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding ModuleState.ActiveSession.CurrentReport.SessionEndType}" Value="{x:Static domain:SessionEndType.AlgorithmError}">
+                                <Setter Property="Foreground" Value="Red"></Setter>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding ModuleState.ActiveSession.CurrentReport.SessionEndType}" Value="{x:Static domain:SessionEndType.NaNResult}">
+                                <Setter Property="Foreground" Value="Red"></Setter>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+
+            </TextBlock>
         </UniformGrid>
     </StackPanel>
 </UserControl>

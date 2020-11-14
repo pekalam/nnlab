@@ -20,9 +20,7 @@ namespace Training.Application.Controllers
             _epochEndConsumer = new PlotEpochEndConsumer(moduleState,
                 (args, session) =>
                 {
-
                     var last = args[^1];
-
                     Vm!.View!.UpdateTraining(last.Error, last.Epoch, last.Iterations, last.ValidationError);
                 },
                 trainingSession =>
@@ -31,9 +29,13 @@ namespace Training.Application.Controllers
                 },
                 trainingSession =>
                 {
+                    var last = trainingSession.EpochEndEvents[^1];
+                    Vm!.View!.UpdateTraining(last.Error, last.Epoch, last.Iterations, last.ValidationError);
                     Vm!.StopTimer();
                 }, session =>
                 {
+                    var last = session.EpochEndEvents[^1];
+                    Vm!.View!.UpdateTraining(last.Error, last.Epoch, last.Iterations, last.ValidationError);
                     Vm!.StopTimer();
                 });
 
