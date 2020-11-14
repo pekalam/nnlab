@@ -66,7 +66,7 @@ namespace Data.Domain.Services
 
             using var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
             using var rdr = new StreamReader(fs);
-            using var csv = new CsvReader(rdr, CultureInfo.CurrentCulture);
+            using var csv = new CsvReader(rdr, CultureInfo.InvariantCulture);
 
             csv.Read();
             csv.ReadHeader();
