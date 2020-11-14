@@ -59,6 +59,16 @@ namespace Common.Domain
             }
         }
 
+        public bool Randomize
+        {
+            get => Params.Randomize;
+            set
+            {
+                Params.Randomize = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public bool Equals(GradientDescentParamsModel obj)
         {
             return Params.Equals(obj.Params);
@@ -129,6 +139,7 @@ namespace Common.Domain
         private bool _canRunValidation;
         private bool _stopWhenValidationErrorReached;
         private double _validationTargetError;
+        private bool _canRandomize = true;
 
         public TrainingParameters(bool canRunValidation)
         {
@@ -223,6 +234,12 @@ namespace Common.Domain
                 if (value < 0) throw new ArgumentException("Validation target error must be grater than zero");
                 SetProperty(ref _validationTargetError, value);
             }
+        }
+
+        public bool CanRandomize
+        {
+            get => _canRandomize;
+            set => SetProperty(ref _canRandomize, value);
         }
 
         protected bool Equals(TrainingParameters other)

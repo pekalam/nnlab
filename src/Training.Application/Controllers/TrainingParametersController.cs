@@ -110,11 +110,22 @@ namespace Training.Application.Controllers
                     {
                         throw new Exception($"Number of training examples ({trainingSet.Input.Count}) is not divisible by {parameters.GDParams.BatchSize}");
                     }
+
+                    if (parameters.GDParams.BatchSize == trainingSet.Input.Count)
+                    {
+                        Vm!.TrainingParameters!.GDParams.Randomize = false;
+                        Vm!.TrainingParameters!.CanRandomize = false;
+                    }
+                    else
+                    {
+                        Vm!.TrainingParameters!.CanRandomize = true;
+                    }
                 }
 
                 RaiseCommandsCanExec();
             };
             parameters.LMParams.PropertyChanged += (_, __) => RaiseCommandsCanExec();
+            Vm!.TrainingParameters!.CanRandomize = parameters.GDParams.BatchSize != _appState.ActiveSession!.TrainingData!.Sets.TrainingSet.Input.Count;
         }
 
         private void RaiseCommandsCanExec()
