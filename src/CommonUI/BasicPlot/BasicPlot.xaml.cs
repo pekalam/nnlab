@@ -133,14 +133,6 @@ namespace SharedUI.BasicPlot
                 var rm = ServiceLocator.Current.GetInstance<IRegionManager>();
                 rm.Regions.Remove(name);
             };
-            model.Controller.BindMouseDown(OxyMouseButton.Left, OxyModifierKeys.None, new DelegatePlotCommand<OxyMouseDownEventArgs>(
-                (view, controller, arg3) =>
-                {
-                    if (SettingsContainer.Visibility == Visibility.Visible)
-                    {
-                        OnSettingsClicked();
-                    }
-                }));
         }
 
         private void OnNewWindowClicked()

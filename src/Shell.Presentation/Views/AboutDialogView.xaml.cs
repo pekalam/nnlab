@@ -13,28 +13,9 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Prism.Services.Dialogs;
 
+
 namespace Shell.Presentation.Views
 {
-    public class AboutDialogViewModel : IDialogAware
-    {
-
-        public bool CanCloseDialog()
-        {
-            return true;
-        }
-
-        public void OnDialogClosed()
-        {
-        }
-
-        public void OnDialogOpened(IDialogParameters parameters)
-        {
-        }
-
-        public string Title { get; } = "About";
-        public event Action<IDialogResult> RequestClose;
-    }
-
     /// <summary>
     /// Interaction logic for AboutDialogView.xaml
     /// </summary>

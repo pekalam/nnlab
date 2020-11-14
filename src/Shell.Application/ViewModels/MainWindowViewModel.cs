@@ -16,6 +16,27 @@ using Unity;
 
 namespace Shell.Application.ViewModels
 {
+    public class AboutDialogViewModel : IDialogAware
+    {
+
+        public bool CanCloseDialog()
+        {
+            return true;
+        }
+
+        public void OnDialogClosed()
+        {
+        }
+
+        public void OnDialogOpened(IDialogParameters parameters)
+        {
+        }
+
+        public string Title { get; } = "About";
+        public event Action<IDialogResult> RequestClose;
+    }
+
+
     public class NavItemIdConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
