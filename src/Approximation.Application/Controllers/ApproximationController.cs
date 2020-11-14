@@ -222,7 +222,7 @@ namespace Approximation.Application.Controllers
                 }
 
                 var start = Vm!.StartValue;
-                int total = (int) Math.Round(Vm!.EndValue / Vm.Interval, MidpointRounding.AwayFromZero) + 1;
+                int total = (int) Math.Round((Vm!.EndValue - start) / Vm.Interval, MidpointRounding.AwayFromZero) + 1;
                 while (total-- > 0)
                 {
                     var x = _normalizationService.ToNetworkDataNormalization(
