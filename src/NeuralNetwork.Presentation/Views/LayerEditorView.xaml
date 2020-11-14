@@ -9,7 +9,6 @@
              xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:matrixPreview="clr-namespace:SharedUI.MatrixPreview;assembly=SharedUI"
              xmlns:designData="clr-namespace:NeuralNetwork.Presentation.__DesignData"
-             xmlns:domain1="clr-namespace:Common.Domain;assembly=NeuralNetwork.Domain"
              xmlns:domain11="clr-namespace:NeuralNetwork.Domain;assembly=NeuralNetwork.Domain"
              d:DesignHeight="450" d:DesignWidth="900"
              prism:ViewModelLocator.AutoWireViewModel="True"
@@ -67,7 +66,20 @@
             <UniformGrid Columns="2" Margin="0,10,0,0">
                 <ComboBox MaxHeight="{Binding ElementName=Activation,Path=Height}"
                           ItemsSource="{Binding Layer.ParamsInitMethods}" 
-                          SelectedValue="{Binding Path=Layer.ParamsInitMethod}"/>
+                          SelectedValue="{Binding Path=Layer.ParamsInitMethod}">
+                    <ComboBox.ItemContainerStyle>
+                        <Style TargetType="ComboBoxItem" BasedOn="{StaticResource MahApps.Styles.ComboBoxItem}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding}" Value="{x:Static domain11:ParamsInitMethod.SqrMUniform}">
+                                    <Setter Property="Control.ToolTip" Value="Uniform distribution. Standard deviation = square of layer inputs, mean = 0"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding}" Value="{x:Static domain11:ParamsInitMethod.DefaultNormalDist}">
+                                    <Setter Property="Control.ToolTip" Value="Normal distribution. Standard deviation = 1, mean = 0"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ComboBox.ItemContainerStyle>
+                </ComboBox>
                 <Button Margin="10,0,0,0" HorizontalAlignment="Right" MaxHeight="40"
                         Command="{Binding Controller.InitializeParametersCommand}">
                     Initialize parameters

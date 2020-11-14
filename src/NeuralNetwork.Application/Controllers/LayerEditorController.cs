@@ -64,6 +64,11 @@ namespace NeuralNetwork.Application.Controllers
                 ParamsInitMethod = method,
                 ParamsInitMethods = layer.GetAvailableParamsInitMethods(_assignedNetwork),
             };
+            if (layer.MatrixBuilder is NormDistMatrixBuilder n)
+            {
+                model.NormDistOptions = n.Options;
+            }
+
             model.PropertyChanged += OnLayerDetailsModelPropertyChanged;
 
             Vm!.Layer = model;
