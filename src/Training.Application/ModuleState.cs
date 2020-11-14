@@ -20,7 +20,6 @@ namespace Training.Application
         {
             var report = await base.InternalStart();
             await GlobalDistributingDispatcher.WaitForQueued();
-
             return report;
         }
     }

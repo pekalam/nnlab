@@ -41,7 +41,7 @@ namespace Training.Application.Plots
         private IDisposable? _onlineSub;
 
 
-        private ReplaySubject<EpochEndArgs>? _sub;
+        private Subject<EpochEndArgs>? _sub;
         private Subject<EpochEndArgs>? _online;
         private Subject<EpochEndArgs>? _buffering;
         private readonly Action<IList<EpochEndArgs>, TrainingSession> _callback;
@@ -154,8 +154,8 @@ namespace Training.Application.Plots
 
         private void SubscribeSession(TrainingSession session)
         {
-            GlobalDistributingDispatcher.Register(this);
             Subscribe();
+            GlobalDistributingDispatcher.Register(this);
             _onTrainingStarting?.Invoke(session);
             session.EpochEnd += Session_EpochEnd;
         }
@@ -279,7 +279,7 @@ namespace Training.Application.Plots
 
         private void Subscribe()
         {
-            _sub = new ReplaySubject<EpochEndArgs>(_options.OnlineBufferSize);
+            _sub = new Subject<EpochEndArgs>();
             _online = new Subject<EpochEndArgs>();
             _buffering = new Subject<EpochEndArgs>();
 

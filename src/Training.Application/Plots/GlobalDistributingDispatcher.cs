@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Threading;
@@ -14,8 +15,10 @@ namespace Training.Application.Plots
 
         private static Task? _task;
         private static object _lck = new object();
-        private static int _toInvoke;
         private static SemaphoreSlim _sem = new SemaphoreSlim(1, 1);
+
+        private static int _toInvoke = 0;
+        private static bool _waitingForFinish = false;
 
         static GlobalDistributingDispatcher()
         {
@@ -33,29 +36,32 @@ namespace Training.Application.Plots
         {
             if (_toInvoke > 0)
             {
-                await _sem.WaitAsync();
-                _sem.Release();
+                _waitingForFinish = true;
+                if (await _sem.WaitAsync(TimeSpan.FromSeconds(5)))
+                {
+                    _sem.Release();
+                }
+                _waitingForFinish = false;
             }
         }
 
         public static void Unregister(PlotEpochEndConsumer consumer)
         {
-            if (_queues.Remove(consumer, out var queue))
+            if(_queues.TryRemove(consumer, out var queue))
             {
                 Interlocked.Add(ref _toInvoke, -queue.Count);
-                if (_toInvoke == 0 && _sem.CurrentCount == 0) _sem.Release();
                 queue.Clear();
             }
         }
 
         private static void TryStartBgTask()
         {
-            if (_task == null || _task.Status == TaskStatus.RanToCompletion)
+            if (_task == null)
             {
                 lock (_lck)
                 {
                     //lock optimization
-                    if (_task != null && _task?.Status != TaskStatus.RanToCompletion) return;
+                    if (_task != null) return;
 
                     _task = Task.Factory.StartNew(async _ =>
                     {
@@ -64,21 +70,24 @@ namespace Training.Application.Plots
                         {
                             stop = true;
 
-
                             foreach (var queue in _queues.Values)
                             {
-                                if (_toInvoke > 0 && _sem.CurrentCount == 1) _sem.Wait();
+                                stop = false;
                                 if (queue.TryDequeue(out var action))
                                 {
                                     action?.Invoke();
                                     Interlocked.Decrement(ref _toInvoke);
-                                    if (_toInvoke == 0 && _sem.CurrentCount == 0) _sem.Release();
-                                    stop = false;
                                 }
+                            }
+
+                            if (_waitingForFinish && _toInvoke == 0)
+                            {
+                                _sem.Release();
                             }
 
                             await Task.Delay(33);
                         }
+                        _task = null;
                     }, CancellationToken.None, TaskCreationOptions.LongRunning);
                 }
             }
@@ -86,22 +95,30 @@ namespace Training.Application.Plots
 
         public static void Call(Action action, PlotEpochEndConsumer consumer, DispatcherPriority dispatcherPriority = DispatcherPriority.Background)
         {
-            _queues[consumer].Enqueue(() =>
+            if (_queues[consumer].Count < _queues.Count)
             {
-                if (System.Windows.Application.Current == null) return;
+                Interlocked.Increment(ref _toInvoke);
+                if (_sem.CurrentCount == 1) _sem.Wait();
+                _queues[consumer].Enqueue(() =>
+                {
+                    if (System.Windows.Application.Current == null) return;
 
-                System.Windows.Application.Current.Dispatcher.Invoke(action, dispatcherPriority);
-            });
-            Interlocked.Increment(ref _toInvoke);
-            TryStartBgTask();
+                    System.Windows.Application.Current.Dispatcher.Invoke(action, dispatcherPriority);
+                });
+                TryStartBgTask();
+            }
         }
 
 
         public static void CallCustom(Action action, PlotEpochEndConsumer consumer)
         {
-            _queues[consumer].Enqueue(action);
-            Interlocked.Increment(ref _toInvoke);
-            TryStartBgTask();
+            if (_queues[consumer].Count < _queues.Count)
+            {
+                Interlocked.Increment(ref _toInvoke);
+                if (_sem.CurrentCount == 1) _sem.Wait();
+                _queues[consumer].Enqueue(action);
+                TryStartBgTask();
+            }
         }
     }
 }

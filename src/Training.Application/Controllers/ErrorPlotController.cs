@@ -58,6 +58,7 @@ namespace Training.Application.Controllers
 
     class ErrorPlotController : ControllerBase<ErrorPlotViewModel>,IErrorPlotController
     {
+        private const int EpochEndMaxPoints = 10_000;
         private string _errorPlotSettingsRegion = null!;
         private readonly object _ptsLock = new object();
         private CancellationTokenSource? _cts;
@@ -100,11 +101,11 @@ namespace Training.Application.Controllers
 
             Vm!.Series.Points.Clear();
 
-            var points = e.next.EpochEndEvents.Skip(e.next.EpochEndEvents.Count / 2000 * 2000).Select(end => new DataPoint(end.Epoch, end.Error))
+            var points = e.next.EpochEndEvents.Skip(e.next.EpochEndEvents.Count / EpochEndMaxPoints * EpochEndMaxPoints).Select(end => new DataPoint(end.Epoch, end.Error))
                 .ToArray();
 
 
-            double newMin = e.next.EpochEndEvents.Count / 2000 * 2000;
+            double newMin = points.Length > 0 ? points[0].X : 0;
             Vm!.BasicPlotModel.Model.Axes[0].AbsoluteMinimum = newMin;
             Vm!.Series.Points.AddRange(points);
 
@@ -143,9 +144,15 @@ namespace Training.Application.Controllers
                     
                     lock (_ptsLock)
                     {
-                        if (Vm!.Series.Points.Count + endsObs.Count > 2000)
+                        if (Vm!.Series.Points.Count == 0)
                         {
-                            var newMin = endsObs[^1].Epoch;
+                            var newMin = endsObs[0].Epoch;
+                            Vm!.BasicPlotModel.Model.Axes[0].AbsoluteMinimum = newMin;
+                        }
+
+                        if (Vm!.Series.Points.Count + endsObs.Count > EpochEndMaxPoints)
+                        {
+                            var newMin = endsObs[0].Epoch;
                             Vm!.Series.Points.Clear();
                             Vm!.BasicPlotModel.Model.Axes[0].AbsoluteMinimum = newMin;
                         }
