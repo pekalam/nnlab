@@ -6,6 +6,7 @@ using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Series;
 using System.Collections.Generic;
+using System.Data;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
@@ -29,14 +30,14 @@ namespace Training.Application.ViewModels
 
         public void OnEpochEnd(IList<EpochEndArgs> args, OutputPlotViewModel vm, CancellationToken ct)
         {
-            PlotDataPoints(_session!.Network!, _session.TrainingData!);
+            PlotDataPoints(_session!.Network!, _session.TrainingData!, DataSetType.Training);
         }
 
-        private void PlotDataPoints(MLPNetwork network, TrainingData data)
+        private void PlotDataPoints(MLPNetwork network, TrainingData data, DataSetType set)
         {
 
-            var input = data.Sets.TrainingSet.Input;
-            var orgInput = data.OriginalSets.TrainingSet.Input;
+            var input = data.GetSet(set)!.Input;
+            var orgInput = data.GetOriginalSet(set)!.Input;
             var dataPoints = new DataPoint[input.Count];
 
             for (int i = 0; i < input.Count; i++)
@@ -131,7 +132,7 @@ namespace Training.Application.ViewModels
 
             InitPlot(trainingData, set, vm);
 
-            PlotDataPoints(net, trainingData);
+            PlotDataPoints(net, trainingData, set);
         }
 
         public void CreateForSession(TrainingSession session, OutputPlotViewModel vm)

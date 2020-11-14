@@ -82,7 +82,7 @@ namespace Common.Domain
         private double? _testError;
 
         public static bool IsTerminatingSessionType(SessionEndType type) =>
-            type == SessionEndType.Stopped || type == SessionEndType.TargetReached;
+            type == SessionEndType.Stopped || type == SessionEndType.TargetReached || type == SessionEndType.ValidationErrorReached;
         
         public SessionEndType SessionEndType { get; }
         public int TotalEpochs { get; }
@@ -141,7 +141,7 @@ namespace Common.Domain
         public static TrainingSessionReport CreateAlgorithmErrorSessionReport(int totalEpochs, double error, DateTime startTime, IEnumerable<EpochEndArgs> epochEndEventArgs) =>
             new TrainingSessionReport(SessionEndType.AlgorithmError, totalEpochs, error, startTime, Time.Now - startTime, epochEndEventArgs);
         
-        public static TrainingSessionReport CreateValidationErrorReachedSessionReport(int totalEpochs, double error, DateTime startTime, IEnumerable<EpochEndArgs> epochEndEventArgs) =>
-            new TrainingSessionReport(SessionEndType.ValidationErrorReached, totalEpochs, error, startTime, Time.Now - startTime, epochEndEventArgs);
+        public static TrainingSessionReport CreateValidationErrorReachedSessionReport(int totalEpochs, double error, DateTime startTime, IEnumerable<EpochEndArgs> epochEndEventArgs, double validationError) =>
+            new TrainingSessionReport(SessionEndType.ValidationErrorReached, totalEpochs, error, startTime, Time.Now - startTime, epochEndEventArgs){ValidationError = validationError};
     }
 }

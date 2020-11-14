@@ -58,13 +58,6 @@
                                             <TextBlock HorizontalAlignment="Left" FontSize="16"
                                                        Text="{Binding EndDate}" />
                                         </StackPanel>
-                                        <StackPanel Grid.Column="1" Margin="0,0,0,0">
-                                            <TextBlock HorizontalAlignment="Right" FontSize="16"
-                                                       Text="{Binding TotalEpochs}" />
-                                            <TextBlock HorizontalAlignment="Right" FontSize="16" Text="{Binding Error}" />
-                                            <TextBlock HorizontalAlignment="Right" FontSize="16"
-                                                       Text="{Binding Duration}" />
-                                        </StackPanel>
                                     </Grid>
                                     <Rectangle DockPanel.Dock="Bottom" Fill="Gray" Height="1" Margin="0,0,0,0" />
                                 </DockPanel>
@@ -90,6 +83,14 @@
                                            FontWeight="Bold" />
                                 <TextBlock Text="{Binding SelectedReport.TotalEpochs}"
                                            FontWeight="Bold" />
+                                <TextBlock Text="Error:" HorizontalAlignment="Right" Margin="0,0,20,0"
+                                           FontWeight="Bold" />
+                                <TextBlock Text="{Binding SelectedReport.Error}"
+                                           FontWeight="Bold" />
+                                <TextBlock Text="Validation error:" HorizontalAlignment="Right" Margin="0,0,20,0"
+                                           FontWeight="Bold" Visibility="{Binding SelectedReport.ValidationError,Converter={StaticResource NullToVisibilityConverter}}"/>
+                                <TextBlock Text="{Binding SelectedReport.ValidationError}"
+                                           FontWeight="Bold" Visibility="{Binding SelectedReport.ValidationError,Converter={StaticResource NullToVisibilityConverter}}"/>
                                 <TextBlock Text="Start:" HorizontalAlignment="Right" Margin="0,0,20,0" />
                                 <TextBlock Text="{Binding SelectedReport.StartDate}" />
                                 <TextBlock Text="End:" HorizontalAlignment="Right" Margin="0,0,20,0" />

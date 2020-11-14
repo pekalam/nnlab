@@ -367,8 +367,9 @@ namespace Training.Domain
 
                     if (validationError.HasValue && Parameters.StopWhenValidationErrorReached && validationError.Value <= Parameters.ValidationTargetError)
                     {
+                        _stopRequested = true;
                         return TrainingSessionReport.CreateValidationErrorReachedSessionReport(Trainer.Epochs, error, StartTime!.Value,
-                            EpochEndEvents);
+                            EpochEndEvents, validationError.Value);
                     }
                 } while (error > Parameters.TargetError);
 
