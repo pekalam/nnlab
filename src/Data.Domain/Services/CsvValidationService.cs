@@ -27,7 +27,7 @@ namespace Data.Domain.Services
                 return (false, "File does not exist or is being used by another process", 0, 0);
             }
             using var rdr = new StreamReader(fs);
-            using var csv = new CsvReader(rdr, CultureInfo.CurrentCulture);
+            using var csv = new CsvReader(rdr, CultureInfo.InvariantCulture);
 
 
             csv.Read();
@@ -36,7 +36,7 @@ namespace Data.Domain.Services
 
             foreach (var str in csv.Context.HeaderRecord)
             {
-                if (double.TryParse(str, out _))
+                if (double.TryParse(str, NumberStyles.Float, CultureInfo.InvariantCulture, out _))
                 {
                     return (false, "Numeric value in csv header", 0, 0);
                 }
@@ -48,7 +48,7 @@ namespace Data.Domain.Services
             {
                 for (int i = 0; i < csv.Context.HeaderRecord.Length; i++)
                 {
-                    if (!double.TryParse(csv[i], out _))
+                    if (!double.TryParse(csv[i], NumberStyles.Float, CultureInfo.InvariantCulture, out _))
                     {
                         return (false, $"Invalid field value at line: {lines} column: {i + 1}", 0, 0);
                     }
@@ -73,7 +73,7 @@ namespace Data.Domain.Services
 
             foreach (var str in csv.Context.HeaderRecord)
             {
-                if (double.TryParse(str, out _))
+                if (double.TryParse(str, NumberStyles.Float, CultureInfo.InvariantCulture, out _))
                 {
                     return null;
                 }

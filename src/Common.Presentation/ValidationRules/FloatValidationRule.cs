@@ -6,7 +6,7 @@ namespace Common.Presentation.ValidationRules
 {
     public class FloatValidationRule : ValidationRule
     {
-        private static Regex _regex = new Regex(@"^[0-9]*\.?[0-9]+$", RegexOptions.Compiled);
+        private static Regex _regex = new Regex(@"^[0-9]*\.?[0-9]+$", RegexOptions.None);
 
         public override System.Windows.Controls.ValidationResult Validate(object value, CultureInfo cultureInfo)
         {

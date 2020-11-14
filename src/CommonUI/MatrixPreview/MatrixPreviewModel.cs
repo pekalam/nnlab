@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.Runtime.CompilerServices;
 
 namespace SharedUI.MatrixPreview
@@ -54,7 +55,7 @@ namespace SharedUI.MatrixPreview
             {
                 if (_matrix != null)
                 {
-                    _matrix[_row, key] = double.Parse(value);
+                    _matrix[_row, key] = double.Parse(value, NumberStyles.Float, CultureInfo.CurrentCulture);
                 }
                 _dictionary[key] = value;
                 ElementChanged?.Invoke();
