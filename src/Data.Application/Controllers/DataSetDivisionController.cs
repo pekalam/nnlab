@@ -143,10 +143,14 @@ namespace Data.Application.Controllers
                 var calcTestPerc = (int)Math.Round(testSetCount * 100.0 / total);
 
 
-                if (Vm!.TrainingSetPercent != calcTrainingPerc || Vm!.ValidationSetPercent != calcValidationPerc ||
-                    Vm!.TestSetPercent != calcTestPerc)
+                if (calcTestPerc + calcTrainingPerc + calcValidationPerc != 100)
                 {
-                    Vm!.InsufficientSizeMsg = $"Data set will be divided by ratio: {calcTrainingPerc}:{calcValidationPerc}:{calcTestPerc}";
+                    Vm!.InsufficientSizeMsg = $"Data cannot be divided by ratio: {trainingSetCount}:{validationSetCount}:{testSetCount}";
+                }
+                else if ((Vm!.TrainingSetPercent != calcTrainingPerc || Vm!.ValidationSetPercent != calcValidationPerc ||
+                     Vm!.TestSetPercent != calcTestPerc))
+                {
+                    Vm!.InsufficientSizeMsg = $"Data will be divided by ratio: {calcTrainingPerc}:{calcValidationPerc}:{calcTestPerc}";
                 }
                 else
                 {

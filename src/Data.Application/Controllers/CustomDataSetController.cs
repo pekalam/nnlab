@@ -129,7 +129,7 @@ namespace Data.Application.Controllers
                 _currentSession = null;
             }
             Vm!.MatrixVm.RowRemoved -= MatrixVmOnRowRemoved;
-            Vm!.MatrixVm.MatrixElementChanged -= MatrixVmOnMatrixElementChanged;
+            Vm!.MatrixVm.MatrixElementChanged -= MatrixVmOnRowRemoved;
             if (data.Source != TrainingDataSource.Memory) return;
 
             _currentSession = _appState.ActiveSession!;
@@ -156,18 +156,9 @@ namespace Data.Application.Controllers
             Vm!.PlotModel.InvalidatePlot(true);
 
             Vm!.MatrixVm.RowRemoved += MatrixVmOnRowRemoved;
-            Vm!.MatrixVm.MatrixElementChanged += MatrixVmOnMatrixElementChanged;
+            Vm!.MatrixVm.MatrixElementChanged += MatrixVmOnRowRemoved;
         }
 
-        private void MatrixVmOnMatrixElementChanged(Matrix<double> obj)
-        {
-            Vm!.Scatter.Points.Clear();
-            for (int i = 0; i < obj.RowCount; i++)
-            {
-                Vm!.Scatter.Points.Add(new ScatterPoint(obj[i, 0], obj[i, 1]));
-            }
-            Vm!.PlotModel.InvalidatePlot(true);
-        }
 
         private void MatrixVmOnRowRemoved(Matrix<double> obj)
         {
@@ -182,6 +173,11 @@ namespace Data.Application.Controllers
                 Vm!.Scatter.Points.Add(new ScatterPoint(obj[i,0], obj[i,1]));
             }
             Vm!.PlotModel.InvalidatePlot(true);
+
+            var sets = new SupervisedTrainingData(SupervisedTrainingSamples.FromArrays(_input.ToArray(),
+                _target.ToArray()));
+
+            _appState.ActiveSession!.TrainingData!.StoreNewSets(sets);
         }
 
         ///memento getters / setters
