@@ -83,7 +83,7 @@
             <TextBlock x:Name="Error" Style="{StaticResource StatsText}"/>
             <TextBlock Text="Validation set error" Visibility="{Binding Text,ElementName=ValidationError,Converter={StaticResource StringNullToVisConverter}}" Style="{StaticResource StatsText}"/>
             <TextBlock x:Name="ValidationError" Style="{StaticResource StatsText}" Visibility="{Binding Text,RelativeSource={RelativeSource Self},Converter={StaticResource StringNullToVisConverter}}"/>
-            <TextBlock Text="Result:" Style="{StaticResource StatsText}"/>
+            <TextBlock Text="Last result:" Style="{StaticResource StatsText}"/>
             <TextBlock>
                 <TextBlock.Style>
                     <Style TargetType="TextBlock" BasedOn="{StaticResource StatsText}">

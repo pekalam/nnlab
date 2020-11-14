@@ -38,6 +38,7 @@ namespace Approximation.Application.ViewModels
         {
             Controller = controller;
             PlotModel = new BasicPlotModel();
+            PlotModel.DisplaySettingsRegion = false;
             PlotModel.Model.Series.Add(DataPredictionLineSeries);
             PlotModel.Model.Series.Add(DataScatterSeries);
             PlotModel.Model.Series.Add(PredictionLineSeries);
