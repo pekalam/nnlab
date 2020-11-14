@@ -1,4 +1,6 @@
-﻿using Prism.Regions;
+﻿using Common.Logging;
+using Microsoft.Extensions.Logging;
+using Prism.Regions;
 
 namespace Shell.Application.PrismDecorators
 {
@@ -16,11 +18,19 @@ namespace Shell.Application.PrismDecorators
 
         public object LoadContent(IRegion region, NavigationContext navigationContext)
         {
-            var view = _baseLoader.LoadContent(region, navigationContext);
+            try
+            {
+                var view = _baseLoader.LoadContent(region, navigationContext);
 
-            navigationContext.Parameters.Add("view", view);
+                navigationContext.Parameters.Add("view", view);
 
-            return view;
+                return view;
+            }
+            catch (System.Exception e)
+            {
+                Log.Logger.LogCritical(e, "Navigation exception");
+                throw;
+            }
         }
     }
 }

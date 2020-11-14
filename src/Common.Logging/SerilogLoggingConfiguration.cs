@@ -16,7 +16,7 @@ namespace Common.Logging
         {
             c.Enrich.WithThreadId().Enrich.WithMemoryUsage()
                 .MinimumLevel.Warning()
-                .WriteTo.File("log.txt", fileSizeLimitBytes: 1024 * 1024 * 512, rollOnFileSizeLimit: true, outputTemplate: OutputTemplate)
+                .WriteTo.File("errorlog.txt", fileSizeLimitBytes: 1024 * 1024 * 512, rollOnFileSizeLimit: true, outputTemplate: OutputTemplate)
                 .WriteTo.Console(outputTemplate: OutputTemplate);
         }
 
