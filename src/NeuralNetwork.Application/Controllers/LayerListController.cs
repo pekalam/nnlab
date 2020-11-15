@@ -35,6 +35,9 @@ namespace NeuralNetwork.Application.Controllers
 
     internal class LayerListController : ControllerBase<LayerListViewModel>,ILayerListController
     {
+        private SubscriptionToken _nClickSub;
+        private SubscriptionToken _areaClickSub;
+
         private readonly INeuralNetworkShellController _shellService;
         private readonly INeuralNetworkService _networkService;
         private readonly AppState _appState;
@@ -74,15 +77,24 @@ namespace NeuralNetwork.Application.Controllers
                 SetLayers();
             });
 
-            _ea.GetEvent<IntNeuronClicked>().Subscribe(args =>
+            _nClickSub = _ea.GetEvent<IntNeuronClicked>().Subscribe(args =>
             {
                 SelectLayer(args);
             });
 
-            _ea.GetEvent<IntNetDisplayAreaClicked>().Subscribe(() =>
+            _areaClickSub = _ea.GetEvent<IntNetDisplayAreaClicked>().Subscribe(() =>
             {
                 Vm!.SelectedLayer = null;
             });
+
+            Vm!.IsActiveChanged += (sender, args) =>
+            {
+                if (!Vm.IsActive)
+                {
+                    _areaClickSub.Dispose();
+                    _nClickSub.Dispose();
+                }
+            };
 
             _initialized = true;
         }

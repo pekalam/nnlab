@@ -29,11 +29,13 @@ namespace NeuralNetwork.Application.Controllers
         private readonly AppState _appState;
         private readonly AppStateHelper _helper;
         private readonly IEventAggregator _ea;
+        private readonly INeuralNetworkShellController _shellController;
 
-        public NetDisplayController(IEventAggregator ea, AppState appState)
+        public NetDisplayController(IEventAggregator ea, AppState appState, INeuralNetworkShellController shellController)
         {
             _ea = ea;
             _appState = appState;
+            _shellController = shellController;
             _helper = new AppStateHelper(appState);
         }
 
@@ -133,6 +135,8 @@ namespace NeuralNetwork.Application.Controllers
 
             AreaClicked = new DelegateCommand(() =>
             {
+                if(_shellController.IsEditorOpened) return;
+
                 Vm!.ModelAdapter!.Controller.ClearHighlight();
                 _ea.GetEvent<IntNetDisplayAreaClicked>().Publish();
             });
