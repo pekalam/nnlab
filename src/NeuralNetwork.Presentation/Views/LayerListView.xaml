@@ -205,7 +205,7 @@
                                         <Button Name="AddBtn" Command="{Binding Path=AddLayer}"
                                                 HorizontalAlignment="Center"
                                                 VerticalAlignment="Center" Height="200" Width="120" Background="Transparent"
-                                                BorderBrush="{x:Null}" Foreground="White">
+                                                BorderBrush="{x:Null}" Foreground="White" ToolTip="Add new layer">
                                             <iconPacks:FontAwesome Kind="PlusSquareRegular" Width="50" Height="50"/>
                                         </Button>
                                     </Grid>

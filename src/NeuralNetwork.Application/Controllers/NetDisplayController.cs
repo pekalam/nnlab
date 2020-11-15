@@ -53,12 +53,12 @@ namespace NeuralNetwork.Application.Controllers
 
                 for (int i = 0; i < Vm!.ModelAdapter.Layers.Count; i++)
                 {
-                    if (Vm!.ModelAdapter.Layers[i] == arg.layer && (i == arg.index || arg.index == 0))
+                    if (Vm!.ModelAdapter.Layers[i] == arg.layer && i == arg.index)
                     {
                         Vm!.ModelAdapter.InsertBefore(arg.index + 1, arg.layer);
                         return;
                     }
-                    if (Vm!.ModelAdapter.Layers[i] == arg.layer && i + 1 == arg.index)
+                    if (Vm!.ModelAdapter.Layers[i] == arg.layer && i - 1 == arg.index)
                     {
                         Vm!.ModelAdapter.InsertAfter(arg.index + 1, arg.layer);
                         return;
@@ -71,6 +71,13 @@ namespace NeuralNetwork.Application.Controllers
                 Vm!.ModelAdapter!.RemoveLayer(index);
                 if (index == _appState.ActiveSession!.Network!.Layers.Count)
                 {
+                    var lastLayerNeurons = _appState.ActiveSession.Network.Layers[^1].NeuronsCount;
+                    if (lastLayerNeurons != Vm!.ModelAdapter.NeuralNetworkModel
+                        .NetworkLayerModels[^1].NeuronModels.Count)
+                    {
+                        Vm!.ModelAdapter.LayerModelAdapters[^1].SetNeuronsCount(lastLayerNeurons);
+                    }
+
                     SetOutputLabels(Vm!.ModelAdapter, _appState.ActiveSession!.TrainingData!);
                 }
                 if (index == 0)

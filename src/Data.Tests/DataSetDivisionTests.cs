@@ -111,7 +111,7 @@ namespace Data.Application.Tests
             vm.ValidationSetPercent.Should().Be(0);
             vm.TestSetPercent.Should().Be(0);
 
-            vm.Ratio.Should().Be("100:0:0");
+            vm.Ratio.Should().Be("100%:0%:0%");
 
             session.TrainingData = TrainingDataMocks.ValidData3;
 

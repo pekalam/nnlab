@@ -65,7 +65,7 @@ namespace Data.Application.ViewModels
 
         public void UpdateRatio()
         {
-            Ratio = $"{_trainingSetPercent}:{_validationSetPercent}:{_testSetPercent}";
+            Ratio = $"{_trainingSetPercent}%:{_validationSetPercent}%:{_testSetPercent}%";
         }
 
         private void RaiseCmdCanExecChanged()

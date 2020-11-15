@@ -11,7 +11,7 @@
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance dd:DesignTrainingVm, IsDesignTimeCreatable=True}">
     <StackPanel Orientation="Horizontal">
-        <Button Style="{StaticResource ActionMenuButton}" >
+        <Button Style="{StaticResource ActionMenuButton}" ToolTip="Manage training session">
                 <mah:DropDownButton Name="NetOption" Content="{x:Null}">
                     <mah:DropDownButton.Style>
                         <Style TargetType="mah:DropDownButton">
@@ -60,13 +60,13 @@
 
         </Button>
         <Button Style="{StaticResource ActionMenuButton}" Command="{Binding Service.OpenReportsCommand}"
-                Margin="0,0,6,0">
+                Margin="0,0,6,0" ToolTip="Open reports">
             <StackPanel>
                 <iconPacks:PackIconFontAwesome Kind="FileSolid" Width="20" Height="20" HorizontalAlignment="Center" />
                 <TextBlock>Reports</TextBlock>
             </StackPanel>
         </Button>
-        <Button Style="{StaticResource ActionMenuButton}" Command="{Binding Service.OpenParametersCommand}">
+        <Button Style="{StaticResource ActionMenuButton}" Command="{Binding Service.OpenParametersCommand}" ToolTip="Select training parameters">
             <StackPanel Margin="0,0,6,0">
                 <iconPacks:PackIconFontAwesome Kind="SlidersHSolid" Width="20" Height="20" HorizontalAlignment="Center" />
                 <TextBlock>Parameters</TextBlock>

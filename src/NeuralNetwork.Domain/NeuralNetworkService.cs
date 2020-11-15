@@ -63,6 +63,12 @@ namespace NeuralNetwork.Domain
             {
                 var toRemove = NeuralNetwork.Layers[layerIndex];
                 NeuralNetwork.RemoveLayer(toRemove);
+
+                if (NeuralNetwork.Layers[^1].NeuronsCount != 1)
+                {
+                    NeuralNetwork.Layers[^1].NeuronsCount = 1;
+                }
+
                 _appState.ActiveSession?.RaiseNetworkStructureChanged();
                 return Validate();
             }
