@@ -67,7 +67,7 @@ namespace Data.Domain.Services
             SupervisedTrainingData? sets = null;
             await Task.Run(() =>
             {
-                sets = trainingData.CloneSets(true);
+                sets = trainingData.CloneOriginalSets();
                 MinMax(sets.TrainingSet);
                 if (sets.ValidationSet != null) MinMax(sets.ValidationSet);
                 if (sets.TestSet != null) MinMax(sets.TestSet);
@@ -122,7 +122,7 @@ namespace Data.Domain.Services
             SupervisedTrainingData? sets = null;
             await Task.Run(() =>
             {
-                sets = trainingData.CloneSets(true);
+                sets = trainingData.CloneOriginalSets();
                 Mean(sets.TrainingSet);
                 if (sets.ValidationSet != null) Mean(sets.ValidationSet);
                 if (sets.TestSet != null) Mean(sets.TestSet);
@@ -174,7 +174,7 @@ namespace Data.Domain.Services
             SupervisedTrainingData? sets = null;
             await Task.Run(() =>
             {
-                sets = trainingData.CloneSets(true);
+                sets = trainingData.CloneOriginalSets();
                 Std(sets.TrainingSet);
                 if (sets.ValidationSet != null) Std(sets.ValidationSet);
                 if (sets.TestSet != null) Std(sets.TestSet);

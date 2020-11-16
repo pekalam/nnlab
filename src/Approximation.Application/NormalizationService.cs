@@ -28,22 +28,6 @@ namespace Approximation.Application
             return (min, max);
         }
 
-        private Matrix<double> ToMinMax(Matrix<double> inputMat)
-        {
-            var input = _appState.ActiveSession!.TrainingData!.OriginalSets.TrainingSet.Input;
-            var y = inputMat.Clone();
-
-            for (int i = 0; i < inputMat.RowCount; i++)
-            {
-                var (min, max) = FindMinMax(input, i);
-
-                y[i, 0] = (y[i, 0] - min) / (max - min);
-            }
-
-            return y;
-        }
-
-
         private (double avg, double min, double max) FindMean(IVectorSet vec, int row)
         {
             double avg = 0;
@@ -66,15 +50,30 @@ namespace Approximation.Application
             return (avg, min, max);
         }
 
-
-        private Matrix<double> ToMean(Matrix<double> inputMat)
+        private Matrix<double> ToMinMax(Matrix<double> inputMat, DataSetType setType)
         {
-            var trainingInput = _appState.ActiveSession!.TrainingData!.OriginalSets.TrainingSet.Input;
+            var input = _appState.ActiveSession!.TrainingData!.GetOriginalSet(setType)!.Input;
             var y = inputMat.Clone();
 
             for (int i = 0; i < inputMat.RowCount; i++)
             {
-                var (avg, min, max) = FindMean(trainingInput, i);
+                var (min, max) = FindMinMax(input, i);
+
+                y[i, 0] = (y[i, 0] - min) / (max - min);
+            }
+
+            return y;
+        }
+
+
+        private Matrix<double> ToMean(Matrix<double> inputMat, DataSetType setType)
+        {
+            var input = _appState.ActiveSession!.TrainingData!.GetOriginalSet(setType)!.Input;
+            var y = inputMat.Clone();
+
+            for (int i = 0; i < inputMat.RowCount; i++)
+            {
+                var (avg, min, max) = FindMean(input, i);
 
                 y[i, 0] = (y[i, 0] - avg) / (max - min);
             }
@@ -83,19 +82,19 @@ namespace Approximation.Application
         }
 
 
-        private Matrix<double> ToStd(Matrix<double> inputMat)
+        private Matrix<double> ToStd(Matrix<double> inputMat, DataSetType setType)
         {
-            var trainingInput = _appState.ActiveSession!.TrainingData!.OriginalSets.TrainingSet.Input;
+            var input = _appState.ActiveSession!.TrainingData!.GetOriginalSet(setType)!.Input;
             var y = inputMat.Clone();
 
             double stddev = 0;
             for (int i = 0; i < inputMat.RowCount; i++)
             {
-                var (avg, min, max) = FindMean(trainingInput, i);
+                var (avg, min, max) = FindMean(input, i);
 
-                for (int j = 0; j < trainingInput.Count; j++)
+                for (int j = 0; j < input.Count; j++)
                 {
-                    stddev += Math.Pow(trainingInput[j][i, 0] - avg, 2.0d) / (trainingInput.Count - 1);
+                    stddev += Math.Pow(input[j][i, 0] - avg, 2.0d) / (input.Count - 1);
                 }
                 stddev = Math.Sqrt(stddev);
 
@@ -105,14 +104,14 @@ namespace Approximation.Application
             return y;
         }
 
-        public Matrix<double> ToNetworkDataNormalization(Matrix<double> input)
+        public Matrix<double> ToNetworkDataNormalization(Matrix<double> input, DataSetType setType)
         {
             return _appState.ActiveSession!.TrainingData!.NormalizationMethod
                 switch
                 {
-                    NormalizationMethod.MinMax => ToMinMax(input),
-                    NormalizationMethod.Mean => ToMean(input),
-                    NormalizationMethod.Std => ToStd(input),
+                    NormalizationMethod.MinMax => ToMinMax(input, setType),
+                    NormalizationMethod.Mean => ToMean(input,setType),
+                    NormalizationMethod.Std => ToStd(input,setType),
                     NormalizationMethod.None => input,
                     _ => throw new Exception(),
                 };

@@ -226,7 +226,7 @@ namespace Approximation.Application.Controllers
                 while (total-- > 0)
                 {
                     var x = _normalizationService.ToNetworkDataNormalization(
-                        Matrix<double>.Build.Dense(1, 1, start));
+                        Matrix<double>.Build.Dense(1, 1, start), setType.Value);
                     network.CalculateOutput(x);
                     predLine.Add(new DataPoint(start, network.Output![0, 0]));
                     predScatter.Add(new ScatterPoint(start, network.Output![0, 0]));
@@ -245,7 +245,7 @@ namespace Approximation.Application.Controllers
         {
             var network = _appState.ActiveSession!.Network!;
             var inputMatrix = Vm!.InputMatrixVm.Controller.AssignedMatrix!;
-            var inputNormalized = _normalizationService.ToNetworkDataNormalization(inputMatrix);
+            var inputNormalized = _normalizationService.ToNetworkDataNormalization(inputMatrix, Vm!.SelectedPlotSetType);
 
             network.CalculateOutput(inputNormalized);
             Vm!.UpdateMatrix(network.Output!, _appState.ActiveSession!.TrainingData!, inputMatrix);
