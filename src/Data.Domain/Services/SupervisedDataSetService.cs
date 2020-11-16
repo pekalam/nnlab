@@ -79,7 +79,7 @@ namespace Data.Domain.Services
             }
 
             var newVariables = new SupervisedTrainingSamplesVariables(newVariableIndexes, trainingData.Variables.Names);
-            trainingData.Variables = newVariables;
+            trainingData.ChangeVariables(newVariables);
         }
 
         public void ChangeVariables(SupervisedSetVariableIndexes newVariableIndexes, SupervisedTrainingData sets, TrainingDataSource source)

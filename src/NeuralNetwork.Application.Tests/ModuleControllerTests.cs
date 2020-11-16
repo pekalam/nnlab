@@ -182,10 +182,9 @@ namespace NeuralNetwork.Application.Tests
 
 
             //act
-            session.TrainingData.Variables = new SupervisedTrainingSamplesVariables(new SupervisedSetVariableIndexes(
-                new []{0}, new []{1}, new []{2}
-                ), new []{new VariableName("x"), new VariableName("y"), new VariableName("z")});
-
+            session.TrainingData.ChangeVariables(new SupervisedTrainingSamplesVariables(new SupervisedSetVariableIndexes(
+                new[] { 0 }, new[] { 1 }, new[] { 2 }
+            ), new[] { new VariableName("x"), new VariableName("y"), new VariableName("z") }));
 
             //assert
             var network = _appState.ActiveSession.Network;

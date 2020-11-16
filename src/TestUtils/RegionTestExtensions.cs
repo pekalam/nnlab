@@ -7,6 +7,7 @@ using NNLib.MLP;
 using Prism.Regions;
 using Shell.Interface;
 using System;
+using System.Linq;
 
 namespace TestUtils
 {
@@ -108,6 +109,21 @@ namespace TestUtils
             };
 
             return SupervisedTrainingSamples.FromArrays(input, expected);
+        }
+
+        public static SupervisedTrainingSamples RandomSamples(int inputSz = 2, int targetSz = 1)
+        {
+            var rnd = new Random();
+            var total = rnd.Next(4000);
+            return SupervisedTrainingSamples.FromArrays(
+                Enumerable.Repeat(Enumerable.Range(0, inputSz).Select(_ => rnd.NextDouble()).ToArray(), total).ToArray(),
+                Enumerable.Repeat(Enumerable.Range(0, targetSz).Select(_ => rnd.NextDouble()).ToArray(), total).ToArray()
+            );
+        }
+
+        public static SupervisedTrainingData RandomTrainingData(int inputSz = 2, int targetSz = 1)
+        {
+            return new SupervisedTrainingData(RandomSamples(inputSz,targetSz));
         }
 
         public static TrainingData AndGateTrainingData()

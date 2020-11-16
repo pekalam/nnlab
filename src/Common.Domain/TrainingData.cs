@@ -1,4 +1,4 @@
-using NNLib.Csv;
+﻿using NNLib.Csv;
 using NNLib.Data;
 using Prism.Mvvm;
 using System;
@@ -26,7 +26,7 @@ namespace Common.Domain
         public SupervisedTrainingData Sets
         {
             get => _sets;
-            set => SetProperty(ref _sets, value);
+            private set => SetProperty(ref _sets, value);
         }
 
         public SupervisedTrainingData OriginalSets { get; private set; }
@@ -34,13 +34,13 @@ namespace Common.Domain
         public NormalizationMethod NormalizationMethod
         {
             get => _normalizationMethod;
-            set => SetProperty(ref _normalizationMethod, value);
+            private set => SetProperty(ref _normalizationMethod, value);
         }
 
         public SupervisedTrainingSamplesVariables Variables
         {
             get => _variables;
-            set => SetProperty(ref _variables, value ?? throw new NullReferenceException("Null Variables"));
+            private set => SetProperty(ref _variables, value ?? throw new NullReferenceException("Null Variables"));
         }
 
         public TrainingData(SupervisedTrainingData sets, SupervisedTrainingSamplesVariables variables, TrainingDataSource source, NormalizationMethod normalizationMethod)
@@ -96,25 +96,6 @@ namespace Common.Domain
             }
         }
 
-        public void RestoreOriginalSets()
-        {
-            Sets = OriginalSets;
-            NormalizationMethod = NormalizationMethod.None;
-        }
-
-
-        public bool IsValid
-        {
-            get
-            {
-                if (Variables.Indexes.InputVarIndexes.Length > 0 && Variables.Indexes.TargetVarIndexes.Length > 0)
-                {
-                    return true;
-                }
-
-                return false;
-            }
-        }
 
         private SupervisedTrainingSamples CloneMemorySet(SupervisedTrainingSamples set)
         {
@@ -165,8 +146,18 @@ namespace Common.Domain
 
         public void ChangeNormalization(SupervisedTrainingData newData, NormalizationMethod newNormalization)
         {
+            if (NormalizationMethod == newNormalization)
+            {
+                return;
+            }
+
             _sets = newData;
             NormalizationMethod = newNormalization;
+        }
+
+        public void ChangeVariables(SupervisedTrainingSamplesVariables variables)
+        {
+            Variables = variables;
         }
     }
 }

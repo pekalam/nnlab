@@ -188,7 +188,7 @@ namespace Common.Tests
             var session = _appState.CreateSession();
             AssingTrainingData(session);
 
-            session.TrainingData!.NormalizationMethod = NormalizationMethod.MinMax;
+            session.TrainingData!.ChangeNormalization(TrainingDataMocks.RandomTrainingData(), NormalizationMethod.MinMax);
 
             //assert
             called.Should().Be(1);
@@ -203,7 +203,7 @@ namespace Common.Tests
             var session = _appState.CreateSession();
             AssingTrainingData(session);
 
-            session.TrainingData!.NormalizationMethod = NormalizationMethod.MinMax;
+            session.TrainingData!.ChangeNormalization(TrainingDataMocks.RandomTrainingData(), NormalizationMethod.MinMax);
 
             //assert
             called.Should().Be(1);
@@ -217,7 +217,7 @@ namespace Common.Tests
             //should not be called
             called.Should().Be(1);
 
-            session2.TrainingData!.NormalizationMethod = NormalizationMethod.Mean;
+            session.TrainingData!.ChangeNormalization(TrainingDataMocks.RandomTrainingData(), NormalizationMethod.Mean);
 
             //assert
             called.Should().Be(2);
@@ -235,7 +235,13 @@ namespace Common.Tests
             called.Should().Be(2);
 
 
-            _appState.ActiveSession.TrainingData.NormalizationMethod = NormalizationMethod.Std;
+            session.TrainingData!.ChangeNormalization(TrainingDataMocks.RandomTrainingData(), NormalizationMethod.Std);
+
+            called.Should().Be(3);
+
+
+            //should not change if already std
+            session.TrainingData!.ChangeNormalization(TrainingDataMocks.RandomTrainingData(), NormalizationMethod.Std);
 
             called.Should().Be(3);
         }

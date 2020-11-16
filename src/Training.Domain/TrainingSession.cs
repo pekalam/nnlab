@@ -120,15 +120,11 @@ namespace Training.Domain
             {
                 _trainer!.TrainingSets = _session.TrainingData!.Sets;
                 TrainerUpdated?.Invoke();
+            }else if (e.PropertyName == nameof(TrainingData.NormalizationMethod))
+            {
+                _trainer!.TrainingSets = _session.TrainingData!.Sets;
+                TrainerUpdated?.Invoke();
             }
-        }
-
-        /// <summary>
-        ///     Test method
-        /// </summary>
-        protected void RaiseEpochEnd(EpochEndArgs args)
-        {
-            EpochEnd?.Invoke(this, args);
         }
 
         private void ConstructTrainer()

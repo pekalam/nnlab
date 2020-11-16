@@ -8,6 +8,7 @@ using NNLib.Training.LevenbergMarquardt;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using NNLib.Data;
 using TestUtils;
 using Xunit;
 
@@ -15,9 +16,6 @@ namespace Training.Domain.Tests
 {
     public class TrainingSessionTests
     {
-        MLPNetwork net = new MLPNetwork(new PerceptronLayer(2, 2, new LinearActivationFunction()),
-            new PerceptronLayer(2, 1, new SigmoidActivationFunction()));
-        TrainingData data = TrainingDataMocks.AndGateTrainingData();
         private int epochs;
         private double lastErr;
 
@@ -30,8 +28,8 @@ namespace Training.Domain.Tests
             var session=_appState.CreateSession();
             _session = new TrainingSession(_appState);
 
-            session.TrainingData = data;
-            session.Network = net;
+            session.TrainingData = TrainingDataMocks.AndGateTrainingData();
+            session.Network = MLPMocks.AndGateNet;
         }
     
         private void SetupEpochEndHandler(TrainingSession session)
@@ -287,11 +285,31 @@ namespace Training.Domain.Tests
             {
                 Algorithm = TrainingAlgorithm.LevenbergMarquardt,
             };
-            _session.Trainer.Algorithm.Should().BeOfType<GradientDescentAlgorithm>();
+            _session.Trainer!.Algorithm.Should().BeOfType<GradientDescentAlgorithm>();
 
-            _appState.ActiveSession.TrainingParameters = param;
+            _appState.ActiveSession!.TrainingParameters = param;
 
             _session.Trainer.Algorithm.Should().BeOfType<LevenbergMarquardtAlgorithm>();
+        }
+
+        [Fact]
+        public void Sets_in_trainer_are_changed_when_new_sets_are_stored()
+        {
+            var newData = TrainingDataMocks.RandomTrainingData();
+            _session.Trainer!.TrainingSets.Should().NotBeEquivalentTo(newData);
+            _appState.ActiveSession!.TrainingData!.StoreNewSets(newData);
+
+            _session.Trainer!.TrainingSets.Should().BeEquivalentTo(newData);
+        }
+
+        [Fact]
+        public void Sets_in_trainer_are_changed_when_normalization_method_is_changed()
+        {
+            var newData = TrainingDataMocks.RandomTrainingData();
+            _session.Trainer!.TrainingSets.Should().NotBeEquivalentTo(newData);
+            _appState.ActiveSession!.TrainingData!.ChangeNormalization(newData, NormalizationMethod.Mean);
+
+            _session.Trainer!.TrainingSets.Should().BeEquivalentTo(newData);
         }
     }
 }
