@@ -1,4 +1,4 @@
-﻿using Common.Domain;
+using Common.Domain;
 using Common.Framework;
 using Prism.Commands;
 using Prism.Services.Dialogs;
@@ -50,7 +50,7 @@ namespace Shell.Application.ViewModels
 
         private void TryResetToDefault()
         {
-            if (!IncludeData && !IncludeNetwork && !IncludeTrainingParameters)
+            if (IncludeData && IncludeNetwork && IncludeTrainingParameters)
             {
                 Options = DuplicateOptions.All;
             }
@@ -64,11 +64,11 @@ namespace Shell.Application.ViewModels
                 SetProperty(ref _includeData, value);
                 if (!value)
                 {
-                    Options ^= DuplicateOptions.All;
                     Options |= DuplicateOptions.NoData;
                 }
                 else
                 {
+                    Options &= ~DuplicateOptions.NoData;
                     TryResetToDefault();
                 }
             }
@@ -82,11 +82,11 @@ namespace Shell.Application.ViewModels
                 SetProperty(ref _includeNetwork, value);
                 if (!value)
                 {
-                    Options ^= DuplicateOptions.All;
                     Options |= DuplicateOptions.NoNetwork;
                 }
                 else
                 {
+                    Options &= ~DuplicateOptions.NoNetwork;
                     TryResetToDefault();
                 }
             }
@@ -100,11 +100,11 @@ namespace Shell.Application.ViewModels
                 SetProperty(ref _includeTrainingParameters, value);
                 if (!value)
                 {
-                    Options ^= DuplicateOptions.All;
                     Options |= DuplicateOptions.NoTrainingParams;
                 }
                 else
                 {
+                    Options &= ~DuplicateOptions.NoTrainingParams;
                     TryResetToDefault();
                 }
             }

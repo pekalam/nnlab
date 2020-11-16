@@ -50,6 +50,10 @@ namespace Data.Application.Tests
             session.TrainingData.Sets.ValidationSet.Input.Count.Should().Be(1);
             session.TrainingData.Sets.TestSet.Input.Count.Should().Be(1);
             session.TrainingData.Sets.TrainingSet.Input.Count.Should().Be(2);
+            
+            session.TrainingData.OriginalSets.ValidationSet.Input.Count.Should().Be(1);
+            session.TrainingData.OriginalSets.TestSet.Input.Count.Should().Be(1);
+            session.TrainingData.OriginalSets.TrainingSet.Input.Count.Should().Be(2);
         }
 
         [Fact]

@@ -59,9 +59,20 @@ namespace Training.Application.Controllers
 
                 Vm!.ModelAdapter.SetNeuralNetwork(network);
                 Vm!.ModelAdapter.NeuralNetworkModel.BackgroundColor = "#cce6ff";
-                Vm!.ModelAdapter.SetInputLabels(_appState.ActiveSession!.TrainingData!.Variables.InputVariableNames);
+                if (_appState.ActiveSession!.TrainingData != null)
+                {
+                    Vm!.ModelAdapter.SetInputLabels(_appState.ActiveSession!.TrainingData.Variables.InputVariableNames);
+                    Vm!.ModelAdapter.SetOutputLabels(_appState.ActiveSession.TrainingData.Variables.TargetVariableNames);
+                }
+
+            });
+
+            _helper.OnTrainingDataChanged(data =>
+            {
+                Vm!.ModelAdapter.SetInputLabels(_appState.ActiveSession!.TrainingData.Variables.InputVariableNames);
                 Vm!.ModelAdapter.SetOutputLabels(_appState.ActiveSession.TrainingData.Variables.TargetVariableNames);
             });
+
             Vm!.IsActiveChanged += OnIsActiveChanged;
         }
 

@@ -6,6 +6,7 @@ using NNLib.MLP;
 using Prism.Ioc;
 using Prism.Regions;
 using System;
+using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Threading;
@@ -70,7 +71,7 @@ namespace Training.Application.Controllers
             ea.GetEvent<ContentRegionViewChanged>().Subscribe(() =>
             {
                 // Vm!.PlotModel.Annotations.Clear();
-                Vm.PlotModel.InvalidatePlot(false);
+                Vm!.PlotModel.InvalidatePlot(false);
             });
         }
 
@@ -94,10 +95,30 @@ namespace Training.Application.Controllers
             _helper.OnNetworkChanged(network =>
             {
                 Vm!.BasicPlotModel.Model.Series.Clear();
+
+                if (_moduleState.ActiveSession!.IsValid)
+                {
+                    _plotSelector.SelectPlot(_moduleState.ActiveSession!);
+                    _plotSelector.OutputPlot?.CreateForSession(_moduleState.ActiveSession!, Vm!);
+                    Vm!.BasicPlotModel.Model.InvalidatePlot(true);
+                }
+                else
+                {
+                    _moduleState.ActiveSession.PropertyChanged -= ActiveSessionOnPropertyChanged;
+                    _moduleState.ActiveSession.PropertyChanged += ActiveSessionOnPropertyChanged;
+                }
+            });
+        }
+
+        private void ActiveSessionOnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(TrainingSession.IsValid) && ((TrainingSession)sender).IsValid)
+            {
                 _plotSelector.SelectPlot(_moduleState.ActiveSession!);
                 _plotSelector.OutputPlot?.CreateForSession(_moduleState.ActiveSession!, Vm!);
                 Vm!.BasicPlotModel.Model.InvalidatePlot(true);
-            });
+                _moduleState.ActiveSession!.PropertyChanged -= ActiveSessionOnPropertyChanged;
+            }
         }
 
         private void OnIsActiveChanged(object? sender, EventArgs e)

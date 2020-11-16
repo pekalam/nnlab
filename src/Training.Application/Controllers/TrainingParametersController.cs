@@ -68,13 +68,8 @@ namespace Training.Application.Controllers
             Vm!.PropertyChanged += VmOnPropertyChanged;
 
 
-            _helper.OnSessionChangedOrSet(session =>
-            {
-                if (session.TrainingParameters != null)
-                {
-                    SetNewSession(session);
-                }
-            });
+            SetNewSession(_appState.ActiveSession!);
+
 
             _ea.GetEvent<EnableModalNavigation>().Publish(ReturnCommand);
         }

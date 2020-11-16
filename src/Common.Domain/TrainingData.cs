@@ -110,14 +110,13 @@ namespace Common.Domain
             return new TrainingData(setsCpy!, Variables.Clone(), Source, NormalizationMethod);
         }
 
-        public SupervisedTrainingData CloneOriginalSets() => InternalCloneSets(true);
+        public SupervisedTrainingData CloneOriginalSets() => InternalCloneSets(OriginalSets);
 
-        public SupervisedTrainingData CloneSets() => InternalCloneSets(false);
+        public SupervisedTrainingData CloneSets() => InternalCloneSets(Sets);
 
-        private SupervisedTrainingData InternalCloneSets(bool originalSets)
+        private SupervisedTrainingData InternalCloneSets(SupervisedTrainingData toCpy)
         {
             SupervisedTrainingData? setsCpy = null;
-            var toCpy = originalSets ? OriginalSets : Sets;
 
             if (Source == TrainingDataSource.Csv)
             {
@@ -143,8 +142,8 @@ namespace Common.Domain
         public void StoreNewSets(SupervisedTrainingData sets)
         {
             _normalizationMethod = NormalizationMethod.None;
+            OriginalSets = InternalCloneSets(sets);
             Sets = sets;
-            OriginalSets = CloneSets();
         }
 
         public void ChangeNormalization(SupervisedTrainingData newData, NormalizationMethod newNormalization)

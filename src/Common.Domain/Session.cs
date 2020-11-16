@@ -21,7 +21,6 @@ namespace Common.Domain
         public event Action<MLPNetwork>? NetworkStructureChanged;
         public event Action<MLPNetwork>? NetworkParametersChanged;
         public event Action<TrainingData>? TrainingDataUpdated;
-        public event Action<Session>? SessionReadyToTraining;
 
         public Session(string name)
         {
@@ -103,25 +102,10 @@ namespace Common.Domain
             {
                 SetProperty(ref _trainingData, value);
                 if (value == null || _network == null) return;
-                
+
                 if (TrainingParameters == null)
                     TrainingParameters = new TrainingParameters(TrainingData?.GetSet(DataSetType.Validation) != null);
-                if (Network != null)
-                {
-                    SessionReadyToTraining?.Invoke(this);
-                }
             }
-        }
-
-        public void UnloadTrainingData()
-        {
-            if (_trainingData == null) throw new NullReferenceException("Null trainingData");
-
-            _trainingData.Sets.TrainingSet.Dispose();
-            _trainingData.Sets.ValidationSet?.Dispose();
-            _trainingData.Sets.TestSet?.Dispose();
-
-            _trainingData = null;
         }
 
         public MLPNetwork? Network
@@ -130,14 +114,13 @@ namespace Common.Domain
             set
             {
                 SetProperty(ref _network, value);
+
                 if (value == null || _trainingData == null) return;
+
                 _initialNetwork = value.Clone();
+
                 if (TrainingParameters == null)
                     TrainingParameters = new TrainingParameters(TrainingData?.GetSet(DataSetType.Validation) != null);
-                if (TrainingData != null)
-                {
-                    SessionReadyToTraining?.Invoke(this);
-                }
             }
         }
 
