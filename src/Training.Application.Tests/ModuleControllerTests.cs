@@ -1,10 +1,12 @@
 using System.Threading.Tasks;
 using Common.Domain;
+using FluentAssertions;
 using Moq;
 using Moq.AutoMock;
 using Prism.Regions;
 using Shell.Interface;
 using TestUtils;
+using Training.Domain;
 using Training.Interface;
 using Xunit;
 #pragma warning disable 4014
@@ -37,6 +39,42 @@ namespace Training.Application.Tests
             _moduleState =_mocker.UseImpl<ModuleState>();
 
             _ctrl = _mocker.CreateInstance<ModuleController>();
+        }
+
+        [Fact]
+        public void TrainingSession_is_created_and_changed_with_active_session()
+        {
+            var session = _appState.CreateSession();
+
+            //should be created but invalid
+            _moduleState.ActiveSession.Should().NotBeNull();
+            _moduleState.ActiveSession.IsValid.Should().BeFalse();
+
+
+            session.TrainingData = TrainingDataMocks.ValidData1;
+
+            //should be created but invalid
+            _moduleState.ActiveSession.Should().NotBeNull();
+            _moduleState.ActiveSession.IsValid.Should().BeFalse();
+
+            session.Network = MLPMocks.ValidNet1;
+
+            //should be created and valid
+            _moduleState.ActiveSession.Should().NotBeNull();
+            _moduleState.ActiveSession.IsValid.Should().BeTrue();
+
+
+            var first = _moduleState.ActiveSession;
+
+            _appState.ActiveSession = _appState.CreateSession();
+
+            //should not be the same as previous
+            _moduleState.ActiveSession.Should().NotBeNull();
+            first.Should().NotBe(_moduleState.ActiveSession);
+
+            _appState.ActiveSession = session;
+
+            first.Should().Be(_moduleState.ActiveSession);
         }
 
         [Fact]
@@ -115,15 +153,30 @@ namespace Training.Application.Tests
 
 
         [Fact]
-        public void When_new_session_is_active_without_net_and_data_sends_disabled()
+        public void When_new_session_is_active_without_net_and_data_sends_disabled_and_module_state_change_events()
         {
+            int called = 0;
+            TrainingSession? prev = null;
+            TrainingSession next = null;
+            _moduleState.ActiveSessionChanged += (sender, tuple) =>
+            {
+                (prev, next) = tuple;
+                called++;
+            };
+
             _ctrl.Run();
 
             var session = _appState.CreateSession();
             _ea.VerifyTimesCalled<DisableNavMenuItem>(1);
+            called.Should().Be(1);
+            prev.Should().BeNull();
+            next.Should().NotBeNull();
 
             _appState.ActiveSession = _appState.CreateSession();
             _ea.VerifyTimesCalled<DisableNavMenuItem>(2);
+            called.Should().Be(2);
+            prev.Should().NotBeNull();
+            next.Should().NotBeNull();
         }
     }
 }

@@ -27,18 +27,20 @@ namespace Training.Application.Tests
             _moduleState = _mocker.UseImpl<ModuleState>();
             _mocker.UseImpl<ModuleStateHelper>();
             _mocker.UseImpl<ModuleStateSessionOptionsDecorator>();
+            var moduleCtrl = _mocker.UseImpl<ModuleController>();
 
             _service = _mocker.UseImpl<ITrainingController,TrainingController>();
 
             _ctrl = _mocker.UseImpl<TrainingController>();
             _vm = _mocker.UseVm<TrainingViewModel>();
 
+            moduleCtrl.Run();
             _appState.CreateSession();
         }
 
         private void SetupValidSession()
         {
-            _appState.ActiveSession.TrainingData = TrainingDataMocks.AndGateTrainingData();
+            _appState.ActiveSession!.TrainingData = TrainingDataMocks.AndGateTrainingData();
             _appState.ActiveSession.Network = MLPMocks.AndGateNet;
         }
 

@@ -21,6 +21,7 @@ namespace Common.Domain
         public event Action<MLPNetwork>? NetworkStructureChanged;
         public event Action<MLPNetwork>? NetworkParametersChanged;
         public event Action<TrainingData>? TrainingDataUpdated;
+        public event Action<Session>? SessionReadyToTraining;
 
         public Session(string name)
         {
@@ -105,6 +106,10 @@ namespace Common.Domain
                 
                 if (TrainingParameters == null)
                     TrainingParameters = new TrainingParameters(TrainingData?.GetSet(DataSetType.Validation) != null);
+                if (Network != null)
+                {
+                    SessionReadyToTraining?.Invoke(this);
+                }
             }
         }
 
@@ -129,6 +134,10 @@ namespace Common.Domain
                 _initialNetwork = value.Clone();
                 if (TrainingParameters == null)
                     TrainingParameters = new TrainingParameters(TrainingData?.GetSet(DataSetType.Validation) != null);
+                if (TrainingData != null)
+                {
+                    SessionReadyToTraining?.Invoke(this);
+                }
             }
         }
 

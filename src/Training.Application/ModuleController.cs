@@ -45,6 +45,7 @@ namespace Training.Application
 
             _moduleState.PropertyChanged += ModuleStateOnPropertyChanged;
 
+            _appState.ActiveSessionChanged += AppStateOnActiveSessionChanged;
             _appState.SessionCreated += AppStateOnSessionCreated;
             _appState.SessionDuplicated += AppStateOnSessionDuplicated;
 
@@ -65,6 +66,11 @@ namespace Training.Application
                     _ea.OnFirstNavigation(ModuleIds.Training, () => _rm.NavigateContentRegion("TrainingView"));
                 }
             });
+        }
+
+        private void AppStateOnActiveSessionChanged(object? sender, (Session? prev, Session next) e)
+        {
+            _moduleState.CreateOrSetActiveTrainingSession();
         }
 
         private void AppStateOnSessionDuplicated(object? sender, Session e)

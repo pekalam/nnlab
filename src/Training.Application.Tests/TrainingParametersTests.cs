@@ -32,7 +32,8 @@ namespace Training.Application.Tests
             _ctrl = _mocker.UseImpl<ITrainingParametersController,TrainingParametersController>();
             _service = _ctrl;
 
-
+            var moduleCtrl = _mocker.UseImpl<ModuleController>();
+            moduleCtrl.Run();
         }
 
         [Fact]

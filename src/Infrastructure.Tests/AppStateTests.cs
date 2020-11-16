@@ -240,10 +240,9 @@ namespace Common.Tests
             called.Should().Be(3);
 
 
-            //should not change if already std
             session.TrainingData!.ChangeNormalization(TrainingDataMocks.RandomTrainingData(), NormalizationMethod.Std);
 
-            called.Should().Be(3);
+            called.Should().Be(4);
         }
     }
 
@@ -396,6 +395,20 @@ namespace Common.Tests
             clone.Network.Should().BeNull();
             clone.TrainingData.Should().NotBeNull();
             clone.TrainingParameters.Should().NotBeNull();
+        }
+
+        [Fact]
+        public void ReadyToTraining_called_when_data_and_network_are_set()
+        {
+            int called = 0;
+            var session = appState.CreateSession();
+
+            session.SessionReadyToTraining += session1 => called++;
+
+            session.TrainingData = TrainingDataMocks.ValidData3;
+            session.Network = MLPMocks.ValidNet1;
+
+            called.Should().Be(1);
         }
     }
 

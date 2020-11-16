@@ -81,43 +81,41 @@ namespace Training.Application
     {
         private readonly AppState _appState;
         private readonly Dictionary<Session, TrainingSession> _sessionToTraining = new Dictionary<Session, TrainingSession>();
-        private TrainingSession? _activeSession;
+        private TrainingSession? _previousActive;
 
         public event EventHandler<(TrainingSession? prev, TrainingSession next)>? ActiveSessionChanged; 
 
         public ModuleState(AppState appState)
         {
             _appState = appState;
-
-            _appState.PropertyChanged += AppStateOnPropertyChanged;
         }
 
-        private void AppStateOnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        public void CreateOrSetActiveTrainingSession()
         {
-            if (e.PropertyName == nameof(AppState.ActiveSession))
+            if (_sessionToTraining.TryGetValue(_appState.ActiveSession!, out var session))
             {
-                _sessionToTraining.TryGetValue(_appState.ActiveSession!, out var trainingSession);
-                if (trainingSession == null)
-                {
-                    ActiveSession = new TrainingSessionDecorator(_appState);
-                    _sessionToTraining[_appState.ActiveSession!] = _activeSession!;
-                }
-                else
-                {
-                    ActiveSession = trainingSession;
-                }
+                RaisePropertyChanged(nameof(ActiveSession));
+                ActiveSessionChanged?.Invoke(this, (_previousActive, session));
+                _previousActive = session;
             }
+            else
+            {
+                var newSession = new TrainingSessionDecorator(_appState);
+                _sessionToTraining[_appState.ActiveSession!] = newSession;
+                RaisePropertyChanged(nameof(ActiveSession));
+                ActiveSessionChanged?.Invoke(this, (_previousActive, newSession));
+                _previousActive = newSession;
+            }
+
         }
 
         public TrainingSession? ActiveSession
         {
-            get => _activeSession;
-            set
+            get
             {
-                if(value == null) throw new NullReferenceException("Null training session");
-                var temp = _activeSession;
-                SetProperty(ref _activeSession, value);
-                ActiveSessionChanged?.Invoke(this, (temp, value));
+                if (_appState.ActiveSession == null) return null;
+                _sessionToTraining.TryGetValue(_appState.ActiveSession, out var session);
+                return session;
             }
         }
     }
