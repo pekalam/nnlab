@@ -215,14 +215,14 @@ namespace Approximation.Application.Controllers
 
             await Task.Run(() =>
             {
-                for (int i = 0; i < orgSet.Input.Count; i++)
+                for (int i = 0; i < set.Input.Count; i++)
                 {
                     network.CalculateOutput(set.Input[i]);
                     dataPredLine[i] = new DataPoint(orgSet.Input[i].At(0, 0), network.Output!.At(0, 0));
                 }
 
                 var start = Vm!.StartValue;
-                int total = (int) Math.Round((Vm!.EndValue - start) / Vm.Interval, MidpointRounding.AwayFromZero) + 1;
+                int total = (int) Math.Round((Vm!.EndValue - start) / Vm!.Interval, MidpointRounding.AwayFromZero) + 1;
                 while (total-- > 0)
                 {
                     var x = _normalizationService.ToNetworkDataNormalization(

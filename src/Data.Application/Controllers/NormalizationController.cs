@@ -40,8 +40,11 @@ namespace Data.Application.Controllers.DataSource
                     return;
                 }
 
+
                 if (data.Source == TrainingDataSource.Csv)
                 {
+                    SetVmNormalizationMethod(data);
+
                     switch (data.NormalizationMethod)
                     {
                         case NormalizationMethod.Mean:
@@ -59,6 +62,7 @@ namespace Data.Application.Controllers.DataSource
             {
                 nameof(TrainingData.Variables) => true,
                 nameof(TrainingData.NormalizationMethod) => true,
+                nameof(TrainingData.Sets) => true,
                 _ => false,
             });
 

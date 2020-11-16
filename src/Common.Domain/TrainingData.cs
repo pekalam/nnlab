@@ -1,4 +1,4 @@
-﻿using NNLib.Csv;
+using NNLib.Csv;
 using NNLib.Data;
 using Prism.Mvvm;
 using System;
@@ -158,6 +158,7 @@ namespace Common.Domain
 
         public void StoreNewSets(SupervisedTrainingData sets)
         {
+            _normalizationMethod = NormalizationMethod.None;
             Sets = sets;
             OriginalSets = CloneSets();
         }
