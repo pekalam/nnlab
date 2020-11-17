@@ -36,39 +36,9 @@ namespace Training.Application.Tests
             moduleCtrl.Run();
         }
 
-        [Fact]
-        public void Properties_are_changed_with_active_session()
-        {
-            var session = _appState.CreateSession();
-            session.SetupValidAndGate();
-
-            //create vm after session is created
-            _vm = _mocker.UseVm<TrainingParametersViewModel>();
-
-            _vm.TrainingParameters.Should().Be(session.TrainingParameters);
-
-            _vm.IsMaxLearningTimeChecked = false;
-            _vm.MaxLearningTime = Time.Now.AddMinutes(2);
-
-            _vm.Service.OkCommand.Execute();
-
-            var session2 = _appState.CreateSession();
-            session2.SetupValidAndGate();
-
-            _appState.ActiveSession = session2;
-
-            _vm.IsMaxLearningTimeChecked.Should().BeTrue();
-            _vm.MaxLearningTime.Should().Be(default);
-
-
-            _appState.ActiveSession = session;
-            _vm.IsMaxLearningTimeChecked.Should().BeFalse();
-            _vm.MaxLearningTime.Should().BeAtLeast(TimeSpan.FromMinutes(2));
-
-        }
 
         [Fact]
-        public void Properties_are_set_when_changed_before_vm_created()
+        public void Is_max_learning_time_checked_should_be_false_if_max_learning_time_set()
         {
             var session = _appState.CreateSession();
             session.SetupValidAndGate();
@@ -80,7 +50,7 @@ namespace Training.Application.Tests
         }
 
         [Fact]
-        public void f()
+        public void Properties_are_set_after_ok_command_is_called()
         {
             var session = _appState.CreateSession();
             session.TrainingData = new TrainingData(new SupervisedTrainingData(SupervisedTrainingSamples.FromArrays(
@@ -95,9 +65,9 @@ namespace Training.Application.Tests
             //create vm after session is created
             _vm = _mocker.UseVm<TrainingParametersViewModel>();
 
-            _moduleState.ActiveSession.Trainer.Algorithm.Should().BeOfType<GradientDescentAlgorithm>();
+            _moduleState.ActiveSession!.Trainer!.Algorithm.Should().BeOfType<GradientDescentAlgorithm>();
 
-            _vm.TrainingParameters.Algorithm = TrainingAlgorithm.LevenbergMarquardt;
+            _vm.TrainingParameters!.Algorithm = TrainingAlgorithm.LevenbergMarquardt;
             _service.OkCommand.Execute();
 
             _moduleState.ActiveSession.Trainer.Algorithm.Should().BeOfType<LevenbergMarquardtAlgorithm>();

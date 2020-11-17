@@ -26,6 +26,8 @@ namespace Approximation.Application.ViewModels
         private DataSetType[]? _plotSetTypes;
         private DataSetType _selectedPlotSetType;
         private MatrixPreviewViewModel _outputMatrixVm = new MatrixPreviewViewModel();
+        private bool _showCustomApproximation = true;
+        private bool _showApproximation = true;
 
 #pragma warning disable 8618
         public ApproximationViewModel()
@@ -140,6 +142,29 @@ namespace Approximation.Application.ViewModels
             {
                 if(value <= 0) throw new Exception("Interval must be greater than 0");
                 SetProperty(ref _interval, value);
+            }
+        }
+
+        public bool ShowCustomApproximation
+        {
+            get => _showCustomApproximation;
+            set
+            {
+                SetProperty(ref _showCustomApproximation, value);
+                PredictionScatterSeries.IsVisible = value;
+                PredictionLineSeries.IsVisible = value;
+                PlotModel.Model.InvalidatePlot(false);
+            }
+        }
+
+        public bool ShowApproximation
+        {
+            get => _showApproximation;
+            set
+            {
+                SetProperty(ref _showApproximation, value);
+                DataPredictionLineSeries.IsVisible = value;
+                PlotModel.Model.InvalidatePlot(false);
             }
         }
 

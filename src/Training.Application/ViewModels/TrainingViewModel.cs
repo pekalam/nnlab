@@ -1,4 +1,5 @@
-﻿using Common.Framework;
+﻿using System.Linq;
+using Common.Framework;
 using Prism.Regions;
 using System.Windows;
 using Training.Application.Controllers;
@@ -63,6 +64,9 @@ namespace Training.Application.ViewModels
 
         public void HidePanels()
         {
+            var panelLayoutMain = _rm.Regions[PanelLayoutRegions.PanelLayoutMain];
+            panelLayoutMain.Deactivate(panelLayoutMain.ActiveViews.First());
+            panelLayoutMain.RemoveAll();
             SelectPanelsButtonVisibility = Visibility.Visible;
             PanelsContainerVisibility = Visibility.Hidden;
             UpperSelectPanelsButtonVisibility = Visibility.Collapsed;

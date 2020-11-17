@@ -63,7 +63,11 @@
                     </Style>
                 </StackPanel.Style>
                     <basicPlot:BasicPlot Wpf="True" MinHeight="400" PlotModel="{Binding PlotModel}"/>
-                    <StackPanel Orientation="Vertical" Margin="10,20,10,10">
+                    <StackPanel Margin="10,20,0,0">
+                        <CheckBox IsChecked="{Binding ShowApproximation, Mode=TwoWay}" Margin="0,0,12,0">Approximation of network output for data points</CheckBox>
+                        <CheckBox IsChecked="{Binding ShowCustomApproximation, Mode=TwoWay}" Margin="0,10,0,0">Approximation of network output for custom data points</CheckBox>
+                    </StackPanel>
+                    <StackPanel Margin="10,20,10,10">
                         <TextBlock Text="Dataset type"/>
                         <ComboBox Width="200" HorizontalAlignment="Left" Name="PlotSetTypesCombobox" SelectedIndex="0" SelectedItem="{Binding SelectedPlotSetType, Mode=TwoWay}" ItemsSource="{Binding PlotSetTypes}"></ComboBox>
                     </StackPanel>

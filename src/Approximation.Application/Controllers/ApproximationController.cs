@@ -88,6 +88,7 @@ namespace Approximation.Application.Controllers
         {
             if (e.PropertyName == nameof(ApproximationViewModel.SelectedPlotSetType))
             {
+                Vm!.ClearPlots();
                 UpdateStartEndValue(Vm!.SelectedPlotSetType);
             }
         }
@@ -120,8 +121,6 @@ namespace Approximation.Application.Controllers
                 {
                     Vm!.ClearPlots();
                     Vm!.UpdateAxes(data);
-                    Vm!.PlotSetTypes = data.SetTypes;
-                    Vm!.SelectedPlotSetType = DataSetType.Training;
                     UpdateStartEndValue(DataSetType.Training);
                 }
             }, s => s switch

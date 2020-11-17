@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Windows.Threading;
 using Training.Application.Plots;
 using Training.Application.ViewModels;
 using Training.Domain;
@@ -161,14 +162,22 @@ namespace Training.Application.Controllers
                     }
 
                     InvalidatePlot();
-                }, onTrainingStopped: _ => { _cts!.Cancel(); }, 
+                }, onTrainingStopped: _ =>
+                {
+                    _cts!.Cancel();
+                    TryPlotIfEmpty();
+                }, 
                 onTrainingStarting:
                 _ =>
                 {
                     _cts = new CancellationTokenSource();
 
                     InvalidatePlot();
-                }, onTrainingPaused: _ => { _cts!.Cancel(); }, options: new PlotEpochEndConsumerOptions()
+                }, onTrainingPaused: _ =>
+                {
+                    _cts!.Cancel();
+                    TryPlotIfEmpty();
+                }, options: new PlotEpochEndConsumerOptions()
                 {
                     DefaultConsumerType = PlotEpochEndConsumerType.Online,
                 });
@@ -180,6 +189,19 @@ namespace Training.Application.Controllers
             _rm.Regions[_errorPlotSettingsRegion].RequestNavigate("PlotEpochParametersView", p);
 
             _epochEndConsumer.Initialize();
+        }
+
+        private void TryPlotIfEmpty()
+        {
+            if (Vm!.Series.Points.Count == 0)
+            {
+                var points = _moduleState.ActiveSession!.CurrentReport!.EpochEndEventArgs
+                    .Select(end => new DataPoint(end.Epoch, end.Error)).ToArray();
+
+
+                Vm!.Series.Points.AddRange(points);
+                System.Windows.Application.Current.Dispatcher.Invoke(InvalidateMethod, DispatcherPriority.Background);
+            }
         }
 
         private void NavigatedAction(NavigationContext ctx)
