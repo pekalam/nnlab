@@ -64,9 +64,13 @@ namespace Training.Application.ViewModels
 
         public void HidePanels()
         {
-            var panelLayoutMain = _rm.Regions[PanelLayoutRegions.PanelLayoutMain];
-            panelLayoutMain.Deactivate(panelLayoutMain.ActiveViews.First());
-            panelLayoutMain.RemoveAll();
+            if (_rm.Regions.ContainsRegionWithName(PanelLayoutRegions.PanelLayoutMain))
+            {
+                var panelLayoutMain = _rm.Regions[PanelLayoutRegions.PanelLayoutMain];
+                panelLayoutMain.Deactivate(panelLayoutMain.ActiveViews.First());
+                panelLayoutMain.RemoveAll();
+            }
+
             SelectPanelsButtonVisibility = Visibility.Visible;
             PanelsContainerVisibility = Visibility.Hidden;
             UpperSelectPanelsButtonVisibility = Visibility.Collapsed;

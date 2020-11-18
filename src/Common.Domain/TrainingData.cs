@@ -13,7 +13,7 @@ namespace Common.Domain
 
     public enum NormalizationMethod
     {
-        None,MinMax,Mean,Std
+        None,MinMax,Mean,Std,Robust,
     }
 
     public class TrainingData : BindableBase

@@ -13,6 +13,7 @@ namespace Data.Application.Controllers.DataSource
         DelegateCommand MinMaxNormalizationCommand { get; }
         DelegateCommand MeanNormalizationCommand { get; }
         DelegateCommand StdNormalizationCommand { get; }
+        DelegateCommand RobustNormalizationCommand { get; }
 
         public static void Register(IContainerRegistry cr)
         {
@@ -56,6 +57,9 @@ namespace Data.Application.Controllers.DataSource
                         case NormalizationMethod.MinMax:
                             MinMaxNormalization();
                             break;
+                        case NormalizationMethod.Robust:
+                            RobustNormalization();
+                            break;
                     }
                 }
             }, s => s switch
@@ -71,6 +75,7 @@ namespace Data.Application.Controllers.DataSource
             MinMaxNormalizationCommand = new DelegateCommand(MinMaxNormalization);
             MeanNormalizationCommand = new DelegateCommand(MeanNormalization);
             StdNormalizationCommand = new DelegateCommand(StdNormalization);
+            RobustNormalizationCommand = new DelegateCommand(RobustNormalization);
         }
 
         protected override void VmCreated()
@@ -95,6 +100,9 @@ namespace Data.Application.Controllers.DataSource
                     break;
                 case NormalizationMethod.Std:
                     Vm!.StdChecked = true;
+                    break;
+                case NormalizationMethod.Robust:
+                    Vm!.RobustChecked = true;
                     break;
             }
             _ignoreCmd = false;
@@ -121,6 +129,13 @@ namespace Data.Application.Controllers.DataSource
             _normalizationService.MinMaxNormalization();
         }
 
+        private void RobustNormalization()
+        {
+            if (_ignoreCmd) return;
+            _cmdCall = true;
+            _normalizationService.RobustNormalization();
+        }
+
         private void NoNormalization()
         {
             if (_ignoreCmd) return;
@@ -132,5 +147,6 @@ namespace Data.Application.Controllers.DataSource
         public DelegateCommand MinMaxNormalizationCommand { get; }
         public DelegateCommand MeanNormalizationCommand { get; }
         public DelegateCommand StdNormalizationCommand { get; }
+        public DelegateCommand RobustNormalizationCommand { get; }
     }
 }

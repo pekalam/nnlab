@@ -32,10 +32,10 @@
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
             </RadioButton>
-            <RadioButton Content="Mean" IsChecked="{Binding MeanChecked}">
+            <RadioButton Content="Robust" IsChecked="{Binding RobustChecked}">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="Checked">
-                        <i:InvokeCommandAction Command="{Binding Controller.MeanNormalizationCommand}"/>
+                        <i:InvokeCommandAction Command="{Binding Controller.RobustNormalizationCommand}"/>
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
             </RadioButton>

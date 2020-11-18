@@ -22,7 +22,7 @@ namespace Approximation.Application.Controllers
     public interface IApproximationController : IController
     {
         DelegateCommand CalculateOutputCommand { get; }
-        Action<NavigationContext> Navigated { get; set; }
+        Action<NavigationContext>? Navigated { get; set; }
 
         DelegateCommand<DataSetType?> PlotOutputCommand { get; }
 
@@ -64,8 +64,6 @@ namespace Approximation.Application.Controllers
         private readonly AppStateHelper _helper;
         private readonly NormalizationService _normalizationService;
 
-        private bool _initialized;
-
         public ApproximationController(AppState appState, ModuleState moduleState,
             NormalizationService normalizationService)
         {
@@ -95,8 +93,6 @@ namespace Approximation.Application.Controllers
 
         private void NavigatedAction(NavigationContext obj)
         {
-            if (_initialized) return;
-
             _appState.ActiveSessionChanged += (_, args) =>
             {
                 if (args.prev != null)
@@ -131,7 +127,7 @@ namespace Approximation.Application.Controllers
                 _ => false,
             });
 
-            _initialized = true;
+            Navigated = null;
         }
 
         private void UpdateUi()
@@ -283,7 +279,7 @@ namespace Approximation.Application.Controllers
         }
 
         public DelegateCommand CalculateOutputCommand { get; }
-        public Action<NavigationContext> Navigated { get; set; }
+        public Action<NavigationContext>? Navigated { get; set; }
         public DelegateCommand<DataSetType?> PlotOutputCommand { get; }
     }
 }

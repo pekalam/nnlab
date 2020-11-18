@@ -11,6 +11,7 @@ namespace Data.Application.ViewModels
         private bool _meanChecked;
         private bool _stdChecked;
         private INormalizationController? _controller;
+        private bool _robustChecked;
 
         public NormalizationViewModel()
         {
@@ -53,6 +54,12 @@ namespace Data.Application.ViewModels
         {
             get => _stdChecked;
             set => SetProperty(ref _stdChecked, value);
+        }
+
+        public bool RobustChecked
+        {
+            get => _robustChecked;
+            set => SetProperty(ref _robustChecked, value);
         }
     }
 }
