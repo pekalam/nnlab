@@ -41,70 +41,9 @@ namespace NeuralNetwork.Application.Controllers
 
         protected override void VmCreated()
         {
-            _ea.GetEvent<IntLayerAdded>().Subscribe(arg =>
-            {
-                if (Vm!.ModelAdapter!.Layers[^1] == arg.layer)
-                {
-                    Vm!.ModelAdapter.AddLayer(arg.layer);
-                    SetOutputLabels(Vm!.ModelAdapter, _appState.ActiveSession!.TrainingData!);
-                    return;
-                }
-
-
-                for (int i = 0; i < Vm!.ModelAdapter.Layers.Count; i++)
-                {
-                    if (Vm!.ModelAdapter.Layers[i] == arg.layer && i == arg.index)
-                    {
-                        Vm!.ModelAdapter.InsertBefore(arg.index + 1, arg.layer);
-                        return;
-                    }
-                    if (Vm!.ModelAdapter.Layers[i] == arg.layer && i - 1 == arg.index)
-                    {
-                        Vm!.ModelAdapter.InsertAfter(arg.index + 1, arg.layer);
-                        return;
-                    }
-                }
-            });
-
-            _ea.GetEvent<IntLayerRemoved>().Subscribe(index =>
-            {
-                Vm!.ModelAdapter!.RemoveLayer(index);
-                if (index == _appState.ActiveSession!.Network!.Layers.Count)
-                {
-                    var lastLayerNeurons = _appState.ActiveSession.Network.Layers[^1].NeuronsCount;
-                    if (lastLayerNeurons != Vm!.ModelAdapter.NeuralNetworkModel
-                        .NetworkLayerModels[^1].NeuronModels.Count)
-                    {
-                        Vm!.ModelAdapter.LayerModelAdapters[^1].SetNeuronsCount(lastLayerNeurons);
-                    }
-
-                    SetOutputLabels(Vm!.ModelAdapter, _appState.ActiveSession!.TrainingData!);
-                }
-                if (index == 0)
-                {
-                    Vm!.ModelAdapter.LayerModelAdapters[0].SetNeuronsCount(_appState.ActiveSession!.Network!.Layers[0].InputsCount);
-                }
-            });
-
-
-            _ea.GetEvent<IntLayerModified>().Subscribe(arg =>
-            {
-                Vm!.ModelAdapter!.LayerModelAdapters[arg.index].SetNeuronsCount(arg.neuronsCount);
-
-                if (arg.index == 0)
-                {
-                    SetInputLabels(Vm!.ModelAdapter, _appState.ActiveSession!.TrainingData!);
-                }
-                else if (arg.index == _appState.ActiveSession!.Network!.TotalLayers)
-                {
-                    SetOutputLabels(Vm!.ModelAdapter, _appState.ActiveSession!.TrainingData!);
-                }
-            });
-
             _helper.OnNetworkChanged(network =>
             {
-                var adapter = new NNLibModelAdapter();
-                adapter.SetNeuralNetwork(network);
+                var adapter = new NNLibModelAdapter(network);
 
                 if (_appState.ActiveSession!.TrainingData != null)
                 {
@@ -173,7 +112,7 @@ namespace NeuralNetwork.Application.Controllers
 
 
 
-        public DelegateCommand<int?> NeuronClickCommand { get; set; }
-        public DelegateCommand AreaClicked { get; set; }
+        public DelegateCommand<int?> NeuronClickCommand { get; set; } = null!;
+        public DelegateCommand AreaClicked { get; set; } = null!;
     }
 }

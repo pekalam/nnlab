@@ -54,10 +54,13 @@ namespace Training.Application.Controllers
 
                 if (Vm!.ModelAdapter == null)
                 {
-                    Vm!.ModelAdapter = new NNLibModelAdapter();
+                    Vm!.ModelAdapter = new NNLibModelAdapter(network);
+                }
+                else
+                {
+                    Vm!.ModelAdapter.SetNeuralNetwork(network);
                 }
 
-                Vm!.ModelAdapter.SetNeuralNetwork(network);
                 Vm!.ModelAdapter.NeuralNetworkModel.BackgroundColor = "#cce6ff";
                 if (_appState.ActiveSession!.TrainingData != null)
                 {

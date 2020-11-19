@@ -35,10 +35,9 @@ namespace NeuralNetwork.Application.Controllers
 
     internal class LayerListController : ControllerBase<LayerListViewModel>,ILayerListController
     {
-        private SubscriptionToken _nClickSub;
-        private SubscriptionToken _areaClickSub;
+        private SubscriptionToken _nClickSub = null!;
+        private SubscriptionToken _areaClickSub = null!;
 
-        private readonly INeuralNetworkShellController _shellService;
         private readonly INeuralNetworkService _networkService;
         private readonly AppState _appState;
         private readonly IEventAggregator _ea;
@@ -48,7 +47,6 @@ namespace NeuralNetwork.Application.Controllers
 
         public LayerListController(INeuralNetworkShellController shellService, INeuralNetworkService networkService, AppState appState, IEventAggregator ea)
         {
-            _shellService = shellService;
             _networkService = networkService;
             _appState = appState;
             _ea = ea;
@@ -56,7 +54,7 @@ namespace NeuralNetwork.Application.Controllers
 
             AddLayerCommand = new DelegateCommand(AddLayer);
             RemoveLayerCommand = new DelegateCommand<LayerEditorItemModel>(RemoveLayer);
-            EditLayerCommand = _shellService.OpenLayerEditorCommand;
+            EditLayerCommand = shellService.OpenLayerEditorCommand;
             SelectLayerCommand = new DelegateCommand<Layer>(SelectLayer);
             LayerClickedCommand = new DelegateCommand<LayerEditorItemModel>(LayerClicked);
             InsertAfterCommand = new DelegateCommand<LayerEditorItemModel>(InsertAfter);
@@ -77,10 +75,7 @@ namespace NeuralNetwork.Application.Controllers
                 SetLayers();
             });
 
-            _nClickSub = _ea.GetEvent<IntNeuronClicked>().Subscribe(args =>
-            {
-                SelectLayer(args);
-            });
+            _nClickSub = _ea.GetEvent<IntNeuronClicked>().Subscribe(SelectLayer);
 
             _areaClickSub = _ea.GetEvent<IntNetDisplayAreaClicked>().Subscribe(() =>
             {
@@ -89,7 +84,7 @@ namespace NeuralNetwork.Application.Controllers
 
             Vm!.IsActiveChanged += (sender, args) =>
             {
-                if (!Vm.IsActive)
+                if (!Vm!.IsActive)
                 {
                     _areaClickSub.Dispose();
                     _nClickSub.Dispose();
@@ -163,7 +158,7 @@ namespace NeuralNetwork.Application.Controllers
             {
                 PublishValidArch();
             }
-            //TODO remove
+
             SetLayers();
             _ea.GetEvent<IntLayerListChanged>().Publish();
         }

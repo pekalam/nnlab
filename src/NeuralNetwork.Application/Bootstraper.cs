@@ -8,8 +8,6 @@ namespace NeuralNetwork.Application
     {
         public static void RegisterTypes(IContainerRegistry cr)
         {
-            cr.Register<INeuralNetworkService, NNControlNeuralNetworkServiceDecorator>();
-
             INetDisplayController.Register(cr);
             ILayerEditorController.Register(cr);
             ILayerListController.Register(cr);

@@ -11,9 +11,5 @@ namespace NeuralNetwork.Application.Messaging
 
     internal class IntLayerListChanged : PubSubEvent{}
 
-    internal class IntLayerAdded : PubSubEvent<(Layer layer,int index)> {}
-    internal class IntLayerRemoved : PubSubEvent<int> {}
-    internal class IntLayerModified : PubSubEvent<(int index, int neuronsCount)> {}
-
     internal class IntLayerEditorClosed : PubSubEvent {}
 }

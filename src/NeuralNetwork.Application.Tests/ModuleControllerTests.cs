@@ -26,8 +26,7 @@ namespace NeuralNetwork.Application.Tests
             (_rm, _) = _mocker.UseTestRm();
             _ea = _mocker.UseTestEa();
             _appState = _mocker.UseImpl<AppState>();
-            _mocker.UseImpl<NeuralNetworkService>();
-            _mocker.UseImpl<INeuralNetworkService, NNControlNeuralNetworkServiceDecorator>();
+            _mocker.UseImpl<INeuralNetworkService,NeuralNetworkService>();
             _mocker.UseImpl<NeuralNetworkShellController>();
             _mocker.UseImpl<NetDisplayController>();
 
