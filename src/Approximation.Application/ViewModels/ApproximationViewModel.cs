@@ -179,8 +179,7 @@ namespace Approximation.Application.ViewModels
             if (data.Variables.InputVariableNames.Length != network.BaseLayers[0].InputsCount ||
                 data.Variables.TargetVariableNames.Length != network.BaseLayers[^1].NeuronsCount) return;
 
-            var adapter = new NNLibModelAdapter();
-            adapter.SetNeuralNetwork(network);
+            var adapter = new NNLibModelAdapter(network);
             adapter.NeuralNetworkModel.BackgroundColor = "#cce6ff";
             ModelAdapter = adapter;
             ModelAdapter.SetInputLabels(data.Variables.InputVariableNames);
