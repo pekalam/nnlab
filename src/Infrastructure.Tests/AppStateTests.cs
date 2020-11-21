@@ -375,11 +375,14 @@ namespace Common.Tests
             session.TrainingData = TrainingDataMocks.ValidData3;
             session.Network = MLPMocks.ValidNet1;
 
+            session.TrainingData.Sets.TrainingSet.Input[0][0, 0] = 99;
+
             var clone = session.CloneWithName("x", DuplicateOptions.NoNetwork);
 
             clone.Network.Should().BeNull();
             clone.TrainingData.Should().NotBeNull();
             clone.TrainingParameters.Should().NotBeNull();
+            clone.TrainingData.OriginalSets.TrainingSet.Input[0][0, 0].Should().NotBe(99);
         }
     }
 

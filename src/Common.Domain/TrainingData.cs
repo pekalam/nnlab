@@ -43,6 +43,15 @@ namespace Common.Domain
             private set => SetProperty(ref _variables, value ?? throw new NullReferenceException("Null Variables"));
         }
 
+        private TrainingData(SupervisedTrainingData sets, SupervisedTrainingData orgSets, SupervisedTrainingSamplesVariables variables, TrainingDataSource source, NormalizationMethod normalizationMethod)
+        {
+            _sets = sets;
+            _variables = variables;
+            Source = source;
+            _normalizationMethod = normalizationMethod;
+            OriginalSets = orgSets;
+        }
+
         public TrainingData(SupervisedTrainingData sets, SupervisedTrainingSamplesVariables variables, TrainingDataSource source, NormalizationMethod normalizationMethod)
         {
             _sets = sets;
@@ -106,8 +115,9 @@ namespace Common.Domain
         public TrainingData Clone()
         {
             SupervisedTrainingData setsCpy = CloneSets();
+            SupervisedTrainingData orgSetsCpy = CloneOriginalSets();
 
-            return new TrainingData(setsCpy!, Variables.Clone(), Source, NormalizationMethod);
+            return new TrainingData(setsCpy!, orgSetsCpy, Variables.Clone(), Source, NormalizationMethod);
         }
 
         public SupervisedTrainingData CloneOriginalSets() => InternalCloneSets(OriginalSets);
