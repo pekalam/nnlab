@@ -118,6 +118,16 @@ namespace Training.Domain
         {
             if (e.PropertyName == nameof(TrainingData.Sets))
             {
+                if (_trainer!.Algorithm is GradientDescentAlgorithm gd)
+                {
+                    if (gd.Params.BatchSize > 1 &&
+                        gd.Params.BatchSize != _session.TrainingData!.Sets.TrainingSet.Input.Count)
+                    {
+                        _session.TrainingParameters!.GDParams.BatchSize =
+                            _session.TrainingData.Sets.TrainingSet.Input.Count;
+                    }
+                }
+
                 _trainer!.TrainingSets = _session.TrainingData!.Sets;
                 TrainerUpdated?.Invoke();
             }else if (e.PropertyName == nameof(TrainingData.NormalizationMethod))
