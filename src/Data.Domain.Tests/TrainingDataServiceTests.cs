@@ -1,10 +1,10 @@
 ﻿using Data.Domain.Services;
 using FluentAssertions;
 using Moq.AutoMock;
-using NNLib.Common;
 using NNLib.Data;
 using System.IO;
 using System.Linq;
+using NNLib.Csv;
 using Xunit;
 
 namespace Data.Domain.Tests

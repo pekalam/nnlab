@@ -1,13 +1,13 @@
 ﻿using Common.Domain;
 using Moq;
 using NNLib.ActivationFunction;
-using NNLib.Common;
 using NNLib.Data;
 using NNLib.MLP;
 using Prism.Regions;
 using Shell.Interface;
 using System;
 using System.Linq;
+using NNLib.Csv;
 
 namespace TestUtils
 {

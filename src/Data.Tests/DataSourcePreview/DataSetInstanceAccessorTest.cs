@@ -2,7 +2,7 @@ using Common.Domain;
 using Data.Application.ViewModels.DataSourcePreview;
 using Data.Domain.Services;
 using FluentAssertions;
-using NNLib.Common;
+using NNLib.Csv;
 using Xunit;
 
 namespace Data.Application.Tests.DataSourcePreview

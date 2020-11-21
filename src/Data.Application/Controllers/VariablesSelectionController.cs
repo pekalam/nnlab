@@ -3,7 +3,6 @@ using Common.Framework;
 using Data.Application.ViewModels;
 using Data.Domain;
 using Data.Domain.Services;
-using NNLib.Common;
 using Prism.Commands;
 using Prism.Ioc;
 using System;
@@ -11,6 +10,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows.Input;
+using NNLib.Csv;
 using Prism.Events;
 using Shell.Interface;
 
@@ -129,6 +129,7 @@ namespace Data.Application.Controllers
                 if (model.Error == null)
                 {
                     _currentIndexes = _currentIndexes.ChangeVariableUse(model.Index, model.VariableUse);
+                    if(_currentIndexes.Error != null) throw new ArgumentException(_currentIndexes.Error);
                 }
             }
 

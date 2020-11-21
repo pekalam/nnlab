@@ -2,7 +2,6 @@
 using Common.Framework;
 using Data.Application.ViewModels;
 using MathNet.Numerics.LinearAlgebra;
-using NNLib.Common;
 using NNLib.Data;
 using OxyPlot;
 using OxyPlot.Axes;
@@ -15,6 +14,7 @@ using Shell.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using NNLib.Csv;
 using IController = Common.Framework.IController;
 
 

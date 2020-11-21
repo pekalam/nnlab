@@ -1,10 +1,10 @@
 ﻿using Common.Domain;
-using NNLib.Common;
 using Prism.Mvvm;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using NNLib.Csv;
 
 namespace Data.Domain
 {

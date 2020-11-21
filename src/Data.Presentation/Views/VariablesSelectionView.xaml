@@ -6,7 +6,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:dd="clr-namespace:Data.Presentation.__DesignData"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:common="clr-namespace:NNLib.Common;assembly=NNLib.Csv"
+             xmlns:csv="clr-namespace:NNLib.Csv;assembly=NNLib.Csv"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance dd:DesignVariablesSelectionVm, IsDesignTimeCreatable=True}"
              prism:ViewModelLocator.AutoWireViewModel="True">
@@ -14,7 +14,7 @@
         <ObjectDataProvider x:Key="variableUses"
                             MethodName="GetValues" ObjectType="{x:Type System:Enum}">
             <ObjectDataProvider.MethodParameters>
-                <x:Type TypeName="common:VariableUses" />
+                <x:Type TypeName="csv:VariableUses" />
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
     </UserControl.Resources>
@@ -64,13 +64,13 @@
                                 <ComboBox.ItemContainerStyle>
                                     <Style TargetType="ComboBoxItem" BasedOn="{StaticResource MahApps.Styles.ComboBoxItem}">
                                         <Style.Triggers>
-                                            <Trigger Property="Content" Value="{x:Static common:VariableUses.Ignore}">
+                                            <Trigger Property="Content" Value="{x:Static csv:VariableUses.Ignore}">
                                                 <Setter Property="Foreground" Value="Red"></Setter>
                                             </Trigger>
-                                            <Trigger Property="Content" Value="{x:Static common:VariableUses.Input}">
+                                            <Trigger Property="Content" Value="{x:Static csv:VariableUses.Input}">
                                                 <Setter Property="Foreground" Value="White"></Setter>
                                             </Trigger>
-                                            <Trigger Property="Content" Value="{x:Static common:VariableUses.Target}">
+                                            <Trigger Property="Content" Value="{x:Static csv:VariableUses.Target}">
                                                 <Setter Property="Foreground" Value="#4fb1ff"></Setter>
                                             </Trigger>
                                         </Style.Triggers>
@@ -79,10 +79,10 @@
                                 <ComboBox.Style>
                                     <Style TargetType="ComboBox" BasedOn="{StaticResource MahApps.Styles.ComboBox}">
                                         <Style.Triggers>
-                                            <Trigger Property="SelectedItem" Value="{x:Static common:VariableUses.Ignore}">
+                                            <Trigger Property="SelectedItem" Value="{x:Static csv:VariableUses.Ignore}">
                                                 <Setter Property="Foreground" Value="Red"></Setter>
                                             </Trigger>
-                                            <Trigger Property="SelectedItem" Value="{x:Static common:VariableUses.Target}">
+                                            <Trigger Property="SelectedItem" Value="{x:Static csv:VariableUses.Target}">
                                                 <Setter Property="Foreground" Value="#4fb1ff"></Setter>
                                             </Trigger> 
                                         </Style.Triggers>

@@ -1,10 +1,10 @@
 ﻿using Common.Domain;
-using NNLib.Common;
 using NNLib.Data;
 using System.Data;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using NNLib.Csv;
 
 namespace Data.Application.ViewModels.DataSourcePreview
 {
