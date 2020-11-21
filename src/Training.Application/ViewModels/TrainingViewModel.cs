@@ -67,7 +67,11 @@ namespace Training.Application.ViewModels
             if (_rm.Regions.ContainsRegionWithName(PanelLayoutRegions.PanelLayoutMain))
             {
                 var panelLayoutMain = _rm.Regions[PanelLayoutRegions.PanelLayoutMain];
-                panelLayoutMain.Deactivate(panelLayoutMain.ActiveViews.First());
+                var view = panelLayoutMain.ActiveViews.FirstOrDefault();
+                if (view != null)
+                {
+                    panelLayoutMain.Deactivate(view);
+                }
                 panelLayoutMain.RemoveAll();
             }
 
