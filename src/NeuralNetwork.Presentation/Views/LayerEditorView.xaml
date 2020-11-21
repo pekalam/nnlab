@@ -73,7 +73,7 @@
                                 <DataTrigger Binding="{Binding}" Value="{x:Static domain11:ParamsInitMethod.SqrMUniform}">
                                     <Setter Property="Control.ToolTip" Value="Uniform distribution. Standard deviation = square of layer inputs, mean = 0"/>
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding}" Value="{x:Static domain11:ParamsInitMethod.DefaultNormalDist}">
+                                <DataTrigger Binding="{Binding}" Value="{x:Static domain11:ParamsInitMethod.SmallNumbers}">
                                     <Setter Property="Control.ToolTip" Value="Normal distribution. Standard deviation = 1, mean = 0"/>
                                 </DataTrigger>
                             </Style.Triggers>

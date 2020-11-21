@@ -48,10 +48,5 @@
                 </ContentControl>
             </Grid>
         </ScrollViewer>
-        <mah:ProgressRing Width="80"
-                               Height="80"
-                               IsActive="True"
-                               ToolTip="Loading file"
-                               Visibility="{Binding ShowLoadingVisibility}" Panel.ZIndex="1000" />
     </Grid>
 </UserControl>

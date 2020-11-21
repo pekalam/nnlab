@@ -200,7 +200,7 @@ namespace Approximation.Application.ViewModels
 
         public void UpdatePlots(TrainingData data,ScatterPoint[] dataScatter, DataPoint[] dataPredLine, DataPoint[] predLine, ScatterPoint[] predScatter)
         {
-            ClearPlots();
+            ClearPlots(false);
 
             if (PlotModel.Model.Axes.Count == 0)
             {
@@ -220,13 +220,16 @@ namespace Approximation.Application.ViewModels
             PlotModel.Model.InvalidatePlot(true);
         }
 
-        public void ClearPlots()
+        public void ClearPlots(bool invalidate = true)
         {
             DataScatterSeries.Points.Clear();
             DataPredictionLineSeries.Points.Clear();
             PredictionLineSeries.Points.Clear();
             PredictionScatterSeries.Points.Clear();
-            PlotModel.Model.InvalidatePlot(true);
+            if (invalidate)
+            {
+                PlotModel.Model.InvalidatePlot(true);
+            }
         }
 
         public void UpdateAxes(TrainingData trainingData)

@@ -7,7 +7,7 @@ namespace NeuralNetwork.Domain
 {
     public enum ParamsInitMethod
     {
-        DefaultNormalDist, NormalDist, Xavier, NguyenWidrow, SqrMUniform
+        SmallNumbers, NormalDist, Xavier, NguyenWidrow, SqrMUniform, SmallStdDev
     }
 
     public static class ParamsInitMethodExtentsions

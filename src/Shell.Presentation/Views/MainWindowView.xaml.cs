@@ -1,4 +1,5 @@
-﻿using MahApps.Metro.Controls;
+﻿using System;
+using MahApps.Metro.Controls;
 using System.Windows.Threading;
 
 namespace Shell.Presentation.Views
@@ -11,18 +12,6 @@ namespace Shell.Presentation.Views
         public MainWindowView()
         {
             InitializeComponent();
-        }
-
-        public void ShowOverlay(bool show)
-        {
-            System.Windows.Application.Current.Dispatcher.InvokeAsync(() =>
-            {
-
-               
-
-            }, DispatcherPriority.Send);
-
-
         }
     }
 }

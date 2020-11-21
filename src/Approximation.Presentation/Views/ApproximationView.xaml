@@ -62,7 +62,7 @@
                         </Style.Triggers>
                     </Style>
                 </StackPanel.Style>
-                    <basicPlot:BasicPlot Wpf="True" MinHeight="400" PlotModel="{Binding PlotModel}"/>
+                    <basicPlot:BasicPlot Name="PredictionPlot" Wpf="True" MinHeight="400" PlotModel="{Binding PlotModel}"/>
                     <StackPanel Margin="10,20,0,0">
                         <CheckBox IsChecked="{Binding ShowApproximation, Mode=TwoWay}" Margin="0,0,12,0">Approximation of network output for data points</CheckBox>
                         <CheckBox IsChecked="{Binding ShowCustomApproximation, Mode=TwoWay}" Margin="0,10,0,0">Approximation of network output for custom data points</CheckBox>

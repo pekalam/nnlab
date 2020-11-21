@@ -4,6 +4,8 @@ using Prism.Events;
 
 namespace Shell.Interface
 {
+    public class ShowGlobalLoading : PubSubEvent<string?>{}
+    public class HideGlobalLoading : PubSubEvent{}
     public class ContentRestoredForModule : PubSubEvent<int>
     {
 

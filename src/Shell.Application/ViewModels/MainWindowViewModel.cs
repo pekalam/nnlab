@@ -10,6 +10,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Threading;
 using Prism.Services.Dialogs;
 using Training.Interface;
 using Unity;
@@ -68,6 +69,8 @@ namespace Shell.Application.ViewModels
         private Visibility _modalNavigationVisibility = Visibility.Collapsed;
         private DelegateCommand? _modalNavigationCommand;
         private Visibility _hamburgerMenuVisibility = Visibility.Collapsed;
+        private string? _loadingText;
+        private Visibility _loadingVisibility = Visibility.Collapsed;
 
 #pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
         public MainWindowViewModel()
@@ -188,6 +191,16 @@ namespace Shell.Application.ViewModels
                 _rm.Regions[AppRegions.FlyoutRegion].RemoveAll();
             });
 
+            _ea.GetEvent<ShowGlobalLoading>().Subscribe(s =>
+            {
+                LoadingText = s;
+                LoadingVisibility = Visibility.Visible;
+            });
+
+            _ea.GetEvent<HideGlobalLoading>().Subscribe(() =>
+            {
+                LoadingVisibility = Visibility.Collapsed;
+            });
 
             _appState.ActiveSessionChanged += AppStateOnActiveSessionChanged;
         }
@@ -311,6 +324,18 @@ namespace Shell.Application.ViewModels
         {
             get => _hamburgerMenuVisibility;
             set => SetProperty(ref _hamburgerMenuVisibility, value);
+        }
+
+        public Visibility LoadingVisibility
+        {
+            get => _loadingVisibility;
+            set => SetProperty(ref _loadingVisibility, value);
+        }
+
+        public string? LoadingText
+        {
+            get => _loadingText;
+            set => SetProperty(ref _loadingText, value);
         }
     }
 }

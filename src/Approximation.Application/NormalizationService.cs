@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Common.Domain;
 using MathNet.Numerics.LinearAlgebra;
+using MathNet.Numerics.Statistics;
 using NNLib.Data;
 
 namespace Approximation.Application
@@ -8,6 +11,7 @@ namespace Approximation.Application
     internal class NormalizationService
     {
         private AppState _appState;
+
 
         public NormalizationService(AppState appState)
         {
@@ -104,6 +108,33 @@ namespace Approximation.Application
             return y;
         }
 
+        private Matrix<double> ToRobust(Matrix<double> inputMat, DataSetType setType)
+        {
+            IEnumerable<Matrix<double>> Enumerate(IEnumerator<Matrix<double>> mat)
+            {
+                while (mat.MoveNext())
+                {
+                    yield return mat.Current;
+                }
+            }
+
+            var input = _appState.ActiveSession!.TrainingData!.GetOriginalSet(setType)!.Input;
+            var y = inputMat.Clone();
+
+
+            for (int i = 0; i < input[0].RowCount; i++)
+            {
+                var median = Enumerate(input.GetEnumerator()).Select(m => m.At(i, 0)).Median();
+                var p75 = Enumerate(input.GetEnumerator()).Select(m => m.At(i, 0)).Percentile(75);
+                var p25 = Enumerate(input.GetEnumerator()).Select(m => m.At(i, 0)).Percentile(25);
+
+                var val = (y.At(i, 0) - median) / (p75 - p25);
+                y.At(i, 0, val);
+            }
+
+            return y;
+        }
+
         public Matrix<double> ToNetworkDataNormalization(Matrix<double> input, DataSetType setType)
         {
             return _appState.ActiveSession!.TrainingData!.NormalizationMethod
@@ -112,8 +143,9 @@ namespace Approximation.Application
                     NormalizationMethod.MinMax => ToMinMax(input, setType),
                     NormalizationMethod.Mean => ToMean(input,setType),
                     NormalizationMethod.Std => ToStd(input,setType),
+                    NormalizationMethod.Robust => ToRobust(input, setType),
                     NormalizationMethod.None => input,
-                    _ => throw new Exception(),
+                    _ => throw new NotImplementedException(),
                 };
         }
     }

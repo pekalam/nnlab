@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Threading;
 using Approximation.Application.ViewModels;
 using Common.Domain;
 using Common.Framework;
@@ -13,8 +14,10 @@ using NNLib.MLP;
 using OxyPlot;
 using OxyPlot.Series;
 using Prism.Commands;
+using Prism.Events;
 using Prism.Ioc;
 using Prism.Regions;
+using Shell.Interface;
 using IController = Common.Framework.IController;
 
 namespace Approximation.Application.Controllers
@@ -63,14 +66,16 @@ namespace Approximation.Application.Controllers
         private readonly ModuleState _moduleState;
         private readonly AppStateHelper _helper;
         private readonly NormalizationService _normalizationService;
+        private readonly IEventAggregator _ea;
 
         public ApproximationController(AppState appState, ModuleState moduleState,
-            NormalizationService normalizationService)
+            NormalizationService normalizationService, IEventAggregator ea)
         {
             _appState = appState;
             _helper = new AppStateHelper(appState);
             _moduleState = moduleState;
             _normalizationService = normalizationService;
+            _ea = ea;
 
             CalculateOutputCommand = new DelegateCommand(Predict);
             Navigated = NavigatedAction;
@@ -148,6 +153,8 @@ namespace Approximation.Application.Controllers
                     Vm!.ClearPlots();
                 }
 
+                Vm!.Interval = (Vm!.EndValue - Vm!.StartValue) /
+                               _appState.ActiveSession.TrainingData.Sets.TrainingSet.Input.Count;
 
                 var inputMatrix = Matrix<double>.Build.Dense(_appState.ActiveSession.Network.Layers[0].InputsCount, 1);
                 Vm!.UpdateNetworkAndMatrix(_appState.ActiveSession.Network, _appState.ActiveSession!.TrainingData!,
@@ -196,6 +203,12 @@ namespace Approximation.Application.Controllers
             Debug.Assert(orgSet != null, nameof(orgSet) + " != null");
             Debug.Assert(set != null, nameof(set) + " != null");
 
+            if (set.Input.Count > 5000)
+            {
+                _ea.GetEvent<ShowGlobalLoading>().Publish("Generating plot...");
+            }
+
+
             var network = _appState.ActiveSession!.Network!;
             var dataScatter = new ScatterPoint[orgSet.Input.Count];
             var dataPredLine = new DataPoint[orgSet.Input.Count];
@@ -203,21 +216,28 @@ namespace Approximation.Application.Controllers
             var predScatter = new List<ScatterPoint>(1000);
 
 
-            for (int i = 0; i < orgSet.Input.Count; i++)
-            {
-                dataScatter[i] = new ScatterPoint(orgSet.Input[i][0, 0], orgSet.Target[i][0, 0]);
-            }
-
             await Task.Run(() =>
             {
+                var start = Vm!.StartValue;
+                int total = (int) Math.Round((Vm!.EndValue - start) / Vm!.Interval, MidpointRounding.AwayFromZero) + 1;
+
+                for (int i = 0; i < orgSet.Input.Count; i++)
+                {
+                    dataScatter[i] = new ScatterPoint(orgSet.Input[i][0, 0], orgSet.Target[i][0, 0]);
+                }
+
                 for (int i = 0; i < set.Input.Count; i++)
                 {
                     network.CalculateOutput(set.Input[i]);
                     dataPredLine[i] = new DataPoint(orgSet.Input[i].At(0, 0), network.Output!.At(0, 0));
                 }
 
-                var start = Vm!.StartValue;
-                int total = (int) Math.Round((Vm!.EndValue - start) / Vm!.Interval, MidpointRounding.AwayFromZero) + 1;
+                if (total > 15_000)
+                {
+                    Vm!.Interval = (Vm!.EndValue - start) / 15_000;
+                    total = (int) Math.Round((Vm!.EndValue - start) / Vm!.Interval, MidpointRounding.AwayFromZero) + 1;
+                }
+
                 while (total-- > 0)
                 {
                     var x = _normalizationService.ToNetworkDataNormalization(
@@ -234,13 +254,17 @@ namespace Approximation.Application.Controllers
                 dataPredLine.OrderBy(p => p.X).ToArray(),
                 predLine.OrderBy(p => p.X).ToArray(),
                 predScatter.ToArray());
+
+
+            _ea.GetEvent<HideGlobalLoading>().Publish();
         }
 
         private void Predict()
         {
             var network = _appState.ActiveSession!.Network!;
             var inputMatrix = Vm!.InputMatrixVm.Controller.AssignedMatrix!;
-            var inputNormalized = _normalizationService.ToNetworkDataNormalization(inputMatrix, Vm!.SelectedPlotSetType);
+            var inputNormalized =
+                _normalizationService.ToNetworkDataNormalization(inputMatrix, Vm!.SelectedPlotSetType);
 
             network.CalculateOutput(inputNormalized);
             Vm!.UpdateMatrix(network.Output!, _appState.ActiveSession!.TrainingData!, inputMatrix);
@@ -256,6 +280,7 @@ namespace Approximation.Application.Controllers
                 Vm!.UpdatePlots(_appState.ActiveSession!.TrainingData!, memento.DataScatterPoints,
                     memento.DataPredictionPoints, memento.PredictionPoints, memento.PredictionScatterPoints);
             }
+
             Vm!.Interval = memento.Interval;
             Vm!.UpdateNetworkAndMatrix(_appState.ActiveSession!.Network!, _appState.ActiveSession.TrainingData!,
                 memento.InputMatrix);

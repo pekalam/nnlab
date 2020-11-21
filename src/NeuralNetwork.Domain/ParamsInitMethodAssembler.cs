@@ -11,7 +11,8 @@ namespace NeuralNetwork.Domain
             {
                 SqrMUniformMatrixBuilder _ => ParamsInitMethod.SqrMUniform,
                 NguyenWidrowMatrixBuilder _ => ParamsInitMethod.NguyenWidrow,
-                DefaultNormDistMatrixBuilder _ => ParamsInitMethod.DefaultNormalDist,
+                SmallNumbersMatrixBuilder _ => ParamsInitMethod.SmallNumbers,
+                SmallStdevNormDistMatrixBuilder _ => ParamsInitMethod.SmallStdDev,
                 NormDistMatrixBuilder _ => ParamsInitMethod.NormalDist,
                 XavierMatrixBuilder _ => ParamsInitMethod.Xavier,
                 _ => throw new NotImplementedException(),
@@ -24,7 +25,8 @@ namespace NeuralNetwork.Domain
             {
                 ParamsInitMethod.NguyenWidrow => new NguyenWidrowMatrixBuilder(),
                 ParamsInitMethod.SqrMUniform => new SqrMUniformMatrixBuilder(),
-                ParamsInitMethod.DefaultNormalDist => new DefaultNormDistMatrixBuilder(),
+                ParamsInitMethod.SmallNumbers => new SmallNumbersMatrixBuilder(),
+                ParamsInitMethod.SmallStdDev => new SmallStdevNormDistMatrixBuilder(),
                 ParamsInitMethod.NormalDist => new NormDistMatrixBuilder(options as NormDistMatrixBuilderOptions ??
                                                                          throw new ArgumentException("Invalid norm dist options type")),
                 ParamsInitMethod.Xavier => new XavierMatrixBuilder(),

@@ -44,6 +44,11 @@ namespace Data.Application.ViewModels
             {
                 binCount = 1;
             }
+            else if (binCount > 200)
+            {
+                _vm.BinWidth = (max - min) / 200;
+                binCount = (int)((max - min) / _vm.BinWidth);
+            }
             var bins = HistogramHelpers.CreateUniformBins(min, max, binCount);
             var items = HistogramHelpers.Collect(vectorSetValues, bins,
                 new BinningOptions(BinningOutlierMode.CountOutliers, BinningIntervalType.InclusiveLowerBound,
@@ -86,7 +91,6 @@ namespace Data.Application.ViewModels
             _vm.HistogramModel.Model.InvalidatePlot(true);
         }
 
-        private string GetOrgColumnName(string columnName) => columnName.Replace('_', '.');
 
         public void PlotColumnDataOnHistogram(string columnName, DataSetType dataSetType)
         {
@@ -99,7 +103,6 @@ namespace Data.Application.ViewModels
         {
             Debug.Assert(_appState.ActiveSession?.TrainingData != null);
 
-            columnName = GetOrgColumnName(columnName);
 
             var trainingData = _appState.ActiveSession.TrainingData;
 
