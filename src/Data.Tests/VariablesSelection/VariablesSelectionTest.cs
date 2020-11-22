@@ -1,4 +1,5 @@
-﻿using Common.Domain;
+﻿using System.Linq;
+using Common.Domain;
 using Data.Application.Controllers;
 
 using Data.Application.ViewModels;
@@ -89,6 +90,37 @@ namespace Data.Application.Tests.VariablesSelection
             _session.TrainingData.Variables.Indexes.Ignored.Should().BeEquivalentTo(0);
             _session.TrainingData.Variables.Indexes.InputVarIndexes.Should().BeEquivalentTo(1);
             _session.TrainingData.Variables.Indexes.TargetVarIndexes.Should().BeEquivalentTo(2);
+        }
+
+        [Fact]
+        public void IgnoreAll_should_ignore_all_variables()
+        {
+            //trigger validation on change
+            foreach (var model in _vm.Variables)
+            {
+                model.PropertyChanged += (sender, args) => _ = model[args.PropertyName];
+            }
+
+            _vm.Controller.IgnoreAllCommand.Execute(null);
+
+            //how many times variables were set
+            var called = 0;
+            _session.TrainingData.PropertyChanged +=
+                (sender, args) => _ = args.PropertyName == nameof(TrainingData.Variables) ? called++ : 0;
+
+            called.Should().Be(0);
+
+
+            _vm.Variables.Any(v => v.VariableUse != VariableUses.Ignore).Should().BeFalse();
+            _vm.Error.Should().NotBeNullOrEmpty();
+
+            _vm.Variables[0].VariableUse = VariableUses.Input;
+            _vm.Error.Should().NotBeNullOrEmpty();
+
+            _vm.Variables[1].VariableUse = VariableUses.Target;
+            _vm.Error.Should().BeNullOrEmpty();
+
+            called.Should().Be(1);
         }
     }
 }

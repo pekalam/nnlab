@@ -126,11 +126,6 @@ namespace Data.Application.Controllers
             foreach (var model in Vm!.Variables)
             {
                 model.VariableUse = VariableUses.Ignore;
-                if (model.Error == null)
-                {
-                    _currentIndexes = _currentIndexes.ChangeVariableUse(model.Index, model.VariableUse);
-                    if(_currentIndexes.Error != null) throw new ArgumentException(_currentIndexes.Error);
-                }
             }
 
             foreach (var model in Vm!.Variables)
