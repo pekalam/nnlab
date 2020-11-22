@@ -38,6 +38,11 @@ namespace Data.Application.ViewModels
             var max = vectorSetValues.Max();
             var min = vectorSetValues.Min();
 
+            if (min == max)
+            {
+                max = min + 1;
+            }
+
             var binCount = (int)((max - min) / _vm.BinWidth);
 
             if (binCount == 0)

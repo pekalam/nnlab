@@ -153,8 +153,12 @@ namespace Approximation.Application.Controllers
                     Vm!.ClearPlots();
                 }
 
-                Vm!.Interval = (Vm!.EndValue - Vm!.StartValue) /
-                               _appState.ActiveSession.TrainingData.Sets.TrainingSet.Input.Count;
+                if (Vm!.EndValue - Vm!.EndValue != 0d)
+                {
+                    Vm!.Interval = (Vm!.EndValue - Vm!.StartValue) /
+                                   _appState.ActiveSession.TrainingData.Sets.TrainingSet.Input.Count;
+                }
+
 
                 var inputMatrix = Matrix<double>.Build.Dense(_appState.ActiveSession.Network.Layers[0].InputsCount, 1);
                 Vm!.UpdateNetworkAndMatrix(_appState.ActiveSession.Network, _appState.ActiveSession!.TrainingData!,
@@ -192,6 +196,11 @@ namespace Approximation.Application.Controllers
             var data = _appState.ActiveSession!.TrainingData!.GetOriginalSet(setType)!;
             Vm!.StartValue = data.Input.GetEnumerator().IterateEnumerator().Min(m => m[0, 0]);
             Vm!.EndValue = data.Input.GetEnumerator().IterateEnumerator().Max(m => m[0, 0]);
+
+            if (Vm!.StartValue == Vm!.EndValue)
+            {
+                Vm!.EndValue = Vm!.StartValue + 1;
+            }
         }
 
         private async void PredictPlot(DataSetType? setType)
