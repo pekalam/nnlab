@@ -122,6 +122,7 @@
                         <Button Content="Plot output" Command="{Binding Controller.PlotOutputCommand}"
                                  CommandParameter="{Binding SelectedPlotSetType}" Margin="10" Height="40" Width="120"/>
                     </UniformGrid>
+                    <TextBlock Margin="10,2,0,0" Text="{Binding WarningMessage}" Foreground="#ffdb00"/>
                 </StackPanel>
         </Grid>
             </ContentControl>

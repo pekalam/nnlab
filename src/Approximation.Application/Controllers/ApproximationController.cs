@@ -52,6 +52,7 @@ namespace Approximation.Application.Controllers
         public Matrix<double> InputMatrix { get; set; } = null!;
         public DataPoint[] DataPredictionPoints { get; set; } = null!;
         public ScatterPoint[] DataScatterPoints { get; set; } = null!;
+        public ScatterPoint[] DataPredScatterPoints { get; set; } = null!;
         public ScatterPoint[] PredictionScatterPoints { get; set; } = null!;
 
         public DataPoint[] PredictionPoints { get; set; } = null!;
@@ -164,6 +165,7 @@ namespace Approximation.Application.Controllers
                 Vm!.UpdateNetworkAndMatrix(_appState.ActiveSession.Network, _appState.ActiveSession!.TrainingData!,
                     inputMatrix);
             }
+            Vm!.WarningMessage = null;
         }
 
         private void ActiveSessionOnNetworkStructureChanged(MLPNetwork network)
@@ -220,6 +222,7 @@ namespace Approximation.Application.Controllers
 
             var network = _appState.ActiveSession!.Network!;
             var dataScatter = new ScatterPoint[orgSet.Input.Count];
+            var dataPredScatter = new ScatterPoint[orgSet.Input.Count];
             var dataPredLine = new DataPoint[orgSet.Input.Count];
             var predLine = new List<DataPoint>(1000);
             var predScatter = new List<ScatterPoint>(1000);
@@ -230,6 +233,16 @@ namespace Approximation.Application.Controllers
                 var start = Vm!.StartValue;
                 int total = (int) Math.Round((Vm!.EndValue - start) / Vm!.Interval, MidpointRounding.AwayFromZero) + 1;
 
+                if (total > 15_000)
+                {
+                    Vm!.WarningMessage = "Reached max number of points";
+                    _ea.GetEvent<ShowGlobalLoading>().Publish("Generating plot...");
+                }
+                else
+                {
+                    Vm!.WarningMessage = null;
+                }
+
                 for (int i = 0; i < orgSet.Input.Count; i++)
                 {
                     dataScatter[i] = new ScatterPoint(orgSet.Input[i][0, 0], orgSet.Target[i][0, 0]);
@@ -239,6 +252,7 @@ namespace Approximation.Application.Controllers
                 {
                     network.CalculateOutput(set.Input[i]);
                     dataPredLine[i] = new DataPoint(orgSet.Input[i].At(0, 0), network.Output!.At(0, 0));
+                    dataPredScatter[i] = new ScatterPoint(orgSet.Input[i].At(0, 0), network.Output!.At(0, 0));
                 }
 
                 if (total > 15_000)
@@ -259,7 +273,7 @@ namespace Approximation.Application.Controllers
                 }
             });
 
-            Vm!.UpdatePlots(_appState.ActiveSession!.TrainingData!, dataScatter,
+            Vm!.UpdatePlots(_appState.ActiveSession!.TrainingData!, dataScatter, dataPredScatter,
                 dataPredLine.OrderBy(p => p.X).ToArray(),
                 predLine.OrderBy(p => p.X).ToArray(),
                 predScatter.ToArray());
@@ -286,7 +300,7 @@ namespace Approximation.Application.Controllers
             {
                 Vm!.SelectedPlotSetType = memento.SelectedPlotSetType;
                 Vm!.UpdateAxes(_appState.ActiveSession!.TrainingData!);
-                Vm!.UpdatePlots(_appState.ActiveSession!.TrainingData!, memento.DataScatterPoints,
+                Vm!.UpdatePlots(_appState.ActiveSession!.TrainingData!, memento.DataScatterPoints, memento.DataPredScatterPoints,
                     memento.DataPredictionPoints, memento.PredictionPoints, memento.PredictionScatterPoints);
             }
 
@@ -309,6 +323,7 @@ namespace Approximation.Application.Controllers
                 PredictionScatterPoints = Vm!.PredictionScatterSeries.Points.ToArray(),
                 SelectedPlotSetType = Vm!.SelectedPlotSetType,
                 PlotSetTypes = Vm!.PlotSetTypes,
+                DataPredScatterPoints = Vm!.DataPredictionScatter.Points.ToArray(),
             };
         }
 

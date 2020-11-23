@@ -28,6 +28,7 @@ namespace Approximation.Application.ViewModels
         private MatrixPreviewViewModel _outputMatrixVm = new MatrixPreviewViewModel();
         private bool _showCustomApproximation = true;
         private bool _showApproximation = true;
+        private string? _warningMessage;
 
 #pragma warning disable 8618
         public ApproximationViewModel()
@@ -45,6 +46,7 @@ namespace Approximation.Application.ViewModels
             PlotModel.Model.Series.Add(DataScatterSeries);
             PlotModel.Model.Series.Add(PredictionLineSeries);
             PlotModel.Model.Series.Add(PredictionScatterSeries);
+            PlotModel.Model.Series.Add(DataPredictionScatter);
 
             var l = new Legend
             {
@@ -79,7 +81,8 @@ namespace Approximation.Application.ViewModels
 
         public LineSeries DataPredictionLineSeries { get; set; } = new LineSeries()
         {
-            Title = "Approximation of network output (data)"
+            Title = "Approximation of network output",
+            Color = OxyColor.FromRgb(255,0,0),
         };
 
         public ScatterSeries DataScatterSeries { get; set; } = new ScatterSeries()
@@ -92,17 +95,25 @@ namespace Approximation.Application.ViewModels
 
         public LineSeries PredictionLineSeries { get; set; } = new LineSeries()
         {
-            Title = "Approximation of network output",
-            Color = OxyColor.FromRgb(0,0,0),
+            Title = "Approximation of network output (custom)",
+            Color = OxyColor.FromRgb(0,131,0),
         };
 
 
         public ScatterSeries PredictionScatterSeries { get; set; } = new ScatterSeries()
         {
+            Title = "Network output (custom)",
+            MarkerType = MarkerType.Circle,
+            MarkerSize = 3,
+            MarkerFill = OxyColor.FromRgb(0, 211, 0),
+        };
+
+        public ScatterSeries DataPredictionScatter { get; set; } = new ScatterSeries
+        {
             Title = "Network output",
             MarkerType = MarkerType.Circle,
             MarkerSize = 3,
-            MarkerFill = OxyColor.FromRgb(0, 255, 0),
+            MarkerFill = OxyColor.FromRgb(131, 0, 0),
         };
 
         public DataSetType[]? PlotSetTypes
@@ -145,6 +156,12 @@ namespace Approximation.Application.ViewModels
             }
         }
 
+        public string? WarningMessage
+        {
+            get => _warningMessage;
+            set => SetProperty(ref _warningMessage, value);
+        }
+
         public bool ShowCustomApproximation
         {
             get => _showCustomApproximation;
@@ -164,6 +181,7 @@ namespace Approximation.Application.ViewModels
             {
                 SetProperty(ref _showApproximation, value);
                 DataPredictionLineSeries.IsVisible = value;
+                DataPredictionScatter.IsVisible = value;
                 PlotModel.Model.InvalidatePlot(false);
             }
         }
@@ -198,7 +216,7 @@ namespace Approximation.Application.ViewModels
         }
 
 
-        public void UpdatePlots(TrainingData data,ScatterPoint[] dataScatter, DataPoint[] dataPredLine, DataPoint[] predLine, ScatterPoint[] predScatter)
+        public void UpdatePlots(TrainingData data,ScatterPoint[] dataScatter, ScatterPoint[] dataPredScatterPoints, DataPoint[] dataPredLine, DataPoint[] predLine, ScatterPoint[] predScatter)
         {
             ClearPlots(false);
 
@@ -211,6 +229,7 @@ namespace Approximation.Application.ViewModels
             DataPredictionLineSeries.Points.AddRange(dataPredLine);
             PredictionLineSeries.Points.AddRange(predLine);
             PredictionScatterSeries.Points.AddRange(predScatter);
+            DataPredictionScatter.Points.AddRange(dataPredScatterPoints);
 
 
 
@@ -226,6 +245,7 @@ namespace Approximation.Application.ViewModels
             DataPredictionLineSeries.Points.Clear();
             PredictionLineSeries.Points.Clear();
             PredictionScatterSeries.Points.Clear();
+            DataPredictionScatter.Points.Clear();
             if (invalidate)
             {
                 PlotModel.Model.InvalidatePlot(true);
