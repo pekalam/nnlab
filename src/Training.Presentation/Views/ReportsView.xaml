@@ -73,29 +73,51 @@
                 <Border Grid.Column="2" Margin="20" Padding="5">
                     <ScrollViewer>
                         <StackPanel>
-                            <TextBlock FontSize="18" FontWeight="Bold" Margin="0,0,0,20">Training</TextBlock>
                             <UniformGrid Columns="2" MaxWidth="500" HorizontalAlignment="Left" TextBlock.FontSize="16">
-                                <TextBlock Text="Result:" HorizontalAlignment="Right" Margin="0,0,20,0"
+                                <TextBlock Text="Algorithm:" HorizontalAlignment="Left" Margin="0,0,20,0"
+                                           FontWeight="Bold" />
+                                <TextBlock
+                                           FontWeight="Bold" >
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding SelectedReport.Algorithm}" Value="{x:Static domain:TrainingReportAlgorithm.GradientDescentOnline}">
+                                                    <Setter Property="Text" Value="Online Gradient Descent"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding SelectedReport.Algorithm}" Value="{x:Static domain:TrainingReportAlgorithm.GradientDescentBatch}">
+                                                    <Setter Property="Text" Value="Batch Gradient Descent"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding SelectedReport.Algorithm}" Value="{x:Static domain:TrainingReportAlgorithm.MomentumGradientDescentOnline}">
+                                                    <Setter Property="Text" Value="Online Gradient Descent with momentum"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding SelectedReport.Algorithm}" Value="{x:Static domain:TrainingReportAlgorithm.MomentumGradientDescentBatch}">
+                                                    <Setter Property="Text" Value="Batch Gradient Descent with momentum"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                                <TextBlock Text="Result:" HorizontalAlignment="Left" Margin="0,0,20,0"
                                            FontWeight="Bold" />
                                 <TextBlock Text="{Binding SelectedReport.SessionEndType}"
                                            FontWeight="Bold" />
-                                <TextBlock Text="Epochs:" HorizontalAlignment="Right" Margin="0,0,20,0"
+                                <TextBlock Text="Epochs:" HorizontalAlignment="Left" Margin="0,0,20,0"
                                            FontWeight="Bold" />
                                 <TextBlock Text="{Binding SelectedReport.TotalEpochs}"
                                            FontWeight="Bold" />
-                                <TextBlock Text="Error:" HorizontalAlignment="Right" Margin="0,0,20,0"
+                                <TextBlock Text="Error:" HorizontalAlignment="Left" Margin="0,0,20,0"
                                            FontWeight="Bold" />
                                 <TextBlock Text="{Binding SelectedReport.Error}"
                                            FontWeight="Bold" />
-                                <TextBlock Text="Validation error:" HorizontalAlignment="Right" Margin="0,0,20,0"
+                                <TextBlock Text="Validation error:" HorizontalAlignment="Left" Margin="0,0,20,0"
                                            FontWeight="Bold" Visibility="{Binding SelectedReport.ValidationError,Converter={StaticResource NullToVisibilityConverter}}"/>
                                 <TextBlock Text="{Binding SelectedReport.ValidationError}"
                                            FontWeight="Bold" Visibility="{Binding SelectedReport.ValidationError,Converter={StaticResource NullToVisibilityConverter}}"/>
-                                <TextBlock Text="Start:" HorizontalAlignment="Right" Margin="0,0,20,0" />
+                                <TextBlock Text="Start time:" HorizontalAlignment="Left" Margin="0,0,20,0" />
                                 <TextBlock Text="{Binding SelectedReport.StartDate}" />
-                                <TextBlock Text="End:" HorizontalAlignment="Right" Margin="0,0,20,0" />
+                                <TextBlock Text="End time:" HorizontalAlignment="Left" Margin="0,0,20,0" />
                                 <TextBlock Text="{Binding SelectedReport.EndDate}" />
-                                <TextBlock Text="Total time:" HorizontalAlignment="Right" Margin="0,0,20,0" />
+                                <TextBlock Text="Total time:" HorizontalAlignment="Left" Margin="0,0,20,0" />
                                 <TextBlock Text="{Binding SelectedReport.Duration}" />
                             </UniformGrid>
                             <ContentControl MinHeight="500" x:Name="ReportRegion1" Margin="8,32,22,15" />

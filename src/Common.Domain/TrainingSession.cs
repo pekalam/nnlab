@@ -27,6 +27,15 @@ namespace Common.Domain
         ValidationErrorReached,
     }
 
+    public enum TrainingReportAlgorithm
+    {
+        GradientDescentOnline,
+        GradientDescentBatch,
+        MomentumGradientDescentBatch,
+        MomentumGradientDescentOnline,
+        LevenbergMarquardt,
+    }
+
     public class TrainingReportsCollection : ObservableCollection<TrainingSessionReport>
     {
         protected override void ClearItems()
@@ -93,6 +102,8 @@ namespace Common.Domain
         
         public DateTime EndDate { get; }
 
+        public TrainingReportAlgorithm Algorithm { get; }
+
         public double? ValidationError
         {
             get => _validationError;
@@ -109,7 +120,7 @@ namespace Common.Domain
 
         public MLPNetwork Network { get; }
 
-        public TrainingSessionReport(SessionEndType sessionEndType, int totalEpochs, double error, DateTime startDate, TimeSpan duration, IEnumerable<EpochEndArgs> epochEndEventArgs, MLPNetwork network)
+        public TrainingSessionReport(SessionEndType sessionEndType, int totalEpochs, double error, DateTime startDate, TimeSpan duration, IEnumerable<EpochEndArgs> epochEndEventArgs, MLPNetwork network, TrainingReportAlgorithm algorithm, double? validationError = null)
         {
             SessionEndType = sessionEndType;
             TotalEpochs = totalEpochs;
@@ -118,34 +129,36 @@ namespace Common.Domain
             Duration = duration;
             Network = network.Clone();
             EndDate = startDate + duration;
+            Algorithm = algorithm;
             EpochEndEventArgs = epochEndEventArgs.Select(e => new EpochEndArgs()
             {
                 Epoch = e.Epoch, Error = e.Error, Iterations = e.Iterations,
             }).ToArray();
+            ValidationError = validationError;
         }
 
-        public static TrainingSessionReport CreateStoppedSessionReport(int totalEpochs, double error, DateTime startTime, IEnumerable<EpochEndArgs> epochEndEventArgs, MLPNetwork net) =>
-            new TrainingSessionReport(SessionEndType.Stopped, totalEpochs, error, startTime, Time.Now - startTime, epochEndEventArgs, net);
-
-        public static TrainingSessionReport CreatePausedSessionReport(int totalEpochs, double error, DateTime startTime, IEnumerable<EpochEndArgs> epochEndEventArgs, MLPNetwork net) =>
-            new TrainingSessionReport(SessionEndType.Paused, totalEpochs, error, startTime, Time.Now - startTime, epochEndEventArgs, net);
-
-        public static TrainingSessionReport CreateTargetReachedSessionReport(int totalEpochs, double error, DateTime startTime, IEnumerable<EpochEndArgs> epochEndEventArgs, MLPNetwork net) =>
-            new TrainingSessionReport(SessionEndType.TargetReached, totalEpochs, error, startTime, Time.Now - startTime, epochEndEventArgs, net);
-
-        public static TrainingSessionReport CreateMaxEpochSessionReport(int totalEpochs, double error, DateTime startTime, IEnumerable<EpochEndArgs> epochEndEventArgs, MLPNetwork net) =>
-            new TrainingSessionReport(SessionEndType.MaxEpoch, totalEpochs, error, startTime, Time.Now - startTime, epochEndEventArgs, net);
-
-        public static TrainingSessionReport CreateTimeoutSessionReport(int totalEpochs, double error, DateTime startTime, IEnumerable<EpochEndArgs> epochEndEventArgs, MLPNetwork net) =>
-            new TrainingSessionReport(SessionEndType.Timeout, totalEpochs, error, startTime, Time.Now - startTime, epochEndEventArgs, net);
-
-        public static TrainingSessionReport CreateNaNSessionReport(int totalEpochs, double error, DateTime startTime, IEnumerable<EpochEndArgs> epochEndEventArgs, MLPNetwork net) =>
-            new TrainingSessionReport(SessionEndType.NaNResult, totalEpochs, error, startTime, Time.Now - startTime, epochEndEventArgs, net);
-
-        public static TrainingSessionReport CreateAlgorithmErrorSessionReport(int totalEpochs, double error, DateTime startTime, IEnumerable<EpochEndArgs> epochEndEventArgs, MLPNetwork net) =>
-            new TrainingSessionReport(SessionEndType.AlgorithmError, totalEpochs, error, startTime, Time.Now - startTime, epochEndEventArgs, net);
-        
-        public static TrainingSessionReport CreateValidationErrorReachedSessionReport(int totalEpochs, double error, DateTime startTime, IEnumerable<EpochEndArgs> epochEndEventArgs, MLPNetwork net, double validationError) =>
-            new TrainingSessionReport(SessionEndType.ValidationErrorReached, totalEpochs, error, startTime, Time.Now - startTime, epochEndEventArgs, net){ValidationError = validationError};
+        // public static TrainingSessionReport CreateStoppedSessionReport(int totalEpochs, double error, DateTime startTime, IEnumerable<EpochEndArgs> epochEndEventArgs, MLPNetwork net, TrainingAlgorithm algorithm) =>
+        //     new TrainingSessionReport(SessionEndType.Stopped, totalEpochs, error, startTime, Time.Now - startTime, epochEndEventArgs, net, algorithm);
+        //
+        // public static TrainingSessionReport CreatePausedSessionReport(int totalEpochs, double error, DateTime startTime, IEnumerable<EpochEndArgs> epochEndEventArgs, MLPNetwork net, TrainingAlgorithm algorithm) =>
+        //     new TrainingSessionReport(SessionEndType.Paused, totalEpochs, error, startTime, Time.Now - startTime, epochEndEventArgs, net, algorithm);
+        //
+        // public static TrainingSessionReport CreateTargetReachedSessionReport(int totalEpochs, double error, DateTime startTime, IEnumerable<EpochEndArgs> epochEndEventArgs, MLPNetwork net, TrainingAlgorithm algorithm) =>
+        //     new TrainingSessionReport(SessionEndType.TargetReached, totalEpochs, error, startTime, Time.Now - startTime, epochEndEventArgs, net, algorithm);
+        //
+        // public static TrainingSessionReport CreateMaxEpochSessionReport(int totalEpochs, double error, DateTime startTime, IEnumerable<EpochEndArgs> epochEndEventArgs, MLPNetwork net, TrainingAlgorithm algorithm) =>
+        //     new TrainingSessionReport(SessionEndType.MaxEpoch, totalEpochs, error, startTime, Time.Now - startTime, epochEndEventArgs, net, algorithm);
+        //
+        // public static TrainingSessionReport CreateTimeoutSessionReport(int totalEpochs, double error, DateTime startTime, IEnumerable<EpochEndArgs> epochEndEventArgs, MLPNetwork net, TrainingAlgorithm algorithm) =>
+        //     new TrainingSessionReport(SessionEndType.Timeout, totalEpochs, error, startTime, Time.Now - startTime, epochEndEventArgs, net, algorithm);
+        //
+        // public static TrainingSessionReport CreateNaNSessionReport(int totalEpochs, double error, DateTime startTime, IEnumerable<EpochEndArgs> epochEndEventArgs, MLPNetwork net, TrainingAlgorithm algorithm) =>
+        //     new TrainingSessionReport(SessionEndType.NaNResult, totalEpochs, error, startTime, Time.Now - startTime, epochEndEventArgs, net, algorithm);
+        //
+        // public static TrainingSessionReport CreateAlgorithmErrorSessionReport(int totalEpochs, double error, DateTime startTime, IEnumerable<EpochEndArgs> epochEndEventArgs, MLPNetwork net, TrainingAlgorithm algorithm) =>
+        //     new TrainingSessionReport(SessionEndType.AlgorithmError, totalEpochs, error, startTime, Time.Now - startTime, epochEndEventArgs, net, algorithm);
+        //
+        // public static TrainingSessionReport CreateValidationErrorReachedSessionReport(int totalEpochs, double error, DateTime startTime, IEnumerable<EpochEndArgs> epochEndEventArgs, MLPNetwork net, double validationError, TrainingAlgorithm algorithm) =>
+        //     new TrainingSessionReport(SessionEndType.ValidationErrorReached, totalEpochs, error, startTime, Time.Now - startTime, epochEndEventArgs, net, algorithm){ValidationError = validationError};
     }
 }
