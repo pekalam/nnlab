@@ -17,8 +17,8 @@ namespace NeuralNetwork.Domain
         bool SetInputsCount(int inputsCount);
         void ResetWeights(Layer layer);
         void ResetNeuralNetworkWeights();
-        Layer InsertAfter(int layerIndex);
-        Layer InsertBefore(int layerIndex);
+        bool InsertAfter(int layerIndex);
+        bool InsertBefore(int layerIndex);
         MLPNetwork CreateNeuralNetwork(TrainingData trainingData);
         void ChangeParamsInitMethod<T>(Layer layer, ParamsInitMethod newMethod, bool reset, T? options = null) where T : class;
 
@@ -53,8 +53,12 @@ namespace NeuralNetwork.Domain
             var newLayer =
                 new PerceptronLayer(NeuralNetwork.Layers[^1].NeuronsCount, 1, new LinearActivationFunction());
             NeuralNetwork.AddLayer(newLayer);
-            _appState.ActiveSession?.RaiseNetworkStructureChanged();
-            return Validate();
+            if (Validate())
+            {
+                _appState.ActiveSession?.RaiseNetworkStructureChanged();
+                return true;
+            }
+            return false;
         }
 
         public bool? RemoveLayer(int layerIndex)
@@ -63,14 +67,12 @@ namespace NeuralNetwork.Domain
             {
                 var toRemove = NeuralNetwork.Layers[layerIndex];
                 NeuralNetwork.RemoveLayer(toRemove);
-
-                if (NeuralNetwork.Layers[^1].NeuronsCount != 1)
+                if (Validate())
                 {
-                    NeuralNetwork.Layers[^1].NeuronsCount = 1;
+                    _appState.ActiveSession?.RaiseNetworkStructureChanged();
+                    return true;
                 }
-
-                _appState.ActiveSession?.RaiseNetworkStructureChanged();
-                return Validate();
+                return false;
             }
 
             return null;
@@ -79,8 +81,12 @@ namespace NeuralNetwork.Domain
         public bool SetNeuronsCount(Layer layer, int neuronsCount)
         {
             layer.NeuronsCount = neuronsCount;
-            _appState.ActiveSession?.RaiseNetworkStructureChanged();
-            return Validate();
+            if (Validate())
+            {
+                _appState.ActiveSession?.RaiseNetworkStructureChanged();
+                return true;
+            }
+            return false;
         }
 
         public void SetActivationFunction(Layer layer, IActivationFunction activationFunction)
@@ -92,8 +98,12 @@ namespace NeuralNetwork.Domain
         public bool SetInputsCount(int inputsCount)
         {
             NeuralNetwork.BaseLayers[0].InputsCount = inputsCount;
-            _appState.ActiveSession?.RaiseNetworkStructureChanged();
-            return Validate();
+            if (Validate())
+            {
+                _appState.ActiveSession?.RaiseNetworkStructureChanged();
+                return true;
+            }
+            return false;
         }
 
         public void ResetWeights(Layer layer)
@@ -108,18 +118,26 @@ namespace NeuralNetwork.Domain
             _appState.ActiveSession?.RaiseNetworkParametersChanged();
         }
 
-        public Layer InsertAfter(int layerIndex)
+        public bool InsertAfter(int layerIndex)
         {
             var layer = NeuralNetwork.InsertAfter(layerIndex);
-            _appState.ActiveSession?.RaiseNetworkStructureChanged();
-            return layer;
+            if (Validate())
+            {
+                _appState.ActiveSession?.RaiseNetworkStructureChanged();
+                return true;
+            }
+            return false;
         }
 
-        public Layer InsertBefore(int layerIndex)
+        public bool InsertBefore(int layerIndex)
         {
             var layer = NeuralNetwork.InsertBefore(layerIndex);
-            _appState.ActiveSession?.RaiseNetworkStructureChanged();
-            return layer;
+            if (Validate())
+            {
+                _appState.ActiveSession?.RaiseNetworkStructureChanged();
+                return true;
+            }
+            return false;
         }
 
         public MLPNetwork CreateNeuralNetwork(TrainingData trainingData)

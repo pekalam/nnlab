@@ -93,14 +93,14 @@ namespace NeuralNetwork.Application.Controllers
         {
             if (data.Variables.InputVariableNames.Length == _appState.ActiveSession!.Network!.Layers[0].InputsCount)
             {
-                adapter.SetInputLabels(data.Variables.InputVariableNames);
+                adapter.AttachInputLabels(data.Variables.InputVariableNames);
             }
         }
         private void SetOutputLabels(NNLibModelAdapter adapter, TrainingData data)
         {
             if (data.Variables.TargetVariableNames.Length == _appState.ActiveSession!.Network!.Layers[^1].NeuronsCount)
             {
-                adapter.SetOutputLabels(data.Variables.TargetVariableNames);
+                adapter.AttachOutputLabels(data.Variables.TargetVariableNames);
             }
         }
 

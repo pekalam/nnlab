@@ -179,15 +179,14 @@
 
                             </Border>
 
-
                             <Border Margin="1" Name="ItemContainer" CornerRadius="4">
 
                                 <Grid MinWidth="120" Height="200"
                                             Margin="0,0,0,0" Width="Auto">
                                     <StackPanel Name="LayerItemContainer">
-                                        <TextBlock Text="{Binding Path=LayerText}"
+                                        <TextBlock Text="{Binding Path=LayerTopText}"
                                                    TextAlignment="Center" />
-                                        <TextBlock Text="{Binding Path=LayerSecondText}"
+                                        <TextBlock Text="{Binding Path=LayerBottomText}"
                                                    TextAlignment="Center" />
 
                                     </StackPanel>
@@ -201,15 +200,14 @@
                                         <Button x:Name="EditBtn" Command="{Binding Path=EditLayer}" CommandParameter="{Binding}">Edit</Button>
                                         <Button Command="{Binding Path=RemoveLayer}" CommandParameter="{Binding}">Remove</Button>
                                     </StackPanel>
-                                    <Grid Visibility="Collapsed" Name="AddLayerItemContainer"
-                                          HorizontalAlignment="Center" VerticalAlignment="Stretch">
+                                    <StackPanel Visibility="Collapsed" Name="AddLayerItemContainer">
                                         <Button Name="AddBtn" Command="{Binding Path=AddLayer}"
                                                 HorizontalAlignment="Center"
                                                 VerticalAlignment="Center" Height="200" Width="120" Background="Transparent"
                                                 BorderBrush="{x:Null}" Foreground="White" ToolTip="Add new layer">
                                             <iconPacks:FontAwesome Kind="PlusSquareRegular" Width="50" Height="50"/>
                                         </Button>
-                                    </Grid>
+                                    </StackPanel>
                                 </Grid>
 
                             </Border>
@@ -233,13 +231,6 @@
                             <Setter TargetName="LayerItemContainer" Property="Visibility" Value="Collapsed" />
                             <Setter TargetName="Shadow" Property="BorderBrush" Value="#C0AEAEAE" />
                         </DataTrigger>
-
-                        <!-- <DataTrigger Binding="{Binding Path=IsInputLayer}" Value="True"> -->
-                        <!--     <Setter TargetName="ItemContainer" Property="Background" Value="#A514202B" /> -->
-                        <!-- </DataTrigger> -->
-                        <!-- <DataTrigger Binding="{Binding Path=IsOutputLayer}" Value="True"> -->
-                        <!--     <Setter TargetName="ItemContainer" Property="Background" Value="#A514202B" /> -->
-                        <!-- </DataTrigger> -->
                     </DataTemplate.Triggers>
                 </DataTemplate>
 

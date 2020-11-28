@@ -10,20 +10,17 @@ using Prism.Events;
 using Prism.Ioc;
 using Shell.Interface;
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 
 namespace NeuralNetwork.Application.Controllers
 {
     public interface ILayerListController : IController
     {
-        DelegateCommand AddLayerCommand { get; set; }
-        DelegateCommand<LayerEditorItemModel> RemoveLayerCommand { get; set; }
-        DelegateCommand<LayerEditorItemModel> EditLayerCommand { get; set; }
-        DelegateCommand<Layer> SelectLayerCommand { get; set; }
-        DelegateCommand<LayerEditorItemModel> LayerClickedCommand { get; set; }
-        DelegateCommand<LayerEditorItemModel> InsertAfterCommand { get; set; }
-        DelegateCommand<LayerEditorItemModel> InsertBeforeCommand { get; set; }
+        DelegateCommand<LayerListItemModel> LayerClickedCommand { get; set; }
 
         Action<int> NavigatedFromOpened { get; }
 
@@ -45,7 +42,7 @@ namespace NeuralNetwork.Application.Controllers
 
         private bool _initialized;
 
-        public LayerListController(INeuralNetworkShellController shellService, INeuralNetworkService networkService, AppState appState, IEventAggregator ea)
+        public LayerListController(INeuralNetworkShellController shellController, INeuralNetworkService networkService, AppState appState, IEventAggregator ea)
         {
             _networkService = networkService;
             _appState = appState;
@@ -53,12 +50,11 @@ namespace NeuralNetwork.Application.Controllers
             _helper = new AppStateHelper(appState);
 
             AddLayerCommand = new DelegateCommand(AddLayer);
-            RemoveLayerCommand = new DelegateCommand<LayerEditorItemModel>(RemoveLayer);
-            EditLayerCommand = shellService.OpenLayerEditorCommand;
-            SelectLayerCommand = new DelegateCommand<Layer>(SelectLayer);
-            LayerClickedCommand = new DelegateCommand<LayerEditorItemModel>(LayerClicked);
-            InsertAfterCommand = new DelegateCommand<LayerEditorItemModel>(InsertAfter);
-            InsertBeforeCommand = new DelegateCommand<LayerEditorItemModel>(InsertBefore);
+            RemoveLayerCommand = new DelegateCommand<LayerListItemModel>(RemoveLayer);
+            EditLayerCommand = shellController.OpenLayerEditorCommand;
+            LayerClickedCommand = new DelegateCommand<LayerListItemModel>(LayerClicked);
+            InsertAfterCommand = new DelegateCommand<LayerListItemModel>(InsertAfter);
+            InsertBeforeCommand = new DelegateCommand<LayerListItemModel>(InsertBefore);
 
             NavigatedFromOpened = layerIndex =>
             {
@@ -72,7 +68,7 @@ namespace NeuralNetwork.Application.Controllers
 
             _helper.OnNetworkChanged(network =>
             {
-                SetLayers();
+                CreateLayers();
             });
 
             _nClickSub = _ea.GetEvent<IntNeuronClicked>().Subscribe(SelectLayer);
@@ -94,28 +90,7 @@ namespace NeuralNetwork.Application.Controllers
             _initialized = true;
         }
 
-        private void InsertBefore(LayerEditorItemModel obj)
-        {
-            _networkService.InsertBefore(obj.LayerIndex);   
-            SetLayers();
-            _ea.GetEvent<IntLayerListChanged>().Publish();
-        }
-
-        private void InsertAfter(LayerEditorItemModel obj)
-        {
-            if (obj.LayerIndex == _appState.ActiveSession!.Network!.TotalLayers - 1)
-            {
-                AddLayer();
-            }
-            else
-            {
-                _networkService.InsertAfter(obj.LayerIndex);
-                SetLayers();
-            }
-            _ea.GetEvent<IntLayerListChanged>().Publish();
-        }
-
-        private void LayerClicked(LayerEditorItemModel? obj)
+        private void LayerClicked(LayerListItemModel? obj)
         {
             if(obj == null || obj.IsAddLayerItem) return;
             //TODO fix
@@ -135,10 +110,7 @@ namespace NeuralNetwork.Application.Controllers
                 }
             }
 
-            if (layerInd == -1)
-            {
-                throw new Exception();
-            }
+            Debug.Assert(layerInd != -1);
 
             var selected = Vm!.Layers.First(l =>
                 l.LayerIndex == layerInd);
@@ -146,8 +118,36 @@ namespace NeuralNetwork.Application.Controllers
             Vm!.SelectedLayer = selected;
         }
 
+        private void InsertBefore(LayerListItemModel model)
+        {
+            if (_networkService.InsertBefore(model.LayerIndex))
+            {
+                PublishValidArch();
+            }
+            else
+            {
+                PublishInvalidArch();
+            }
+            CreateLayers();
+            _ea.GetEvent<IntLayerListChanged>().Publish();
+        }
 
-        private void RemoveLayer(LayerEditorItemModel model)
+        private void InsertAfter(LayerListItemModel obj)
+        {
+            if (_networkService.InsertAfter(obj.LayerIndex))
+            {
+                PublishValidArch();
+            }
+            else
+            {
+                PublishInvalidArch();
+            }
+            CreateLayers();
+            _ea.GetEvent<IntLayerListChanged>().Publish();
+        }
+
+
+        private void RemoveLayer(LayerListItemModel model)
         {
             var removed = _networkService.RemoveLayer(model.LayerIndex);
             if (removed.HasValue && !removed.Value)
@@ -159,12 +159,9 @@ namespace NeuralNetwork.Application.Controllers
                 PublishValidArch();
             }
 
-            SetLayers();
+            CreateLayers();
             _ea.GetEvent<IntLayerListChanged>().Publish();
         }
-
-        private void SetLayers() => Vm!.CreateLayers(_appState.ActiveSession!.Network!.Layers);
-
         private void AddLayer()
         {
             if (!_networkService.AddLayer())
@@ -175,8 +172,37 @@ namespace NeuralNetwork.Application.Controllers
             {
                 PublishValidArch();
             }
-            SetLayers();
+            CreateLayers();
             _ea.GetEvent<IntLayerListChanged>().Publish();
+        }
+
+        private void CreateLayers()
+        {
+            var collection = new ObservableCollection<LayerListItemModel>(
+                _appState.ActiveSession!.Network!.Layers.Select(CreateLayerModel)
+                );
+            collection.Add(new LayerListItemModel()
+            {
+                IsAddLayerItem = true,
+                IsOutputLayer = false,
+                LayerIndex = collection.Count,
+                AddLayer = AddLayerCommand
+            });
+            Vm!.Layers = collection;
+        }
+
+        private LayerListItemModel CreateLayerModel(Layer layer, int ind)
+        {
+            return new LayerListItemModel()
+            {
+                IsFirstLayer = ind == 0,
+                IsOutputLayer = layer.IsOutputLayer,
+                LayerIndex = ind,
+                RemoveLayer = RemoveLayerCommand,
+                EditLayer = EditLayerCommand,
+                InsertAfter = InsertAfterCommand,
+                InsertBefore = InsertBeforeCommand
+            };
         }
 
         private void PublishInvalidArch()
@@ -198,13 +224,12 @@ namespace NeuralNetwork.Application.Controllers
             _ea.GetEvent<EnableNavMenuItem>().Publish(ModuleIds.Approximation);
         }
 
-        public DelegateCommand AddLayerCommand { get; set; }
-        public DelegateCommand<LayerEditorItemModel> RemoveLayerCommand { get; set; }
-        public DelegateCommand<LayerEditorItemModel> EditLayerCommand { get; set; }
-        public DelegateCommand<Layer> SelectLayerCommand { get; set; }
-        public DelegateCommand<LayerEditorItemModel> LayerClickedCommand { get; set; }
-        public DelegateCommand<LayerEditorItemModel> InsertAfterCommand { get; set; }
-        public DelegateCommand<LayerEditorItemModel> InsertBeforeCommand { get; set; }
+        private DelegateCommand AddLayerCommand { get; }
+        private DelegateCommand<LayerListItemModel> RemoveLayerCommand { get; }
+        private DelegateCommand<LayerListItemModel> EditLayerCommand { get; }
+        private DelegateCommand<LayerListItemModel> InsertAfterCommand { get; }
+        private DelegateCommand<LayerListItemModel> InsertBeforeCommand { get; }
+        public DelegateCommand<LayerListItemModel> LayerClickedCommand { get; set; }
         public Action<int> NavigatedFromOpened { get; }
     }
 }

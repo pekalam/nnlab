@@ -14,7 +14,7 @@ namespace NeuralNetwork.Application.Controllers
 {
     public interface INeuralNetworkShellController : ISingletonController
     {
-        DelegateCommand<LayerEditorItemModel> OpenLayerEditorCommand { get; set; }
+        DelegateCommand<LayerListItemModel> OpenLayerEditorCommand { get; set; }
         DelegateCommand CloseLayerEditorCommand { get; set; }
         Action<NavigationContext> Navigated { get; }
 
@@ -30,7 +30,7 @@ namespace NeuralNetwork.Application.Controllers
         private readonly IRegionManager _rm;
         private readonly AppState _appState;
         private readonly IEventAggregator _ea;
-        private LayerEditorItemModel? _openedModel;
+        private LayerListItemModel? _openedModel;
 
         public NeuralNetworkShellController(IRegionManager rm, AppState appState, IEventAggregator ea)
         {
@@ -38,7 +38,7 @@ namespace NeuralNetwork.Application.Controllers
             _appState = appState;
             _ea = ea;
 
-            OpenLayerEditorCommand = new DelegateCommand<LayerEditorItemModel>(OpenLayerEditor);
+            OpenLayerEditorCommand = new DelegateCommand<LayerListItemModel>(OpenLayerEditor);
             CloseLayerEditorCommand = new DelegateCommand(CloseLayerEditor);
 
 
@@ -67,7 +67,7 @@ namespace NeuralNetwork.Application.Controllers
             _openedModel = null;
         }
 
-        private void OpenLayerEditor(LayerEditorItemModel model)
+        private void OpenLayerEditor(LayerListItemModel model)
         {
             _openedModel = model;
             _ea.GetEvent<EnableModalNavigation>().Publish(CloseLayerEditorCommand);
@@ -84,7 +84,7 @@ namespace NeuralNetwork.Application.Controllers
         {
         }
 
-        public DelegateCommand<LayerEditorItemModel> OpenLayerEditorCommand { get; set; }
+        public DelegateCommand<LayerListItemModel> OpenLayerEditorCommand { get; set; }
         public DelegateCommand CloseLayerEditorCommand { get; set; }
         public Action<NavigationContext> Navigated { get; private set; }
         public bool IsEditorOpened { get; private set; }

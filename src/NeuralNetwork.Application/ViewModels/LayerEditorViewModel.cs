@@ -29,7 +29,8 @@ namespace NeuralNetwork.Application.ViewModels
         {
             Layer = layer;
             ShowInputsCount = isFirstLayer;
-            ShowNeuronsCount = !isLastLayer;
+            // ShowNeuronsCount = !isLastLayer;
+            ShowNeuronsCount = true;
         }
 
         public Layer Layer { get; }

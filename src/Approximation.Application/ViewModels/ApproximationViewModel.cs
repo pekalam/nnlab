@@ -200,8 +200,8 @@ namespace Approximation.Application.ViewModels
             var adapter = new NNLibModelAdapter(network);
             adapter.NeuralNetworkModel.BackgroundColor = "#cce6ff";
             ModelAdapter = adapter;
-            ModelAdapter.SetInputLabels(data.Variables.InputVariableNames);
-            ModelAdapter.SetOutputLabels(data.Variables.TargetVariableNames);
+            ModelAdapter.AttachInputLabels(data.Variables.InputVariableNames);
+            ModelAdapter.AttachOutputLabels(data.Variables.TargetVariableNames);
 
             InputMatrixVm.Controller.AssignMatrix(inputMatrix, new[] { "Value" }, i => data.Variables.InputVariableNames[i]);
             OutputMatrixVm = new MatrixPreviewViewModel();

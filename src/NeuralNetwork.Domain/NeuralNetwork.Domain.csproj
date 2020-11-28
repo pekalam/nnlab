@@ -6,7 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="NNLibAdapter" Version="1.0.57" />
+    <PackageReference Include="NNControl" Version="1.0.60" />
+    <PackageReference Include="NNLibAdapter" Version="1.1.2" />
   </ItemGroup>
 
   <ItemGroup>
