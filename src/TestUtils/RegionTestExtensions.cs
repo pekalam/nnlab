@@ -53,20 +53,20 @@ namespace TestUtils
 
     public static class TrainingDataMocks
     {
-        public static TrainingData ValidData1 = new TrainingData(
+        public static TrainingData ValidData1 => new TrainingData(
             new SupervisedTrainingData(SupervisedTrainingSamples.FromArrays(new[] {new[] {0d}}, new[] {new[] {0d}})),
             new SupervisedTrainingSamplesVariables(new SupervisedSetVariableIndexes(new[] {0}, new[] {1}),
                 new[] {new VariableName("x"), new VariableName("y")}), TrainingDataSource.Memory, NormalizationMethod.None);
 
 
-        public static TrainingData ValidData2 = new TrainingData(
+        public static TrainingData ValidData2 => new TrainingData(
             new SupervisedTrainingData(SupervisedTrainingSamples.FromArrays(new[] {new[] {0d}, new[] {1d}, new[] {2d}, new[] {3d}},
                 new[] {new[] {0d}, new[] {1d}, new[] {2d}, new[] {3d}})),
             new SupervisedTrainingSamplesVariables(new SupervisedSetVariableIndexes(new[] {0}, new[] {1}),
                 new[] {new VariableName("x"), new VariableName("y")}), TrainingDataSource.Memory, NormalizationMethod.None);
 
 
-        public static TrainingData ValidData3 = new TrainingData(
+        public static TrainingData ValidData3 => new TrainingData(
             new SupervisedTrainingData(SupervisedTrainingSamples.FromArrays(new[] {new[] {0d}, new[] {0d}},
                 new[] {new[] {0d}, new[] {0d}}))
             {
@@ -77,7 +77,7 @@ namespace TestUtils
                 new[] {new VariableName("x"), new VariableName("y")}), TrainingDataSource.Memory, NormalizationMethod.None);
 
 
-        public static TrainingData ValidData4 = new TrainingData(
+        public static TrainingData ValidData4 => new TrainingData(
             new SupervisedTrainingData(SupervisedTrainingSamples.FromArrays(new[] {new[] {0d}}, new[] {new[] {0d, 1d}})),
             new SupervisedTrainingSamplesVariables(new SupervisedSetVariableIndexes(new[] {0}, new[] {1, 2}),
                 new[] {new VariableName("x"), new VariableName("y"), new VariableName("z"),}),
