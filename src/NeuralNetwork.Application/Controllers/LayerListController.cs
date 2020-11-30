@@ -40,8 +40,6 @@ namespace NeuralNetwork.Application.Controllers
         private readonly IEventAggregator _ea;
         private readonly AppStateHelper _helper;
 
-        private bool _initialized;
-
         public LayerListController(INeuralNetworkShellController shellController, INeuralNetworkService networkService, AppState appState, IEventAggregator ea)
         {
             _networkService = networkService;
@@ -64,8 +62,6 @@ namespace NeuralNetwork.Application.Controllers
 
         protected override void VmCreated()
         {
-            if (_initialized) return;
-
             _helper.OnNetworkChanged(network =>
             {
                 CreateLayers();
@@ -86,8 +82,6 @@ namespace NeuralNetwork.Application.Controllers
                     _nClickSub.Dispose();
                 }
             };
-
-            _initialized = true;
         }
 
         private void LayerClicked(LayerListItemModel? obj)
@@ -120,28 +114,16 @@ namespace NeuralNetwork.Application.Controllers
 
         private void InsertBefore(LayerListItemModel model)
         {
-            if (_networkService.InsertBefore(model.LayerIndex))
-            {
-                PublishValidArch();
-            }
-            else
-            {
-                PublishInvalidArch();
-            }
+            var validArch = _networkService.InsertBefore(model.LayerIndex);
+            PublishArchMessages(validArch);
             CreateLayers();
             _ea.GetEvent<IntLayerListChanged>().Publish();
         }
 
-        private void InsertAfter(LayerListItemModel obj)
+        private void InsertAfter(LayerListItemModel model)
         {
-            if (_networkService.InsertAfter(obj.LayerIndex))
-            {
-                PublishValidArch();
-            }
-            else
-            {
-                PublishInvalidArch();
-            }
+            var validArch = _networkService.InsertAfter(model.LayerIndex);
+            PublishArchMessages(validArch);
             CreateLayers();
             _ea.GetEvent<IntLayerListChanged>().Publish();
         }
@@ -150,28 +132,17 @@ namespace NeuralNetwork.Application.Controllers
         private void RemoveLayer(LayerListItemModel model)
         {
             var removed = _networkService.RemoveLayer(model.LayerIndex);
-            if (removed.HasValue && !removed.Value)
+            if (removed.HasValue)
             {
-                PublishInvalidArch();
+                PublishArchMessages(removed.Value);
+                CreateLayers();
+                _ea.GetEvent<IntLayerListChanged>().Publish();
             }
-            else
-            {
-                PublishValidArch();
-            }
-
-            CreateLayers();
-            _ea.GetEvent<IntLayerListChanged>().Publish();
         }
         private void AddLayer()
         {
-            if (!_networkService.AddLayer())
-            {
-                PublishInvalidArch();
-            }
-            else
-            {
-                PublishValidArch();
-            }
+            var validArch = _networkService.AddLayer();
+            PublishArchMessages(validArch);
             CreateLayers();
             _ea.GetEvent<IntLayerListChanged>().Publish();
         }
@@ -205,23 +176,25 @@ namespace NeuralNetwork.Application.Controllers
             };
         }
 
-        private void PublishInvalidArch()
+        private void PublishArchMessages(bool isValid)
         {
-            _ea.GetEvent<ShowErrorNotification>().Publish(new ErrorNotificationArgs()
+            if (isValid)
             {
-                Message = "Invalid network architecture"
-            });
-            _ea.GetEvent<DisableNavMenuItem>().Publish(ModuleIds.Data);
-            _ea.GetEvent<DisableNavMenuItem>().Publish(ModuleIds.Training);
-            _ea.GetEvent<DisableNavMenuItem>().Publish(ModuleIds.Approximation);
-        }
-
-        private void PublishValidArch()
-        {
-            _ea.GetEvent<HideErrorNotification>().Publish();
-            _ea.GetEvent<EnableNavMenuItem>().Publish(ModuleIds.Data);
-            _ea.GetEvent<EnableNavMenuItem>().Publish(ModuleIds.Training);
-            _ea.GetEvent<EnableNavMenuItem>().Publish(ModuleIds.Approximation);
+                _ea.GetEvent<HideErrorNotification>().Publish();
+                _ea.GetEvent<EnableNavMenuItem>().Publish(ModuleIds.Data);
+                _ea.GetEvent<EnableNavMenuItem>().Publish(ModuleIds.Training);
+                _ea.GetEvent<EnableNavMenuItem>().Publish(ModuleIds.Approximation);
+            }
+            else
+            {
+                _ea.GetEvent<ShowErrorNotification>().Publish(new ErrorNotificationArgs()
+                {
+                    Message = "Invalid network architecture"
+                });
+                _ea.GetEvent<DisableNavMenuItem>().Publish(ModuleIds.Data);
+                _ea.GetEvent<DisableNavMenuItem>().Publish(ModuleIds.Training);
+                _ea.GetEvent<DisableNavMenuItem>().Publish(ModuleIds.Approximation);
+            }
         }
 
         private DelegateCommand AddLayerCommand { get; }
