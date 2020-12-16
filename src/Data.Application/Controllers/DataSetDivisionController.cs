@@ -24,6 +24,8 @@ namespace Data.Application.Controllers
         DelegateCommand<object> Divide13Command { get; set; }
         DelegateCommand<object> Divide7020Command { get; set; }
 
+        bool ValidPercents();
+
         public static void Register(IContainerRegistry cr)
         {
             cr.RegisterSingleton<IDataSetDivisionController, DataSetDivisionController>();
@@ -45,23 +47,33 @@ namespace Data.Application.Controllers
                 ea.GetEvent<HideFlyout>().Publish();
             });
 
-            DivideFileDataCommand =
-                new DelegateCommand<string>(s => DivideFileData(s), _ => CanDivide());
+            bool CanExecuteDivide()
+            {
+                bool canExec = ValidPercents();
+                if (canExec && Vm != null)
+                {
+                    return Vm.InsufficientSizeMsg == default;
+                }
 
-            DivideMemoryDataCommand = new DelegateCommand<(List<double[]> input, List<double[]> target)?>(args => DivideMemoryData(args), _ => CanDivide());
+                return canExec;
+            }
+
+            DivideFileDataCommand =
+                new DelegateCommand<string>(s => DivideFileData(s), _ => CanExecuteDivide());
+
+            DivideMemoryDataCommand = new DelegateCommand<(List<double[]> input, List<double[]> target)?>(args => DivideMemoryData(args), _ => CanExecuteDivide());
 
 
             Divide13Command = new DelegateCommand<object>(o =>
             {
-                Vm!.InsufficientSizeMsg = default;
                 var opt = new DataSetDivisionOptions()
                 {
-                    TrainingSetPercent = Vm!.TrainingSetPercent = 33,
-                    TestSetPercent = Vm!.TestSetPercent = 33,
-                    ValidationSetPercent = Vm!.ValidationSetPercent = 33,
+                    TrainingSetPercent = Vm!.TrainingSetPercent = 33.33m,
+                    TestSetPercent = Vm!.TestSetPercent = 33.33m,
+                    ValidationSetPercent = Vm!.ValidationSetPercent = 33.33m,
                 };
 
-                if(Vm!.InsufficientSizeMsg != default) return;
+                if (Vm!.InsufficientSizeMsg != default || Vm!.RatioModificationMsg != default) return;
 
                 if (o is string path)
                 {
@@ -76,7 +88,6 @@ namespace Data.Application.Controllers
 
             Divide7020Command = new DelegateCommand<object>(o =>
             {
-                Vm!.InsufficientSizeMsg = default;
                 var opt = new DataSetDivisionOptions()
                 {
                     TrainingSetPercent = Vm!.TrainingSetPercent = 70,
@@ -84,7 +95,7 @@ namespace Data.Application.Controllers
                     TestSetPercent = Vm!.TestSetPercent = 10,
                 };
 
-                if (Vm!.InsufficientSizeMsg != default) return;
+                if(Vm!.InsufficientSizeMsg != default || Vm!.RatioModificationMsg != default) return;
 
                 if (o is string path)
                 {
@@ -99,6 +110,19 @@ namespace Data.Application.Controllers
 
         protected override void VmCreated()
         {
+            if (_appState.ActiveSession?.TrainingData != null)
+            {
+                var data = _appState.ActiveSession.TrainingData;
+                decimal total = data.Sets.TrainingSet.Input.Count + (data.Sets.ValidationSet?.Input.Count ?? 0) + (data.Sets.TestSet?.Input.Count ?? 0);
+
+                var t = data.Sets.TrainingSet.Input.Count * 100.0m / total;
+                var ts = data.Sets.TestSet?.Input.Count * 100.0m / total ?? 0;
+                var v = data.Sets.ValidationSet?.Input.Count * 100.0m / total ?? 0;
+
+                Vm!.UpdateRatio(t, v, ts);
+            }
+
+
             Vm!.PropertyChanged += VmOnPropertyChanged;
         }
 
@@ -115,11 +139,22 @@ namespace Data.Application.Controllers
             }
         }
 
+        private void SetExactRatio(SupervisedTrainingData sets)
+        {
+            var total = sets.TrainingSet.Input.Count + (sets.ValidationSet?.Input.Count ?? 0) +
+                        (sets.TestSet?.Input.Count ?? 0);
+
+            var calcTrainingPerc = sets.TrainingSet.Input.Count * 100.0m / total;
+            var calcValidationPerc = (sets.ValidationSet?.Input.Count ?? 0) * 100.0m / total;
+            var calcTestPerc = (sets.TestSet?.Input.Count ?? 0) * 100.0m / total;
+            Vm!.UpdateRatio(calcTrainingPerc, calcValidationPerc, calcTestPerc);
+        }
+
         private void CalcHasSufficientSize()
         {
             DivideFileDataCommand.RaiseCanExecuteChanged();
             DivideMemoryDataCommand.RaiseCanExecuteChanged();
-            if (!CanDivide()) return;
+            if (!ValidPercents()) return;
 
             if (_appState.ActiveSession?.TrainingData != null)
             {
@@ -127,45 +162,48 @@ namespace Data.Application.Controllers
                 var total = data.Sets.TrainingSet.Input.Count + (data.Sets.ValidationSet?.Input.Count ?? 0) + (data.Sets.TestSet?.Input.Count ?? 0);
                 var left = total;
 
-                var trainingSetCount = (int)Math.Ceiling(Vm!.TrainingSetPercent * total / 100f);
+                var trainingSetCount = (int)Math.Ceiling(Vm!.TrainingSetPercent * total / 100m);
                 trainingSetCount = trainingSetCount > left ? left : trainingSetCount;
                 left -= trainingSetCount;
 
-                var validationSetCount = (int)Math.Ceiling(Vm!.ValidationSetPercent * total / 100f);
+                var validationSetCount = (int)Math.Ceiling(Vm!.ValidationSetPercent * total / 100m);
                 validationSetCount = validationSetCount > left ? left : validationSetCount;
                 left -= validationSetCount;
 
-                var testSetCount = (int)Math.Ceiling(Vm!.TestSetPercent * total / 100f);
+                var testSetCount = (int)Math.Ceiling(Vm!.TestSetPercent * total / 100m);
                 testSetCount = testSetCount > left ? left : testSetCount;
 
-                var calcTrainingPerc = (int)Math.Round(trainingSetCount * 100.0 / total);
-                var calcValidationPerc = (int)Math.Round(validationSetCount * 100.0 / total);
-                var calcTestPerc = (int)Math.Round(testSetCount * 100.0 / total);
+                var calcTrainingPerc = Math.Round(trainingSetCount * 100.0m / total, 2);
+                var calcValidationPerc = Math.Round(validationSetCount * 100.0m / total, 2);
+                var calcTestPerc = Math.Round(testSetCount * 100.0m / total, 2);
 
-
-                if (calcTestPerc + calcTrainingPerc + calcValidationPerc != 100 && (calcTestPerc != 33 && calcValidationPerc != 33 && calcTrainingPerc != 33))
+                if (trainingSetCount == 0 || (validationSetCount == 0 && Vm!.ValidationSetPercent > 0) || (testSetCount == 0 && Vm!.TestSetPercent > 0))
                 {
-                    Vm!.InsufficientSizeMsg = $"Data cannot be divided by ratio: {trainingSetCount}:{validationSetCount}:{testSetCount}";
+                    Vm!.InsufficientSizeMsg = $"Data cannot be divided by ratio: {Vm!.TrainingSetPercent}%:{Vm!.ValidationSetPercent}%:{Vm!.TestSetPercent}%";
+                    Vm!.RatioModificationMsg = default;
                 }
-                else if ((Vm!.TrainingSetPercent != calcTrainingPerc || Vm!.ValidationSetPercent != calcValidationPerc ||
-                     Vm!.TestSetPercent != calcTestPerc))
+                else if ((calcTrainingPerc != Vm!.TrainingSetPercent || calcValidationPerc != Vm!.ValidationSetPercent || calcTestPerc != Vm!.TestSetPercent))
                 {
-                    Vm!.InsufficientSizeMsg = $"Data will be divided by ratio: {calcTrainingPerc}:{calcValidationPerc}:{calcTestPerc}";
+                    Vm!.RatioModificationMsg = $"Ratio after division: {calcTrainingPerc}%:{calcValidationPerc}%:{calcTestPerc}%";
+                    Vm!.InsufficientSizeMsg = default;
                 }
                 else
                 {
                     Vm!.InsufficientSizeMsg = default;
+                    Vm!.RatioModificationMsg = default;
                 }
-
+                DivideFileDataCommand.RaiseCanExecuteChanged();
+                DivideMemoryDataCommand.RaiseCanExecuteChanged();
             }
 
         }
 
-        private bool CanDivide()
+        public bool ValidPercents()
         {
             return (Vm!.TrainingSetPercent > 0 &&
-                    Vm!.TrainingSetPercent + Vm!.ValidationSetPercent + Vm!.TestSetPercent == 100) ||
-                (Vm!.TrainingSetPercent == 33 && Vm!.ValidationSetPercent == 33 && Vm!.TestSetPercent == 33);
+                    Vm!.TrainingSetPercent + Vm!.ValidationSetPercent + Vm!.TestSetPercent == 100m) ||
+                (Vm!.TrainingSetPercent == 33.33m && Vm!.ValidationSetPercent == 33.33m && Vm!.TestSetPercent == 33.33m) || 
+                (Vm!.TrainingSetPercent % 1 == .33m && Vm!.ValidationSetPercent % 1 == .33m && Vm!.TestSetPercent % 1 == .33m);
         }
 
         private DataSetDivisionOptions ConstructDivOptions()
@@ -225,18 +263,9 @@ namespace Data.Application.Controllers
                 ValidationSet = validation
             };
 
-            var total = sets.TrainingSet.Input.Count + (sets.ValidationSet?.Input.Count ?? 0) +
-                        (sets.TestSet?.Input.Count ?? 0);
-            var calcTrainingPerc = (int) Math.Round(sets.TrainingSet.Input.Count * 100.0 / total);
-            var calcValidationPerc = (int) Math.Round((sets.ValidationSet?.Input.Count ?? 0) * 100.0 / total);
-            var calcTestPerc = (int) Math.Round((sets.TestSet?.Input.Count ?? 0) * 100.0 / total);
-
             Vm!.PropertyChanged -= VmOnPropertyChanged;
-            Vm!.TrainingSetPercent = calcTrainingPerc;
-            Vm!.ValidationSetPercent = calcValidationPerc;
-            Vm!.TestSetPercent = calcTestPerc;
-            Vm!.InsufficientSizeMsg = default;
-            Vm!.UpdateRatio();
+            SetExactRatio(sets);
+            Vm!.RatioModificationMsg = default;
             Vm!.PropertyChanged += VmOnPropertyChanged;
 
             _appState.ActiveSession!.TrainingData!.StoreNewSets(sets);
@@ -257,14 +286,10 @@ namespace Data.Application.Controllers
             _appState.ActiveSession.RaiseTrainingDataUpdated();
 
             Vm!.PropertyChanged -= VmOnPropertyChanged;
-            Vm!.TrainingSetPercent = opt.TrainingSetPercent;
-            Vm!.ValidationSetPercent = opt.ValidationSetPercent;
-            Vm!.TestSetPercent = opt.TestSetPercent;
-            Vm!.UpdateRatio();
+            SetExactRatio(sets);
+            Vm!.RatioModificationMsg = default;
             Vm!.PropertyChanged += VmOnPropertyChanged;
         }
-
-        public void Initialize() { }
 
         public DelegateCommand<string> DivideFileDataCommand { get; set; }
         public DelegateCommand<(List<double[]> input, List<double[]> target)?> DivideMemoryDataCommand { get; set; }

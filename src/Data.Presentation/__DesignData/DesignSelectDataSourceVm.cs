@@ -34,7 +34,7 @@ namespace Data.Presentation.__DesignData
 
     class DesignDataSetDivisionVm : DataSetDivisionViewModel
     {
-        public DesignDataSetDivisionVm() : base(null, null)
+        public DesignDataSetDivisionVm() : base(null)
         {
         }
     }

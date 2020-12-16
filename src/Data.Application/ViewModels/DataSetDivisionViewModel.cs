@@ -32,40 +32,32 @@ namespace Data.Application.ViewModels
 
     public class DataSetDivisionViewModel : ViewModelBase<DataSetDivisionViewModel>, IDataErrorInfo
     {
-        private int _trainingSetPercent;
-        private int _validationSetPercent;
-        private int _testSetPercent;
+        private decimal _trainingSetPercent;
+        private decimal _validationSetPercent;
+        private decimal _testSetPercent;
         private bool _modifiesFileData;
         private DivisionMethod _divisionMethod;
         private ICommand _divideCommand = null!;
         private object? _divideCommandParam;
         private string? _ratio;
         private string? _insufficientSizeMsg;
+        private string? _ratioModificationMsg;
 
 
-        public DataSetDivisionViewModel(IDataSetDivisionController service, AppState appState)
+        public DataSetDivisionViewModel(IDataSetDivisionController service)
         {
             Service = service;
             KeepAlive = false;
 
-            if (appState.ActiveSession?.TrainingData != null)
-            {
-                var data = appState.ActiveSession.TrainingData;
-                var total = data.Sets.TrainingSet.Input.Count + (data.Sets.ValidationSet?.Input.Count ?? 0) + (data.Sets.TestSet?.Input.Count ?? 0);
-
-                _trainingSetPercent = (int)Math.Round(data.Sets.TrainingSet.Input.Count * 100.0 / total);
-                _testSetPercent = (int)Math.Round(data.Sets.TestSet?.Input.Count * 100.0 / total ?? 0);
-                _validationSetPercent = (int)Math.Round(data.Sets.ValidationSet?.Input.Count * 100.0 / total ?? 0);
-
-                UpdateRatio();
-            }
-
             service.Initialize(this);
         }
 
-        public void UpdateRatio()
+        public void UpdateRatio(decimal training, decimal validation, decimal test)
         {
-            Ratio = $"{_trainingSetPercent}%:{_validationSetPercent}%:{_testSetPercent}%";
+            var t = (training % 1 == 0 ? training.ToString("F0") : Math.Round(training, 2).ToString());
+            var v = (validation % 1 == 0 ? validation.ToString("F0") : Math.Round(validation, 2).ToString());
+            var ts = (test % 1 == 0 ? test.ToString("F0") : Math.Round(test, 2).ToString());
+            Ratio = $"{t}%:{v}%:{ts}%";
         }
 
         private void RaiseCmdCanExecChanged()
@@ -94,7 +86,13 @@ namespace Data.Application.ViewModels
             set => SetProperty(ref _insufficientSizeMsg, value);
         }
 
-        public int TrainingSetPercent
+        public string? RatioModificationMsg
+        {
+            get => _ratioModificationMsg;
+            set => SetProperty(ref _ratioModificationMsg, value);
+        }
+
+        public decimal TrainingSetPercent
         {
             get => _trainingSetPercent;
             set
@@ -106,7 +104,7 @@ namespace Data.Application.ViewModels
             }
         }
 
-        public int ValidationSetPercent
+        public decimal ValidationSetPercent
         {
             get => _validationSetPercent;
             set
@@ -118,7 +116,7 @@ namespace Data.Application.ViewModels
             }
         }
 
-        public int TestSetPercent
+        public decimal TestSetPercent
         {
             get => _testSetPercent;
             set
@@ -172,20 +170,18 @@ namespace Data.Application.ViewModels
         {
             get
             {
+                bool IsDefaultPercents()
+                {
+                    return TrainingSetPercent == 0 && ValidationSetPercent == 0 && TestSetPercent == 0;
+                }
                 switch (columnName)
                 {
                     case nameof(TrainingSetPercent):
-                        if (TrainingSetPercent == 0) return "Cannot set to 0";
-                        return TrainingSetPercent + ValidationSetPercent + TestSetPercent == 100 ||
-                               (TrainingSetPercent == 33 && ValidationSetPercent == 33 && TestSetPercent == 33)
-                            ? null
-                            : "Invalid percent value";
+                        if (TrainingSetPercent == 0 && (ValidationSetPercent > 0 || TestSetPercent > 0)) return "Cannot set to 0";
+                        return Service.ValidPercents() || IsDefaultPercents() ? null : "Invalid percent value";
                     case nameof(ValidationSetPercent):
                     case nameof(TestSetPercent):
-                        return TrainingSetPercent + ValidationSetPercent + TestSetPercent == 100 ||
-                               (TrainingSetPercent == 33 && ValidationSetPercent == 33 && TestSetPercent == 33)
-                            ? null
-                            : "Invalid percent value";
+                        return Service.ValidPercents() || IsDefaultPercents() ? null : "Invalid percent value";
                 }
 
                 return null;

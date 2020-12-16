@@ -25,8 +25,7 @@ namespace Data.Application.Tests
             _mocker.UseTestEa();
             _mocker.UseTestRm();
             _appState = _mocker.UseImpl<AppState>();
-            _service = _mocker.UseImpl<IDataSetDivisionController, DataSetDivisionController>();
-            _vm = _mocker.UseVm<DataSetDivisionViewModel>();
+
         }
 
         [Fact]
@@ -35,7 +34,8 @@ namespace Data.Application.Tests
             //arrange
             var session = _appState.CreateSession();
             session.TrainingData = TrainingDataMocks.ValidData2;
-
+            _service = _mocker.UseImpl<IDataSetDivisionController, DataSetDivisionController>();
+            _vm = _mocker.UseVm<DataSetDivisionViewModel>();
             _vm.TrainingSetPercent = 50;
             _vm.TestSetPercent = _vm.ValidationSetPercent = 25;
 
@@ -63,7 +63,8 @@ namespace Data.Application.Tests
             var input = new List<double[]>(new[] { new[] { 0d }, new[] { 1d }, new[] { 2d }, new[] { 3d } });
             var target = new List<double[]>(new[] { new[] { 0d }, new[] { 1d }, new[] { 2d }, new[] { 3d } });
             var ctx = new NavigationContext(Mock.Of<IRegionNavigationService>(service => service.Region == new Region()),new Uri("ViewTEST", UriKind.Relative), new InMemoryDataSetDivisionNavParams(input, target));
-            
+            _service = _mocker.UseImpl<IDataSetDivisionController, DataSetDivisionController>();
+            _vm = _mocker.UseVm<DataSetDivisionViewModel>();
             //act
             _vm.OnNavigatedTo(ctx);
 
@@ -88,15 +89,19 @@ namespace Data.Application.Tests
         [Fact]
         public void DataSetDivisionVm_when_invalid_percent_params_cmd_cannot_exec()
         {
+            _service = _mocker.UseImpl<IDataSetDivisionController, DataSetDivisionController>();
+            _vm = _mocker.UseVm<DataSetDivisionViewModel>();
+            _service.DivideMemoryDataCommand.CanExecute(null).Should().BeFalse();
+            _service.DivideFileDataCommand.CanExecute(null).Should().BeFalse();
+            _vm[nameof(DataSetDivisionViewModel.TrainingSetPercent)].Should().BeNullOrEmpty();
+
+            _vm.TestSetPercent = _vm.ValidationSetPercent = 25;
+            _vm[nameof(DataSetDivisionViewModel.TrainingSetPercent)].Should().NotBeNullOrEmpty();
             _service.DivideMemoryDataCommand.CanExecute(null).Should().BeFalse();
             _service.DivideFileDataCommand.CanExecute(null).Should().BeFalse();
 
-            _vm[nameof(DataSetDivisionViewModel.TrainingSetPercent)].Should().NotBeNullOrEmpty();
-
             _vm.TrainingSetPercent = 50;
-            _vm.TestSetPercent = _vm.ValidationSetPercent = 25;
             _vm[nameof(DataSetDivisionViewModel.TrainingSetPercent)].Should().BeNullOrEmpty();
-
             _service.DivideMemoryDataCommand.CanExecute(null).Should().BeTrue();
             _service.DivideFileDataCommand.CanExecute(null).Should().BeTrue();
         }
@@ -105,24 +110,16 @@ namespace Data.Application.Tests
         [Fact]
         public void DataSetDivisionVm_sets_data_set_percents_based_on_app_state()
         {
-            var appState = new AppState();
-            var session = appState.CreateSession();
+            var session = _appState.CreateSession();
             session.TrainingData = TrainingDataMocks.ValidData1;
+            _service = _mocker.UseImpl<IDataSetDivisionController, DataSetDivisionController>();
+            _vm = _mocker.UseVm<DataSetDivisionViewModel>();
 
-            var vm = new DataSetDivisionViewModel(_service, appState);
+            _vm.TrainingSetPercent.Should().Be(0);
+            _vm.ValidationSetPercent.Should().Be(0);
+            _vm.TestSetPercent.Should().Be(0);
 
-            vm.TrainingSetPercent.Should().Be(100);
-            vm.ValidationSetPercent.Should().Be(0);
-            vm.TestSetPercent.Should().Be(0);
-
-            vm.Ratio.Should().Be("100%:0%:0%");
-
-            session.TrainingData = TrainingDataMocks.ValidData3;
-
-            vm = new DataSetDivisionViewModel(_service, appState);
-            vm.TrainingSetPercent.Should().Be(50);
-            vm.ValidationSetPercent.Should().Be(25);
-            vm.TestSetPercent.Should().Be(25);
+            _vm.Ratio.Should().Be("100%:0%:0%");
         }
     }
 }
