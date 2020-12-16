@@ -1,4 +1,4 @@
-﻿using Common.Domain;
+using Common.Domain;
 using Common.Framework;
 using Data.Application.ViewModels.DataSourcePreview;
 using NNLib.Data;
@@ -91,6 +91,13 @@ namespace Data.Application.ViewModels
             
             _helper.OnTrainingDataPropertyChanged(data =>
             {
+                if (data.Sets.ValidationSet == null && _previewDataSetType == DataSetType.Validation ||
+                    data.Sets.TestSet == null && _previewDataSetType == DataSetType.Test)
+                {
+                    _previewDataSetType = DataSetType.Training;
+                    RaisePropertyChanged(nameof(PreviewDataSetType));
+                }
+
                 DataSetTypes = data.SetTypes;
                 DataSetInstanceAccessor = new DataSetInstanceAccessor(_appState, DataSetType.Training);
                 DataSetPreviewAccessor = new DataSetPreviewAccessor(_appState);

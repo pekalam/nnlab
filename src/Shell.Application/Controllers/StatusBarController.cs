@@ -27,13 +27,15 @@ namespace Shell.Application.Services
 
 namespace Shell.Application.Controllers
 {
-    internal class StatusBarController : ControllerBase<StatusBarViewModel>,IStatusBarService
+    internal class StatusBarController : ControllerBase<StatusBarViewModel>, IStatusBarService
     {
         private readonly AppState _appState;
         private readonly IDialogService _dialogService;
+        private readonly IEventAggregator _ea;
 
         public StatusBarController(IEventAggregator ea, AppState appState, IDialogService dialogService)
         {
+            _ea = ea;
             _appState = appState;
             _dialogService = dialogService;
             ea.GetEvent<ShowErrorNotification>().Subscribe(OnShowErrorNotification);
@@ -43,8 +45,10 @@ namespace Shell.Application.Controllers
             ea.GetEvent<TrainingSessionStopped>().Subscribe(TrainingStopped, ThreadOption.UIThread);
             ea.GetEvent<TrainingSessionPaused>().Subscribe(TrainingPaused, ThreadOption.UIThread);
 
-            AddSessionCommand = new DelegateCommand(AddSession, () => StatusBarViewModel.Instance!.CanModifyActiveSession);
-            DuplicateSessionCommand = new DelegateCommand(DuplicateSession, () => StatusBarViewModel.Instance!.CanModifyActiveSession);
+            AddSessionCommand =
+                new DelegateCommand(AddSession, () => StatusBarViewModel.Instance!.CanModifyActiveSession);
+            DuplicateSessionCommand = new DelegateCommand(DuplicateSession,
+                () => StatusBarViewModel.Instance!.CanModifyActiveSession);
         }
 
         public DelegateCommand AddSessionCommand { get; set; }
@@ -56,6 +60,7 @@ namespace Shell.Application.Controllers
             {
                 if (result.Result == ButtonResult.OK)
                 {
+                    _ea.GetEvent<HideFlyout>().Publish();
                     _appState.DuplicateActiveSession(result.Parameters.GetValue<DuplicateOptions>("options"));
                 }
             });
@@ -67,9 +72,10 @@ namespace Shell.Application.Controllers
             {
                 if (result.Result == ButtonResult.OK)
                 {
-                    var session=_appState.CreateSession(result.Parameters.GetValue<string>("Name"));
+                    var session = _appState.CreateSession(result.Parameters.GetValue<string>("Name"));
                     if (result.Parameters.GetValue<bool>("Switch"))
                     {
+                        _ea.GetEvent<HideFlyout>().Publish();
                         _appState.ActiveSession = session;
                     }
                 }
@@ -109,7 +115,6 @@ namespace Shell.Application.Controllers
 
         private void OnShowErrorNotification(ErrorNotificationArgs args)
         {
-
             Vm!.ErrorNotificationVisibility = Visibility.Visible;
             Vm!.ErrorMessage = args.Message;
         }

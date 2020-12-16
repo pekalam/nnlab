@@ -30,34 +30,39 @@ namespace Data.Domain.Services
             using var csv = new CsvReader(rdr, CultureInfo.InvariantCulture);
 
 
-            csv.Read();
-            csv.ReadHeader();
-
-
-            foreach (var str in csv.Context.HeaderRecord)
+            try
             {
-                if (double.TryParse(str, NumberStyles.Float, CultureInfo.InvariantCulture, out _))
-                {
-                    return (false, "Numeric value in csv header", 0, 0);
-                }
-            }
+                csv.Read();
+                csv.ReadHeader();
 
 
-            int lines = 1;
-            while (csv.Read())
-            {
-                for (int i = 0; i < csv.Context.HeaderRecord.Length; i++)
+                foreach (var str in csv.Context.HeaderRecord)
                 {
-                    if (!double.TryParse(csv[i], NumberStyles.Float, CultureInfo.InvariantCulture, out _))
+                    if (double.TryParse(str, NumberStyles.Float, CultureInfo.InvariantCulture, out _))
                     {
-                        return (false, $"Invalid field value at line: {lines} column: {i + 1}", 0, 0);
+                        return (false, "Numeric value in csv header", 0, 0);
                     }
                 }
-                lines++;
+
+
+                int lines = 1;
+                while (csv.Read())
+                {
+                    for (int i = 0; i < csv.Context.HeaderRecord.Length; i++)
+                    {
+                        if (!double.TryParse(csv[i], NumberStyles.Float, CultureInfo.InvariantCulture, out _))
+                        {
+                            return (false, $"Invalid field value at line: {lines} column: {i + 1}", 0, 0);
+                        }
+                    }
+                    lines++;
+                }
+                return (true, null, lines - 1, csv.Context.HeaderRecord.Length);
             }
-
-
-            return (true, null, lines-1, csv.Context.HeaderRecord.Length);
+            catch (System.Exception)
+            {
+                return (false, "Invalid csv file", 0, 0);
+            }
         }
 
         public string[]? ReadHeaders(string path)
