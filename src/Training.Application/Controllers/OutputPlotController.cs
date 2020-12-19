@@ -162,10 +162,18 @@ namespace Training.Application.Controllers
             {
                 _cts!.Cancel();
                 _plotSelector.OutputPlot?.OnSessionStopped(s);
+                if (_epochEndConsumer!.ConsumerType == PlotEpochEndConsumerType.Buffering)
+                {
+                    System.Windows.Application.Current?.Dispatcher.Invoke(InvalidatePlot, DispatcherPriority.Background);
+                }
             }, s =>
             {
                 _cts!.Cancel();
                 _plotSelector.OutputPlot?.OnSessionPaused(s);
+                if (_epochEndConsumer!.ConsumerType == PlotEpochEndConsumerType.Buffering)
+                {
+                    System.Windows.Application.Current?.Dispatcher.Invoke(InvalidatePlot, DispatcherPriority.Background);
+                }
             }, new PlotEpochEndConsumerOptions
             {
                 DefaultConsumerType = PlotEpochEndConsumerType.Buffering,
