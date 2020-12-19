@@ -252,7 +252,6 @@ namespace Training.Application.Plots
                 {
                     _onlineSub = _online
                         .Buffer(timeSpan: TimeSpan.FromMilliseconds(_options.OnlineBufferTimeSpan), count: _options.OnlineBufferSize)
-                        .DelaySubscription(TimeSpan.FromMilliseconds(_options.OnlineBufferTimeSpan))
                         .SubscribeOn(Scheduler.Default)
                         .Subscribe(list =>
                         {
