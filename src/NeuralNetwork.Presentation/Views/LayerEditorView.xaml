@@ -71,10 +71,16 @@
                         <Style TargetType="ComboBoxItem" BasedOn="{StaticResource MahApps.Styles.ComboBoxItem}">
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding}" Value="{x:Static domain11:ParamsInitMethod.SqrMUniform}">
-                                    <Setter Property="Control.ToolTip" Value="Uniform distribution. Standard deviation = square of layer inputs, mean = 0"/>
+                                    <Setter Property="Control.ToolTip" Value="Sets weights using values from uniform distribution with standard deviation = sqrt(inputsCount)."/>
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding}" Value="{x:Static domain11:ParamsInitMethod.SmallNumbers}">
-                                    <Setter Property="Control.ToolTip" Value="Normal distribution. Standard deviation = 1, mean = 0"/>
+                                    <Setter Property="Control.ToolTip" Value="Uniform distribution. Values range from -1/sqrt(inputsCount) to 1/sqrt(inputsCount). Bias = 0"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding}" Value="{x:Static domain11:ParamsInitMethod.SmallStdDev}">
+                                    <Setter Property="Control.ToolTip" Value="Normal distribution with standard deviation = 0.01 and mean = 0. Bias = 0"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding}" Value="{x:Static domain11:ParamsInitMethod.NormalDist}">
+                                    <Setter Property="Control.ToolTip" Value="Normal distribution."/>
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
