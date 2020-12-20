@@ -12,6 +12,7 @@ using SharedUI.BasicPlot;
 using System.Collections.Generic;
 using System.Data;
 using System.Threading;
+using System.Windows.Threading;
 using OxyPlot.Annotations;
 using OxyPlot.Legends;
 using Training.Application.Controllers;
@@ -21,7 +22,8 @@ namespace Training.Application.ViewModels
 {
     public enum OutputPlotType
     {
-        Approximation, VecNum,
+        Approximation,
+        VecNum,
     }
 
     public class OutputPlotViewModel : ViewModelBase<OutputPlotViewModel>
@@ -53,8 +55,6 @@ namespace Training.Application.ViewModels
     }
 
 
-
-
     interface IOutputPlot
     {
         void OnEpochEnd(IList<EpochEndArgs> args, OutputPlotViewModel vm, CancellationToken ct);
@@ -77,50 +77,54 @@ namespace Training.Application.ViewModels
             PlotPoints(vm, _session!.TrainingData!, _session.Network!, DataSetType.Training);
         }
 
-        private void PlotPoints(OutputPlotViewModel vm, TrainingData trainingData, MLPNetwork network, DataSetType setType)
+        private void PlotPoints(OutputPlotViewModel vm, TrainingData trainingData, MLPNetwork network,
+            DataSetType setType)
         {
-            _output.Points.Clear();
-            _annotations.Clear();
-
-            var zeroLine = new LineAnnotation();
-            zeroLine.Color = OxyColors.Black;
-            zeroLine.MinimumY = 0;
-            zeroLine.MinimumX = 0;
-            zeroLine.MaximumY = 0;
-            zeroLine.MaximumX = vm.PlotModel.Axes[0].AbsoluteMaximum;
-            zeroLine.Y = 0;
-            zeroLine.LineStyle = LineStyle.Solid;
-            zeroLine.Type = LineAnnotationType.Horizontal;
-            vm.PlotModel.Annotations.Add(zeroLine);
-
-
-            var input = trainingData.GetSet(setType)!.Input;
-            var target = trainingData.GetSet(setType)!.Target;
-
-
-            var dataPoints = new ScatterPoint[input.Count];
-            for (int i = 0; i < input.Count; i++)
+            lock (vm.PlotModel.PlotView.ActualModel.SyncRoot)
             {
-                network.CalculateOutput(input[i]);
+                _output.Points.Clear();
+                _annotations.Clear();
 
-                dataPoints[i] = new ScatterPoint(i, target[i][0, 0] - network.Output![0, 0]);
+                var zeroLine = new LineAnnotation();
+                zeroLine.Color = OxyColors.Black;
+                zeroLine.MinimumY = 0;
+                zeroLine.MinimumX = 0;
+                zeroLine.MaximumY = 0;
+                zeroLine.MaximumX = vm.PlotModel.Axes[0].AbsoluteMaximum;
+                zeroLine.Y = 0;
+                zeroLine.LineStyle = LineStyle.Solid;
+                zeroLine.Type = LineAnnotationType.Horizontal;
+                vm.PlotModel.Annotations.Add(zeroLine);
+                zeroLine.EnsureAxes();
 
-                var annotation = new LineAnnotation();
-                annotation.Color = OxyColors.Red;
-                annotation.MinimumY = 0;
-                annotation.MaximumY = dataPoints[i].Y;
-                annotation.X = dataPoints[i].X;
-                annotation.LineStyle = LineStyle.Solid;
-                annotation.Type = LineAnnotationType.Vertical;
-                _annotations.Add(annotation);
+                var input = trainingData.GetSet(setType)!.Input;
+                var target = trainingData.GetSet(setType)!.Target;
+
+
+                var dataPoints = new ScatterPoint[input.Count];
+                for (int i = 0; i < input.Count; i++)
+                {
+                    network.CalculateOutput(input[i]);
+
+                    dataPoints[i] = new ScatterPoint(i, target[i][0, 0] - network.Output![0, 0]);
+
+                    var annotation = new LineAnnotation();
+                    annotation.Color = OxyColors.Red;
+                    annotation.MinimumY = 0;
+                    annotation.MaximumY = dataPoints[i].Y;
+                    annotation.X = dataPoints[i].X;
+                    annotation.LineStyle = LineStyle.Solid;
+                    annotation.Type = LineAnnotationType.Vertical;
+                    _annotations.Add(annotation);
+                    annotation.EnsureAxes();
+                }
+
+                _output.Points.AddRange(dataPoints);
             }
-
-            _output.Points.AddRange(dataPoints);
         }
 
         public void OnSessionStarting(OutputPlotViewModel vm, TrainingSession session, CancellationToken ct)
         {
-
         }
 
         public void OnSessionStopped(TrainingSession session)
@@ -134,7 +138,10 @@ namespace Training.Application.ViewModels
         public void GeneratePlot(DataSetType set, TrainingData trainingData, MLPNetwork net, OutputPlotViewModel vm)
         {
             InitPlot(vm, trainingData);
-            PlotPoints(vm, trainingData,net,set);
+            System.Windows.Application.Current?.Dispatcher.Invoke(() =>
+            {
+                PlotPoints(vm, trainingData, net, set);
+            }, DispatcherPriority.Background);
         }
 
         public void CreateForSession(TrainingSession session, OutputPlotViewModel vm)
@@ -176,10 +183,11 @@ namespace Training.Application.ViewModels
                 MarkerSize = 3,
                 MarkerFill = OxyColor.FromRgb(0, 0, 255),
             };
-
+            
             vm.PlotModel.Series.Add(scatter);
             _output = scatter;
             _annotations = vm.PlotModel.Annotations;
+            vm.PlotModel.InvalidatePlot(false);
         }
     }
 }

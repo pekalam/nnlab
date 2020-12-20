@@ -210,8 +210,7 @@ namespace Training.Application.Controllers
                         _plotSelector.OutputPlot!.GeneratePlot(navParams.Set, navParams.Data, navParams.Network, Vm!);
                     }, navParams.Cts.Token);
 
-                System.Windows.Application.Current.Dispatcher.Invoke(() => Vm!.PlotModel.InvalidatePlot(true),
-                    DispatcherPriority.Background, navParams.Cts.Token);
+                Vm!.PlotModel.InvalidatePlot(true);
             }
         }
 

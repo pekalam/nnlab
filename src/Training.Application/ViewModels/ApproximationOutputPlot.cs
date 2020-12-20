@@ -103,7 +103,6 @@ namespace Training.Application.ViewModels
             {
                 scatter.Points.Add(new ScatterPoint(input[i][0, 0], target[i][0, 0]));
             }
-
             vm.PlotModel.Series.Add(scatter);
             vm.PlotModel.Series.Add(_output);
         }
