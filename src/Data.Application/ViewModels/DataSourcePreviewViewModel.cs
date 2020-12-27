@@ -4,9 +4,15 @@ using Data.Application.ViewModels.DataSourcePreview;
 using NNLib.Data;
 using Prism.Commands;
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Data;
+using System.Linq;
 using System.Windows;
 using System.Windows.Input;
+using MahApps.Metro.Automation.Peers;
+using MathNet.Numerics.LinearAlgebra;
+using Unity;
 
 namespace Data.Application.ViewModels
 {
@@ -16,6 +22,14 @@ namespace Data.Application.ViewModels
         public string? Value { get; set; }
     }
 
+    public class FeatureStatistics
+    {
+        public string Variable { get; set; } = null!;
+        public double Mean { get; set; }
+        public double Max { get; set; }
+        public double Min { get; set; }
+    }
+
     public class TrainingDataStats
     {
         private readonly TrainingData _trainingData;
@@ -23,6 +37,14 @@ namespace Data.Application.ViewModels
         public TrainingDataStats(TrainingData trainingData)
         {
             _trainingData = trainingData;
+        }
+
+        private static IEnumerable<Matrix<double>> Enumerate(IEnumerator<Matrix<double>> mat)
+        {
+            while (mat.MoveNext())
+            {
+                yield return mat.Current;
+            }
         }
 
         public int GetRowsForSet(DataSetType setType)
@@ -45,9 +67,63 @@ namespace Data.Application.ViewModels
             throw new ArgumentException();
         }
 
-        public int GetColumnsForSet(DataSetType setType)
+        public int GetColumnsForSet()
         {
             return _trainingData.Variables.Names.Length;
+        }
+
+        public int GetTotalRows()
+        {
+            return _trainingData.Sets.TrainingSet.Input.Count + (_trainingData.Sets.ValidationSet?.Input.Count ?? 0) +
+                   (_trainingData.Sets.TestSet?.Input.Count ?? 0);
+        }
+
+        public FeatureStatistics[] GetFeatureStatistics()
+        {
+            var stats = _trainingData.Variables.Indexes.InputVarIndexes
+                .Union(_trainingData.Variables.Indexes.TargetVarIndexes)
+                .SelectMany(v => Enumerable.Range(0, 3).Select(i =>
+            {
+                SupervisedTrainingSamples? GetSet() => i switch
+                {
+                    0 => _trainingData.Sets.TrainingSet,
+                    1 => _trainingData.Sets.ValidationSet ?? null,
+                    2 => _trainingData.Sets.TestSet ?? null,
+                };
+
+                string GetSetName() => i switch
+                {
+                    0 => "training",
+                    1 => "validation",
+                    2 => "test",
+                };
+
+                IVectorSet GetVectorSet()
+                {
+                    var set = GetSet();
+                    return _trainingData.Variables.Indexes.InputVarIndexes.Contains(v) ? set.Input : set.Target;
+                }
+
+                int GetIndex()
+                {
+                    if (_trainingData.Variables.Indexes.InputVarIndexes.Contains(v))
+                    {
+                        return _trainingData.Variables.Indexes.InputVarIndexes.IndexOf(v);
+                    }
+                    return _trainingData.Variables.Indexes.TargetVarIndexes.IndexOf(v);
+                }
+
+                return GetSet() != null
+                    ? new FeatureStatistics()
+                    {
+                        Variable = $"{_trainingData.Variables.Names[v]} ({GetSetName()})",
+                        Max = Enumerate(GetVectorSet().GetEnumerator()).Max(mat => mat.At(GetIndex(),0)),
+                        Min = Enumerate(GetVectorSet().GetEnumerator()).Min(mat => mat.At(GetIndex(),0)),
+                        Mean = Enumerate(GetVectorSet().GetEnumerator()).Average(mat => mat.At(GetIndex(),0)),
+                    }
+                    : null;
+            })).Where(s => s != null);
+            return stats.ToArray()!;
         }
     }
 
@@ -68,12 +144,9 @@ namespace Data.Application.ViewModels
         private TrainingDataStats? _trainingDataStats;
         private bool _showLoading;
         private int _totalInstances = 1;
-        private Visibility _previewErrorVisibility = Visibility.Collapsed;
         private bool _instancePreviewLoaded;
         private bool _previewLoaded;
 
-        //TODO
-        public ICommand PreviewColumnClicked { get; } = new DelegateCommand(() => {});
         public ICommand FirstItem => new DelegateCommand(() => InstanceNumber = 1);
         public ICommand LastItem => new DelegateCommand(() => InstanceNumber = _dataSetInstanceAccessor?.Count ?? throw new NullReferenceException("Null data instance accessor"));
 
@@ -81,7 +154,12 @@ namespace Data.Application.ViewModels
 
         private readonly AppState _appState;
         private readonly AppStateHelper _helper;
+        private FeatureStatistics[] _statistics;
+        private HeaderValueModel? _stat3;
 
+        public DataSourcePreviewViewModel(){}
+
+        [InjectionConstructor]
         public DataSourcePreviewViewModel(AppState appState)
         {
             _appState = appState;
@@ -178,24 +256,6 @@ namespace Data.Application.ViewModels
             set => SetProperty(ref _showLoading, value);
         }
 
-        public Visibility PreviewErrorVisibility
-        {
-            get => _previewErrorVisibility;
-            set => SetProperty(ref _previewErrorVisibility, value);
-        }
-
-        public void ShowPreviewError(bool show)
-        {
-            if (show)
-            {
-                PreviewErrorVisibility = Visibility.Visible;
-            }
-            else
-            {
-                PreviewErrorVisibility = Visibility.Collapsed;
-            }
-        }
-
         public DataSetType[] DataSetTypes
         {
             get => _dataSetTypes;
@@ -240,8 +300,14 @@ namespace Data.Application.ViewModels
             Stat2 = new HeaderValueModel()
             {
                 Header = "Columns",
-                Value = _trainingDataStats.GetColumnsForSet(_previewDataSetType).ToString(),
+                Value = _trainingDataStats.GetColumnsForSet().ToString(),
             };
+            Stat3 = new HeaderValueModel()
+            {
+                Header = "Total rows",
+                Value = _trainingDataStats.GetTotalRows().ToString(),
+            };
+            Statistics = _trainingDataStats.GetFeatureStatistics();
         }
 
         public DataTable? FileDataPreview
@@ -282,6 +348,18 @@ namespace Data.Application.ViewModels
         {
             get => _stat2;
             set => SetProperty(ref _stat2, value);
+        }
+
+        public HeaderValueModel? Stat3
+        {
+            get => _stat3;
+            set => SetProperty(ref _stat3, value);
+        }
+
+        public FeatureStatistics[] Statistics
+        {
+            get => _statistics;
+            set => SetProperty(ref _statistics, value);
         }
     }
 }

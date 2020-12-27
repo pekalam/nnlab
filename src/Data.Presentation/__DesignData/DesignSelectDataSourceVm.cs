@@ -1,5 +1,6 @@
 ﻿#pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
 #pragma warning disable CS8625
+using Common.Domain;
 using Data.Application.ViewModels;
 
 
@@ -68,5 +69,12 @@ namespace Data.Presentation.__DesignData
     class DesignStatisticsVm : StatisticsViewModel
     {
 
+    }
+
+    class DesignDataSourcePreviewViewModel : DataSourcePreviewViewModel
+    {
+        public DesignDataSourcePreviewViewModel() : base()
+        {
+        }
     }
 }

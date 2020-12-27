@@ -3,23 +3,32 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:prism="http://prismlibrary.com/"
              xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
-             xmlns:converters="clr-namespace:Common.Presentation.Converters;assembly=Common.Presentation">
+             xmlns:dd="clr-namespace:Data.Presentation.__DesignData"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             xmlns:converters="clr-namespace:Common.Presentation.Converters;assembly=Common.Presentation"
+             xmlns:viewModels="clr-namespace:Data.Application.ViewModels;assembly=Data.Application"
+             d:DataContext="{d:DesignInstance dd:DesignDataSourcePreviewViewModel, IsDesignTimeCreatable=True}"
+             d:DesignWidth="1200" d:DesignHeight="800">
     <UserControl.Resources>
-        <converters:BooleanNegToVisibilityConverter x:Key="BoolNegToVis"/>
-        <Style x:Key="TargetHeader" BasedOn="{StaticResource MahApps.Styles.DataGridColumnHeader}" TargetType="DataGridColumnHeader">
-            <Setter Property="Background" Value="#0078D7"></Setter>
-            <Setter Property="Foreground" Value="White"></Setter>
+        <converters:BooleanNegToVisibilityConverter x:Key="BoolNegToVis" />
+        <Style x:Key="TargetHeader" BasedOn="{StaticResource MahApps.Styles.DataGridColumnHeader}"
+               TargetType="DataGridColumnHeader">
+            <Setter Property="Background" Value="#0078D7" />
+            <Setter Property="Foreground" Value="White" />
         </Style>
     </UserControl.Resources>
     <Grid Visibility="{Binding ShowLoading, Converter={StaticResource BoolNegToVis}}">
         <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-            <RowDefinition Height="50" />
-            <RowDefinition Height="*" />
+            <RowDefinition />
+            <RowDefinition Height="Auto" MinHeight="50" />
+            <RowDefinition />
+            <RowDefinition />
         </Grid.RowDefinitions>
 
 
-        <Grid>
+        <Grid d:DesignHeight="400">
             <Grid.RowDefinitions>
                 <RowDefinition Height="50" />
                 <RowDefinition Height="Auto" />
@@ -27,10 +36,10 @@
             </Grid.RowDefinitions>
             <TextBlock FontSize="24" FontWeight="Normal" Margin="0,0,0,20">Preview</TextBlock>
             <StackPanel Grid.Row="1">
-                <TextBlock Text="Data set" Margin="0,0,0,6"/>
+                <TextBlock Text="Data set" Margin="0,0,0,6" />
                 <ComboBox MinWidth="180" HorizontalAlignment="Left" Margin="0,0,0,10"
-                                  SelectedValue="{Binding PreviewDataSetType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                  ItemsSource="{Binding DataSetTypes}"/>
+                          SelectedValue="{Binding PreviewDataSetType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                          ItemsSource="{Binding DataSetTypes}" />
             </StackPanel>
             <DataGrid Grid.Row="2" x:Name="PreviewGrid" Margin="5"
                       AutoGenerateColumns="True"
@@ -53,77 +62,105 @@
                 </DataGrid.Columns>
                 <DataGrid.Style>
                     <Style BasedOn="{StaticResource MahApps.Styles.DataGrid}"
-                                   TargetType="{x:Type DataGrid}">
+                           TargetType="{x:Type DataGrid}">
                         <Setter Property="AlternatingRowBackground"
-                                        Value="{DynamicResource MahApps.Brushes.Gray10}" />
+                                Value="{DynamicResource MahApps.Brushes.Gray10}" />
                     </Style>
                 </DataGrid.Style>
             </DataGrid>
         </Grid>
 
-        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,10,0,0">
-            <StackPanel Margin="0,0,15,0">
-                <TextBlock Text="{Binding Path=Stat1.Header}" />
-                <TextBlock Name="Rows" Text="{Binding Path=Stat1.Value}" />
-            </StackPanel>
-            <StackPanel>
-                <TextBlock Text="{Binding Path=Stat2.Header}" />
-                <TextBlock Name="Columns" Text="{Binding Path=Stat2.Value}" />
-            </StackPanel>
+        <StackPanel Grid.Row="1" Margin="0,12,0,0">
+            <WrapPanel>
+                <StackPanel Margin="0,0,18,0">
+                    <TextBlock Text="{Binding Path=Stat1.Header}" />
+                    <TextBlock Name="Rows" Text="{Binding Path=Stat1.Value}" />
+                </StackPanel>
+                <StackPanel Margin="0,0,18,0">
+                    <TextBlock Text="{Binding Path=Stat2.Header}" />
+                    <TextBlock Name="Columns" Text="{Binding Path=Stat2.Value}" />
+                </StackPanel>
+                <StackPanel>
+                    <TextBlock Text="{Binding Path=Stat3.Header}" />
+                    <TextBlock Name="Total" Text="{Binding Path=Stat3.Value}" />
+                </StackPanel>
+            </WrapPanel>
         </StackPanel>
 
-        <StackPanel x:Name="InstancePreviewContainer" Grid.Row="2" Margin="0,20,0,0">
+        <StackPanel x:Name="InstancePreviewContainer" Grid.Row="2" Margin="0,20,0,0" d:DesignHeight="600">
             <StackPanel.Style>
                 <Style TargetType="StackPanel">
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding DataSourceInstance}" Value="{x:Null}">
-                            <Setter Property="Visibility" Value="Hidden"/>
+                            <Setter Property="Visibility" Value="Hidden" />
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
             </StackPanel.Style>
             <TextBlock FontSize="24" FontWeight="Normal" Margin="0,0,0,20">Instances</TextBlock>
-            <TextBlock Text="Data set" Margin="0,0,0,6"/>
+            <TextBlock Text="Data set" Margin="0,0,0,6" />
             <ComboBox Name="DataSetName" MinWidth="180" HorizontalAlignment="Left" Margin="0,0,0,10"
-                              SelectedValue="{Binding InstanceDataSetType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                              ItemsSource="{Binding DataSetTypes}"/>
+                      SelectedValue="{Binding InstanceDataSetType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                      ItemsSource="{Binding DataSetTypes}" />
             <TextBlock Text="Instance number" Margin="0,0,0,6" />
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
                 <mah:NumericUpDown Name="InstanceNumberUpDown" Minimum="1"
-                                                Maximum="{Binding TotalInstances}" HorizontalAlignment="Left"
-                                                MinWidth="120"
-                                                Value="{Binding InstanceNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                   Maximum="{Binding TotalInstances}" HorizontalAlignment="Left"
+                                   MinWidth="120"
+                                   Value="{Binding InstanceNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 <Button Name="FirstItemBtn" Width="80" Content="First" Margin="20,0,0,0"
-                                HorizontalAlignment="Right" Command="{Binding FirstItem}" />
+                        HorizontalAlignment="Right" Command="{Binding FirstItem}" />
                 <Button Name="LastItemBtn" Width="80" Content="Last" Margin="20,0,0,0"
-                                HorizontalAlignment="Right" Command="{Binding LastItem}" />
+                        HorizontalAlignment="Right" Command="{Binding LastItem}" />
 
 
             </StackPanel>
-            <Rectangle x:Name="Ref2" Fill="Transparent" Height="0"/>
+            <Rectangle x:Name="Ref2" Fill="Transparent" Height="0" />
             <DataGrid Name="InstancePreviewGrid" Margin="5,15,5,5"
-                              AutoGenerateColumns="True"
-                              HeadersVisibility="All"
-                              ItemsSource="{Binding Path=DataSourceInstance.DefaultView}"
-                              RowHeaderWidth="0"
-                              IsReadOnly="True"
-                              SelectionUnit="Cell"
-                              CanUserAddRows="False"
-                              CanUserDeleteRows="False"
-                              CanUserReorderColumns="False"
-                              CanUserResizeColumns="True"
-                              CanUserSortColumns="False"
-                              GridLinesVisibility="Horizontal"
-                              AutoGeneratingColumn="InstancePreviewGrid_OnAutoGeneratingColumn"
-                              Loaded="InstancePreviewGrid_Loaded" MaxWidth="{Binding ElementName=Ref2, Path=ActualWidth}">
+                      AutoGenerateColumns="True"
+                      HeadersVisibility="All"
+                      ItemsSource="{Binding Path=DataSourceInstance.DefaultView}"
+                      RowHeaderWidth="0"
+                      IsReadOnly="True"
+                      SelectionUnit="Cell"
+                      CanUserAddRows="False"
+                      CanUserDeleteRows="False"
+                      CanUserReorderColumns="False"
+                      CanUserResizeColumns="True"
+                      CanUserSortColumns="False"
+                      GridLinesVisibility="Horizontal"
+                      AutoGeneratingColumn="InstancePreviewGrid_OnAutoGeneratingColumn"
+                      Loaded="InstancePreviewGrid_Loaded" MaxWidth="{Binding ElementName=Ref2, Path=ActualWidth}">
                 <DataGrid.Columns>
                     <DataGridTextColumn />
                 </DataGrid.Columns>
             </DataGrid>
         </StackPanel>
 
-        <Grid Grid.Row="0" Grid.RowSpan="3" Background="White" Visibility="{Binding PreviewErrorVisibility}">
-            <TextBlock Text="Cannot display preview" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-        </Grid>
+        <StackPanel Grid.Row="3">
+            <TextBlock FontSize="24" FontWeight="Normal" Margin="0,18,0,20">Statistics</TextBlock>
+
+            <DataGrid AutoGenerateColumns="True"
+                      HeadersVisibility="All"
+                      ItemsSource="{Binding Path=Statistics}"
+                      RowHeaderWidth="0"
+                      IsReadOnly="True"
+                      SelectionUnit="Cell"
+                      CanUserAddRows="False"
+                      CanUserDeleteRows="False"
+                      CanUserReorderColumns="False"
+                      CanUserResizeColumns="True"
+                      CanUserSortColumns="False"
+                      GridLinesVisibility="Horizontal"
+                      MaxHeight="400" >
+                <DataGrid.Style>
+                    <Style BasedOn="{StaticResource MahApps.Styles.DataGrid}"
+                           TargetType="{x:Type DataGrid}">
+                        <Setter Property="AlternatingRowBackground"
+                                Value="{DynamicResource MahApps.Brushes.Gray10}" />
+                    </Style>
+                </DataGrid.Style>
+            </DataGrid>
+        </StackPanel>
     </Grid>
 </UserControl>
