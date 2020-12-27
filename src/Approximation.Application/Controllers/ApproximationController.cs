@@ -66,16 +66,13 @@ namespace Approximation.Application.Controllers
         private readonly AppState _appState;
         private readonly ModuleState _moduleState;
         private readonly AppStateHelper _helper;
-        private readonly NormalizationService _normalizationService;
         private readonly IEventAggregator _ea;
 
-        public ApproximationController(AppState appState, ModuleState moduleState,
-            NormalizationService normalizationService, IEventAggregator ea)
+        public ApproximationController(AppState appState, ModuleState moduleState, IEventAggregator ea)
         {
             _appState = appState;
             _helper = new AppStateHelper(appState);
             _moduleState = moduleState;
-            _normalizationService = normalizationService;
             _ea = ea;
 
             CalculateOutputCommand = new DelegateCommand(Predict);
@@ -263,8 +260,9 @@ namespace Approximation.Application.Controllers
 
                 while (total-- > 0)
                 {
-                    var x = _normalizationService.ToNetworkDataNormalization(
-                        Matrix<double>.Build.Dense(1, 1, start), setType.Value);
+                    var x = Matrix<double>.Build.Dense(1, 1, start);
+                    x = _appState.ActiveSession!.TrainingData!.Normalization?.Transform(x) ?? x;
+
                     network.CalculateOutput(x);
                     predLine.Add(new DataPoint(start, network.Output![0, 0]));
                     predScatter.Add(new ScatterPoint(start, network.Output![0, 0]));
@@ -287,7 +285,7 @@ namespace Approximation.Application.Controllers
             var network = _appState.ActiveSession!.Network!;
             var inputMatrix = Vm!.InputMatrixVm.Controller.AssignedMatrix!;
             var inputNormalized =
-                _normalizationService.ToNetworkDataNormalization(inputMatrix, Vm!.SelectedPlotSetType);
+                _appState.ActiveSession!.TrainingData!.Normalization?.Transform(inputMatrix) ?? inputMatrix;
 
             network.CalculateOutput(inputNormalized);
             Vm!.UpdateMatrix(network.Output!, _appState.ActiveSession!.TrainingData!, inputMatrix);

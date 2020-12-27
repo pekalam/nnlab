@@ -3,6 +3,7 @@ using NNLib.Data;
 using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
+using NNLib;
 
 namespace Common.Domain
 {
@@ -42,6 +43,8 @@ namespace Common.Domain
             get => _variables;
             private set => SetProperty(ref _variables, value ?? throw new NullReferenceException("Null Variables"));
         }
+
+        public NormalizationBase? Normalization { get; private set; }
 
         private TrainingData(SupervisedTrainingData sets, SupervisedTrainingData orgSets, SupervisedTrainingSamplesVariables variables, TrainingDataSource source, NormalizationMethod normalizationMethod)
         {
@@ -156,10 +159,11 @@ namespace Common.Domain
             Sets = sets;
         }
 
-        public void ChangeNormalization(SupervisedTrainingData newData, NormalizationMethod newNormalization)
+        public void ChangeNormalization(SupervisedTrainingData newData, NormalizationMethod newNormalization, NormalizationBase? normalization)
         {
             _sets = newData;
             NormalizationMethod = newNormalization;
+            Normalization = normalization;
         }
 
         public void ChangeVariables(SupervisedTrainingSamplesVariables variables)

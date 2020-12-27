@@ -32,38 +32,42 @@ namespace Data.Domain.Services
         {
             var trainingData = _appState.ActiveSession!.TrainingData!;
             SupervisedTrainingData sets = trainingData.CloneOriginalSets();
-            await Normalization.MinMax(sets);
-            trainingData.ChangeNormalization(sets, NormalizationMethod.MinMax);
+            var normalization = new MinMaxNormalization(0, 1);
+            await normalization.FitAndTransform(sets);
+            trainingData.ChangeNormalization(sets, NormalizationMethod.MinMax, normalization);
         }
 
         public async Task MeanNormalization()
         {
             var trainingData = _appState.ActiveSession!.TrainingData!;
             SupervisedTrainingData sets = trainingData.CloneOriginalSets();
-            await Normalization.Mean(sets);
-            trainingData.ChangeNormalization(sets, NormalizationMethod.Mean);
+            var normalization = new MeanNormalization();
+            await normalization.FitAndTransform(sets);
+            trainingData.ChangeNormalization(sets, NormalizationMethod.Mean, normalization);
         }
 
         public async Task StdNormalization()
         {
             var trainingData = _appState.ActiveSession!.TrainingData!;
             SupervisedTrainingData sets = trainingData.CloneOriginalSets();
-            await Normalization.Std(sets);
-            trainingData.ChangeNormalization(sets, NormalizationMethod.Std);
+            var normalization = new Standarization();
+            await normalization.FitAndTransform(sets);
+            trainingData.ChangeNormalization(sets, NormalizationMethod.Std, normalization);
         }
 
         public async Task RobustNormalization()
         {
             var trainingData = _appState.ActiveSession!.TrainingData!;
             SupervisedTrainingData sets = trainingData.CloneOriginalSets();
-            await Normalization.Robust(sets);
-            trainingData.ChangeNormalization(sets, NormalizationMethod.Robust);
+            var normalization = new RobutstNormalization();
+            await normalization.FitAndTransform(sets);
+            trainingData.ChangeNormalization(sets, NormalizationMethod.Robust, normalization);
         }
 
         public void NoNormalization()
         {
             var trainingData = _appState.ActiveSession!.TrainingData!;
-            trainingData.ChangeNormalization(trainingData.OriginalSets, NormalizationMethod.None);
+            trainingData.ChangeNormalization(trainingData.OriginalSets, NormalizationMethod.None, null);
         }
 
         public async Task Normalize(NormalizationMethod method)
