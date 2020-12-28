@@ -13,6 +13,11 @@ namespace Common.Domain
         LevenbergMarquardt
     }
 
+    public enum LossFunction
+    {
+        MSE,RMSE,
+    }
+
     public class GradientDescentParamsModel : BindableBase
     {
         public GradientDescentParamsModel()
@@ -140,6 +145,7 @@ namespace Common.Domain
         private bool _stopWhenValidationErrorReached;
         private double _validationTargetError;
         private bool _canRandomize = true;
+        private LossFunction _lossFunction = LossFunction.MSE;
 
         public TrainingParameters(bool canRunValidation)
         {
@@ -154,6 +160,12 @@ namespace Common.Domain
         {
             get => _algorithm;
             set => SetProperty(ref _algorithm, value);
+        }
+
+        public LossFunction LossFunction
+        {
+            get => _lossFunction;
+            set => SetProperty(ref _lossFunction, value);
         }
 
         public double TargetError
@@ -244,15 +256,10 @@ namespace Common.Domain
 
         protected bool Equals(TrainingParameters other)
         {
-            return _maxEpochs == other._maxEpochs && _maxLearningTime.Equals(other._maxLearningTime) &&
-                   _targetError.Equals(other._targetError) && _algorithm == other._algorithm &&
-                   _runValidation == other._runValidation &&
-                   _validationEpochThreshold == other._validationEpochThreshold &&
-                   _addReportOnPause == other._addReportOnPause && _canRunValidation == other._canRunValidation &&
-                   _stopWhenValidationErrorReached == other._stopWhenValidationErrorReached &&
-                   _validationTargetError == other._validationTargetError && GDParams.Equals(other.GDParams) &&
-                   LMParams.Equals(other.LMParams);
+            return _maxEpochs == other._maxEpochs && _maxLearningTime.Equals(other._maxLearningTime) && _targetError.Equals(other._targetError) && _algorithm == other._algorithm && _runValidation == other._runValidation && _validationEpochThreshold == other._validationEpochThreshold && _addReportOnPause == other._addReportOnPause && _canRunValidation == other._canRunValidation && _stopWhenValidationErrorReached == other._stopWhenValidationErrorReached && _validationTargetError.Equals(other._validationTargetError) && _canRandomize == other._canRandomize && _lossFunction == other._lossFunction && GDParams.Equals(other.GDParams) && LMParams.Equals(other.LMParams);
         }
+
+
 
         public override bool Equals(object? obj)
         {
@@ -275,6 +282,8 @@ namespace Common.Domain
             hashCode.Add(_canRunValidation);
             hashCode.Add(_stopWhenValidationErrorReached);
             hashCode.Add(_validationTargetError);
+            hashCode.Add(_canRandomize);
+            hashCode.Add((int) _lossFunction);
             hashCode.Add(GDParams);
             hashCode.Add(LMParams);
             return hashCode.ToHashCode();
@@ -294,6 +303,7 @@ namespace Common.Domain
                 ValidationEpochThreshold = ValidationEpochThreshold,
                 StopWhenValidationErrorReached = StopWhenValidationErrorReached,
                 ValidationTargetError = ValidationTargetError,
+                LossFunction = LossFunction,
             };
         }
     }

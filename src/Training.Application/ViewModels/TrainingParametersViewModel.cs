@@ -41,6 +41,11 @@ namespace Training.Application.ViewModels
             TrainingAlgorithm.GradientDescent, TrainingAlgorithm.LevenbergMarquardt
         };
 
+        public LossFunction[] LossFunctions { get; } = new LossFunction[]
+        {
+            LossFunction.MSE,LossFunction.RMSE
+        };
+
         public bool IsMaxLearningTimeChecked
         {
             get => _isMaxLearningTimeChecked;

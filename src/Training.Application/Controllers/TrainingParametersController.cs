@@ -101,9 +101,9 @@ namespace Training.Application.Controllers
                 if (e.PropertyName == nameof(GradientDescentParamsModel.BatchSize))
                 {
                     var trainingSet = _appState.ActiveSession!.TrainingData!.Sets.TrainingSet;
-                    if (trainingSet.Input.Count % parameters.GDParams.BatchSize != 0)
+                    if (trainingSet.Input.Count < parameters.GDParams.BatchSize)
                     {
-                        throw new Exception($"Number of training examples ({trainingSet.Input.Count}) is not divisible by {parameters.GDParams.BatchSize}");
+                        throw new Exception($"Batch size ({parameters.GDParams.BatchSize}) must be less than or equal to {trainingSet.Input.Count}");
                     }
 
                     if (parameters.GDParams.BatchSize == trainingSet.Input.Count)

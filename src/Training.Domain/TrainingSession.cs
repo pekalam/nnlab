@@ -170,7 +170,7 @@ namespace Training.Domain
             _session.NetworkStructureChanged += SessionOnNetworkStructureChanged;
             _session.TrainingData!.PropertyChanged += TrainingDataOnPropertyChanged;
             Trainer = new MLPTrainer(_session.Network!, _session.TrainingData!.Sets, SelectAlgorithm(),
-                new QuadraticLossFunction());
+                SelectLossFunction());
             IsValid = true;
         }
 
@@ -201,6 +201,7 @@ namespace Training.Domain
             if (e.PropertyName == nameof(Session.TrainingParameters))
             {
                 Trainer!.Algorithm = SelectAlgorithm();
+                Trainer!.LossFunction = SelectLossFunction();
                 TrainerUpdated?.Invoke();
             }
         }
@@ -213,6 +214,15 @@ namespace Training.Domain
                 TrainingAlgorithm.GradientDescent => new GradientDescentAlgorithm(parameters.GDParams.Params),
                 TrainingAlgorithm.LevenbergMarquardt => new LevenbergMarquardtAlgorithm(parameters.LMParams.Params),
                 _ => throw new NotImplementedException()
+            };
+        }
+
+        private ILossFunction SelectLossFunction()
+        {
+            return _session.TrainingParameters!.LossFunction switch
+            {
+                LossFunction.MSE => new QuadraticLossFunction(),
+                LossFunction.RMSE => new RootMeanSquareLossFunction(),
             };
         }
 
@@ -229,8 +239,7 @@ namespace Training.Domain
 
             _session.ResetNetworkToInitialAndClearReports();
             EpochEndEvents.Clear();
-            Trainer = new MLPTrainer(_session.Network!, _session.TrainingData!.Sets, SelectAlgorithm(),
-                new QuadraticLossFunction());
+            Trainer = new MLPTrainer(_session.Network!, _session.TrainingData!.Sets, SelectAlgorithm(), SelectLossFunction());
             IsValid = true;
             StartTime = null;
             Stopped = Paused = false;
