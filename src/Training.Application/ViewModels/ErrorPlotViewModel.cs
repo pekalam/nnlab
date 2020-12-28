@@ -15,7 +15,8 @@ namespace Training.Application.ViewModels
         {
             Service = service;
             BasicPlotModel = new BasicPlotModel();
-            BasicPlotModel.Model.Series.Add(Series);
+            BasicPlotModel.Model.Series.Add(ErrorSeries);
+            BasicPlotModel.Model.Series.Add(ValidationSeries);
             BasicPlotModel.Model.Title = "Network error";
             BasicPlotModel.Model.Axes.Add(new LinearAxis()
             {
@@ -39,7 +40,17 @@ namespace Training.Application.ViewModels
 
         public IErrorPlotController Service { get; }
 
-        public LineSeries Series = new LineSeries();
+        public LineSeries ErrorSeries = new LineSeries()
+        {
+            Title = "Error",
+        };
+        
+        public LineSeries ValidationSeries = new LineSeries()
+        {
+            Color = OxyColors.Blue,
+            Title = "Validation",
+            IsVisible = false,
+        };
 
         public BasicPlotModel BasicPlotModel { get; }
 

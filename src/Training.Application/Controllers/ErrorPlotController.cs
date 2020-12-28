@@ -7,7 +7,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Windows.Input;
 using System.Windows.Threading;
+using Prism.Commands;
 using Training.Application.Plots;
 using Training.Application.ViewModels;
 using Training.Domain;
@@ -20,6 +22,11 @@ namespace Training.Application.Controllers
     public interface IErrorPlotController : IController
     {
         Action<NavigationContext> Navigated { get; }
+
+        ICommand ResetCommand { get; }
+
+        ICommand ShowValidationSeriesCommand { get; }
+        ICommand HideValidationSeriesCommand { get; }
 
         public static void Register(IContainerRegistry cr)
         {
@@ -76,6 +83,35 @@ namespace Training.Application.Controllers
             _moduleState.ActiveSessionChanged += ModuleStateOnActiveSessionChanged;
 
             Navigated = NavigatedAction;
+            ResetCommand = new DelegateCommand(() =>
+            {
+                var newMin = Vm!.ErrorSeries.Points[^1].X;
+                Vm!.BasicPlotModel.Model.Axes[0].AbsoluteMinimum = newMin;
+            });
+            ShowValidationSeriesCommand = new DelegateCommand(() =>
+            {
+                Vm!.ValidationSeries.IsVisible = true;
+                if (_moduleState.ActiveSession!.Started)
+                {
+                    InvalidatePlot();
+                }
+                else
+                {
+                    Vm!.BasicPlotModel.Model.InvalidatePlot(true);
+                }
+            });
+            HideValidationSeriesCommand = new DelegateCommand(() =>
+            {
+                Vm!.ValidationSeries.IsVisible = false;
+                if (_moduleState.ActiveSession!.Started)
+                {
+                    InvalidatePlot();
+                }
+                else
+                {
+                    Vm!.BasicPlotModel.Model.InvalidatePlot(true);
+                }
+            });
         }
 
         protected override void VmCreated()
@@ -100,7 +136,7 @@ namespace Training.Application.Controllers
             e.next.SessionReset -= NextOnSessionReset;
             e.next.SessionReset += NextOnSessionReset;
 
-            Vm!.Series.Points.Clear();
+            Vm!.ErrorSeries.Points.Clear();
 
             var points = e.next.EpochEndEvents.Skip(e.next.EpochEndEvents.Count / EpochEndMaxPoints * EpochEndMaxPoints).Select(end => new DataPoint(end.Epoch, end.Error))
                 .ToArray();
@@ -108,14 +144,14 @@ namespace Training.Application.Controllers
 
             double newMin = points.Length > 0 ? points[0].X : 0;
             Vm!.BasicPlotModel.Model.Axes[0].AbsoluteMinimum = newMin;
-            Vm!.Series.Points.AddRange(points);
+            Vm!.ErrorSeries.Points.AddRange(points);
 
             Vm!.BasicPlotModel.Model.InvalidatePlot(true);
         }
 
         private void NextOnSessionReset()
         {
-            Vm!.Series.Points.Clear();
+            Vm!.ErrorSeries.Points.Clear();
         }
 
         private void InvalidatePlot()
@@ -141,24 +177,36 @@ namespace Training.Application.Controllers
                         return;
                     }
 
+                    bool hasValidation = endsObs[0].ValidationError.HasValue;
+
                     var points = endsObs.Select(end => new DataPoint(end.Epoch, end.Error)).ToArray();
-                    
+                    DataPoint[] valPoints = new DataPoint[0];
+                    if (hasValidation)
+                    {
+                        valPoints = endsObs.Select(end => new DataPoint(end.Epoch, end.ValidationError.Value)).ToArray();
+                    }
+
                     lock (_ptsLock)
                     {
-                        if (Vm!.Series.Points.Count == 0)
+                        if (Vm!.ErrorSeries.Points.Count == 0)
                         {
                             var newMin = endsObs[0].Epoch;
                             Vm!.BasicPlotModel.Model.Axes[0].AbsoluteMinimum = newMin;
                         }
 
-                        if (Vm!.Series.Points.Count + endsObs.Count > EpochEndMaxPoints)
+                        if (Vm!.ErrorSeries.Points.Count + endsObs.Count > EpochEndMaxPoints)
                         {
                             var newMin = endsObs[0].Epoch;
-                            Vm!.Series.Points.Clear();
+                            Vm!.ErrorSeries.Points.Clear();
                             Vm!.BasicPlotModel.Model.Axes[0].AbsoluteMinimum = newMin;
                         }
 
-                        Vm!.Series.Points.AddRange(points);
+                        if (hasValidation)
+                        {
+                            Vm!.ValidationSeries.Points.AddRange(valPoints);
+                        }
+
+                        Vm!.ErrorSeries.Points.AddRange(points);
                     }
 
                     InvalidatePlot();
@@ -184,22 +232,23 @@ namespace Training.Application.Controllers
 
             var p = new NavigationParameters();
             p.Add(nameof(PlotEpochEndConsumer), _epochEndConsumer);
+            p.Add("Controller", this);
 
             _rm.Regions[_errorPlotSettingsRegion].RemoveAll();
-            _rm.Regions[_errorPlotSettingsRegion].RequestNavigate("PlotEpochParametersView", p);
+            _rm.Regions[_errorPlotSettingsRegion].RequestNavigate("ErrorPlotParametersView", p);
 
             _epochEndConsumer.Initialize();
         }
 
         private void TryPlotIfEmpty()
         {
-            if (Vm!.Series.Points.Count == 0)
+            if (Vm!.ErrorSeries.Points.Count == 0)
             {
                 var points = _moduleState.ActiveSession!.CurrentReport!.EpochEndEventArgs
                     .Select(end => new DataPoint(end.Epoch, end.Error)).ToArray();
 
 
-                Vm!.Series.Points.AddRange(points);
+                Vm!.ErrorSeries.Points.AddRange(points);
                 System.Windows.Application.Current.Dispatcher.Invoke(InvalidateMethod, DispatcherPriority.Background);
             }
         }
@@ -217,12 +266,15 @@ namespace Training.Application.Controllers
             }
             else
             {
-                Vm!.Series.Points.Clear();
-                Vm!.Series.Points.AddRange(navParams.Points);
+                Vm!.ErrorSeries.Points.Clear();
+                Vm!.ErrorSeries.Points.AddRange(navParams.Points);
                 Vm!.BasicPlotModel.Model.InvalidatePlot(true);
             }
         }
 
         public Action<NavigationContext> Navigated { get; }
+        public ICommand ResetCommand { get; }
+        public ICommand ShowValidationSeriesCommand { get; }
+        public ICommand HideValidationSeriesCommand { get; }
     }
 }

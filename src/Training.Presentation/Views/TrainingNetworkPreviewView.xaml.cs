@@ -1,4 +1,5 @@
 ﻿using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace Training.Presentation.Views
 {
@@ -10,6 +11,21 @@ namespace Training.Presentation.Views
         public TrainingNetworkPreviewView()
         {
             InitializeComponent();
+        }
+
+        private void NetworkControl_OnMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ClickCount == 2)
+            {
+                if (e.ChangedButton == MouseButton.Right)
+                {
+                    NetworkControl.ContextMenu.IsOpen = true;
+                }
+                else if (e.ChangedButton == MouseButton.Left)
+                {
+                    e.Handled = true;
+                }
+            }
         }
     }
 }

@@ -32,6 +32,7 @@ namespace Training.Presentation
             cr.RegisterForNavigation<ParametersEditView>();
 
             cr.RegisterForNavigation<PlotEpochParametersView>();
+            cr.RegisterForNavigation<ErrorPlotParametersView>();
 
             cr.RegisterDialog<PanelSelectView, PanelSelectViewModel>();
             cr.RegisterForNavigation<ReportsView>();

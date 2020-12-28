@@ -5,7 +5,7 @@
              xmlns:nnControl="clr-namespace:NNControl;assembly=NNControl"
              prism:ViewModelLocator.AutoWireViewModel="True">
     <Grid>
-        <nnControl:NeuralNetworkControl ModelAdapter="{Binding ModelAdapter}">
+        <nnControl:NeuralNetworkControl Name="NetworkControl" ModelAdapter="{Binding ModelAdapter}" ContextMenuService.IsEnabled="False" MouseDown="NetworkControl_OnMouseDown">
             <nnControl:NeuralNetworkControl.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="Toggle animation" Command="{Binding Service.ToggleAnimationCommand}"/>

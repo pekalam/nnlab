@@ -106,7 +106,7 @@ namespace Training.Application.ViewModels
                 {
                     network.CalculateOutput(input[i]);
 
-                    dataPoints[i] = new ScatterPoint(i, target[i][0, 0] - network.Output![0, 0]);
+                    dataPoints[i] = new ScatterPoint(i+1, target[i][0, 0] - network.Output![0, 0]);
 
                     var annotation = new LineAnnotation();
                     annotation.Color = OxyColors.Red;
@@ -166,7 +166,7 @@ namespace Training.Application.ViewModels
                 Position = AxisPosition.Bottom,
                 MinimumMajorStep = 1,
                 MinimumMinorStep = 1,
-                AbsoluteMinimum = 0,
+                AbsoluteMinimum = 1,
                 AbsoluteMaximum = input.Count,
             });
             vm.PlotModel.Axes.Add(new LinearAxis()
