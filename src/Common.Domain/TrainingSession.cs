@@ -132,7 +132,7 @@ namespace Common.Domain
             Algorithm = algorithm;
             EpochEndEventArgs = epochEndEventArgs.Select(e => new EpochEndArgs()
             {
-                Epoch = e.Epoch, Error = e.Error, Iterations = e.Iterations,
+                Epoch = e.Epoch, Error = e.Error, Iterations = e.Iterations,ValidationError = e.ValidationError,
             }).ToArray();
             ValidationError = validationError;
         }

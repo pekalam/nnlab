@@ -150,6 +150,8 @@ namespace Common.Domain
             if (TrainingParameters != null)
             {
                 TrainingParameters.CanRunValidation = TrainingData?.GetSet(DataSetType.Validation) != null;
+                TrainingParameters.RunValidation =
+                    TrainingParameters.CanRunValidation && TrainingParameters.RunValidation;
             }
         }
 

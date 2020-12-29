@@ -32,7 +32,6 @@ namespace Common.Domain
 
         public GradientDescentParams Params { get; }
 
-
         public double LearningRate
         {
             get => Params.LearningRate;
@@ -304,6 +303,8 @@ namespace Common.Domain
                 StopWhenValidationErrorReached = StopWhenValidationErrorReached,
                 ValidationTargetError = ValidationTargetError,
                 LossFunction = LossFunction,
+                CanRandomize = CanRandomize,
+                CanRunValidation = CanRunValidation,
             };
         }
     }

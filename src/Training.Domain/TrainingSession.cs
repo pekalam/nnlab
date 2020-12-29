@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Common.Logging;
@@ -156,6 +157,19 @@ namespace Training.Domain
                     }
                 }
 
+                // if current validation set is set to null - clear all current epoch end events and reports containing validation error
+                if (_trainer.TrainingSets.ValidationSet != null && _session.TrainingData!.Sets.ValidationSet == null)
+                {
+                    EpochEndEvents.Clear();
+                    foreach (var report in _session.TrainingReports.Where(r => r.EpochEndEventArgs[0].ValidationError.HasValue).ToArray())
+                    {
+                        _session.TrainingReports.Remove(report);
+                    }
+
+                    CurrentReport = _session.TrainingReports.Count > 0 ? _session.TrainingReports[^1] : null;
+                }
+
+
                 _trainer!.TrainingSets = _session.TrainingData!.Sets;
                 TrainerUpdated?.Invoke();
             }else if (e.PropertyName == nameof(TrainingData.NormalizationMethod))
@@ -168,6 +182,7 @@ namespace Training.Domain
         private void ConstructTrainer()
         {
             _session.NetworkStructureChanged += SessionOnNetworkStructureChanged;
+            _session.TrainingData!.PropertyChanged -= TrainingDataOnPropertyChanged;
             _session.TrainingData!.PropertyChanged += TrainingDataOnPropertyChanged;
             Trainer = new MLPTrainer(_session.Network!, _session.TrainingData!.Sets, SelectAlgorithm(),
                 SelectLossFunction());
