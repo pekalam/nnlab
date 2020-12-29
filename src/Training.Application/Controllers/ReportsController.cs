@@ -8,6 +8,7 @@ using Prism.Ioc;
 using Prism.Regions;
 using Shell.Interface;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Training.Application.ViewModels;
@@ -58,10 +59,14 @@ namespace Training.Application.Controllers
             //convertion error fix
             if(report == null) return;
 
-            //_rm.Regions[TrainingReportRegions.ReportRegion1].RemoveAll();
             var pts = report.EpochEndEventArgs.Select(v => new DataPoint(v.Epoch, v.Error)).ToList();
-            var param = new ReportErrorPlotNavParams(TrainingReportRegions.ReportRegion1, pts);
-            _rm.Regions[TrainingReportRegions.ReportRegion1].RequestNavigate("ReportErrorPlotView", param);
+            List<DataPoint>? valPoints = null;
+            if (report.EpochEndEventArgs.Length > 0 && report.EpochEndEventArgs[0].ValidationError.HasValue)
+            {
+                valPoints = report.EpochEndEventArgs.Select(v => new DataPoint(v.Epoch, v.ValidationError!.Value)).ToList();
+            }
+            var param = new ErrorPlotNavParams(TrainingReportRegions.ReportRegion1, false, pts, valPoints);
+            _rm.Regions[TrainingReportRegions.ReportRegion1].RequestNavigate("ErrorPlotView", param);
         }
 
         private async void DisplayTVOutputPlot(DataSetType setType)
@@ -102,6 +107,9 @@ namespace Training.Application.Controllers
 
         private void CloseReports()
         {
+            _rm.Regions[TrainingReportRegions.ReportRegion1].RemoveAll();
+            _rm.Regions[TrainingReportRegions.ReportTestPlotRegion].RemoveAll();
+            _rm.Regions[TrainingReportRegions.ReportValidationPlotRegion].RemoveAll();
             _ea.GetEvent<DisableModalNavigation>().Publish();
             _rm.NavigateContentRegion("TrainingView");
         }

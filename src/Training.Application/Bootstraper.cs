@@ -18,7 +18,6 @@ namespace Training.Application
             IOutputPlotController.Register(cr);
             IMatrixTrainingPreviewController.Register(cr);
             IReportsController.Register(cr);
-            IReportErrorController.Register(cr);
             ITrainingParametersController.Register(cr);
             ITrainingNetworkPreviewController.Register(cr);
         }

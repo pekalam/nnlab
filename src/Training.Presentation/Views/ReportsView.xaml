@@ -73,7 +73,7 @@
                 <Border Grid.Column="2" Margin="20" Padding="5">
                     <ScrollViewer>
                         <StackPanel>
-                            <UniformGrid Columns="2" MaxWidth="500" HorizontalAlignment="Left" TextBlock.FontSize="16">
+                            <UniformGrid Columns="2" MaxWidth="1000" HorizontalAlignment="Left" TextBlock.FontSize="16">
                                 <TextBlock Text="Algorithm:" HorizontalAlignment="Left" Margin="0,0,20,0"
                                            FontWeight="Bold" />
                                 <TextBlock
@@ -92,6 +92,9 @@
                                                 </DataTrigger>
                                                 <DataTrigger Binding="{Binding SelectedReport.Algorithm}" Value="{x:Static domain:TrainingReportAlgorithm.MomentumGradientDescentBatch}">
                                                     <Setter Property="Text" Value="Batch Gradient Descent with momentum"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding SelectedReport.Algorithm}" Value="{x:Static domain:TrainingReportAlgorithm.LevenbergMarquardt}">
+                                                    <Setter Property="Text" Value="Levenberg-Marquardt"/>
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>

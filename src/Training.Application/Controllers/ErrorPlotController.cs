@@ -9,6 +9,7 @@ using System.Linq;
 using System.Threading;
 using System.Windows.Input;
 using System.Windows.Threading;
+using Common.Domain;
 using Prism.Commands;
 using Training.Application.Plots;
 using Training.Application.ViewModels;
@@ -37,10 +38,14 @@ namespace Training.Application.Controllers
 
     class ErrorPlotNavParams : NavigationParameters
     {
-        public ErrorPlotNavParams(string parentRegion, bool epochEnd, List<DataPoint> points)
+        public ErrorPlotNavParams(string parentRegion, bool epochEnd, List<DataPoint> points, List<DataPoint>? valPoints = default)
         {
             Add(nameof(ErrorPlotRecNavParams.ParentRegion), parentRegion);
             Add(nameof(ErrorPlotRecNavParams.Points), points);
+            if (valPoints != null)
+            {
+                Add(nameof(ErrorPlotRecNavParams.ValPoints), valPoints);
+            }
             Add(nameof(ErrorPlotRecNavParams.EpochEnd), epochEnd);
         }
 
@@ -55,6 +60,7 @@ namespace Training.Application.Controllers
 
             public string ParentRegion => _parameters.GetOrDefault<string>(nameof(ParentRegion));
             public List<DataPoint> Points => _parameters.GetOrDefault<List<DataPoint>>(nameof(Points));
+            public List<DataPoint>? ValPoints => _parameters.GetOrDefault<List<DataPoint>>(nameof(ValPoints));
             public bool EpochEnd => _parameters.GetOrDefault<bool>(nameof(EpochEnd), true);
         }
 
@@ -125,6 +131,7 @@ namespace Training.Application.Controllers
             {
                 _epochEndConsumer?.Remove();
                 Vm!.IsActiveChanged -= OnIsActiveChanged;
+                _moduleState.ActiveSessionChanged -= ModuleStateOnActiveSessionChanged;
             }
         }
 
@@ -137,14 +144,23 @@ namespace Training.Application.Controllers
             e.next.SessionReset += NextOnSessionReset;
 
             Vm!.ErrorSeries.Points.Clear();
+            Vm!.ValidationSeries.Points.Clear();
 
-            var points = e.next.EpochEndEvents.Skip(e.next.EpochEndEvents.Count / EpochEndMaxPoints * EpochEndMaxPoints).Select(end => new DataPoint(end.Epoch, end.Error))
+            var epochEnd = e.next.EpochEndEvents
+                .Skip(e.next.EpochEndEvents.Count / EpochEndMaxPoints * EpochEndMaxPoints).ToArray();
+            var points = epochEnd.Select(end => new DataPoint(end.Epoch, end.Error))
                 .ToArray();
-
 
             double newMin = points.Length > 0 ? points[0].X : 0;
             Vm!.BasicPlotModel.Model.Axes[0].AbsoluteMinimum = newMin;
             Vm!.ErrorSeries.Points.AddRange(points);
+
+            if (epochEnd.Length > 0 && epochEnd[0].ValidationError.HasValue)
+            {
+                var val = epochEnd.Select(end => new DataPoint(end.Epoch, end.ValidationError!.Value))
+                    .ToArray();
+                Vm!.ValidationSeries.Points.AddRange(val);
+            }
 
             Vm!.BasicPlotModel.Model.InvalidatePlot(true);
         }
@@ -266,8 +282,16 @@ namespace Training.Application.Controllers
             }
             else
             {
+                Vm!.BasicPlotModel.DisplaySettingsRegion = false;
                 Vm!.ErrorSeries.Points.Clear();
                 Vm!.ErrorSeries.Points.AddRange(navParams.Points);
+                if (navParams.ValPoints != null)
+                {
+                    Vm!.ValidationSeries.IsVisible = true;
+                    Vm!.ValidationSeries.Points.Clear();
+                    Vm!.ValidationSeries.Points.AddRange(navParams.ValPoints);
+                }
+
                 Vm!.BasicPlotModel.Model.InvalidatePlot(true);
             }
         }

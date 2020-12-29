@@ -26,11 +26,11 @@
                 </Style>
             </UniformGrid.Style>
             <TextBlock Text="Learning rate" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,10,0,10" />
-            <presentation:SubmitNumericUpDown Minimum="0"
+            <presentation:SubmitNumericUpDown Minimum="0" Name="LearningRate"
                                         StringFormat="###0.###################"
                                         Speedup="True"
                                         Interval="0.0001"
-                                        Value="{Binding AppState.ActiveSession.TrainingParameters.GDParams.LearningRate, Mode=TwoWay}"
+                                        Value="{Binding AppState.ActiveSession.TrainingParameters.GDParams.LearningRate, Mode=TwoWay, UpdateSourceTrigger=Explicit}"
                                         HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" />
 
             <TextBlock Text="Momentum" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,10,0,10" />
@@ -39,7 +39,7 @@
                 StringFormat="###0.###################"
                 Speedup="True"
                 Interval="0.0001"
-                Value="{Binding AppState.ActiveSession.TrainingParameters.GDParams.Momentum, Mode=TwoWay}" HorizontalAlignment="Stretch"
+                Value="{Binding AppState.ActiveSession.TrainingParameters.GDParams.Momentum, Mode=TwoWay, UpdateSourceTrigger=Explicit}" HorizontalAlignment="Stretch"
                 HorizontalContentAlignment="Stretch" />
         </UniformGrid>
 
@@ -59,7 +59,7 @@
                                         StringFormat="###0.###################"
                                         Speedup="True"
                                         Interval="0.0001"
-                                        Value="{Binding AppState.ActiveSession.TrainingParameters.LMParams.DampingParamIncFactor, Mode=TwoWay}"
+                                        Value="{Binding AppState.ActiveSession.TrainingParameters.LMParams.DampingParamIncFactor, Mode=TwoWay, UpdateSourceTrigger=Explicit}"
                                         HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" />
 
             <TextBlock Text="Damping parameter decrement factor" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,10,0,10" />
@@ -68,7 +68,7 @@
                 StringFormat="###0.###################"
                 Speedup="True"
                 Interval="0.0001"
-                Value="{Binding AppState.ActiveSession.TrainingParameters.LMParams.DampingParamDecFactor, Mode=TwoWay}" HorizontalAlignment="Stretch"
+                Value="{Binding AppState.ActiveSession.TrainingParameters.LMParams.DampingParamDecFactor, Mode=TwoWay, UpdateSourceTrigger=Explicit}" HorizontalAlignment="Stretch"
                 HorizontalContentAlignment="Stretch" />
         </UniformGrid>
     </StackPanel>
