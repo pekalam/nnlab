@@ -8,6 +8,7 @@ using Shell.Interface;
 using System;
 using System.ComponentModel;
 using System.Windows.Controls;
+using System.Windows.Data;
 using Training.Application.ViewModels;
 using Training.Application.Views;
 
@@ -18,6 +19,8 @@ namespace Training.Application.Controllers
         DelegateCommand OkCommand { get; }
         DelegateCommand ResetCommand { get; }
         DelegateCommand ReturnCommand { get; }
+
+        void OnViewAttached(ITrainingParametersView view);
 
         public static void Register(IContainerRegistry cr)
         {
@@ -32,6 +35,7 @@ namespace Training.Application.Controllers
         private readonly IRegionManager _rm;
         private readonly IEventAggregator _ea;
         private readonly AppStateHelper _helper;
+        private bool _hasError;
 
         public TrainingParametersController(AppState appState, IRegionManager rm, IEventAggregator ea)
         {
@@ -45,6 +49,7 @@ namespace Training.Application.Controllers
                     var param = Vm!.TrainingParameters!.Clone();
                     _appState.ActiveSession!.TrainingParameters = param;
                     RaiseCommandsCanExec();
+                    _hasError = false;
                 },
                 () => (!Vm!.View?.HasErrors() ?? true) && !Vm!.TrainingParameters!
                     .Equals(_appState.ActiveSession!.TrainingParameters));
@@ -52,12 +57,15 @@ namespace Training.Application.Controllers
             ResetCommand = new DelegateCommand(() =>
                 {
                     var newParams = _appState.ActiveSession!.TrainingParameters!.Clone();
+                    _hasError = false;
                     Vm!.TrainingParameters = newParams;
+                    Vm!.CallParametersReseted();
                     AttachHandlersToParameters(newParams);
                     SetVmProperties();
+                    RaiseCommandsCanExec();
                 },
                 () => !Vm!.TrainingParameters!
-                    .Equals(_appState.ActiveSession!.TrainingParameters));
+                    .Equals(_appState.ActiveSession!.TrainingParameters) || _hasError);
 
 
             ReturnCommand = new DelegateCommand(Return);
@@ -67,11 +75,28 @@ namespace Training.Application.Controllers
         {
             Vm!.PropertyChanged += VmOnPropertyChanged;
 
-
             SetNewSession(_appState.ActiveSession!);
-
-
             _ea.GetEvent<EnableModalNavigation>().Publish(ReturnCommand);
+        }
+
+
+
+        private void ViewOnValidationError(object? sender, ValidationErrorEventArgs e)
+        {
+            if (e.Action != ValidationErrorEventAction.Removed)
+            {
+                _hasError = true;
+                RaiseCommandsCanExec();
+            }
+            else
+            {
+                bool callRaise = _hasError;
+                _hasError = Vm!.View!.HasErrors();
+                if (!_hasError && callRaise)
+                {
+                    RaiseCommandsCanExec();
+                }
+            }
         }
 
         private void SetVmProperties()
@@ -83,7 +108,6 @@ namespace Training.Application.Controllers
             {
                 Vm!.MaxLearningTime = Time.Now.Add(Vm!.TrainingParameters.MaxLearningTime);
             }
-            else Vm!.MaxLearningTime = default;
         }
 
         private void SetNewSession(Session session)
@@ -167,5 +191,9 @@ namespace Training.Application.Controllers
         public DelegateCommand OkCommand { get; }
         public DelegateCommand ResetCommand { get; }
         public DelegateCommand ReturnCommand { get; }
+        public void OnViewAttached(ITrainingParametersView view)
+        {
+            view.ValidationError += ViewOnValidationError;
+        }
     }
 }

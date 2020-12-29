@@ -27,8 +27,13 @@ namespace Training.Application.ViewModels
             service.Initialize(this);
         }
 
+        protected override void ViewChanged(ITrainingParametersView view) => Service.OnViewAttached(view);
+
         public ITrainingParametersController Service { get; }
 
+        public event Action ParametersReseted;
+
+        public void CallParametersReseted() => ParametersReseted?.Invoke();
 
         public TrainingParameters? TrainingParameters
         {
