@@ -1,4 +1,7 @@
-﻿using MahApps.Metro.Controls;
+﻿using System;
+using System.Reflection;
+using System.Windows;
+using MahApps.Metro.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
@@ -13,7 +16,7 @@ namespace Common.Presentation
         public SubmitNumericUpDown()
         {
             PreviewKeyDown += OnPreviewKeyDown;
-            LostFocus += (sender, args) => UpdateSource();
+            LostFocus += (sender, args) => UpdateValuePropertyBindingSource(this);
 
         }
 
@@ -21,15 +24,42 @@ namespace Common.Presentation
         {
             if (e.Key == Key.Enter)
             {
-                BindingExpression be = GetBindingExpression(NumericUpDown.ValueProperty);
-                be?.UpdateSource();
+                UpdateValuePropertyBindingSource(this);
             }
         }
 
-        private void UpdateSource()
+        public static void UpdateValuePropertyBindingSource(SubmitNumericUpDown submit)
         {
-            BindingExpression be = GetBindingExpression(NumericUpDown.ValueProperty);
-            be?.UpdateSource();
+            BindingExpression be = submit.GetBindingExpression(NumericUpDown.ValueProperty);
+
+            var prop = be!.ResolvedSource.GetType().GetProperty(be.ResolvedSourcePropertyName);
+
+            if (prop != null)
+            {
+                var tValue = submit.GetValue(be.TargetProperty);
+                if (tValue == null)
+                {
+                    be.UpdateSource();
+                    return;
+                }
+                try
+                {
+                    tValue = Convert.ChangeType(tValue, prop.PropertyType);
+                }
+                catch (Exception)
+                {
+                    // ignored
+                }
+
+                if (tValue == null || !tValue.Equals(prop.GetValue(be.ResolvedSource)))
+                {
+                    be.UpdateSource();
+                }
+            }
+            else
+            {
+                be.UpdateSource();
+            }
         }
 
         public override void OnApplyTemplate()
@@ -38,8 +68,8 @@ namespace Common.Presentation
             _repeatUp = GetTemplateChild("PART_NumericUp") as RepeatButton;
             _repeatDown = GetTemplateChild("PART_NumericDown") as RepeatButton;
 
-            _repeatUp!.Click += (sender, args) => UpdateSource();
-            _repeatDown!.Click += (sender, args) => UpdateSource();
+            _repeatUp!.Click += (sender, args) => UpdateValuePropertyBindingSource(this);
+            _repeatDown!.Click += (sender, args) => UpdateValuePropertyBindingSource(this);
         }
     }
 }

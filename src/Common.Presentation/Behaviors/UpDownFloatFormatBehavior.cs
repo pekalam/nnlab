@@ -122,7 +122,7 @@ namespace Common.Presentation.Behaviors
         {
             Application.Current?.Dispatcher.Invoke(() =>
             {
-                AssociatedObject.GetBindingExpression(NumericUpDown.ValueProperty)!.UpdateSource();
+                SubmitNumericUpDown.UpdateValuePropertyBindingSource(AssociatedObject);
             });
         }
     }
