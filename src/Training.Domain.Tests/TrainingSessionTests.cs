@@ -8,6 +8,7 @@ using NNLib.Training.LevenbergMarquardt;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using NNLib;
 using NNLib.Data;
 using TestUtils;
 using Xunit;
@@ -307,7 +308,7 @@ namespace Training.Domain.Tests
         {
             var newData = TrainingDataMocks.RandomTrainingData();
             _session.Trainer!.TrainingSets.Should().NotBeEquivalentTo(newData);
-            _appState.ActiveSession!.TrainingData!.ChangeNormalization(newData, NormalizationMethod.Mean);
+            _appState.ActiveSession!.TrainingData!.ChangeNormalization(newData, NormalizationMethod.Mean, new MeanNormalization());
 
             _session.Trainer!.TrainingSets.Should().BeEquivalentTo(newData);
         }

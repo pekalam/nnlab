@@ -4,6 +4,7 @@ using FluentAssertions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using NNLib;
 using TestUtils;
 using Xunit;
 
@@ -188,7 +189,7 @@ namespace Common.Tests
             var session = _appState.CreateSession();
             AssingTrainingData(session);
 
-            session.TrainingData!.ChangeNormalization(TrainingDataMocks.RandomTrainingData(), NormalizationMethod.MinMax);
+            session.TrainingData!.ChangeNormalization(TrainingDataMocks.RandomTrainingData(), NormalizationMethod.MinMax, new MinMaxNormalization(0,1));
 
             //assert
             called.Should().Be(1);
@@ -203,7 +204,7 @@ namespace Common.Tests
             var session = _appState.CreateSession();
             AssingTrainingData(session);
 
-            session.TrainingData!.ChangeNormalization(TrainingDataMocks.RandomTrainingData(), NormalizationMethod.MinMax);
+            session.TrainingData!.ChangeNormalization(TrainingDataMocks.RandomTrainingData(), NormalizationMethod.MinMax, new MinMaxNormalization(0, 1));
 
             //assert
             called.Should().Be(1);
@@ -217,7 +218,7 @@ namespace Common.Tests
             //should not be called
             called.Should().Be(1);
 
-            session.TrainingData!.ChangeNormalization(TrainingDataMocks.RandomTrainingData(), NormalizationMethod.Mean);
+            session.TrainingData!.ChangeNormalization(TrainingDataMocks.RandomTrainingData(), NormalizationMethod.Mean, new MinMaxNormalization(0, 1));
 
             //assert
             called.Should().Be(2);
@@ -235,7 +236,7 @@ namespace Common.Tests
             called.Should().Be(2);
 
 
-            session.TrainingData!.ChangeNormalization(TrainingDataMocks.RandomTrainingData(), NormalizationMethod.Std);
+            session.TrainingData!.ChangeNormalization(TrainingDataMocks.RandomTrainingData(), NormalizationMethod.Std, new MinMaxNormalization(0, 1));
 
             called.Should().Be(3);
         }
