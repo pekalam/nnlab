@@ -65,6 +65,7 @@ namespace NeuralNetwork.Application.Controllers
             }
 
             _openedModel = null;
+            _ea.GetEvent<DisableModalNavigation>().Publish();
         }
 
         private void OpenLayerEditor(LayerListItemModel model)
