@@ -91,12 +91,15 @@ namespace Training.Application.Controllers
             Navigated = NavigatedAction;
             ResetCommand = new DelegateCommand(() =>
             {
-                var newMin = Vm!.ErrorSeries.Points[^1].X;
-                Vm!.BasicPlotModel.Model.Axes[0].AbsoluteMinimum = newMin;
+                if (Vm!.ErrorSeries.Points.Count > 0)
+                {
+                    var newMin = Vm!.ErrorSeries.Points[^1].X;
+                    Vm!.BasicPlotModel.Model.Axes[0].AbsoluteMinimum = newMin;
+                }
             });
             ShowValidationSeriesCommand = new DelegateCommand(() =>
             {
-                Vm!.ValidationSeries.IsVisible = true;
+                Vm!.ValidationSeries.IsVisible = Vm!.BasicPlotModel.Model.Legends[0].IsLegendVisible = true;
                 if (_moduleState.ActiveSession!.Started)
                 {
                     InvalidatePlot();
@@ -108,7 +111,7 @@ namespace Training.Application.Controllers
             });
             HideValidationSeriesCommand = new DelegateCommand(() =>
             {
-                Vm!.ValidationSeries.IsVisible = false;
+                Vm!.ValidationSeries.IsVisible = Vm!.BasicPlotModel.Model.Legends[0].IsLegendVisible = false;
                 if (_moduleState.ActiveSession!.Started)
                 {
                     InvalidatePlot();
@@ -160,6 +163,11 @@ namespace Training.Application.Controllers
                 var val = epochEnd.Select(end => new DataPoint(end.Epoch, end.ValidationError!.Value))
                     .ToArray();
                 Vm!.ValidationSeries.Points.AddRange(val);
+                Vm!.BasicPlotModel.Model.Legends[0].IsLegendVisible = Vm!.ValidationSeries.IsVisible;
+            }
+            else
+            {
+                Vm!.BasicPlotModel.Model.Legends[0].IsLegendVisible = false;
             }
 
             Vm!.BasicPlotModel.Model.InvalidatePlot(true);
@@ -235,7 +243,7 @@ namespace Training.Application.Controllers
                 _ =>
                 {
                     _cts = new CancellationTokenSource();
-
+                    Vm!.BasicPlotModel.Model.Legends[0].IsLegendVisible = Vm!.ValidationSeries.IsVisible;
                     InvalidatePlot();
                 }, onTrainingPaused: _ =>
                 {
@@ -290,6 +298,7 @@ namespace Training.Application.Controllers
                     Vm!.ValidationSeries.IsVisible = true;
                     Vm!.ValidationSeries.Points.Clear();
                     Vm!.ValidationSeries.Points.AddRange(navParams.ValPoints);
+                    Vm!.BasicPlotModel.Model.Legends[0].IsLegendVisible = Vm!.ValidationSeries.IsVisible;
                 }
 
                 Vm!.BasicPlotModel.Model.InvalidatePlot(true);

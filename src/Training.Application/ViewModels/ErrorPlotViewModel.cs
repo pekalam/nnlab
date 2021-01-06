@@ -5,6 +5,7 @@ using OxyPlot.Series;
 using Prism.Regions;
 using SharedUI.BasicPlot;
 using System;
+using OxyPlot.Legends;
 using Training.Application.Controllers;
 
 namespace Training.Application.ViewModels
@@ -35,6 +36,7 @@ namespace Training.Application.ViewModels
 
             BasicPlotModel.Model.Axes.Add(yAxis);
             BasicPlotModel.Model.PlotMargins = new OxyThickness(80, Double.NaN, Double.NaN, Double.NaN);
+            BasicPlotModel.Model.Legends.Add(new Legend {IsLegendVisible = false});
             service.Initialize(this);
         }
 
@@ -42,13 +44,13 @@ namespace Training.Application.ViewModels
 
         public LineSeries ErrorSeries = new LineSeries()
         {
-            Title = "Error",
+            Title = "Training error",
         };
         
         public LineSeries ValidationSeries = new LineSeries()
         {
             Color = OxyColors.Blue,
-            Title = "Validation",
+            Title = "Validation error",
             IsVisible = false,
         };
 
