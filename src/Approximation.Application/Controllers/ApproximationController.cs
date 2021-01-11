@@ -293,6 +293,12 @@ namespace Approximation.Application.Controllers
 
         public void SetMemento(ApproximationControllerMemento memento)
         {
+            if (memento.InputMatrix.RowCount != _appState.ActiveSession!.Network!.BaseLayers[0].InputsCount)
+            {
+                memento.InputMatrix = Matrix<double>.Build.Dense(_appState.ActiveSession!.Network!.Layers[0].InputsCount, 1);
+            }
+
+
             UpdateShowPlotPrediction(_appState.ActiveSession!.TrainingData!);
             if (Vm!.ShowPlotPrediction)
             {
