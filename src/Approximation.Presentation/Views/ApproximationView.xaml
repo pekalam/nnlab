@@ -7,124 +7,145 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:interface="clr-namespace:Shell.Interface;assembly=Shell.Interface"
-             xmlns:basicPlot="clr-namespace:SharedUI.BasicPlot;assembly=SharedUI" xmlns:sharedui="clr-namespace:SharedUI;assembly=SharedUI"
+             xmlns:basicPlot="clr-namespace:SharedUI.BasicPlot;assembly=SharedUI"
+             xmlns:sharedui="clr-namespace:SharedUI;assembly=SharedUI"
              xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:behaviors="clr-namespace:Common.Presentation.Behaviors;assembly=Common.Presentation"
              xmlns:designData="clr-namespace:Approximation.Presentation.__DesignData"
-             mc:Ignorable="d" 
+             mc:Ignorable="d"
              d:DesignHeight="1200" d:DesignWidth="800"
              d:DataContext="{d:DesignInstance designData:DesignPredictVm, IsDesignTimeCreatable=True}"
              prism:ViewModelLocator.AutoWireViewModel="True"
              interface:BreadcrumbsHelper.Breadcrumb="Approximation">
-        <ScrollViewer>
+    <ScrollViewer>
         <ContentControl Style="{StaticResource ContentPanelWithMargin}">
             <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-            
-            <nnControl:NeuralNetworkControl MinHeight="400" ModelAdapter="{Binding Path=ModelAdapter}" Grid.ColumnSpan="2"/>
-            
-            <Grid Grid.Row="1" Margin="5,5,5,40">
                 <Grid.RowDefinitions>
-                    <RowDefinition/>
-                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition Width="2"/>
-                    <ColumnDefinition/>
-                </Grid.ColumnDefinitions>
-                <StackPanel Grid.Row="0" Grid.Column="0">
-                    <TextBlock Text="Input" HorizontalAlignment="Center" FontSize="22"/>
-                        <matrixPreview:MatrixPreviewView DataContext="{Binding InputMatrixVm}" Editable="True" LayerSelectPanelVisibility="Collapsed"  MatrixTypePanelVisibility="Collapsed"/>
-                </StackPanel>
-                <Rectangle Grid.Row="0" Grid.Column="1" Fill="LightGray"/>
-                <StackPanel Grid.Row="0" Grid.Column="2">
-                    <TextBlock Text="Output" HorizontalAlignment="Center" FontSize="22"/>
-                    <matrixPreview:MatrixPreviewView DataContext="{Binding OutputMatrixVm}" Editable="True" LayerSelectPanelVisibility="Collapsed" MatrixTypePanelVisibility="Collapsed"/>
-                </StackPanel>
-                    <Button Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1" Margin="0,16,0,0" HorizontalAlignment="Center" Height="40" Width="130" Command="{Binding Controller.CalculateOutputCommand}">Calculate output</Button>
-            </Grid>
 
-            <StackPanel Grid.Row="2">
-                <StackPanel.Style>
-                    <Style TargetType="StackPanel">
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding ShowPlotPrediction}" Value="True">
-                                <Setter Property="Visibility" Value="Visible"/>
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding ShowPlotPrediction}" Value="False">
-                                <Setter Property="Visibility" Value="Collapsed"/>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </StackPanel.Style>
-                    <basicPlot:BasicPlot Name="PredictionPlot" Wpf="True" MinHeight="400" PlotModel="{Binding PlotModel}"/>
+                <nnControl:NeuralNetworkControl MinHeight="400" ModelAdapter="{Binding Path=ModelAdapter}"
+                                                Grid.ColumnSpan="2" />
+
+                <Grid Grid.Row="1" Margin="5,5,5,40">
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="2" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Row="0" Grid.Column="0">
+                        <TextBlock Text="Input" HorizontalAlignment="Center" FontSize="22" />
+                        <matrixPreview:MatrixPreviewView DataContext="{Binding InputMatrixVm}" Editable="True"
+                                                         LayerSelectPanelVisibility="Collapsed"
+                                                         MatrixTypePanelVisibility="Collapsed" />
+                    </StackPanel>
+                    <Rectangle Grid.Row="0" Grid.Column="1" Fill="LightGray" />
+                    <StackPanel Grid.Row="0" Grid.Column="2">
+                        <TextBlock Text="Output" HorizontalAlignment="Center" FontSize="22" />
+                        <matrixPreview:MatrixPreviewView DataContext="{Binding OutputMatrixVm}" Editable="True"
+                                                         LayerSelectPanelVisibility="Collapsed"
+                                                         MatrixTypePanelVisibility="Collapsed" />
+                    </StackPanel>
+                    <Button Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1" Margin="0,16,0,0"
+                            HorizontalAlignment="Center" Height="40" Width="130"
+                            Command="{Binding Controller.CalculateOutputCommand}">
+                        Calculate output
+                    </Button>
+                </Grid>
+
+                <Grid Grid.Row="2">
+                    <Grid.Style>
+                        <Style TargetType="Grid">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ShowPlotPrediction}" Value="True">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding ShowPlotPrediction}" Value="False">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Grid.Style>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="500"/>
+                        <RowDefinition Height="22"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <basicPlot:BasicPlot Name="PredictionPlot" Wpf="True" MinHeight="500"
+                                         PlotModel="{Binding PlotModel}" />
+                    <GridSplitter Grid.Row="1" ResizeDirection="Rows" Margin="0,10,0,10"/>
+                    <StackPanel Grid.Row="2">
                     <StackPanel Margin="10,20,0,0">
                         <CheckBox IsChecked="{Binding ShowApproximation, Mode=TwoWay}" Margin="0,0,12,0">Approximation of network output for data points</CheckBox>
                         <CheckBox IsChecked="{Binding ShowCustomApproximation, Mode=TwoWay}" Margin="0,10,0,0">Approximation of network output for custom data points</CheckBox>
                     </StackPanel>
                     <StackPanel Margin="10,20,10,10">
-                        <TextBlock Text="Dataset type"/>
-                        <ComboBox Width="200" HorizontalAlignment="Left" Name="PlotSetTypesCombobox" SelectedIndex="0" SelectedItem="{Binding SelectedPlotSetType, Mode=TwoWay}" ItemsSource="{Binding PlotSetTypes}"></ComboBox>
+                        <TextBlock Text="Dataset type" />
+                        <ComboBox Width="200" HorizontalAlignment="Left" Name="PlotSetTypesCombobox" SelectedIndex="0"
+                                  SelectedItem="{Binding SelectedPlotSetType, Mode=TwoWay}"
+                                  ItemsSource="{Binding PlotSetTypes}" />
                     </StackPanel>
 
                     <UniformGrid Columns="4" Margin="0,14,0,0">
-                        
+
                         <StackPanel Margin="10">
-                            <TextBlock Text="Start value"/>
+                            <TextBlock Text="Start value" />
                             <TextBox>
                                 <b:Interaction.Behaviors>
-                                    <behaviors:TextBoxKeyDownValidationBehavior/>
+                                    <behaviors:TextBoxKeyDownValidationBehavior />
                                 </b:Interaction.Behaviors>
                                 <TextBox.Text>
                                     <Binding Path="StartValue">
                                         <Binding.ValidationRules>
-                                            <sharedui:DoubleValidationRule/>
+                                            <sharedui:DoubleValidationRule />
                                         </Binding.ValidationRules>
                                     </Binding>
                                 </TextBox.Text>
                             </TextBox>
                         </StackPanel>
                         <StackPanel Margin="10">
-                            <TextBlock Text="End value"/>
+                            <TextBlock Text="End value" />
                             <TextBox>
                                 <b:Interaction.Behaviors>
-                                    <behaviors:TextBoxKeyDownValidationBehavior/>
+                                    <behaviors:TextBoxKeyDownValidationBehavior />
                                 </b:Interaction.Behaviors>
                                 <TextBox.Text>
                                     <Binding Path="EndValue">
                                         <Binding.ValidationRules>
-                                            <sharedui:DoubleValidationRule/>
+                                            <sharedui:DoubleValidationRule />
                                         </Binding.ValidationRules>
                                     </Binding>
                                 </TextBox.Text>
                             </TextBox>
                         </StackPanel>
                         <StackPanel Margin="10">
-                            <TextBlock Text="Interval"/>
+                            <TextBlock Text="Interval" />
                             <TextBox>
                                 <b:Interaction.Behaviors>
-                                    <behaviors:TextBoxKeyDownValidationBehavior/>
+                                    <behaviors:TextBoxKeyDownValidationBehavior />
                                 </b:Interaction.Behaviors>
                                 <TextBox.Text>
                                     <Binding Path="Interval" ValidatesOnExceptions="True">
                                         <Binding.ValidationRules>
-                                            <sharedui:DoubleValidationRule/>
+                                            <sharedui:DoubleValidationRule />
                                         </Binding.ValidationRules>
                                     </Binding>
                                 </TextBox.Text>
                             </TextBox>
                         </StackPanel>
                         <Button Content="Plot output" Command="{Binding Controller.PlotOutputCommand}"
-                                 CommandParameter="{Binding SelectedPlotSetType}" Margin="10" Height="40" Width="120"/>
+                                CommandParameter="{Binding SelectedPlotSetType}" Margin="10" Height="40" Width="120" />
                     </UniformGrid>
-                    <TextBlock Margin="10,2,0,0" Text="{Binding WarningMessage}" Foreground="#ffdb00"/>
-                </StackPanel>
-        </Grid>
-            </ContentControl>
+                    <TextBlock Margin="10,2,0,0" Text="{Binding WarningMessage}" Foreground="#ffdb00" />
+                    </StackPanel>
+                </Grid>
+            </Grid>
+        </ContentControl>
     </ScrollViewer>
 </UserControl>
