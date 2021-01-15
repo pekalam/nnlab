@@ -30,6 +30,8 @@ namespace Data.Application.Controllers
 
     internal class MultiFileSourceController : ControllerBase<MultiFileSourceViewModel>, IMultiFileSourceController
     {
+        private const string DifferentVariablesCountError = "Files differ in variables count";
+        private const string DifferentVariableNamesError = "Files differ in names of variables";
         private readonly IEventAggregator _ea;
         private readonly IRegionManager _rm;
         private readonly ICsvValidationService _csvValidationService;
@@ -48,7 +50,8 @@ namespace Data.Application.Controllers
 
 
         public MultiFileSourceController(IRegionManager rm, ICsvValidationService csvValidationService,
-            ITrainingDataService dataService, AppState appState, IFileDialogService fileDialogService, IEventAggregator ea)
+            ITrainingDataService dataService, AppState appState, IFileDialogService fileDialogService,
+            IEventAggregator ea)
         {
             _rm = rm;
             _csvValidationService = csvValidationService;
@@ -85,6 +88,7 @@ namespace Data.Application.Controllers
             {
                 _appState.CreateSession();
             }
+
             _appState.ActiveSession!.TrainingData = _trainingData;
             _appState.ActiveSession.TrainingDataFile = Vm!.TrainingSetFilePath;
             _appState.ActiveSession.TestDataFile = Vm!.TestSetFilePath;
@@ -125,7 +129,8 @@ namespace Data.Application.Controllers
         {
             Vm!.SetIsLoading();
 
-            _trainingData = _dataService.LoadDefaultTrainingDataFromFiles(arg!.Value.trainingFile, arg.Value.validationFile,
+            _trainingData = _dataService.LoadDefaultTrainingDataFromFiles(arg!.Value.trainingFile,
+                arg.Value.validationFile,
                 arg.Value.testFile);
             _continueCanExec = true;
             ContinueCommand.RaiseCanExecuteChanged();
@@ -147,21 +152,21 @@ namespace Data.Application.Controllers
                 return;
             }
 
-            string[] headers = set switch
+            string[] headers1 = set switch
             {
                 0 => _trainingHeaders!,
                 1 => _validationHeaders!,
                 2 => _testHeaders!,
                 _ => throw new NotImplementedException()
             };
-            string[]? headers1 = set switch
+            string[]? headers2 = set switch
             {
                 0 => _validationHeaders,
                 1 => _trainingHeaders,
                 2 => _trainingHeaders,
                 _ => throw new NotImplementedException()
             };
-            string[]? headers2 = set switch
+            string[]? headers3 = set switch
             {
                 0 => _testHeaders,
                 1 => _testHeaders,
@@ -169,35 +174,35 @@ namespace Data.Application.Controllers
                 _ => throw new NotImplementedException()
             };
 
-            if (headers1 != null)
+            if (headers2 != null)
             {
-                var validCount = headers1.Length == headers.Length;
+                var validCount = headers2.Length == headers1.Length;
                 if (!validCount)
                 {
                     if (set == 0)
-                        Vm!.SetTrainingValidationResult(false, "Files differ in variables count", r: r,
+                        Vm!.SetTrainingValidationResult(false, DifferentVariablesCountError, r: r,
                             c: c);
-                    if (set == 1)
-                        Vm!.SetValidationValidationResult(false, "Files differ in variables count", r: r,
+                    else if (set == 1)
+                        Vm!.SetValidationValidationResult(false, DifferentVariablesCountError, r: r,
                             c: c);
-                    if (set == 2)
-                        Vm!.SetTestValidationResult(false, "Files differ in variables count", r: r, c: c);
+                    else
+                        Vm!.SetTestValidationResult(false, DifferentVariablesCountError, r: r, c: c);
                     _loadCanExec = false;
                     LoadFiles.RaiseCanExecuteChanged();
                     return;
                 }
 
-                var validContent = !headers.Except(headers1).Any();
+                var validContent = !headers1.Except(headers2).Any();
                 if (!validContent)
                 {
                     if (set == 0)
-                        Vm!.SetTrainingValidationResult(false, "Files differ in names of variables", r: r,
+                        Vm!.SetTrainingValidationResult(false, DifferentVariableNamesError, r: r,
                             c: c);
-                    if (set == 1)
-                        Vm!.SetValidationValidationResult(false, "Files differ in names of variables",
+                    else if (set == 1)
+                        Vm!.SetValidationValidationResult(false, DifferentVariableNamesError,
                             r: r, c: c);
-                    if (set == 2)
-                        Vm!.SetTestValidationResult(false, "Files differ in names of variables", r: r,
+                    else
+                        Vm!.SetTestValidationResult(false, DifferentVariableNamesError, r: r,
                             c: c);
                     _loadCanExec = false;
                     LoadFiles.RaiseCanExecuteChanged();
@@ -215,35 +220,35 @@ namespace Data.Application.Controllers
                         c: Vm!.TrainingValidationResult.Cols);
             }
 
-            if (headers2 != null)
+            if (headers3 != null)
             {
-                var validCount = headers2.Length == headers.Length;
+                var validCount = headers3.Length == headers1.Length;
                 if (!validCount)
                 {
                     if (set == 0)
-                        Vm!.SetTrainingValidationResult(false, "Files differ in variables count", r: r,
+                        Vm!.SetTrainingValidationResult(false, DifferentVariablesCountError, r: r,
                             c: c);
-                    if (set == 1)
-                        Vm!.SetValidationValidationResult(false, "Files differ in variables count", r: r,
+                    else if (set == 1)
+                        Vm!.SetValidationValidationResult(false, DifferentVariablesCountError, r: r,
                             c: c);
-                    if (set == 2)
-                        Vm!.SetTestValidationResult(false, "Files differ in variables count", r: r, c: c);
+                    else
+                        Vm!.SetTestValidationResult(false, DifferentVariablesCountError, r: r, c: c);
                     _loadCanExec = false;
                     LoadFiles.RaiseCanExecuteChanged();
                     return;
                 }
 
-                var validContent = !headers.Except(headers2).Any();
+                var validContent = !headers1.Except(headers3).Any();
                 if (!validContent)
                 {
                     if (set == 0)
-                        Vm!.SetTrainingValidationResult(false, "Files differ in names of variables", r: r,
+                        Vm!.SetTrainingValidationResult(false, DifferentVariableNamesError, r: r,
                             c: c);
-                    if (set == 1)
-                        Vm!.SetValidationValidationResult(false, "Files differ in names of variables",
+                    else if (set == 1)
+                        Vm!.SetValidationValidationResult(false, DifferentVariableNamesError,
                             r: r, c: c);
-                    if (set == 2)
-                        Vm!.SetTestValidationResult(false, "Files differ in names of variables", r: r,
+                    else
+                        Vm!.SetTestValidationResult(false, DifferentVariableNamesError, r: r,
                             c: c);
                     _loadCanExec = false;
                     LoadFiles.RaiseCanExecuteChanged();
@@ -261,12 +266,35 @@ namespace Data.Application.Controllers
 
 
             if (set == 0) Vm!.SetTrainingValidationResult(true, r: r, c: c);
-            if (set == 1) Vm!.SetValidationValidationResult(true, r: r, c: c);
-            if (set == 2) Vm!.SetTestValidationResult(true, r: r, c: c);
+            else if (set == 1) Vm!.SetValidationValidationResult(true, r: r, c: c);
+            else if (set == 2) Vm!.SetTestValidationResult(true, r: r, c: c);
 
-            if (Vm!.TrainingValidationResult.IsFileValid.GetValueOrDefault() &&
-                Vm!.ValidationValidationResult.IsFileValid.GetValueOrDefault() &&
-                Vm!.TestValidationResult.IsFileValid.GetValueOrDefault())
+            if (Vm! is
+            {
+                TrainingValidationResult: {IsFileValid: true},
+                ValidationValidationResult: {IsFileValid: true},
+                TestValidationResult: {IsFileValid: true},
+            })
+            {
+                _loadCanExec = true;
+                LoadFiles.RaiseCanExecuteChanged();
+            }
+            else if (Vm! is
+            {
+                TrainingValidationResult: {IsFileValid: true},
+                ValidationSetFilePath: null,
+                TestValidationResult: {IsFileValid: true}
+            })
+            {
+                _loadCanExec = true;
+                LoadFiles.RaiseCanExecuteChanged();
+            }
+            else if (Vm! is
+            {
+                TrainingValidationResult: {IsFileValid: true},
+                ValidationValidationResult: {IsFileValid: true},
+                TestSetFilePath: null
+            })
             {
                 _loadCanExec = true;
                 LoadFiles.RaiseCanExecuteChanged();

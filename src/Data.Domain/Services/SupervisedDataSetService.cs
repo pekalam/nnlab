@@ -10,7 +10,7 @@ namespace Data.Domain.Services
     {
         TrainingData LoadDefaultTrainingData(string fileName, IDataSetDivider? divider =null, DataSetDivisionOptions? divisionOptions=null, SupervisedSetVariableIndexes? variableIndexes=null);
         SupervisedTrainingData LoadSets(string fileName, IDataSetDivider? divider, DataSetDivisionOptions? divisionOptions, SupervisedSetVariableIndexes? variableIndexes);
-        TrainingData LoadDefaultTrainingDataFromFiles(string trainingSetFile, string validationSetFile, string testSetFile);
+        TrainingData LoadDefaultTrainingDataFromFiles(string trainingSetFile, string? validationSetFile, string? testSetFile);
         void ChangeVariables(SupervisedSetVariableIndexes newVariableIndexes, TrainingData trainingData);
         void ChangeVariables(SupervisedSetVariableIndexes newVariableIndexes, SupervisedTrainingData sets, TrainingDataSource source);
     }
@@ -33,7 +33,7 @@ namespace Data.Domain.Services
             return sets;
         }
 
-        public TrainingData LoadDefaultTrainingDataFromFiles(string trainingSetFile, string validationSetFile, string testSetFile)
+        public TrainingData LoadDefaultTrainingDataFromFiles(string trainingSetFile, string? validationSetFile, string? testSetFile)
         {
             SupervisedTrainingData sets;
             SupervisedTrainingSamplesVariables variables;

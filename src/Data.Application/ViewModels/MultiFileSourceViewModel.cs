@@ -46,11 +46,11 @@ namespace Data.Application.ViewModels
 
         private void AttachValidationResultChangeHanlder(FileValidationResult? result)
         {
-            Debug.Assert(result != null);
+            if(result == null) return;
             
-            int calcPrerc(FileValidationResult res)
+            decimal calcPrerc(FileValidationResult res)
             {
-                return (int) Math.Round(res.Rows * 100.0 / (TotalRows.GetValueOrDefault() == 0 ? 1 : TotalRows.GetValueOrDefault()));
+                return res.Rows * 100.0m / (TotalRows.GetValueOrDefault() == 0 ? 1 : TotalRows.GetValueOrDefault());
             }
 
             result.PropertyChanged += (sender, args) =>
@@ -58,7 +58,12 @@ namespace Data.Application.ViewModels
                 switch (args.PropertyName)
                 {
                     case nameof(FileValidationResult.IsFileValid):
-                        if (!MultiFileValidationResult.Any(r => r.IsFileValid != true))
+                        if (MultiFileValidationResult.All(r => r.IsFileValid == true) || 
+                            MultiFileValidationResult[0].IsFileValid.GetValueOrDefault() && 
+                            MultiFileValidationResult[1].IsFileValid.GetValueOrDefault() && 
+                            TestSetFilePath == null || MultiFileValidationResult[0].IsFileValid.GetValueOrDefault() &&
+                            MultiFileValidationResult[2].IsFileValid.GetValueOrDefault() &&
+                            ValidationSetFilePath == null)
                         {
                             MultiFileService.LoadFiles.Execute((TrainingSetFilePath!, ValidationSetFilePath!,
                                 TestSetFilePath!));
@@ -69,8 +74,15 @@ namespace Data.Application.ViewModels
                         if (MultiFileValidationResult.All(r => r.IsLoaded))
                         {
                             TotalRows = MultiFileValidationResult.Sum(r => r.Rows);
-                            Ratio =
-                                $"{calcPrerc(MultiFileValidationResult[0])}:{calcPrerc(MultiFileValidationResult[1])}:{calcPrerc(MultiFileValidationResult[2])}";
+
+                            var t = calcPrerc(MultiFileValidationResult[0]);
+                            var v = calcPrerc(MultiFileValidationResult[1]);
+                            var ts = calcPrerc(MultiFileValidationResult[2]);
+                            var tperc = t % 1 == 0 ? t.ToString("F0") : Math.Round(t, 2).ToString();
+                            var vperc = v % 1 == 0 ? v.ToString("F0") : Math.Round(v, 2).ToString();
+                            var tsperc = ts % 1 == 0 ? ts.ToString("F0") : Math.Round(ts, 2).ToString();
+
+                            Ratio = $"{tperc}%:{vperc}%:{tsperc}%";
                         }
                         break;
                 }
@@ -104,12 +116,15 @@ namespace Data.Application.ViewModels
             get => _trainingSetFilePath;
             set
             {
-                Debug.Assert(value != null);
                 SetProperty(ref _trainingSetFilePath, value);
-                TrainingSetFileName = value.Split('\\', StringSplitOptions.RemoveEmptyEntries)[^1];
                 MultiFileValidationResult[0] = new FileValidationResult();
                 Variables = null;
-                MultiFileService.ValidateTrainingFile.Execute(value);
+
+                if (value != null)
+                {
+                    TrainingSetFileName = value.Split('\\', StringSplitOptions.RemoveEmptyEntries)[^1];
+                    MultiFileService.ValidateTrainingFile.Execute(value);
+                }
             }
         }
 
@@ -118,12 +133,15 @@ namespace Data.Application.ViewModels
             get => _validationSetFilePath;
             set
             {
-                Debug.Assert(value != null);
                 SetProperty(ref _validationSetFilePath, value);
-                ValidationSetFileName = value.Split('\\', StringSplitOptions.RemoveEmptyEntries)[^1];
                 MultiFileValidationResult[1] = new FileValidationResult();
                 Variables = null;
-                MultiFileService.ValidateValidationFile.Execute(value);
+
+                if (value != null)
+                {
+                    ValidationSetFileName = value.Split('\\', StringSplitOptions.RemoveEmptyEntries)[^1];
+                    MultiFileService.ValidateValidationFile.Execute(value);
+                }
             }
         }
 
@@ -132,12 +150,14 @@ namespace Data.Application.ViewModels
             get => _testSetFilePath;
             set
             {
-                Debug.Assert(value != null);
                 SetProperty(ref _testSetFilePath, value);
-                TestSetFileName = value.Split('\\', StringSplitOptions.RemoveEmptyEntries)[^1];
                 MultiFileValidationResult[2] = new FileValidationResult();
                 Variables = null;
-                MultiFileService.ValidateTestFile.Execute(value);
+                if(value != null)
+                {
+                    TestSetFileName = value.Split('\\', StringSplitOptions.RemoveEmptyEntries)[^1];
+                    MultiFileService.ValidateTestFile.Execute(value);
+                }
             }
         }
 

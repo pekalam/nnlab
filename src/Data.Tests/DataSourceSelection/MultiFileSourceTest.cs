@@ -18,13 +18,12 @@ namespace Data.Application.Tests.DataSourceSelection
     {
         private AutoMocker _mocker = new AutoMocker();
         private Mock<ICsvValidationService> _csvValidation;
-        private MultiFileSourceController _multiFileService;
+        private MultiFileSourceController _multiFileController;
         private Mock<ITrainingDataService> _dataSetService;
         private Mock<IFileDialogService> _dialogService;
 
         private AppState _appState;
         private MultiFileSourceController _ctrl;
-        private FileController _fileController;
         private MultiFileSourceViewModel _vm;
         private ITestOutputHelper _testOutput;
 
@@ -38,16 +37,15 @@ namespace Data.Application.Tests.DataSourceSelection
             _dialogService = _mocker.UseMock<IFileDialogService>();
             _csvValidation = _mocker.UseMock<ICsvValidationService>();
             _ctrl = _mocker.UseImpl<IMultiFileSourceController, MultiFileSourceController>();
-            _multiFileService = _mocker.UseImpl<IMultiFileSourceController, MultiFileSourceController>();
+            _multiFileController = _mocker.UseImpl<IMultiFileSourceController, MultiFileSourceController>();
 
             _vm = _mocker.UseVm<MultiFileSourceViewModel>();
-            _fileController = _mocker.UseImpl<IFileController, FileController>();
         }
 
         [Fact]
         public void Validation_fail_scenario()
         {
-            var multiFileService = _multiFileService;
+            var ctrl = _multiFileController;
 
             #region Valid training file
 
@@ -55,9 +53,9 @@ namespace Data.Application.Tests.DataSourceSelection
             _csvValidation.Setup(f => f.Validate(It.IsAny<string>())).Returns((true, null, 2, 2));
             _csvValidation.Setup(f => f.ReadHeaders(It.IsAny<string>())).Returns(new string[] {"x", "y"});
             //disable loading
-            multiFileService.LoadFiles = new DelegateCommand<(string, string, string)?>(s => { }, s => false);
+            ctrl.LoadFiles = new DelegateCommand<(string, string, string)?>(s => { }, s => false);
 
-            multiFileService.ValidateTrainingFile.Execute("training.csv");
+            ctrl.ValidateTrainingFile.Execute("training.csv");
 
             _vm.MultiFileValidationResult[0].IsFileValid.Should().BeTrue();
 
@@ -70,7 +68,7 @@ namespace Data.Application.Tests.DataSourceSelection
             _csvValidation.Setup(f => f.Validate(It.IsAny<string>())).Returns((true, null, 2, 1));
             //missing variable 'y'
             _csvValidation.Setup(f => f.ReadHeaders(It.IsAny<string>())).Returns(new string[] {"x"});
-            multiFileService.ValidateValidationFile.Execute("validation.csv");
+            ctrl.ValidateValidationFile.Execute("validation.csv");
 
 
             var result = _vm.MultiFileValidationResult[1];
@@ -88,7 +86,7 @@ namespace Data.Application.Tests.DataSourceSelection
             _csvValidation.Setup(f => f.Validate(It.IsAny<string>())).Returns((true, null, 2, 2));
             //missing invalid variable name
             _csvValidation.Setup(f => f.ReadHeaders(It.IsAny<string>())).Returns(new string[] {"xX", "y"});
-            multiFileService.ValidateTestFile.Execute("test.csv");
+            ctrl.ValidateTestFile.Execute("test.csv");
 
             _testOutput.WriteLine("Test file error: " + result.FileValidationError);
 
@@ -104,8 +102,8 @@ namespace Data.Application.Tests.DataSourceSelection
             //set valid
             _csvValidation.Setup(f => f.Validate(It.IsAny<string>())).Returns((true, null, 2, 2));
             _csvValidation.Setup(f => f.ReadHeaders(It.IsAny<string>())).Returns(new string[] { "x", "y" });
-            multiFileService.ValidateValidationFile.Execute("validation.csv");
-            multiFileService.ValidateTestFile.Execute("test.csv");
+            ctrl.ValidateValidationFile.Execute("validation.csv");
+            ctrl.ValidateTestFile.Execute("test.csv");
 
 
             //setup training file validation
@@ -118,7 +116,7 @@ namespace Data.Application.Tests.DataSourceSelection
             result.IsFileValid = null;
             result.FileValidationError = null;
 
-            multiFileService.ValidateTrainingFile.Execute("training.csv");
+            ctrl.ValidateTrainingFile.Execute("training.csv");
 
             result = _vm.MultiFileValidationResult[0];
 
@@ -133,16 +131,17 @@ namespace Data.Application.Tests.DataSourceSelection
         [Fact]
         public void Validation_success_scenario()
         {
-            var multiFileService = _multiFileService;
+            var ctrl = _multiFileController;
 
 
             //setup training file validation
             _csvValidation.Setup(f => f.Validate(It.IsAny<string>())).Returns((true, null, 2, 2));
             _csvValidation.Setup(f => f.ReadHeaders(It.IsAny<string>())).Returns(new string[] { "x", "y" });
             //disable loading
-            multiFileService.LoadFiles = new DelegateCommand<(string,string,string)?>(s => { }, s => false);
+            var previousLoadCmd = ctrl.LoadFiles;
+            ctrl.LoadFiles = new DelegateCommand<(string,string,string)?>(s => { }, s => false);
 
-            multiFileService.ValidateTrainingFile.Execute("training.csv");
+            ctrl.ValidateTrainingFile.Execute("training.csv");
 
             _vm.TrainingValidationResult.IsFileValid.Should().BeTrue();
 
@@ -153,7 +152,7 @@ namespace Data.Application.Tests.DataSourceSelection
             //invalid var name
             _csvValidation.Setup(f => f.ReadHeaders(It.IsAny<string>())).Returns(new string[] { "xy", "y" });
 
-            multiFileService.ValidateTestFile.Execute("test.csv");
+            ctrl.ValidateTestFile.Execute("test.csv");
 
             _vm.TestValidationResult.IsFileValid.Should().BeFalse();
             _vm.TrainingValidationResult.IsFileValid.Should().BeFalse();
@@ -161,25 +160,28 @@ namespace Data.Application.Tests.DataSourceSelection
 
             _csvValidation.Setup(f => f.Validate(It.IsAny<string>())).Returns((true, null, 2, 2));
             _csvValidation.Setup(f => f.ReadHeaders(It.IsAny<string>())).Returns(new string[] { "x", "y" });
-            multiFileService.ValidateTestFile.Execute("test.csv");
+            ctrl.ValidateTestFile.Execute("test.csv");
 
 
             _vm.TestValidationResult.IsFileValid.Should().BeTrue();
             _vm.TrainingValidationResult.IsFileValid.Should().BeTrue();
 
-            multiFileService.ValidateValidationFile.Execute("test.csv");
+            ctrl.ValidateValidationFile.Execute("test.csv");
 
 
             _vm.TestValidationResult.IsFileValid.Should().BeTrue();
             _vm.TrainingValidationResult.IsFileValid.Should().BeTrue();
             _vm.ValidationValidationResult.IsFileValid.Should().BeTrue();
 
+            //can load file
+            ctrl.LoadFiles = previousLoadCmd;
+            ctrl.LoadFiles.CanExecute((_vm.TrainingSetFilePath, _vm.ValidationSetFilePath, _vm.TestSetFilePath)).Should().BeTrue();
         }
 
         [Fact]
         public void Select_file_command_resets_validation_result()
         {
-            var multiFileService = _multiFileService;
+            var multiFileService = _multiFileController;
 
             _dialogService.Setup(f => f.OpenCsv()).Returns((true, "x.csv"));
             //setup training file validation
@@ -199,19 +201,19 @@ namespace Data.Application.Tests.DataSourceSelection
         }
 
 
-        [Fact]
-        public void Continue_command_creates_new_session_if_0_sessions()
+        [Theory]
+        [InlineData("C:\\t.csv", "C:\\v.csv", "C:\\ts.csv")]
+        [InlineData("C:\\t.csv", null, "C:\\ts.csv")]
+        [InlineData("C:\\t.csv", "C:\\v.csv", null)]
+        public void Continue_command_creates_new_session_if_0_sessions(string trainingFile, string validationFile, string testFile)
         {
-            var trainingFile = "C:\\t.csv";
-            var testFile = "C:\\t.csv";
-            var validationFile = "C:\\t.csv";
-
             //arrange
             var trainingData = TrainingDataMocks.ValidData1;
-            var multiFileService = _multiFileService;
+            var ctrl = _multiFileController;
 
             _dataSetService.Setup(f =>
-                f.LoadDefaultTrainingDataFromFiles(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                f.LoadDefaultTrainingDataFromFiles(trainingFile, It.Is<string>(s => s == validationFile || s == null),
+                    It.Is<string>(s => s == testFile || s == null)))
                 .Returns(trainingData);
 
             _csvValidation.Setup(f => f.Validate(It.IsAny<string>())).Returns((true, null, 2, 2));
@@ -222,11 +224,13 @@ namespace Data.Application.Tests.DataSourceSelection
             _vm.ValidationSetFilePath = validationFile;
             _vm.TestSetFilePath = testFile;
 
-            multiFileService.LoadFiles.Execute((trainingFile, validationFile, testFile));
-            multiFileService.ContinueCommand.CanExecute().Should().BeTrue();
+            ctrl.LoadFiles.CanExecute((trainingFile, validationFile, testFile)).Should().BeTrue();
+            //should be executed by load files
+            _dataSetService.Verify(service => service.LoadDefaultTrainingDataFromFiles(trainingFile, validationFile, testFile), Times.Once());
+            ctrl.ContinueCommand.CanExecute().Should().BeTrue();
 
             //act
-            multiFileService.ContinueCommand.Execute();
+            ctrl.ContinueCommand.Execute();
 
             //assert
             _appState.Sessions.Count.Should().Be(1);
@@ -248,7 +252,7 @@ namespace Data.Application.Tests.DataSourceSelection
         {
             var session = _appState.CreateSession();
 
-            Continue_command_creates_new_session_if_0_sessions();
+            Continue_command_creates_new_session_if_0_sessions("C:\\t.csv", "C:\\v.csv", "C:\\ts.csv");
         }
     }
 }
