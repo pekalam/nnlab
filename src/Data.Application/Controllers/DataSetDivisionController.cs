@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading.Tasks;
 using NNLib.Csv;
 using Prism.Events;
 using Shell.Interface;
@@ -36,11 +37,13 @@ namespace Data.Application.Controllers
     {
         private readonly AppState _appState;
         private readonly ITrainingDataService _dataService;
+        private readonly IEventAggregator _ea;
 
         public DataSetDivisionController( ITrainingDataService dataService, AppState appState, IEventAggregator ea)
         {
             _dataService = dataService;
             _appState = appState;
+            _ea = ea;
 
             ea.GetEvent<PreviewCheckNavMenuItem>().Subscribe(args =>
             {
@@ -272,23 +275,31 @@ namespace Data.Application.Controllers
             _appState.ActiveSession.RaiseTrainingDataUpdated();
         }
 
-        private void DivideFileData(string path, DataSetDivisionOptions? options = null)
+        private async void DivideFileData(string path, DataSetDivisionOptions? options = null)
         {
-            var existingData = _appState.ActiveSession!.TrainingData!;
-            var opt = options ?? ConstructDivOptions();
-            var sets = _dataService.LoadSets(path, Vm!.DivisionMethod switch
-            {
-                DivisionMethod.Random => new RandomDataSetDivider(),
-                DivisionMethod.Normal => new LinearDataSetDivider(),
-                _ => throw new NotImplementedException()
-            }, opt, existingData.Variables.Indexes);
-            _appState.ActiveSession.TrainingData!.StoreNewSets(sets);
-            _appState.ActiveSession.RaiseTrainingDataUpdated();
+            _ea.GetEvent<ShowGlobalLoading>().Publish(null);
 
-            Vm!.PropertyChanged -= VmOnPropertyChanged;
-            SetExactRatio(sets);
-            Vm!.RatioModificationMsg = default;
-            Vm!.PropertyChanged += VmOnPropertyChanged;
+            await Task.Run(() =>
+            {
+                var existingData = _appState.ActiveSession!.TrainingData!;
+                var opt = options ?? ConstructDivOptions();
+                var sets = _dataService.LoadSets(path, Vm!.DivisionMethod switch
+                {
+                    DivisionMethod.Random => new RandomDataSetDivider(),
+                    DivisionMethod.Normal => new LinearDataSetDivider(),
+                    _ => throw new NotImplementedException()
+                }, opt, existingData.Variables.Indexes);
+                _appState.ActiveSession.TrainingData!.StoreNewSets(sets);
+                _appState.ActiveSession.RaiseTrainingDataUpdated();
+
+                Vm!.PropertyChanged -= VmOnPropertyChanged;
+                SetExactRatio(sets);
+                Vm!.RatioModificationMsg = default;
+                Vm!.PropertyChanged += VmOnPropertyChanged;
+            });
+
+
+            _ea.GetEvent<HideGlobalLoading>().Publish();
         }
 
         public DelegateCommand<string> DivideFileDataCommand { get; set; }

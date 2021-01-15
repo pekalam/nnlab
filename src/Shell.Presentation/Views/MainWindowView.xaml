@@ -192,13 +192,13 @@
 
             </Grid>
 
-            <Border Name="LoadingContainer" Grid.ColumnSpan="2" Background="#7F000000" BorderThickness="0" Visibility="{Binding LoadingVisibility}">
+            <Border Name="LoadingContainer" Grid.ColumnSpan="2" Background="#7F000000" BorderThickness="0" Visibility="{Binding LoadingVisibility}" Panel.ZIndex="1000">
                 <StackPanel VerticalAlignment="Center">
                     <mah:ProgressRing Width="80"
                                       Height="80"
                                       IsActive="True"
                                       ToolTip="Loading file"
-                                      Panel.ZIndex="1000"/>
+                                      />
                     <TextBlock Text="{Binding LoadingText}" Foreground="White" HorizontalAlignment="Center" Margin="0,28,0,0"/>
                 </StackPanel>
 
