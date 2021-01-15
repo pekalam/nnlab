@@ -62,7 +62,7 @@ namespace Training.Application.ViewModels
             vm.PlotType = OutputPlotType.Approximation;
             vm.PlotModel.Series.Clear();
             vm.PlotModel.Annotations.Clear();
-            vm.PlotModel.Title = "Accuracy";
+            vm.PlotModel.Title = "Network output";
 
 
             var inputVarInd = trainingData.Variables.Indexes.InputVarIndexes[0];

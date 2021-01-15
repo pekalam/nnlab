@@ -53,7 +53,7 @@ namespace Training.Application.ViewModels
             },
             new PanelSelectModel()
             {
-                PanelType = Application.Panels.Accuracy,
+                PanelType = Application.Panels.Approximation,
             },
             new PanelSelectModel()
             {

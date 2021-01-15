@@ -7,6 +7,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:dd="clr-namespace:Training.Presentation.__DesignData"
+             xmlns:application="clr-namespace:Training.Application;assembly=Training.Application"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance dd:DesignPanelSelectVm, IsDesignTimeCreatable=True}">
     <UserControl.Resources>
@@ -32,7 +33,7 @@
                 </ItemsPanelTemplate>
             </ListBox.ItemsPanel>
             <ListBox.ItemTemplate>
-                <DataTemplate>
+                <DataTemplate DataType="application:PanelSelectModel">
                     <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="1" MinWidth="350" MinHeight="200">
                         <Grid>
                             <Grid.RowDefinitions>
@@ -40,7 +41,18 @@
                                 <RowDefinition Height="*"/>
                                 <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
-                            <TextBlock Text="{Binding PanelType}" Margin="0,8,0,0" HorizontalAlignment="Center" />
+                            <TextBlock Margin="0,8,0,0" HorizontalAlignment="Center" >
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Text" Value="{Binding PanelType}"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding PanelType}" Value="{x:Static application:Panels.Approximation}">
+                                                <Setter Property="Text" Value="Network output / approximation error"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
                             <iconPacks:PackIconFontAwesome Grid.Row="2" Margin="0,0,8,5" HorizontalAlignment="Right"
                                                            Kind="CheckSolid" FontSize="25" Width="14" Height="20"
                                                            Visibility="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}}, Path=IsSelected,Converter={StaticResource boolToVisibility}}"
@@ -60,33 +72,6 @@
                     <Setter Property="Margin" Value="4" />
                     <Setter Property="Padding" Value="0" />
                     <Setter Property="Cursor" Value="Hand"/>
-                    <!-- <Setter Property="Template"> -->
-                    <!--     <Setter.Value> -->
-                    <!--         <ControlTemplate TargetType="ListBoxItem"> -->
-                    <!-- -->
-                    <!--             <Border BorderBrush="Gray" BorderThickness="2" CornerRadius="3"> -->
-                    <!--                 <ContentPresenter x:Name="contentPresenter" -->
-                    <!--                                   ContentTemplate="{TemplateBinding ContentTemplate}" -->
-                    <!--                                   Content="{TemplateBinding Content}" -->
-                    <!--                                   HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" -->
-                    <!--                                   Margin="{TemplateBinding Padding}" /> -->
-                    <!--                 <Border.Style> -->
-                    <!--                     <Style TargetType="Border"> -->
-                    <!--                         <Style.Triggers> -->
-                    <!--                             <DataTrigger -->
-                    <!--                                 Binding="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=IsSelected}" -->
-                    <!--                                 Value="True"> -->
-                    <!--                                 <Setter Property="Background" Value="#FFE8F4FF" /> -->
-                    <!--                             </DataTrigger> -->
-                    <!--                         </Style.Triggers> -->
-                    <!--                     </Style> -->
-                    <!--                 </Border.Style> -->
-                    <!--             </Border> -->
-                    <!-- -->
-                    <!--         </ControlTemplate> -->
-                    <!--     </Setter.Value> -->
-                    <!-- </Setter> -->
-
                 </Style>
             </ListBox.ItemContainerStyle>
         </ListBox>

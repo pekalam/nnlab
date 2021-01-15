@@ -155,7 +155,7 @@ namespace Training.Application.ViewModels
             vm.PlotType = OutputPlotType.VecNum;
             vm.PlotModel.Series.Clear();
             vm.PlotModel.Annotations.Clear();
-            vm.PlotModel.Title = "Accuracy";
+            vm.PlotModel.Title = "Approximation error";
 
             var input = trainingData.Sets.TrainingSet.Input;
 

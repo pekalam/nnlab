@@ -19,7 +19,7 @@ namespace Training.Application
     {
         ParametersEditPanel,
         NetworkError,
-        Accuracy,
+        Approximation,
         NetworkVisualization,
         MatrixPreview
     }

@@ -23,7 +23,7 @@ namespace Training.Application.ViewModels.PanelLayout
             switch (model.PanelType)
             {
                 case Panels.MatrixPreview: return "MatrixTrainingPreviewView";
-                case Panels.Accuracy: return "OutputPlotView";
+                case Panels.Approximation: return "OutputPlotView";
                 case Panels.NetworkError: return "ErrorPlotView";
                 case Panels.NetworkVisualization: return "TrainingNetworkPreviewView";
                 case Panels.ParametersEditPanel: return "ParametersEditView";
