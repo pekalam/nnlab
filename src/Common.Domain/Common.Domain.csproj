@@ -3,16 +3,25 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <Nullable>enable</Nullable>
+    <Configurations>Debug;Release;DebugLocal</Configurations>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="NNLib" Version="1.2.29" />
-    <PackageReference Include="NNLib.Csv" Version="1.3.2" />
     <PackageReference Include="Prism.Core" Version="7.2.0.1422" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Common.Logging\Common.Logging.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(Configuration)' == 'DebugLocal'">
+    <ProjectReference Include="..\..\..\NNLib\NNLib.Csv\NNLib.Csv.csproj" />
+    <ProjectReference Include="..\..\..\NNLib\NNLib\NNLib.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(Configuration)' != 'DebugLocal'">
+    <PackageReference Include="NNLib" Version="1.2.40" />
+    <PackageReference Include="NNLib.Csv" Version="1.3.21" />
   </ItemGroup>
 
 </Project>

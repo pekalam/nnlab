@@ -4,6 +4,7 @@
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
     <AssemblyName>NeuralNetwork</AssemblyName>
+    <Configurations>Debug;Release;DebugLocal</Configurations>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\NeuralNetwork.Application\NeuralNetwork.Application.csproj" />

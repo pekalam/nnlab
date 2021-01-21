@@ -11,7 +11,7 @@ namespace Common.Logging
         private const string OutputTemplate =
             "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj}{NewLine}{Properties}{NewLine}{Exception}";
 
-        [Conditional("RELEASE")]
+        // [Conditional("RELEASE")]
         private static void ConfigureRelease(LoggerConfiguration c)
         {
             c.Enrich.WithThreadId().Enrich.WithMemoryUsage()

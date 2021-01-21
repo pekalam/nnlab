@@ -5,11 +5,11 @@
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
     <AssemblyName>Assembler</AssemblyName>
+    <Configurations>Debug;Release;DebugLocal</Configurations>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="MathNet.Numerics.MKL.Win-x64" Version="2.4.0" />
     <PackageReference Include="MathNet.Numerics.MKL.Win-x86" Version="2.4.0" />
-    <PackageReference Include="Prism.Unity" Version="7.2.0.1422" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Approximation\Approximation.csproj" />

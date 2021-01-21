@@ -4,6 +4,7 @@
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
     <AssemblyName>Training.Application</AssemblyName>
+    <Configurations>Debug;Release;DebugLocal</Configurations>
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="Controllers\PanelLayout\**" />
@@ -19,9 +20,12 @@
     <ProjectReference Include="..\Training.Domain\Training.Domain.csproj" />
     <ProjectReference Include="..\Training.Interface\Training.Interface.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="NNControl" Version="1.0.60" />
-    <PackageReference Include="NNLibAdapter" Version="1.1.2" />
-    <PackageReference Include="System.Reactive" Version="4.4.1" />
+
+  <ItemGroup Condition="'$(Configuration)' == 'DebugLocal'">
+    <ProjectReference Include="..\..\..\NNControl\NNLibAdapter\NNLibAdapter.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(Configuration)' != 'DebugLocal'">
+    <PackageReference Include="NNLibAdapter" Version="1.2.40" />
   </ItemGroup>
 </Project>

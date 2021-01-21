@@ -4,6 +4,7 @@
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
     <AssemblyName>NeuralNetwork.Presentation</AssemblyName>
+    <Configurations>Debug;Release;DebugLocal</Configurations>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Common.Presentation\Common.Presentation.csproj" />

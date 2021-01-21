@@ -1,17 +1,22 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <Nullable>enable</Nullable>
+    <Configurations>Debug;Release;DebugLocal</Configurations>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="NNControl" Version="1.0.60" />
-    <PackageReference Include="NNLibAdapter" Version="1.1.2" />
+  <ItemGroup Condition="'$(Configuration)' == 'DebugLocal'">
+    <ProjectReference Include="..\..\..\NNControl\NNLibAdapter\NNLibAdapter.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Common.Domain\Common.Domain.csproj" />
+  </ItemGroup>
+
+
+  <ItemGroup Condition="'$(Configuration)' != 'DebugLocal'">
+    <PackageReference Include="NNLibAdapter" Version="1.2.40" />
   </ItemGroup>
 
 </Project>

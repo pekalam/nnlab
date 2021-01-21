@@ -4,6 +4,7 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
+    <Configurations>Debug;Release;DebugLocal</Configurations>
   </PropertyGroup>
 
   <ItemGroup>

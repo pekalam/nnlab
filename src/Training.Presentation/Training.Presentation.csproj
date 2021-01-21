@@ -4,10 +4,8 @@
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
     <AssemblyName>Training.Presentation</AssemblyName>
+    <Configurations>Debug;Release;DebugLocal</Configurations>
   </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="Prism.Wpf" Version="7.2.0.1422" />
-  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Common.Domain\Common.Domain.csproj" />
     <ProjectReference Include="..\Common.Presentation\Common.Presentation.csproj" />

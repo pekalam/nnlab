@@ -4,6 +4,7 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <Nullable>enable</Nullable>
     <Nullable>enable</Nullable>
+    <Configurations>Debug;Release;DebugLocal</Configurations>
   </PropertyGroup>
 
   <ItemGroup>

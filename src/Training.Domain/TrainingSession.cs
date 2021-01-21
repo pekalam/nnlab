@@ -238,6 +238,7 @@ namespace Training.Domain
             {
                 LossFunction.MSE => new QuadraticLossFunction(),
                 LossFunction.RMSE => new RootMeanSquareLossFunction(),
+                LossFunction.MAE => new MaeLossFunction(),
             };
         }
 

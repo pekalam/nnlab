@@ -4,6 +4,7 @@
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
     <AssemblyName>Shell</AssemblyName>
+    <Configurations>Debug;Release;DebugLocal</Configurations>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Shell.Application\Shell.Application.csproj" />
