@@ -41,16 +41,6 @@ namespace Training.Application.ViewModels
             set => SetProperty(ref _trainingParameters, value);
         }
 
-        public TrainingAlgorithm[] Algorithms { get; } = new TrainingAlgorithm[]
-        {
-            TrainingAlgorithm.GradientDescent, TrainingAlgorithm.LevenbergMarquardt
-        };
-
-        public LossFunction[] LossFunctions { get; } = new LossFunction[]
-        {
-            LossFunction.MSE,LossFunction.RMSE
-        };
-
         public bool IsMaxLearningTimeChecked
         {
             get => _isMaxLearningTimeChecked;

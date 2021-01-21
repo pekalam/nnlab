@@ -12,6 +12,7 @@
              xmlns:behaviors="clr-namespace:Common.Presentation.Behaviors;assembly=Common.Presentation"
              xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:interface="clr-namespace:Shell.Interface;assembly=Shell.Interface"
+             xmlns:System="clr-namespace:System;assembly=System.Runtime"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance dd:DesignTrainingParametersVm, IsDesignTimeCreatable=True}"
              prism:ViewModelLocator.AutoWireViewModel="True" Style="{StaticResource ContentUserControl}"
@@ -19,6 +20,18 @@
     <UserControl.Resources>
         <converters:BooleanNegConverter x:Key="boolNegConverter" />
         <converters:NullableToZeroConverter x:Key="NullableToZeroConverter"/>
+        <ObjectDataProvider x:Key="LossFunctions" MethodName="GetValues"
+                            ObjectType="{x:Type System:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="domain:LossFunction"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+        <ObjectDataProvider x:Key="Algorithms" MethodName="GetValues"
+                            ObjectType="{x:Type System:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="domain:TrainingAlgorithm"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
     </UserControl.Resources>
     <ContentControl Style="{StaticResource ContentPanel}">
         <Grid Validation.Error="Validation_OnError">
@@ -40,11 +53,11 @@
                                 <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
                             <TextBlock VerticalAlignment="Center" FontSize="20" Text="Algorithm" />
-                            <ComboBox Grid.Column="1" Grid.Row="0" ItemsSource="{Binding Algorithms}"
+                            <ComboBox Grid.Column="1" Grid.Row="0" ItemsSource="{Binding Source={StaticResource Algorithms}}"
                                       SelectedItem="{Binding Path=TrainingParameters.Algorithm}" 
                                       Name="Algorithm"/>
                             <TextBlock Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" FontSize="20" Text="Loss function"/>
-                            <ComboBox Grid.Column="1" Grid.Row="2" ItemsSource="{Binding LossFunctions}"
+                            <ComboBox Grid.Column="1" Grid.Row="2" ItemsSource="{Binding Source={StaticResource LossFunctions}}"
                                       SelectedItem="{Binding Path=TrainingParameters.LossFunction}" 
                                       Name="LossFunction"/>
                         </Grid>

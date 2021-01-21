@@ -10,7 +10,7 @@
              d:DesignHeight="450" d:DesignWidth="800" Width="500" Height="200">
     <StackPanel VerticalAlignment="Center">
         <TextBlock xml:space="preserve" TextAlignment="Center">Projekt wykonany w ramach pracy inżynierskiej
-Marek Pękala 2020
+Marek Pękala 2021
 
 github: <Hyperlink NavigateUri="https://github.com/pekalam" RequestNavigate="Hyperlink_OnRequestNavigate">https://github.com/pekalam</Hyperlink>
         </TextBlock>

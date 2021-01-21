@@ -12,6 +12,7 @@ using System.Windows;
 using System.Windows.Input;
 using MahApps.Metro.Automation.Peers;
 using MathNet.Numerics.LinearAlgebra;
+using MathNet.Numerics.Statistics;
 using Unity;
 
 namespace Data.Application.ViewModels
@@ -25,9 +26,10 @@ namespace Data.Application.ViewModels
     public class FeatureStatistics
     {
         public string Variable { get; set; } = null!;
+        public double Min { get; set; }
+        public double Median { get; set; }
         public double Mean { get; set; }
         public double Max { get; set; }
-        public double Min { get; set; }
     }
 
     public class TrainingDataStats
@@ -98,10 +100,10 @@ namespace Data.Application.ViewModels
                     2 => "test",
                 };
 
-                IVectorSet GetVectorSet()
+                IEnumerator<Matrix<double>> GetVectorSet()
                 {
                     var set = GetSet();
-                    return _trainingData.Variables.Indexes.InputVarIndexes.Contains(v) ? set.Input : set.Target;
+                    return _trainingData.Variables.Indexes.InputVarIndexes.Contains(v) ? set!.Input.GetEnumerator() : set!.Target.GetEnumerator();
                 }
 
                 int GetIndex()
@@ -117,9 +119,10 @@ namespace Data.Application.ViewModels
                     ? new FeatureStatistics()
                     {
                         Variable = $"{_trainingData.Variables.Names[v]} ({GetSetName()})",
-                        Max = Enumerate(GetVectorSet().GetEnumerator()).Max(mat => mat.At(GetIndex(),0)),
-                        Min = Enumerate(GetVectorSet().GetEnumerator()).Min(mat => mat.At(GetIndex(),0)),
-                        Mean = Enumerate(GetVectorSet().GetEnumerator()).Average(mat => mat.At(GetIndex(),0)),
+                        Max = Enumerate(GetVectorSet()).Max(mat => mat.At(GetIndex(),0)),
+                        Min = Enumerate(GetVectorSet()).Min(mat => mat.At(GetIndex(),0)),
+                        Mean = Enumerate(GetVectorSet()).Average(mat => mat.At(GetIndex(),0)),
+                        Median = Enumerate(GetVectorSet()).Select(mat => mat.At(GetIndex(), 0)).Median(),
                     }
                     : null;
             })).Where(s => s != null);

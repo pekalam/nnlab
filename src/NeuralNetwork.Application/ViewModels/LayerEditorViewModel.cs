@@ -16,13 +16,13 @@ namespace NeuralNetwork.Application.ViewModels
         private ActivationFunctionName _activationFunction;
         private int _neuronsCount;
         private int _inputsCount;
-        private ParamsInitMethod _paramsInitMethod = ParamsInitMethod.NormalDist;
+        private WeightsInitMethod _weightsInitMethod = WeightsInitMethod.NormalDist;
         private NormDistMatrixBuilderOptions _normDistOptions = new NormDistMatrixBuilderOptions()
         {
             WMean = 0, WStdDev = 1, BMean = 0, BStdDev = 0,
         };
 
-        private ParamsInitMethod[] _paramsInitMethods;
+        private WeightsInitMethod[] _weightsInitMethods;
 
 
         public LayerDetailsModel(Layer layer, bool isFirstLayer)
@@ -51,16 +51,16 @@ namespace NeuralNetwork.Application.ViewModels
             set => SetProperty(ref _inputsCount, value);
         }
 
-        public ParamsInitMethod ParamsInitMethod
+        public WeightsInitMethod WeightsInitMethod
         {
-            get => _paramsInitMethod;
-            set => SetProperty(ref _paramsInitMethod, value);
+            get => _weightsInitMethod;
+            set => SetProperty(ref _weightsInitMethod, value);
         }
 
-        public ParamsInitMethod[] ParamsInitMethods
+        public WeightsInitMethod[] WeightsInitMethods
         {
-            get => _paramsInitMethods;
-            set => SetProperty(ref _paramsInitMethods, value);
+            get => _weightsInitMethods;
+            set => SetProperty(ref _weightsInitMethods, value);
         }
 
         public NormDistMatrixBuilderOptions NormDistOptions

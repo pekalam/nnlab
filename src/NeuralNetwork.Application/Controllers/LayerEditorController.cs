@@ -18,7 +18,7 @@ namespace NeuralNetwork.Application.Controllers
     {
         Action<LayerEditorNavParams> Navigated { get; set; }
         DelegateCommand ExitCommand { get; set; }
-        DelegateCommand InitializeParametersCommand { get; set; }
+        DelegateCommand InitializeWeightsCommand { get; set; }
 
         public static void Register(IContainerRegistry cr)
         {
@@ -42,11 +42,11 @@ namespace NeuralNetwork.Application.Controllers
 
             Navigated = OnNavigated;
             ExitCommand = shellService.CloseLayerEditorCommand;
-            InitializeParametersCommand = new DelegateCommand(InitializeParameters);
+            InitializeWeightsCommand = new DelegateCommand(InitializeParameters);
         }
 
         public DelegateCommand ExitCommand { get; set; }
-        public DelegateCommand InitializeParametersCommand { get; set; }
+        public DelegateCommand InitializeWeightsCommand { get; set; }
         public Action<LayerEditorNavParams> Navigated { get; set; }
 
         private void OnNavigated(LayerEditorNavParams navParams)
@@ -55,7 +55,7 @@ namespace NeuralNetwork.Application.Controllers
             _layerNum = navParams.LayerNum;
             _assignedNetwork = navParams.Network;
 
-            var method = ParamsInitMethodAssembler.FromMatrixBuilder(layer.MatrixBuilder);
+            var method = WeightsInitMethodAssembler.FromLayer(layer);
             var model = new LayerDetailsModel(layer, navParams.Network.BaseLayers[0] == layer)
             {
                 NeuronsCount = layer.NeuronsCount,
@@ -63,8 +63,8 @@ namespace NeuralNetwork.Application.Controllers
                 ActivationFunction =
                     ActivationFunctionNameAssembler.FromActivationFunction(((PerceptronLayer) layer)
                         .ActivationFunction),
-                ParamsInitMethod = method,
-                ParamsInitMethods = layer.GetAvailableParamsInitMethods(_assignedNetwork),
+                WeightsInitMethod = method,
+                WeightsInitMethods = layer.GetAvailableParamsInitMethods(_assignedNetwork),
             };
             if (layer.MatrixBuilder is NormDistMatrixBuilder n)
             {
@@ -99,17 +99,17 @@ namespace NeuralNetwork.Application.Controllers
                     PublishArchMessage(validAfterSetInputs);
                     Vm!.MatrixPreview.Controller.InvalidateDisplayedMatrix();
                     break;
-                case nameof(model.ParamsInitMethod):
-                    _networkService.ChangeParamsInitMethod(Vm!.Layer!.Layer, Vm!.Layer!.ParamsInitMethod, false,
-                        Vm!.Layer.ParamsInitMethod == ParamsInitMethod.NormalDist ? Vm!.Layer.NormDistOptions : null);
+                case nameof(model.WeightsInitMethod):
+                    _networkService.ChangeParamsInitMethod(Vm!.Layer!.Layer, Vm!.Layer!.WeightsInitMethod, false,
+                        Vm!.Layer.WeightsInitMethod == WeightsInitMethod.NormalDist ? Vm!.Layer.NormDistOptions : null);
                     break;
             }
         }
 
         private void InitializeParameters()
         {
-            _networkService.ChangeParamsInitMethod(Vm!.Layer!.Layer, Vm!.Layer!.ParamsInitMethod, true,
-                Vm!.Layer.ParamsInitMethod == ParamsInitMethod.NormalDist ? Vm!.Layer.NormDistOptions : null);
+            _networkService.ChangeParamsInitMethod(Vm!.Layer!.Layer, Vm!.Layer!.WeightsInitMethod, true,
+                Vm!.Layer.WeightsInitMethod == WeightsInitMethod.NormalDist ? Vm!.Layer.NormDistOptions : null);
             Vm!.MatrixPreview.Controller.AssignNetwork(_assignedNetwork!);
             Vm!.MatrixPreview.Controller.SelectMatrix(_layerNum, MatrixTypes.Weights);
         }

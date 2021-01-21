@@ -20,7 +20,7 @@ namespace NeuralNetwork.Domain
         bool InsertAfter(int layerIndex);
         bool InsertBefore(int layerIndex);
         MLPNetwork CreateNeuralNetwork(TrainingData trainingData);
-        void ChangeParamsInitMethod<T>(Layer layer, ParamsInitMethod newMethod, bool reset, T? options = null) where T : class;
+        void ChangeParamsInitMethod<T>(Layer layer, WeightsInitMethod newMethod, bool reset, T? options = null) where T : class;
 
         void AdjustNetworkToData(TrainingData data);
     }
@@ -150,10 +150,10 @@ namespace NeuralNetwork.Domain
                 new PerceptronLayer(5, outputCount, new LinearActivationFunction()));
         }
 
-        public void ChangeParamsInitMethod<T>(Layer layer, ParamsInitMethod newMethod, bool reset, T? options = null) where T : class
+        public void ChangeParamsInitMethod<T>(Layer layer, WeightsInitMethod newMethod, bool reset, T? options = null) where T : class
         {
             if (_appState.ActiveSession?.Network == null) return;
-            layer.MatrixBuilder = ParamsInitMethodAssembler.FromParamsInitMethod(newMethod, options);
+            layer.MatrixBuilder = WeightsInitMethodAssembler.FromWeightsInitMethod(newMethod, options);
 
             if (reset)
             {

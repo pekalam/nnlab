@@ -15,7 +15,7 @@ namespace Common.Domain
 
     public enum LossFunction
     {
-        MSE,RMSE,
+        MSE,RMSE,MAE,
     }
 
     public class GradientDescentParamsModel : BindableBase

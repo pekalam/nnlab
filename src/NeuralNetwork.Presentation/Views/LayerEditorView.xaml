@@ -65,21 +65,21 @@
                        VerticalAlignment="Center" />
             <UniformGrid Columns="2" Margin="0,10,0,0">
                 <ComboBox MaxHeight="{Binding ElementName=Activation,Path=Height}"
-                          ItemsSource="{Binding Layer.ParamsInitMethods}" 
-                          SelectedValue="{Binding Path=Layer.ParamsInitMethod}">
+                          ItemsSource="{Binding Layer.WeightsInitMethods}" 
+                          SelectedValue="{Binding Path=Layer.WeightsInitMethod}">
                     <ComboBox.ItemContainerStyle>
                         <Style TargetType="ComboBoxItem" BasedOn="{StaticResource MahApps.Styles.ComboBoxItem}">
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding}" Value="{x:Static domain11:ParamsInitMethod.SqrMUniform}">
+                                <DataTrigger Binding="{Binding}" Value="{x:Static domain11:WeightsInitMethod.SqrMUniform}">
                                     <Setter Property="Control.ToolTip" Value="Sets weights using values from uniform distribution with standard deviation = sqrt(inputsCount)."/>
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding}" Value="{x:Static domain11:ParamsInitMethod.SmallNumbers}">
+                                <DataTrigger Binding="{Binding}" Value="{x:Static domain11:WeightsInitMethod.SmallNumbers}">
                                     <Setter Property="Control.ToolTip" Value="Uniform distribution. Values range from -1/sqrt(inputsCount) to 1/sqrt(inputsCount). Bias = 0"/>
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding}" Value="{x:Static domain11:ParamsInitMethod.SmallStdDev}">
+                                <DataTrigger Binding="{Binding}" Value="{x:Static domain11:WeightsInitMethod.SmallStdDev}">
                                     <Setter Property="Control.ToolTip" Value="Normal distribution with standard deviation = 0.01 and mean = 0. Bias = 0"/>
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding}" Value="{x:Static domain11:ParamsInitMethod.NormalDist}">
+                                <DataTrigger Binding="{Binding}" Value="{x:Static domain11:WeightsInitMethod.NormalDist}">
                                     <Setter Property="Control.ToolTip" Value="Normal distribution."/>
                                 </DataTrigger>
                             </Style.Triggers>
@@ -87,7 +87,7 @@
                     </ComboBox.ItemContainerStyle>
                 </ComboBox>
                 <Button Margin="10,0,0,0" HorizontalAlignment="Right" MaxHeight="40"
-                        Command="{Binding Controller.InitializeParametersCommand}">
+                        Command="{Binding Controller.InitializeWeightsCommand}">
                     Initialize parameters
                 </Button>
             </UniformGrid>
@@ -98,7 +98,7 @@
                 <Grid.Style>
                     <Style TargetType="Grid">
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding Layer.ParamsInitMethod}" Value="{x:Static domain11:ParamsInitMethod.NormalDist}">
+                            <DataTrigger Binding="{Binding Layer.WeightsInitMethod}" Value="{x:Static domain11:WeightsInitMethod.NormalDist}">
                                 <Setter Property="Visibility" Value="Visible"/>
                             </DataTrigger>
                         </Style.Triggers>

@@ -5,19 +5,19 @@ using NNLib.MLP;
 
 namespace NeuralNetwork.Domain
 {
-    public enum ParamsInitMethod
+    public enum WeightsInitMethod
     {
         SmallNumbers, NormalDist, Xavier, NguyenWidrow, SqrMUniform, SmallStdDev
     }
 
     public static class ParamsInitMethodExtentsions
     {
-        public static ParamsInitMethod[] GetAvailableParamsInitMethods(this Layer layer, INetwork network)
+        public static WeightsInitMethod[] GetAvailableParamsInitMethods(this Layer layer, INetwork network)
         {
-            return Enum.GetValues(typeof(ParamsInitMethod)).Cast<ParamsInitMethod>().Where(
+            return Enum.GetValues(typeof(WeightsInitMethod)).Cast<WeightsInitMethod>().Where(
                 initMethod =>
                 {
-                    if (initMethod == ParamsInitMethod.NguyenWidrow &&
+                    if (initMethod == WeightsInitMethod.NguyenWidrow &&
                         !(layer.IsOutputLayer || network.BaseLayers[0] == layer))
                     {
                         return false;
