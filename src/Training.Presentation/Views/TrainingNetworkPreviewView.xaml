@@ -8,8 +8,8 @@
         <nnControl:NeuralNetworkControl Name="NetworkControl" ModelAdapter="{Binding ModelAdapter}" ContextMenuService.IsEnabled="False" MouseDown="NetworkControl_OnMouseDown">
             <nnControl:NeuralNetworkControl.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Header="Toggle animation" Command="{Binding Service.ToggleAnimationCommand}"/>
-                    <MenuItem Header="Clear colors" Command="{Binding Service.ClearColorsCommand}"/>
+                    <MenuItem Header="Toggle animation" Click="ToggleAnimationMenuItem_OnClick"/>
+                    <MenuItem Header="Clear colors" Click="ClearColorsMenuItem_OnClick"/>
                 </ContextMenu>
             </nnControl:NeuralNetworkControl.ContextMenu>
         </nnControl:NeuralNetworkControl>

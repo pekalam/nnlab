@@ -1,5 +1,7 @@
-﻿using System.Windows.Controls;
+﻿using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
+using Training.Application.ViewModels;
 
 namespace Training.Presentation.Views
 {
@@ -25,6 +27,22 @@ namespace Training.Presentation.Views
                 {
                     e.Handled = true;
                 }
+            }
+        }
+
+        private void ClearColorsMenuItem_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is TrainingNetworkPreviewViewModel vm)
+            {
+                vm.Service.ClearColorsCommand.Execute();
+            }
+        }
+
+        private void ToggleAnimationMenuItem_OnClick(object sender, RoutedEventArgs e)
+        { 
+            if(DataContext is TrainingNetworkPreviewViewModel vm)
+            {
+                vm.Service.ToggleAnimationCommand.Execute();
             }
         }
     }
