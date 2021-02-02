@@ -19,14 +19,14 @@ namespace Data.Application.ViewModels
             PlotModel.Model.Axes.Add(new LinearAxis()
             {
                 Position = AxisPosition.Bottom,
-                Title = "n-th variable",
+                Title = "n-th vector",
                 MinimumMajorStep = 1,
                 MinimumMinorStep = 1,
             });
             PlotModel.Model.Axes.Add(new LinearAxis()
             {
                 Position = AxisPosition.Left,
-                Title = "Value",
+                Title = "Variable value",
             });
 
             var l = new Legend
