@@ -26,6 +26,7 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(Configuration)' != 'DebugLocal'">
+    <PackageReference Include="NNControl" Version="1.0.71" />
     <PackageReference Include="NNLibAdapter" Version="1.2.40" />
   </ItemGroup>
 </Project>
