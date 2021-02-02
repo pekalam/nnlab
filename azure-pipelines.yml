@@ -35,7 +35,7 @@ steps:
 - task: VSBuild@1
   displayName: 'Build solution'
   inputs:
-    solution: 'src\NNLab.sln'
+    solution: 'src\NNLab.Dev.sln'
     vsVersion: '16.0'      
 - task: DotNetCoreCLI@2
   displayName: 'Run dotnet publish win-x64'
