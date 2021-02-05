@@ -141,6 +141,11 @@ namespace Training.Domain
                 _trainer!.TrainingSets = _session.TrainingData!.Sets;
                 TrainerUpdated?.Invoke();
             }
+            _session.TrainingReports.RemoveReportsNotMatchingWithNewNetworkArch(obj);
+            if (CurrentReport != null && CurrentReport.Network.Layers[0].InputsCount != obj.Layers[0].InputsCount)
+            {
+                CurrentReport = null;
+            }
         }
 
         private void TrainingDataOnPropertyChanged(object sender, PropertyChangedEventArgs e)

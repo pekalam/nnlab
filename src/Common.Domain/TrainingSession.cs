@@ -78,6 +78,14 @@ namespace Common.Domain
         {
             throw new InvalidOperationException("Cannot replace item in session reports collection");
         }
+
+        public void RemoveReportsNotMatchingWithNewNetworkArch(MLPNetwork net)
+        {
+            foreach (var report in Items.Where(r => r.Network.Layers[0].InputsCount != net.Layers[0].InputsCount).ToArray())
+            {
+                base.RemoveItem(Items.IndexOf(report));
+            }
+        }
     }
 
     public static class Time

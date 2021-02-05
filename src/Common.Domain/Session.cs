@@ -45,6 +45,14 @@ namespace Common.Domain
             {
                 _trainingParameters = new TrainingParameters(trainingData?.GetSet(DataSetType.Validation) != null);
             }
+            else if (_trainingParameters != null)
+            {
+                _trainingParameters.CanRunValidation = trainingData?.GetSet(DataSetType.Validation) != null;
+                if (_trainingParameters.RunValidation && !_trainingParameters.CanRunValidation)
+                {
+                    _trainingParameters.RunValidation = false;
+                }
+            }
         }
 
         internal Session CloneWithName(string name, DuplicateOptions opt)
