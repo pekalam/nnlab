@@ -28,11 +28,12 @@ namespace Training.Application.Controllers
 
     class TrainingNetworkPreviewController : ControllerBase<TrainingNetworkPreviewViewModel>, ITrainingNetworkPreviewController
     {
-        private PlotEpochEndConsumer? _epochEndConsumer;
+        private PlotEpochEndConsumer _epochEndConsumer = null!;
         private Action? _epochEndCallback;
         private readonly ModuleState _moduleState;
         private readonly AppStateHelper _helper;
         private readonly AppState _appState;
+        private readonly object _removeLck = new object();
 
         public TrainingNetworkPreviewController(ModuleState moduleState, AppState appState)
         {
@@ -72,7 +73,7 @@ namespace Training.Application.Controllers
 
             _helper.OnTrainingDataChanged(data =>
             {
-                Vm!.ModelAdapter.AttachInputLabels(_appState.ActiveSession!.TrainingData.Variables.InputVariableNames);
+                Vm!.ModelAdapter!.AttachInputLabels(_appState.ActiveSession!.TrainingData!.Variables.InputVariableNames);
                 Vm!.ModelAdapter.AttachOutputLabels(_appState.ActiveSession.TrainingData.Variables.TargetVariableNames);
             });
 
@@ -99,7 +100,16 @@ namespace Training.Application.Controllers
         {
             _epochEndCallback = () => { };
             Vm!.ModelAdapter!.ColorAnimation.SetupTrainer(_moduleState.ActiveSession!.Trainer!, ref _epochEndCallback,
-                action => { GlobalDistributingDispatcher.Call(action, _epochEndConsumer!); });
+                action =>
+                {
+                    lock (_removeLck)
+                    {
+                        if (_epochEndCallback != null)
+                        {
+                            GlobalDistributingDispatcher.Call(action, _epochEndConsumer);
+                        }
+                    }
+                });
         }
 
         private void NavigatedAction(NavigationContext obj)
@@ -109,7 +119,7 @@ namespace Training.Application.Controllers
 
         private void InitializeEpochEndConsumer()
         {
-            _epochEndConsumer = new PlotEpochEndConsumer(_moduleState, (_, __) => _epochEndCallback!(),
+            _epochEndConsumer = new PlotEpochEndConsumer(_moduleState, (_, __) => _epochEndCallback?.Invoke(),
                 session => { SetupAnimation(); },
                 session =>
                 {
@@ -132,10 +142,13 @@ namespace Training.Application.Controllers
 
         private void ToggleAnimation()
         {
-            if (_epochEndConsumer!.IsRunning)
+            if (_epochEndCallback != null)
             {
-                _epochEndCallback = null;
-                _epochEndConsumer?.Remove();
+                lock (_removeLck)
+                {
+                    _epochEndCallback = null;
+                    _epochEndConsumer.Remove();
+                }
             }
             else
             {
