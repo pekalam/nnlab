@@ -1,4 +1,4 @@
-﻿using Common.Domain;
+using Common.Domain;
 using NNLib.Exceptions;
 using NNLib.LossFunction;
 using NNLib.MLP;
@@ -268,7 +268,7 @@ namespace Training.Domain
             SessionReset?.Invoke();
         }
 
-        private TrainingSessionReport CreateReport(SessionEndType type, DateTime startTime, double? validationError = null)
+        private TrainingSessionReport CreateReportWithTrainerError(SessionEndType type, DateTime startTime, double? validationError = null)
         {
             return new TrainingSessionReport(type, Trainer!.Epochs, Trainer.Error, startTime, Time.Now - startTime, EpochEndEvents, Network!, TrainingReportAlgorithmAssembler.FromAlgorithmBase(Trainer.Algorithm), validationError);
         }
@@ -285,7 +285,7 @@ namespace Training.Domain
             Paused = false;
             if (!Started)
             {
-                var report = CreateReport(SessionEndType.Stopped, _session.TrainingReports.Count switch
+                var report = CreateReportWithTrainerError(SessionEndType.Stopped, _session.TrainingReports.Count switch
                 {
                     0 => StartTime ?? Time.Now,
                     _ => _session.TrainingReports[^1].EndDate,
@@ -317,7 +317,6 @@ namespace Training.Domain
             if (!IsValid) throw new InvalidOperationException("Session is in invalid state");
             CheckCanStart();
 
-            if (CurrentReport != null) CurrentReport.ValidationError = null;
             StartTime = Time.Now;
             Started = true;
             Paused = false;
@@ -355,23 +354,23 @@ namespace Training.Domain
 
         protected virtual async Task<TrainingSessionReport> InternalStart()
         {
-            TrainingSessionReport StoppedPausedOrMaxTime()
+            TrainingSessionReport StoppedPausedOrMaxTime(double? valError)
             {
                 if (_stopRequested)
                 {
-                    return CreateReport(SessionEndType.Stopped, StartTime!.Value);
+                    return CreateReportWithTrainerError(SessionEndType.Stopped, StartTime!.Value, valError);
                 }
                 if (Time.Now - StartTime + _elapsed > Parameters!.MaxLearningTime)
                 {
-                    return CreateReport(SessionEndType.Timeout, StartTime!.Value);
+                    return CreateReportWithTrainerError(SessionEndType.Timeout, StartTime!.Value, valError);
                 }
 
-                return CreateReport(SessionEndType.Paused, StartTime!.Value);
+                return CreateReportWithTrainerError(SessionEndType.Paused, StartTime!.Value, valError);
             }
 
             if (double.IsNaN(Trainer!.Error) && !_reseted)
             {
-                return CreateReport(SessionEndType.NaNResult, StartTime!.Value);
+                return CreateReportWithTrainerError(SessionEndType.NaNResult, StartTime!.Value);
             }
 
             if (Parameters!.MaxLearningTime != TimeSpan.MaxValue)
@@ -396,17 +395,17 @@ namespace Training.Domain
                             if (_validationThresholdCount == Parameters.ValidationEpochThreshold)
                             {
                                 _validationThresholdCount = 0;
-                                validationError = Trainer.RunValidation(_epochCts.Token);
+                                validationError = Trainer.RunValidation(CancellationToken.None);
                             }
                         }
                     }
                     catch (OperationCanceledException)
                     {
-                        return StoppedPausedOrMaxTime();
+                        return StoppedPausedOrMaxTime(validationError);
                     }
                     catch (TrainingCanceledException)
                     {
-                        return StoppedPausedOrMaxTime();
+                        return StoppedPausedOrMaxTime(validationError);
                     }
                     catch (AlgorithmFailed)
                     {
@@ -423,17 +422,17 @@ namespace Training.Domain
                     EpochEndEvents.Add(arg);
                     EpochEnd?.Invoke(this, arg);
 
-                    if (_epochCts.IsCancellationRequested) return StoppedPausedOrMaxTime();
+                    if (_epochCts.IsCancellationRequested) return StoppedPausedOrMaxTime(validationError);
 
                     if (Trainer.Epochs == Parameters.MaxEpochs)
                     {
                         _stopRequested = true;
-                        return CreateReport(SessionEndType.MaxEpoch, StartTime!.Value, error);
+                        return CreateReport(SessionEndType.MaxEpoch, StartTime!.Value, error, validationError);
                     }
 
                     if (double.IsNaN(error))
                     {
-                        return CreateReport(SessionEndType.NaNResult, StartTime!.Value, error);
+                        return CreateReport(SessionEndType.NaNResult, StartTime!.Value, error, validationError);
                     }
 
                     if (validationError.HasValue && Parameters.StopWhenValidationErrorReached && validationError.Value <= Parameters.ValidationTargetError)
@@ -444,7 +443,7 @@ namespace Training.Domain
                 } while (error > Parameters.TargetError);
 
                 _stopRequested = true;
-                return CreateReport(SessionEndType.TargetReached, StartTime!.Value, error);
+                return CreateReport(SessionEndType.TargetReached, StartTime!.Value, error, validationError);
             }, TaskCreationOptions.LongRunning);
         }
 
