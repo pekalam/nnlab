@@ -18,6 +18,7 @@ variables:
   bin86FolderName: 'bin86'
   release64FolderName: 'x64Release'
   release86FolderName: 'x86Release'
+  isMaster: $[eq(variables['Build.SourceBranch'], 'refs/heads/master')]
 
 steps:
 - task: UseDotNet@2
@@ -72,3 +73,13 @@ steps:
     PathtoPublish: '$(System.DefaultWorkingDirectory)\${{ variables.release86FolderName }}'
     ArtifactName: 'x86AppRelease'
     publishLocation: 'Container'
+- task: GitHubRelease@1
+  condition: eq(variables.isMaster, 'true')
+  inputs:
+    gitHubConnection: 'github.com_pekalam'
+    repositoryName: 'pekalam/nnlab'
+    action: 'create'
+    target: '$(Build.SourceVersion)'
+    tagSource: 'gitTag'
+    changeLogCompareToRelease: 'lastFullRelease'
+    changeLogType: 'commitBased'
