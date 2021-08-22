@@ -61,16 +61,30 @@ steps:
     script: |
       ren ${{ variables.release64FolderName }}\${{ variables.bin64FolderName }}\Assembler.exe NNLab.exe
       ren ${{ variables.release86FolderName }}\${{ variables.bin86FolderName }}\Assembler.exe NNLab.exe
+- task: ArchiveFiles@2
+  inputs:
+    rootFolderOrFile: '$(System.DefaultWorkingDirectory)\${{ variables.release64FolderName }}'
+    includeRootFolder: false
+    archiveType: 'zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/x64AppRelease.zip'
+    replaceExistingArchive: true
+- task: ArchiveFiles@2
+  inputs:
+    rootFolderOrFile: '$(System.DefaultWorkingDirectory)\${{ variables.release86FolderName }}'
+    includeRootFolder: false
+    archiveType: 'zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/x86AppRelease.zip'
+    replaceExistingArchive: true
 - task: PublishBuildArtifacts@1
   displayName: 'Publish x64 build artifacts'
   inputs:
-    PathtoPublish: '$(System.DefaultWorkingDirectory)\${{ variables.release64FolderName }}'
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)/x64AppRelease.zip'
     ArtifactName: 'x64AppRelease'
     publishLocation: 'Container'
 - task: PublishBuildArtifacts@1
   displayName: 'Publish x86 build artifacts'  
   inputs:
-    PathtoPublish: '$(System.DefaultWorkingDirectory)\${{ variables.release86FolderName }}'
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)/x86AppRelease.zip'
     ArtifactName: 'x86AppRelease'
     publishLocation: 'Container'
 - task: GitHubRelease@1
@@ -81,5 +95,5 @@ steps:
     action: 'create'
     target: '$(Build.SourceVersion)'
     tagSource: 'gitTag'
-    changeLogCompareToRelease: 'lastFullRelease'
-    changeLogType: 'commitBased'
+    assets: '$(Build.ArtifactStagingDirectory)/*.zip'
+    addChangeLog: false
